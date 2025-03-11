@@ -6,6 +6,7 @@ import FeaturedBook from "@/components/home/FeaturedBook";
 import ARTechnology from "@/components/home/ARTechnology";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Logo from "@/components/layout/Logo";
 
 const Index = () => {
   return (
@@ -17,6 +18,9 @@ const Index = () => {
     >
       <Header />
       <main>
+        <div className="container mx-auto px-4 py-8 flex justify-center">
+          <Logo isSquare={true} className="w-32 h-32 shadow-lg" />
+        </div>
         <Hero />
         <Concept />
         <FeaturedBook />
