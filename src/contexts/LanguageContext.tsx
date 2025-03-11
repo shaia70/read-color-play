@@ -22,7 +22,7 @@ const heTranslations: Record<string, string> = {
   
   // Hero section
   'hero.tagline': 'קוראים • צובעים • משחקים',
-  'hero.welcome': "ברוכים הבאים ל'שלי ספרים'",
+  'hero.welcome': 'ספרי קריאה וצביעה בשילוב טכנולוגיית AR',
   'hero.subtitle': 'Shelley Books',
   'hero.description': 'ספרי ילדים מקוריים עם איורים שנוצרו באמצעות בינה מלאכותית ומשולבים בטכנולוגיית מציאות רבודה',
   'hero.books': 'הספרים שלנו',
@@ -95,7 +95,7 @@ const enTranslations: Record<string, string> = {
   
   // Hero section
   'hero.tagline': 'Read • Color • Play',
-  'hero.welcome': "Welcome to 'Shelley Books'",
+  'hero.welcome': 'Reading and Coloring Books with AR Technology',
   'hero.subtitle': 'Shelley Books',
   'hero.description': 'Original children\'s books with illustrations created using artificial intelligence and integrated with augmented reality technology',
   'hero.books': 'Our Books',
