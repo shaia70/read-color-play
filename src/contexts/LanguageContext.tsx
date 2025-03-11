@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -81,6 +82,29 @@ const heTranslations: Record<string, string> = {
   'books.new': 'חדש!',
   'books.hardcover': 'קשה',
   'books.hebrew': 'עברית',
+  
+  // Contact page
+  'contact.title': 'צור קשר',
+  'contact.subtitle': 'יש לכם שאלות או רעיונות? אנחנו תמיד שמחים לשמוע מכם!',
+  'contact.form.title': 'שלחו לנו הודעה',
+  'contact.form.name': 'שם מלא',
+  'contact.form.email': 'דוא"ל',
+  'contact.form.subject': 'נושא',
+  'contact.form.message': 'הודעה',
+  'contact.form.send': 'שלח הודעה',
+  'contact.details.title': 'פרטי יצירת קשר',
+  'contact.details.email': 'דוא"ל',
+  'contact.details.phone': 'טלפון',
+  'contact.details.address': 'כתובת',
+  'contact.hours.title': 'שעות פעילות:',
+  'contact.hours.weekdays': 'ראשון - חמישי:',
+  'contact.hours.friday': 'שישי:',
+  'contact.hours.saturday': 'שבת:',
+  'contact.hours.closed': 'סגור',
+  
+  // 404 page
+  '404.title': 'אופס! הדף לא נמצא',
+  '404.back': 'חזרה לדף הבית',
 };
 
 // English translations
@@ -154,6 +178,29 @@ const enTranslations: Record<string, string> = {
   'books.new': 'New!',
   'books.hardcover': 'Hardcover',
   'books.hebrew': 'Hebrew',
+  
+  // Contact page
+  'contact.title': 'Contact Us',
+  'contact.subtitle': 'Do you have questions or ideas? We are always happy to hear from you!',
+  'contact.form.title': 'Send Us a Message',
+  'contact.form.name': 'Full Name',
+  'contact.form.email': 'Email',
+  'contact.form.subject': 'Subject',
+  'contact.form.message': 'Message',
+  'contact.form.send': 'Send Message',
+  'contact.details.title': 'Contact Details',
+  'contact.details.email': 'Email',
+  'contact.details.phone': 'Phone',
+  'contact.details.address': 'Address',
+  'contact.hours.title': 'Working Hours:',
+  'contact.hours.weekdays': 'Sunday - Thursday:',
+  'contact.hours.friday': 'Friday:',
+  'contact.hours.saturday': 'Saturday:',
+  'contact.hours.closed': 'Closed',
+  
+  // 404 page
+  '404.title': 'Oops! Page not found',
+  '404.back': 'Return to Home',
 };
 
 const translations: Record<Language, Record<string, string>> = {
