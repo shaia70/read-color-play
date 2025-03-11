@@ -25,13 +25,13 @@ export default function Logo({
         className
       )}>
         <div className="flex flex-col items-center">
-          <div className="flex-shrink-0 mb-1">
+          <div className="flex-shrink-0 mb-0">
             <BookOpen className="h-6 w-6 text-shelley-blue" />
           </div>
-          <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+          <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-tight">
             {language === 'he' ? 'שלי' : 'Shelley'}
           </span>
-          <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+          <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-tight -mt-0.5">
             {language === 'he' ? 'ספרים' : 'Books'}
           </span>
         </div>
