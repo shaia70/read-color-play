@@ -1,13 +1,16 @@
+
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Smartphone, Download, Info } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ARTechnology() {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     if (inView) {
@@ -43,14 +46,14 @@ export default function ARTechnology() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="section-title">טכנולוגיית מציאות רבודה</h2>
+          <h2 className="section-title">{t('ar.title')}</h2>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            הדמויות מהספרים קופצות מהדף והופכות למשחקים אינטראקטיביים
+            {t('ar.description')}
           </motion.p>
         </motion.div>
 
@@ -61,41 +64,44 @@ export default function ARTechnology() {
           className="glass-card"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <motion.div variants={itemVariants} className="p-8">
-              <h3 className="text-2xl font-bold mb-4">איך זה עובד?</h3>
+            <motion.div 
+              variants={itemVariants} 
+              className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}
+            >
+              <h3 className="text-2xl font-bold mb-4">{t('ar.howItWorks')}</h3>
               <ul className="space-y-4 mb-6">
                 <li className="flex">
-                  <div className="bg-shelley-blue/10 rounded-full p-2 ml-4">
+                  <div className={`bg-shelley-blue/10 rounded-full p-2 ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-blue font-bold">1</span>
                   </div>
                   <div>
-                    <p className="text-gray-700">הורידו את אפליקציית "שלי ספרים AR" מחנות האפליקציות</p>
+                    <p className="text-gray-700">{t('ar.step1')}</p>
                   </div>
                 </li>
                 <li className="flex">
-                  <div className="bg-shelley-orange/10 rounded-full p-2 ml-4">
+                  <div className={`bg-shelley-orange/10 rounded-full p-2 ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
                   </div>
                   <div>
-                    <p className="text-gray-700">כוונו את המצלמה לאיור בספר המסומן בסמל ה-AR</p>
+                    <p className="text-gray-700">{t('ar.step2')}</p>
                   </div>
                 </li>
                 <li className="flex">
-                  <div className="bg-shelley-purple/10 rounded-full p-2 ml-4">
+                  <div className={`bg-shelley-purple/10 rounded-full p-2 ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
                   </div>
                   <div>
-                    <p className="text-gray-700">צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי ע�� המסך!</p>
+                    <p className="text-gray-700">{t('ar.step3')}</p>
                   </div>
                 </li>
               </ul>
               <div className="flex flex-wrap gap-3">
                 <CustomButton variant="green" icon={<Download />} className="mb-2 sm:mb-0">
-                  בקרוב: הורידו את האפליקציה
+                  {t('ar.download')}
                 </CustomButton>
                 <Link to="/technology">
                   <CustomButton variant="ghost" icon={<Info />} className="text-shelley-blue">
-                    למידע נוסף
+                    {t('ar.moreInfo')}
                   </CustomButton>
                 </Link>
               </div>

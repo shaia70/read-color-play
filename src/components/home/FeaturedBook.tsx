@@ -1,13 +1,16 @@
+
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { ArrowLeft, Eye } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function FeaturedBook() {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     if (inView) {
@@ -43,7 +46,7 @@ export default function FeaturedBook() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="section-title">הספרים שלנו</h2>
+          <h2 className="section-title">{t('books.title')}</h2>
         </motion.div>
 
         <motion.div 
@@ -61,7 +64,7 @@ export default function FeaturedBook() {
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>
                 <img 
                   src="https://via.placeholder.com/300x400?text=דניאל+הולך+לגן" 
-                  alt="דניאל הולך לגן" 
+                  alt={t('book.daniel.title')} 
                   className="w-full h-full object-cover"
                   style={{ objectFit: "cover" }}
                 />
@@ -70,26 +73,30 @@ export default function FeaturedBook() {
             
             <motion.div 
               variants={itemVariants}
-              className="p-8 flex flex-col justify-center"
+              className={`p-8 flex flex-col justify-center ${language === 'en' ? 'text-left' : 'text-right'}`}
             >
-              <span className="text-sm font-medium text-shelley-blue bg-blue-50 rounded-full px-3 py-1 inline-block mb-4">הספר הראשון בסדרה</span>
-              <h3 className="text-3xl font-bold mb-4">דניאל הולך לגן</h3>
+              <span className="text-sm font-medium text-shelley-blue bg-blue-50 rounded-full px-3 py-1 inline-block mb-4">{t('book.firstSeries')}</span>
+              <h3 className="text-3xl font-bold mb-4">{t('book.daniel.title')}</h3>
               <p className="text-gray-600 mb-6">
-                ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה.
+                {t('book.daniel.description')}
               </p>
               <p className="text-gray-600 mb-6">
-                יום ראשון בגן הוא יום מיוחד עבור דניאל. הוא קצת חושש, אבל גם נרגש מאוד. בואו נגלה יחד איך עבר עליו היום הראשון!
+                {t('book.daniel.story')}
               </p>
-              <div className="flex space-x-4 space-x-reverse">
+              <div className={`flex ${language === 'en' ? 'space-x-4' : 'space-x-4 space-x-reverse'}`}>
                 <Link to="/books">
                   <CustomButton variant="blue" icon={<Eye />}>
-                    פרטים נוספים
+                    {t('books.details')}
                   </CustomButton>
                 </Link>
                 <Link to="/books">
                   <CustomButton variant="outline" className="border-shelley-blue text-shelley-blue hover:bg-shelley-blue/10">
-                    כל הספרים
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    {t('books.all')}
+                    {language === 'he' ? (
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                    ) : (
+                      <ArrowLeft className="ml-2 h-4 w-4" />
+                    )}
                   </CustomButton>
                 </Link>
               </div>

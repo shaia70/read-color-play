@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Sparkles } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Hero() {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     if (inView) {
@@ -56,36 +58,30 @@ export default function Hero() {
           className="max-w-4xl mx-auto text-center"
         >
           <motion.span variants={itemVariants} className="inline-block px-4 py-2 bg-shelley-blue/10 text-shelley-blue rounded-full text-sm font-medium mb-6">
-            קוראים • צובעים • משחקים
+            {t('hero.tagline')}
           </motion.span>
           
           <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            ברוכים הבאים ל{" "}
-            <span className="relative inline-block">
-              <span className="bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
-                'שלי ספרים'
-              </span>
-              <Sparkles className="absolute -top-5 -left-5 w-8 h-8 text-shelley-orange animate-pulse" />
-            </span>
+            {t('hero.welcome')}{" "}
           </motion.h1>
           
           <motion.h2 variants={itemVariants} className="text-2xl md:text-3xl text-gray-600 mb-8">
-            Shelley Books
+            {t('hero.subtitle')}
           </motion.h2>
           
           <motion.p variants={itemVariants} className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            ספרי ילדים מקוריים עם איורים שנוצרו באמצעות בינה מלאכותית ומשולבים בטכנולוגיית מציאות רבודה
+            {t('hero.description')}
           </motion.p>
           
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/books">
               <CustomButton variant="blue" size="lg" icon={<BookOpen />} className="w-full sm:w-auto">
-                הספרים שלנו
+                {t('hero.books')}
               </CustomButton>
             </Link>
             <Link to="/technology">
               <CustomButton variant="outline" size="lg" className="w-full sm:w-auto border-shelley-blue text-shelley-blue hover:bg-shelley-blue/10">
-                גלה את טכנולוגיית ה-AR
+                {t('hero.discover')}
               </CustomButton>
             </Link>
           </motion.div>

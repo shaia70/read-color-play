@@ -61,6 +61,27 @@ const heTranslations: Record<string, string> = {
   'footer.quickLinks': 'ניווט מהיר',
   'footer.contact': 'צור קשר',
   'footer.rights': 'כל הזכויות שמורות',
+  
+  // Added missing translations
+  'footer.home': 'דף הבית',
+  'footer.concept': 'קוראים, צובעים, משחקים',
+  'footer.books': 'הספרים שלנו', 
+  'footer.technology': 'טכנולוגיית AR',
+  'footer.contactUs': 'צור קשר',
+  'footer.allRights': 'כל הזכויות שמורות',
+  'books.comingSoon': 'ספרים נוספים בקרוב!',
+  'books.workingOn': 'אנחנו עובדים על ספרים נוספים בסדרה. עקבו אחרינו ברשתות החברתיות לעדכונים.',
+  'books.peek': 'הצץ בספר',
+  'books.coloring': 'דפי צביעה להורדה',
+  'books.description': 'ספרי ילדים מקוריים עם איורים מרהיבים וטכנולוגיית מציאות רבודה',
+  'books.bookDescription': 'תיאור הספר:',
+  'books.ages': 'גילאים:',
+  'books.pages': 'מספר עמודים:',
+  'books.cover': 'כריכה:',
+  'books.language': 'שפה:',
+  'books.new': 'חדש!',
+  'books.hardcover': 'קשה',
+  'books.hebrew': 'עברית',
 };
 
 // English translations
@@ -113,6 +134,27 @@ const enTranslations: Record<string, string> = {
   'footer.quickLinks': 'Quick Navigation',
   'footer.contact': 'Contact Us',
   'footer.rights': 'All Rights Reserved',
+  
+  // Added missing translations
+  'footer.home': 'Home',
+  'footer.concept': 'Read, Color, Play',
+  'footer.books': 'Our Books',
+  'footer.technology': 'AR Technology',
+  'footer.contactUs': 'Contact Us',
+  'footer.allRights': 'All Rights Reserved',
+  'books.comingSoon': 'More Books Coming Soon!',
+  'books.workingOn': 'We are working on more books in the series. Follow us on social media for updates.',
+  'books.peek': 'Peek at the Book',
+  'books.coloring': 'Download Coloring Pages',
+  'books.description': 'Original children\'s books with stunning illustrations and augmented reality technology',
+  'books.bookDescription': 'Book Description:',
+  'books.ages': 'Ages:',
+  'books.pages': 'Number of Pages:',
+  'books.cover': 'Cover:',
+  'books.language': 'Language:',
+  'books.new': 'New!',
+  'books.hardcover': 'Hardcover',
+  'books.hebrew': 'Hebrew',
 };
 
 const translations: Record<Language, Record<string, string>> = {
