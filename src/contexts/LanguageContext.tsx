@@ -44,7 +44,7 @@ const heTranslations: Record<string, string> = {
   'book.firstSeries': 'הספר הראשון בסדרה',
   'book.daniel.title': 'דניאל הולך לגן',
   'book.daniel.description': 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה.',
-  'book.daniel.story': 'יום ראשון בגן הוא יום מיוחד עבור דניאל. הוא קצת חושש, אבל גם נרגש מאוד. בואו נגלה יחד איך עבר עליו היום הראשון!',
+  'book.daniel.story': 'יום ראשון בגן הוא יום מיוחד עבור דניאל. הוא קצת חושש, אבל גם נרגש מאוד. בואו נגלה יחד איך יתמודד ביומו הראשון!',
   
   // AR Technology section
   'ar.title': 'טכנולוגיית מציאות רבודה',
@@ -117,7 +117,7 @@ const enTranslations: Record<string, string> = {
   'book.firstSeries': 'First Book in the Series',
   'book.daniel.title': 'Daniel Goes to Kindergarten',
   'book.daniel.description': 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology.',
-  'book.daniel.story': 'The first day of kindergarten is a special day for Daniel. He is a little worried, but also very excited. Let\'s discover together how his first day went!',
+  'book.daniel.story': 'The first day of kindergarten is a special day for Daniel. He is a little worried, but also very excited. Let\'s discover together how he will handle his first day!',
   
   // AR Technology section
   'ar.title': 'Augmented Reality Technology',
