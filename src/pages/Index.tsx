@@ -6,6 +6,7 @@ import FeaturedBook from "@/components/home/FeaturedBook";
 import ARTechnology from "@/components/home/ARTechnology";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Logo from "@/components/layout/Logo";
 
 const Index = () => {
   return (
