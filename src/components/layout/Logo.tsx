@@ -31,7 +31,7 @@ export default function Logo({
           <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
             {language === 'he' ? 'שלי' : 'Shelley'}
           </span>
-          <span className="text-xs text-gray-600">
+          <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
             {language === 'he' ? 'ספרים' : 'Books'}
           </span>
         </div>
