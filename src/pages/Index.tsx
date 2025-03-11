@@ -19,7 +19,7 @@ const Index = () => {
       <Header />
       <main>
         <div className="container mx-auto px-4 py-8 flex justify-center">
-          <Logo isSquare={true} className="w-32 h-32 shadow-lg" />
+          <Logo isSquare={true} className="w-24 h-24 shadow-lg" />
         </div>
         <Hero />
         <Concept />
