@@ -4,16 +4,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Technology from "./pages/Technology";
 import Contact from "./pages/Contact";
 import Concept from "./pages/Concept";
 import NotFound from "./pages/NotFound";
-
-// Add framer-motion
-<lov-add-dependency>framer-motion@latest</lov-add-dependency>
+import { AnimatePresence } from "framer-motion";
 
 const queryClient = new QueryClient();
 
@@ -39,3 +36,4 @@ const App = () => (
 );
 
 export default App;
+
