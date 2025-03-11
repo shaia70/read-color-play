@@ -1,11 +1,14 @@
+
 import { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Palette, Gamepad2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Concept() {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     if (inView) {
@@ -34,20 +37,20 @@ export default function Concept() {
 
   const conceptCards = [
     {
-      title: "קוראים",
-      description: "ספרי ילדים מקוריים עם סיפורים מרתקים ואיורים יפהפיים שנוצרו באמצעות בינה מלאכותית.",
+      title: t('concept.reading.title'),
+      description: t('concept.reading.description'),
       icon: <BookOpen className="w-10 h-10 text-white" />,
       color: "bg-shelley-blue"
     },
     {
-      title: "צובעים",
-      description: "הורידו דפי צביעה של הדמויות האהובות מהספרים וצבעו אותן בצבעים שאתם אוהבים.",
+      title: t('concept.coloring.title'),
+      description: t('concept.coloring.description'),
       icon: <Palette className="w-10 h-10 text-white" />,
       color: "bg-shelley-orange"
     },
     {
-      title: "משחקים",
-      description: "הדמויות מהספרים קופצות מהדף והופכות למשחקים אינטראקטיביים באמצעות טכנולוגיית מציאות רבודה.",
+      title: t('concept.playing.title'),
+      description: t('concept.playing.description'),
       icon: <Gamepad2 className="w-10 h-10 text-white" />,
       color: "bg-shelley-purple"
     }
@@ -63,7 +66,7 @@ export default function Concept() {
             transition={{ duration: 0.6 }}
             className="section-title"
           >
-            קוראים, צובעים, משחקים
+            {t('concept.title')}
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -71,7 +74,7 @@ export default function Concept() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            חוויה ייחודית המשלבת קריאה, יצירה ומשחק אינטראקטיבי בטכנולוגיה חדשנית
+            {t('concept.description')}
           </motion.p>
         </div>
 
@@ -79,7 +82,7 @@ export default function Concept() {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className={`grid grid-cols-1 md:grid-cols-3 gap-8 ${language === 'en' ? 'text-left' : 'text-right'}`}
         >
           {conceptCards.map((card, index) => (
             <motion.div 

@@ -4,11 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,11 +31,11 @@ export default function Header() {
   }, [location]);
 
   const navigationItems = [
-    { name: "בית", href: "/", icon: <BookType className="h-5 w-5" /> },
-    { name: "קוראים, צובעים, משחקים", href: "/concept", icon: <BookOpen className="h-5 w-5" /> },
-    { name: "הספרים שלנו", href: "/books", icon: <Palette className="h-5 w-5" /> },
-    { name: "טכנולוגיית AR", href: "/technology", icon: <Gamepad2 className="h-5 w-5" /> },
-    { name: "צור קשר", href: "/contact", icon: <PhoneCall className="h-5 w-5" /> },
+    { name: t('nav.home'), href: "/", icon: <BookType className="h-5 w-5" /> },
+    { name: t('nav.concept'), href: "/concept", icon: <BookOpen className="h-5 w-5" /> },
+    { name: t('nav.books'), href: "/books", icon: <Palette className="h-5 w-5" /> },
+    { name: t('nav.technology'), href: "/technology", icon: <Gamepad2 className="h-5 w-5" /> },
+    { name: t('nav.contact'), href: "/contact", icon: <PhoneCall className="h-5 w-5" /> },
   ];
 
   return (
@@ -47,7 +50,7 @@ export default function Header() {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
-            שלי ספרים
+            {language === 'he' ? 'שלי ספרים' : 'Shelley Books'}
           </span>
         </Link>
 
@@ -64,23 +67,30 @@ export default function Header() {
                   : "hover:bg-shelley-blue/10"
               )}
             >
-              <span className="ml-1.5">{item.icon}</span>
+              <span className={language === 'he' ? "ml-1.5" : "mr-1.5"}>{item.icon}</span>
               {item.name}
             </Link>
           ))}
+          
+          <div className="ml-2">
+            <LanguageSwitcher />
+          </div>
         </nav>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden flex items-center text-gray-700"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
-        </button>
+        <div className="md:hidden flex items-center space-x-2">
+          <LanguageSwitcher />
+          <button
+            className="flex items-center text-gray-700"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
@@ -104,7 +114,7 @@ export default function Header() {
                       : "hover:bg-shelley-blue/10"
                   )}
                 >
-                  <span className="ml-2">{item.icon}</span>
+                  <span className={language === 'he' ? "ml-2" : "mr-2"}>{item.icon}</span>
                   {item.name}
                 </Link>
               ))}
