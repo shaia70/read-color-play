@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -8,7 +7,7 @@ import { CustomButton } from "../ui/CustomButton";
 export default function FeaturedBook() {
   const controls = useAnimation();
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, threshold: 0.2 });
+  const inView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (inView) {

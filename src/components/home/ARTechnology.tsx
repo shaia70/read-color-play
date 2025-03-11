@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -8,7 +7,7 @@ import { CustomButton } from "../ui/CustomButton";
 export default function ARTechnology() {
   const controls = useAnimation();
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, threshold: 0.2 });
+  const inView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (inView) {
@@ -86,7 +85,7 @@ export default function ARTechnology() {
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
                   </div>
                   <div>
-                    <p className="text-gray-700">צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי על המסך!</p>
+                    <p className="text-gray-700">צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי ע�� המסך!</p>
                   </div>
                 </li>
               </ul>

@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Palette, Gamepad2 } from "lucide-react";
@@ -6,7 +5,7 @@ import { BookOpen, Palette, Gamepad2 } from "lucide-react";
 export default function Concept() {
   const controls = useAnimation();
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, threshold: 0.2 });
+  const inView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (inView) {
