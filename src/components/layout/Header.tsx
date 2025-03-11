@@ -1,0 +1,117 @@
+
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+export default function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location]);
+
+  const navigationItems = [
+    { name: "בית", href: "/", icon: <BookType className="h-5 w-5" /> },
+    { name: "קוראים, צובעים, משחקים", href: "/concept", icon: <BookOpen className="h-5 w-5" /> },
+    { name: "הספרים שלנו", href: "/books", icon: <Palette className="h-5 w-5" /> },
+    { name: "טכנולוגיית AR", href: "/technology", icon: <Gamepad2 className="h-5 w-5" /> },
+    { name: "צור קשר", href: "/contact", icon: <PhoneCall className="h-5 w-5" /> },
+  ];
+
+  return (
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        isScrolled
+          ? "bg-white/80 backdrop-blur-md shadow-md py-2"
+          : "bg-transparent py-4"
+      )}
+    >
+      <div className="container mx-auto px-4 flex justify-between items-center">
+        <Link to="/" className="flex items-center">
+          <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+            שלי ספרים
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1 space-x-reverse">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={cn(
+                "px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 mx-1 flex items-center",
+                location.pathname === item.href
+                  ? "bg-shelley-blue text-white shadow-md"
+                  : "hover:bg-shelley-blue/10"
+              )}
+            >
+              <span className="ml-1.5">{item.icon}</span>
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden flex items-center text-gray-700"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white shadow-lg"
+          >
+            <div className="px-4 py-3 space-y-2">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "block px-3 py-2 rounded-md text-base font-medium flex items-center",
+                    location.pathname === item.href
+                      ? "bg-shelley-blue text-white"
+                      : "hover:bg-shelley-blue/10"
+                  )}
+                >
+                  <span className="ml-2">{item.icon}</span>
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
