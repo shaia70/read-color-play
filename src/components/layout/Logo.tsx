@@ -7,10 +7,34 @@ interface LogoProps {
   showTagline?: boolean;
   className?: string;
   showIcon?: boolean;
+  isSquare?: boolean;
 }
 
-export default function Logo({ showTagline = false, className, showIcon = true }: LogoProps) {
+export default function Logo({ 
+  showTagline = false, 
+  className, 
+  showIcon = true,
+  isSquare = false 
+}: LogoProps) {
   const { language } = useLanguage();
+
+  if (isSquare) {
+    return (
+      <div className={cn(
+        "flex items-center justify-center aspect-square bg-white rounded-lg p-2", 
+        className
+      )}>
+        <div className="flex flex-col items-center">
+          <div className="flex-shrink-0 mb-1">
+            <BookOpen className="h-8 w-8 text-shelley-blue" />
+          </div>
+          <span className="font-bold text-base bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+            {language === 'he' ? 'שלי' : 'Shelley'}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex items-center", className)}>
