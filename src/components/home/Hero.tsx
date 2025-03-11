@@ -39,6 +39,28 @@ export default function Hero() {
     }
   };
 
+  const renderWelcomeText = () => {
+    if (language === 'he') {
+      return (
+        <>
+          ברוכים הבאים ל...{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+            שלי ספרים
+          </span>
+        </>
+      );
+    } else {
+      return (
+        <>
+          Welcome to...{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+            Shelley Books
+          </span>
+        </>
+      );
+    }
+  };
+
   return (
     <section className="relative min-h-screen pt-28 pb-20 flex items-center overflow-hidden">
       {/* Background Elements */}
@@ -62,7 +84,7 @@ export default function Hero() {
           </motion.span>
           
           <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            {t('hero.welcome')}{" "}
+            {renderWelcomeText()}
           </motion.h1>
           
           <motion.h2 variants={itemVariants} className="text-2xl md:text-3xl text-gray-600 mb-8">
