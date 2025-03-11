@@ -1,3 +1,4 @@
+
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { BookOpen } from "lucide-react";
@@ -24,7 +25,7 @@ export default function Logo({
         className
       )}>
         <div className="flex flex-col items-center">
-          <div className="flex-shrink-0 mb-0">
+          <div className="flex-shrink-0 mb-[-4px]">
             <BookOpen className="h-6 w-6 text-shelley-blue" />
           </div>
           <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none mt-[-2px]">
