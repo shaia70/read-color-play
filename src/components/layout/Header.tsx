@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall } from "lucide-react";
@@ -6,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Logo from "./Logo";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,9 +49,7 @@ export default function Header() {
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
-            {language === 'he' ? 'שלי ספרים' : 'Shelley Books'}
-          </span>
+          <Logo />
         </Link>
 
         {/* Desktop Navigation */}
