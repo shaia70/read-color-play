@@ -31,6 +31,13 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [location]);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
   const navigationItems = [
     { name: t('nav.home'), href: "/", icon: <BookType className="h-5 w-5" /> },
     { name: t('nav.concept'), href: "/concept", icon: <BookOpen className="h-5 w-5" /> },
@@ -49,7 +56,7 @@ export default function Header() {
       )}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center" onClick={scrollToTop}>
           <Logo showTagline={!isScrolled} />
         </Link>
 
@@ -59,6 +66,7 @@ export default function Header() {
             <Link
               key={item.name}
               to={item.href}
+              onClick={scrollToTop}
               className={cn(
                 "px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 mx-1 flex items-center",
                 location.pathname === item.href
@@ -106,6 +114,7 @@ export default function Header() {
                 <Link
                   key={item.name}
                   to={item.href}
+                  onClick={scrollToTop}
                   className={cn(
                     "block px-3 py-2 rounded-md text-base font-medium flex items-center",
                     location.pathname === item.href
