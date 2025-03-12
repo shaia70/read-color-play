@@ -44,6 +44,8 @@ export default function Header() {
     if (location.pathname === href) {
       event.preventDefault();
       scrollToTop();
+      // Close mobile menu when clicking on any navigation item, including current page
+      setMobileMenuOpen(false);
     } else {
       // For other pages, we'll still scroll to top but let the navigation happen
       scrollToTop();
