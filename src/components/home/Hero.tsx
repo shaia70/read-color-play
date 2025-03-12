@@ -5,6 +5,7 @@ import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Sparkles } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Logo from "../layout/Logo";
 
 export default function Hero() {
   const controls = useAnimation();
@@ -62,13 +63,17 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen pt-28 pb-20 flex items-center overflow-hidden">
+    <section className="relative min-h-screen pt-16 pb-20 flex flex-col items-center overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden">
         <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-shelley-blue/10 animate-float" style={{ animationDelay: "0s" }}></div>
         <div className="absolute bottom-40 left-20 w-40 h-40 rounded-full bg-shelley-orange/10 animate-float" style={{ animationDelay: "1s" }}></div>
         <div className="absolute top-1/3 left-1/4 w-56 h-56 rounded-full bg-shelley-purple/10 animate-float" style={{ animationDelay: "2s" }}></div>
         <div className="absolute bottom-20 right-1/5 w-48 h-48 rounded-full bg-shelley-green/10 animate-float" style={{ animationDelay: "1.5s" }}></div>
+      </div>
+      
+      <div className="mb-8 mt-4">
+        <Logo isSquare={true} className="w-24 h-24 shadow-lg" />
       </div>
       
       <div className="container mx-auto px-4">
