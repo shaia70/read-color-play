@@ -72,9 +72,9 @@ export default function Hero() {
         <div className="absolute bottom-20 right-1/5 w-48 h-48 rounded-full bg-shelley-green/10 animate-float" style={{ animationDelay: "1.5s" }}></div>
       </div>
       
-      {/* Logo positioned at the left of the page */}
+      {/* Logo positioned at the left of the page (which is right in RTL) */}
       <div className="w-full container mx-auto px-4">
-        <div className="flex justify-start">
+        <div className="flex justify-end">
           <Logo isSquare={true} className="w-24 h-24 shadow-lg" />
         </div>
       </div>
