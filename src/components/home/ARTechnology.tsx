@@ -70,31 +70,30 @@ export default function ARTechnology() {
             >
               <h3 className="text-2xl font-bold mb-4">{t('ar.howItWorks')}</h3>
               <ul className="space-y-4 mb-6">
-                {language === 'en' ? (
-                  <>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step1')}</p>
-                    </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step2')}</p>
-                    </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step3')}</p>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step1')}</p>
-                    </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step2')}</p>
-                    </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step3')}</p>
-                    </li>
-                  </>
-                )}
+                <li className="flex items-start">
+                  <div className={`bg-shelley-blue/10 rounded-full p-2 ${language === 'en' ? 'mr-4' : 'order-1 ml-4'}`}>
+                    <span className="flex items-center justify-center w-6 h-6 text-shelley-blue font-bold">1</span>
+                  </div>
+                  <div className={language === 'en' ? '' : 'order-2'}>
+                    <p className="text-gray-700">{t('ar.step1')}</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <div className={`bg-shelley-orange/10 rounded-full p-2 ${language === 'en' ? 'mr-4' : 'order-1 ml-4'}`}>
+                    <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
+                  </div>
+                  <div className={language === 'en' ? '' : 'order-2'}>
+                    <p className="text-gray-700">{t('ar.step2')}</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <div className={`bg-shelley-purple/10 rounded-full p-2 ${language === 'en' ? 'mr-4' : 'order-1 ml-4'}`}>
+                    <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
+                  </div>
+                  <div className={language === 'en' ? '' : 'order-2'}>
+                    <p className="text-gray-700">{t('ar.step3')}</p>
+                  </div>
+                </li>
               </ul>
               <div className="flex flex-wrap gap-3">
                 <CustomButton variant="green" icon={<Download />} className="mb-2 sm:mb-0">
