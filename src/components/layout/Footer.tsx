@@ -1,11 +1,44 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Mail, Phone } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { cn } from "@/lib/utils";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const { t, language } = useLanguage();
+  const location = useLocation();
+
+  // Enhanced scrollToTop function to ensure it always works
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
+  const handleNavLinkClick = (event: React.MouseEvent, href: string) => {
+    // If we're already on the current page, prevent default navigation
+    // and just scroll to top
+    if (location.pathname === href) {
+      event.preventDefault();
+      // Ensure scroll happens with a slight delay to make it more reliable
+      setTimeout(() => {
+        scrollToTop();
+      }, 10);
+    } else {
+      // For other pages, we'll still scroll to top but let the navigation happen
+      scrollToTop();
+    }
+  };
+
+  const navigationItems = [
+    { name: t('footer.home'), href: "/" },
+    { name: t('footer.concept'), href: "/concept" },
+    { name: t('footer.books'), href: "/books" },
+    { name: t('footer.technology'), href: "/technology" },
+    { name: t('footer.contactUs'), href: "/contact" },
+  ];
 
   return (
     <footer className="bg-gradient-to-b from-white to-blue-50 py-8 md:py-12">
@@ -36,31 +69,22 @@ export default function Footer() {
           <div className="text-center">
             <h3 className="text-xl font-bold text-shelley-blue mb-3">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-600 hover:text-shelley-blue transition-colors">
-                  {t('footer.home')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/concept" className="text-gray-600 hover:text-shelley-blue transition-colors">
-                  {t('footer.concept')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/books" className="text-gray-600 hover:text-shelley-blue transition-colors">
-                  {t('footer.books')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/technology" className="text-gray-600 hover:text-shelley-blue transition-colors">
-                  {t('footer.technology')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-600 hover:text-shelley-blue transition-colors">
-                  {t('footer.contactUs')}
-                </Link>
-              </li>
+              {navigationItems.map((item) => (
+                <li key={item.name}>
+                  <Link 
+                    to={item.href} 
+                    onClick={(e) => handleNavLinkClick(e, item.href)}
+                    className={cn(
+                      "transition-colors",
+                      location.pathname === item.href
+                        ? "text-shelley-blue font-medium"
+                        : "text-gray-600 hover:text-shelley-blue"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
