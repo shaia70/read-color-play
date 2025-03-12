@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -82,7 +81,7 @@ const Technology = () => {
                       <span className="flex items-center justify-center w-6 h-6 text-shelley-blue font-bold">1</span>
                     </div>
                     <div>
-                      <h4 className="font-bold mb-1">{language === 'en' ? 'Download the App' : 'הורידו את האפליקציה'}</h4>
+                      <h4 className="font-bold mb-1">{language === 'en' ? 'Download the App' : 'הורדו את האפליקציה'}</h4>
                       <p className="text-sm text-gray-600">{t('ar.step1')}</p>
                     </div>
                   </div>
@@ -92,8 +91,8 @@ const Technology = () => {
                       <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
                     </div>
                     <div>
-                      <h4 className="font-bold mb-1">{language === 'en' ? 'Look for the AR Symbol' : 'חפשו את סמל ה-AR'}</h4>
-                      <p className="text-sm text-gray-600">{language === 'en' ? 'In the book pages, look for illustrations marked with the AR symbol' : 'בדפי הספר, חפשו את האיורים המסומנים בסמל ה-AR'}</p>
+                      <h4 className="font-bold mb-1">{language === 'en' ? 'Choose Book and Page' : 'בחירת ספר ודף'}</h4>
+                      <p className="text-sm text-gray-600">{language === 'en' ? 'Open the app, choose your desired book and selected page' : 'הכנסו לאפליקציה, בחרו את הספר הרצוי והדף הנבחר'}</p>
                     </div>
                   </div>
                   

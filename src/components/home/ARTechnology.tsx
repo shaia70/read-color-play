@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -83,7 +82,7 @@ export default function ARTechnology() {
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
                   </div>
                   <div className={language === 'en' ? '' : 'order-2'}>
-                    <p className="text-gray-700">{t('ar.step2')}</p>
+                    <p className="text-gray-700">{language === 'en' ? 'Open the app, choose your desired book and selected page' : 'הכנסו לאפליקציה, בחרו את הספר הרצוי והדף הנבחר'}</p>
                   </div>
                 </li>
                 <li className="flex items-start">
