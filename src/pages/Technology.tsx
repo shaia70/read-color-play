@@ -9,12 +9,7 @@ const Technology = () => {
   const { t, language } = useLanguage();
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div>
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">
@@ -102,7 +97,7 @@ const Technology = () => {
                     </div>
                     <div>
                       <h4 className="font-bold mb-1">{language === 'en' ? 'Scan the Illustration' : 'סרקו את האיור'}</h4>
-                      <p className="text-sm text-gray-600">{t('ar.step2')}</p>
+                      <p className="text-sm text-gray-600">{language === 'en' ? 'Point the camera at the illustration in the book' : 'כוונו את המצלמה לאיור בספר'}</p>
                     </div>
                   </div>
                   

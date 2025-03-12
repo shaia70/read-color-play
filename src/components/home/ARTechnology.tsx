@@ -90,7 +90,7 @@ export default function ARTechnology() {
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
                   </div>
                   <div className={language === 'en' ? '' : 'order-2'}>
-                    <p className="text-gray-700">{t('ar.step3')}</p>
+                    <p className="text-gray-700">{language === 'en' ? 'Point the camera at the illustration in the book' : 'כוונו את המצלמה לאיור בספר'}</p>
                   </div>
                 </li>
               </ul>
