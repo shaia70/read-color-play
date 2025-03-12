@@ -33,10 +33,16 @@ export default function Header() {
 
   // Enhanced scrollToTop function to ensure it always works
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    // Force scroll to exactly 0
+    window.scrollTo(0, 0);
+    
+    // Then do the smooth scroll for better UX
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }, 10);
   };
   
   const handleNavLinkClick = (event: React.MouseEvent, href: string) => {
@@ -47,10 +53,7 @@ export default function Header() {
     // and just scroll to top
     if (location.pathname === href) {
       event.preventDefault();
-      // Ensure scroll happens with a slight delay to make it more reliable
-      setTimeout(() => {
-        scrollToTop();
-      }, 10);
+      scrollToTop();
     } else {
       // For other pages, we'll still scroll to top but let the navigation happen
       scrollToTop();
