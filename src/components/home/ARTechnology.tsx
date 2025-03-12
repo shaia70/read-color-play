@@ -72,26 +72,56 @@ export default function ARTechnology() {
               <ul className="space-y-4 mb-6">
                 {language === 'en' ? (
                   <>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step1')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-blue/10 rounded-full p-2 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-blue font-bold">1</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step1')}</p>
+                      </div>
                     </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step2')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-orange/10 rounded-full p-2 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step2')}</p>
+                      </div>
                     </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step3')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-purple/10 rounded-full p-2 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step3')}</p>
+                      </div>
                     </li>
                   </>
                 ) : (
                   <>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step1')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-blue/10 rounded-full p-2 ml-0 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-blue font-bold">1</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step1')}</p>
+                      </div>
                     </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step2')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-orange/10 rounded-full p-2 ml-0 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-orange font-bold">2</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step2')}</p>
+                      </div>
                     </li>
-                    <li>
-                      <p className="text-gray-700">{t('ar.step3')}</p>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 bg-shelley-purple/10 rounded-full p-2 ml-0 mr-3">
+                        <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-gray-700">{t('ar.step3')}</p>
+                      </div>
                     </li>
                   </>
                 )}
