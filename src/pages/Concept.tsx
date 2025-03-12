@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -38,20 +37,20 @@ const Concept = () => {
               </p>
               <ul className="w-full space-y-3 mb-6">
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-blue ml-2 mt-1 flex-shrink-0" />
+                  <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
                   <span>{language === 'en' ? 'Fascinating and enriching stories' : 'סיפורים מרתקים ומעשירים'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-blue ml-2 mt-1 flex-shrink-0" />
+                  <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
                   <span>{language === 'en' ? 'Original and stunning illustrations' : 'איורים מקוריים ומרהיבים'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-blue ml-2 mt-1 flex-shrink-0" />
+                  <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
                   <span>{language === 'en' ? 'Quality hardcover' : 'כריכה קשה ואיכותית'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-blue ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Thick and durable paper' : 'נייר עבה ועמיד'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className="text-left">{language === 'en' ? 'Thick and durable paper' : 'נייר עבה ועמיד'}</span>
                 </li>
               </ul>
               <Link to="/books" className="mt-auto">
