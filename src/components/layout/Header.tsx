@@ -31,6 +31,7 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [location]);
 
+  // Enhanced scrollToTop function to ensure it always works
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -39,13 +40,17 @@ export default function Header() {
   };
   
   const handleNavLinkClick = (event: React.MouseEvent, href: string) => {
+    // Always close the mobile menu regardless of which link is clicked
+    setMobileMenuOpen(false);
+    
     // If we're already on the current page, prevent default navigation
     // and just scroll to top
     if (location.pathname === href) {
       event.preventDefault();
-      scrollToTop();
-      // Close mobile menu when clicking on any navigation item, including current page
-      setMobileMenuOpen(false);
+      // Ensure scroll happens with a slight delay to make it more reliable
+      setTimeout(() => {
+        scrollToTop();
+      }, 10);
     } else {
       // For other pages, we'll still scroll to top but let the navigation happen
       scrollToTop();
