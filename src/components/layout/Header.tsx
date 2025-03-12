@@ -37,6 +37,18 @@ export default function Header() {
       behavior: "smooth"
     });
   };
+  
+  const handleNavLinkClick = (event: React.MouseEvent, href: string) => {
+    // If we're already on the current page, prevent default navigation
+    // and just scroll to top
+    if (location.pathname === href) {
+      event.preventDefault();
+      scrollToTop();
+    } else {
+      // For other pages, we'll still scroll to top but let the navigation happen
+      scrollToTop();
+    }
+  };
 
   const navigationItems = [
     { name: t('nav.home'), href: "/", icon: <BookType className="h-5 w-5" /> },
@@ -66,7 +78,7 @@ export default function Header() {
             <Link
               key={item.name}
               to={item.href}
-              onClick={scrollToTop}
+              onClick={(e) => handleNavLinkClick(e, item.href)}
               className={cn(
                 "px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 mx-1 flex items-center",
                 location.pathname === item.href
@@ -114,7 +126,7 @@ export default function Header() {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={scrollToTop}
+                  onClick={(e) => handleNavLinkClick(e, item.href)}
                   className={cn(
                     "block px-3 py-2 rounded-md text-base font-medium flex items-center",
                     location.pathname === item.href
