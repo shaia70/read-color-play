@@ -135,7 +135,7 @@ const Concept = () => {
               <div className={`max-w-3xl mx-auto ${language === 'en' ? 'text-left' : 'text-right'}`}>
                 <p className="text-gray-600 mb-4">
                   {language === 'en' 
-                    ? 'In today\'s digital world, children are surrounded by screens and electronic games. At "Shelley Books," we decided to create an experience that combines the best of both worlds: the magic of a printed book with its quality and touch, along with the benefits of innovative technology.'
+                    ? 'In today\'s digital world, children are surrounded by screens and electronic games At "Shelley Books," we decided to create an experience that combines the best of both worlds: the magic of a printed book with its quality and touch, along with the benefits of innovative technology'
                     : 'בעולם הדיגיטלי של היום, ילדים מוקפים במסכים ובמשחקים אלקטרוניים. ב"שלי ספרים" החלטנו ליצור חוויה שמשלבת את הטוב שבשני העולמות: הקסם של ספר מודפס עם האיכות והמגע שלו, יחד עם היתרונות של טכנולוגיה חדשנית.'}
                 </p>
                 <p className="text-gray-600 mb-4">
@@ -145,17 +145,17 @@ const Concept = () => {
                 </p>
                 <p className="text-gray-600 mb-4">
                   <strong>{language === 'en' ? 'Reading' : 'קריאה'}</strong> - {language === 'en'
-                    ? 'which develops vocabulary, reading comprehension, and imagination.'
+                    ? 'which develops vocabulary, reading comprehension, and imagination'
                     : 'שמפתחת אוצר מילים, הבנת הנקרא ודמיון.'}
                 </p>
                 <p className="text-gray-600 mb-4">
                   <strong>{language === 'en' ? 'Coloring' : 'צביעה'}</strong> - {language === 'en'
-                    ? 'which strengthens motor skills, concentration, and creativity.'
+                    ? 'which strengthens motor skills, concentration, and creativity'
                     : 'שמחזקת מיומנויות מוטוריות, ריכוז ויצירתיות.'}
                 </p>
                 <p className="text-gray-600">
                   <strong>{language === 'en' ? 'Play' : 'משחק'}</strong> - {language === 'en'
-                    ? 'with AR technology that provides an interactive, enriching, and enjoyable experience that connects the child to the book\'s content in an innovative way.'
+                    ? 'with AR technology that provides an interactive, enriching, and enjoyable experience that connects the child to the book\'s content in an innovative way'
                     : 'עם טכנולוגיית AR שמספקת חוויה אינטראקטיבית, מעשירה ומהנה שמחברת בין הילד לתוכן הספר בדרך חדשנית.'}
                 </p>
               </div>
