@@ -78,12 +78,12 @@ const Books = () => {
                   </div>
                 </div>
                 
-                <div className={`flex justify-center ${language === 'en' ? 'space-x-4' : 'space-x-reverse space-x-4'} ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
+                <div className="flex flex-col items-center space-y-3 mb-4">
                   <CustomButton 
                     variant="green" 
                     size="sm" 
                     icon={<Eye className="w-4 h-4" />} 
-                    className={`text-xs px-2 py-1 h-7 min-h-0 ${language === 'en' ? '-ml-5' : '-mr-5'}`}
+                    className="text-xs px-2 py-1 h-7 min-h-0"
                   >
                     {t('books.peek')}
                   </CustomButton>
@@ -91,7 +91,7 @@ const Books = () => {
                     variant="orange" 
                     size="sm" 
                     icon={<Download className="w-4 h-4" />} 
-                    className={`text-xs px-2 py-1 h-7 min-h-0 ${language === 'en' ? '-ml-10' : '-mr-10'}`}
+                    className="text-xs px-2 py-1 h-7 min-h-0"
                   >
                     {t('books.coloring')}
                   </CustomButton>
