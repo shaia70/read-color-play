@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -142,7 +143,7 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
                       {language === 'en' && <h3 className="font-bold mr-2">Email:</h3>}
                       <p className="text-gray-600 inline">{language === 'he' ? 'info@shelley.co.il :דוא"ל' : 'info@shelley.co.il'}</p>
                     </div>
@@ -152,7 +153,7 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
                       {language === 'en' && <h3 className="font-bold mr-2">Phone:</h3>}
                       <p className="text-gray-600 inline">{language === 'he' ? '053-1234567 :טלפון' : '053-1234567'}</p>
                     </div>
@@ -162,7 +163,7 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
                       {language === 'en' && <h3 className="font-bold mr-2">Address:</h3>}
                       <p className="text-gray-600 inline">{language === 'he' ? 'רחוב גלעד 28, בת חפר :כתובת' : '28 Gilad St., Bat Hefer'}</p>
                     </div>
