@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -79,10 +78,10 @@ const Books = () => {
                 </div>
                 
                 <div className={`flex ${language === 'en' ? 'space-x-4' : 'space-x-reverse space-x-4'} ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                  <CustomButton variant="green" size="sm" icon={<Eye className="w-3 h-3" />} className="text-[10px] px-1.5 py-0.5 h-6 min-h-0 min-w-0">
+                  <CustomButton variant="green" size="sm" icon={<Eye className="w-4 h-4" />} className="text-xs px-2 py-1 h-7 min-h-0">
                     {t('books.peek')}
                   </CustomButton>
-                  <CustomButton variant="orange" size="sm" icon={<Download className="w-3 h-3" />} className="text-[10px] px-1.5 py-0.5 h-6 min-h-0 min-w-0">
+                  <CustomButton variant="orange" size="sm" icon={<Download className="w-4 h-4" />} className="text-xs px-2 py-1 h-7 min-h-0">
                     {t('books.coloring')}
                   </CustomButton>
                 </div>
