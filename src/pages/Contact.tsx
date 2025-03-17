@@ -174,7 +174,9 @@ const Contact = () => {
                 </div>
                 
                 <div className="mt-10">
-                  <h3 className="font-bold mb-4">{language === 'en' ? 'Working Hours:' : 'שעות פעילות:'}</h3>
+                  <h3 className={`font-bold mb-4 ${language === 'en' ? 'text-left' : 'text-right'}`}>
+                    {language === 'en' ? 'Working Hours:' : 'שעות פעילות:'}
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="font-medium">{language === 'en' ? 'Sunday - Thursday:' : 'ראשון - חמישי:'}</span>
