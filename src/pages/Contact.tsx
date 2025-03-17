@@ -144,17 +144,17 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                      {language === 'en' ? (
-                        <div className="flex items-start flex-col">
-                          <div className="flex">
-                            <h3 className="font-bold mr-2">Email:</h3>
-                            <p className="text-gray-600">info@shelley.co.il</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-600 inline">דוא"ל: info@shelley.co.il</p>
-                      )}
+                    <div className="w-full">
+                      <LanguageDirectionWrapper>
+                        {language === 'en' ? (
+                          <p className="text-gray-600">
+                            <span className="font-bold mr-2">Email:</span>
+                            info@shelley.co.il
+                          </p>
+                        ) : (
+                          <p className="text-gray-600">דוא"ל: info@shelley.co.il</p>
+                        )}
+                      </LanguageDirectionWrapper>
                     </div>
                   </div>
                   
@@ -162,17 +162,17 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                      {language === 'en' ? (
-                        <div className="flex items-start flex-col">
-                          <div className="flex">
-                            <h3 className="font-bold mr-2">Phone:</h3>
-                            <p className="text-gray-600">053-1234567</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-600 inline">טלפון: 053-1234567</p>
-                      )}
+                    <div className="w-full">
+                      <LanguageDirectionWrapper>
+                        {language === 'en' ? (
+                          <p className="text-gray-600">
+                            <span className="font-bold mr-2">Phone:</span>
+                            053-1234567
+                          </p>
+                        ) : (
+                          <p className="text-gray-600">טלפון: 053-1234567</p>
+                        )}
+                      </LanguageDirectionWrapper>
                     </div>
                   </div>
                   
@@ -180,17 +180,17 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                      {language === 'en' ? (
-                        <div className="flex items-start flex-col">
-                          <div className="flex">
-                            <h3 className="font-bold mr-2">Address:</h3>
-                            <p className="text-gray-600">28 Gilad St., Bat Hefer</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-600 inline">כתובת: רחוב גלעד 28, בת חפר</p>
-                      )}
+                    <div className="w-full">
+                      <LanguageDirectionWrapper>
+                        {language === 'en' ? (
+                          <p className="text-gray-600">
+                            <span className="font-bold mr-2">Address:</span>
+                            28 Gilad St., Bat Hefer
+                          </p>
+                        ) : (
+                          <p className="text-gray-600">כתובת: רחוב גלעד 28, בת חפר</p>
+                        )}
+                      </LanguageDirectionWrapper>
                     </div>
                   </div>
                 </div>
