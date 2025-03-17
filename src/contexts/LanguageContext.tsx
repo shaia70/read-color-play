@@ -140,7 +140,7 @@ const enTranslations: Record<string, string> = {
   'books.all': 'All Books',
   'book.firstSeries': 'First Book in the Series',
   'book.daniel.title': 'Daniel Goes to Kindergarten',
-  'book.daniel.description': 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology.',
+  'book.daniel.description': 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology',
   'book.daniel.story': 'The first day of kindergarten is a special day for Daniel. He is a little worried, but also very excited. Let\'s discover together how he will handle his first day',
   
   // AR Technology section
