@@ -79,10 +79,10 @@ const Books = () => {
                 </div>
                 
                 <div className={`flex ${language === 'en' ? 'space-x-4' : 'space-x-reverse space-x-4'} ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                  <CustomButton variant="green" icon={<Eye />}>
+                  <CustomButton variant="green" size="sm" icon={<Eye />}>
                     {t('books.peek')}
                   </CustomButton>
-                  <CustomButton variant="orange" icon={<Download />}>
+                  <CustomButton variant="orange" size="sm" icon={<Download />}>
                     {t('books.coloring')}
                   </CustomButton>
                 </div>
