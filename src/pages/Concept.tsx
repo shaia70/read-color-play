@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -11,6 +10,8 @@ import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapp
 const Concept = () => {
   const { t, language } = useLanguage();
   
+  
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -29,6 +30,7 @@ const Concept = () => {
           </div>
 
           <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 ${language === 'en' ? 'text-left' : 'text-right'}`}>
+            
             <div className="glass-card p-8 flex flex-col items-center">
               <div className="bg-shelley-blue w-20 h-20 rounded-full flex items-center justify-center mb-6">
                 <BookOpen className="w-10 h-10 text-white" />
@@ -133,6 +135,7 @@ const Concept = () => {
             <div className="p-8">
               <h2 className="text-2xl font-bold mb-6 text-center">{language === 'en' ? 'Why "Read, Color, Play' : 'למה "קוראים, צובעים, משחקים"?'}</h2>
               <div className={`max-w-3xl mx-auto ${language === 'en' ? 'text-left' : 'text-right'}`}>
+                
                 <p className="text-gray-600 mb-4">
                   {language === 'en' 
                     ? 'In today\'s digital world, children are surrounded by screens and electronic games At "Shelley Books," we decided to create an experience that combines the best of both worlds: the magic of a printed book with its quality and touch, along with the benefits of innovative technology'
