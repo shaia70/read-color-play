@@ -140,7 +140,7 @@ const Contact = () => {
                 <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}</h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-start ${language === 'en' ? '' : 'flex-row-reverse'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
@@ -150,7 +150,7 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? '' : 'flex-row-reverse'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
@@ -160,13 +160,13 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? '' : 'flex-row-reverse'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
-                      <p className="text-gray-600">{language === 'en' ? '123 Authors St., Tel Aviv' : 'רחוב הסופרים 123, תל אביב'}</p>
+                      <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
                     </div>
                   </div>
                 </div>
