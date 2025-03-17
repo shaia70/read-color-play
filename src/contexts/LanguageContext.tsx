@@ -181,7 +181,7 @@ const enTranslations: Record<string, string> = {
   
   // Contact page
   'contact.title': 'Contact Us',
-  'contact.subtitle': 'Do you have questions or ideas? We are always happy to hear from you!',
+  'contact.subtitle': '!Do you have questions or ideas? We are always happy to hear from you',
   'contact.form.title': 'Send Us a Message',
   'contact.form.name': 'Full Name',
   'contact.form.email': 'Email',
