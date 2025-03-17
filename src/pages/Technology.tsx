@@ -127,7 +127,7 @@ const Technology = () => {
                 </div>
                 <p className="text-gray-600">
                   {language === 'en'
-                    ? 'Coming soon: We will release the "Shelley Books AR" app that will allow you to experience the books in a new and fascinating way. You can scan illustrations from the books and see how the characters come to life and play with you!'
+                    ? 'Coming soon: We will release the "Shelley Books AR" app that will allow you to experience the books in a new and fascinating way. You can scan illustrations from the books and see how the characters come to life and play with you'
                     : 'בקרוב נשחרר את אפליקציית "שלי ספרים AR" שתאפשר לכם לחוות את הספרים בדרך חדשה ומרתקת. תוכלו לסרוק איורים מהספרים ולראות כיצד הדמויות קמות לחיים ומשחקות איתכם!'}
                 </p>
               </div>
