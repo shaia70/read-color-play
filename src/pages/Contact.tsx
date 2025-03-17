@@ -144,7 +144,7 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Email' : 'דוא"ל'}</h3>
                       <p className="text-gray-600">info@shelley.co.il</p>
                     </div>
@@ -154,7 +154,7 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Phone' : 'טלפון'}</h3>
                       <p className="text-gray-600">053-1234567</p>
                     </div>
@@ -164,7 +164,7 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div>
+                    <div className="text-left">
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
                       <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
                     </div>
