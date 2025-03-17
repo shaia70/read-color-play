@@ -144,7 +144,7 @@ const Concept = () => {
                 </p>
                 <p className="text-gray-600 mb-4">
                   {language === 'en'
-                    ? 'Our goal is to encourage children to love reading and develop important skills through a multi-sensory experience that includes:'
+                    ? 'Our goal is to encourage children to love reading and develop important skills through a multi-sensory experience that includes'
                     : 'המטרה שלנו היא לעודד ילדים לאהוב קריאה ולפתח כישורים חשובים דרך חוויה רב-חושית שכוללת:'}
                 </p>
                 <p className="text-gray-600 mb-4">
