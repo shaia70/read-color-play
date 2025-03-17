@@ -128,9 +128,9 @@ const enTranslations: Record<string, string> = {
   'concept.title': 'Read, Color, Play',
   'concept.description': 'A unique experience combining reading, creation, and interactive play with innovative technology',
   'concept.reading.title': 'Reading',
-  'concept.reading.description': 'Original children\'s books with fascinating stories and beautiful illustrations created using artificial intelligence.',
+  'concept.reading.description': 'Original children\'s books with fascinating stories and beautiful illustrations created using artificial intelligence',
   'concept.coloring.title': 'Coloring',
-  'concept.coloring.description': 'Download coloring pages of your favorite characters from the books and color them in your favorite colors.',
+  'concept.coloring.description': 'Download coloring pages of your favorite characters from the books and color them in your favorite colors',
   'concept.playing.title': 'Playing',
   'concept.playing.description': 'The characters from the books jump off the page and transform into interactive games using augmented reality technology.',
   
