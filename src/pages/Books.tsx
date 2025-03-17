@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -87,7 +86,12 @@ const Books = () => {
                   >
                     {t('books.peek')}
                   </CustomButton>
-                  <CustomButton variant="orange" size="sm" icon={<Download className="w-4 h-4" />} className="text-xs px-2 py-1 h-7 min-h-0">
+                  <CustomButton 
+                    variant="orange" 
+                    size="sm" 
+                    icon={<Download className="w-4 h-4" />} 
+                    className={`text-xs px-2 py-1 h-7 min-h-0 ${language === 'en' ? '-ml-5' : '-mr-5'}`}
+                  >
                     {t('books.coloring')}
                   </CustomButton>
                 </div>
