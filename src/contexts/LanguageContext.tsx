@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -164,7 +165,7 @@ const enTranslations: Record<string, string> = {
   'footer.technology': 'AR Technology',
   'footer.contactUs': 'Contact Us',
   'footer.allRights': 'All Rights Reserved',
-  'books.comingSoon': 'More Books Coming Soon!',
+  'books.comingSoon': '!More Books Coming Soon',
   'books.workingOn': 'We are working on more books in the series. Follow us on social media for updates.',
   'books.peek': 'Peek at the Book',
   'books.coloring': 'Download Coloring Pages',
