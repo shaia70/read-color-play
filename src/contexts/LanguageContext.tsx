@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -74,7 +73,7 @@ const heTranslations: Record<string, string> = {
   'books.peek': 'הצץ בספר',
   'books.coloring': 'דפי צביעה להורדה',
   'books.description': 'ספרי ילדים מקוריים עם איורים מרהיבים וטכנולוגיית מציאות רבודה',
-  'books.bookDescription': 'תיאור הספר:',
+  'books.bookDescription': 'תיאור הספר',
   'books.ages': 'גילאים:',
   'books.pages': 'מספר עמודים:',
   'books.cover': 'כריכה:',

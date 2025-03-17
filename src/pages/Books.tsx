@@ -51,7 +51,9 @@ const Books = () => {
                 </p>
                 
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <h3 className="font-bold mb-2 text-left">{t('books.bookDescription')}</h3>
+                  <h3 className={`font-bold mb-2 ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                    {language === 'he' ? ':' + t('books.bookDescription').slice(0, -1) : t('books.bookDescription')}
+                  </h3>
                   <p className="text-gray-600">
                     {t('book.daniel.story')}
                   </p>
