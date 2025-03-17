@@ -136,8 +136,10 @@ const Contact = () => {
                 </form>
               </div>
               
-              <div className={`bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl ${language === 'en' ? 'text-right' : 'text-right'}`}>
-                <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}</h2>
+              <div className="bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl">
+                <h2 className={`text-2xl font-bold mb-6 ${language === 'en' ? 'text-left' : 'text-right'}`}>
+                  {language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}
+                </h2>
                 
                 <div className="space-y-6">
                   <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
