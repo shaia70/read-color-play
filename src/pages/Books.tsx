@@ -78,20 +78,20 @@ const Books = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center space-y-4 mb-4">
+                <div className="flex flex-col items-center space-y-6 mb-4">
                   <CustomButton 
                     variant="green" 
-                    size="default" 
-                    icon={<Eye className="w-5 h-5" />} 
-                    className="text-sm px-6 py-2 h-10 min-h-0 w-48 font-medium"
+                    size="lg" 
+                    icon={<Eye className="w-6 h-6" />} 
+                    className="text-base px-8 py-3 h-14 min-h-0 w-64 font-bold"
                   >
                     {t('books.peek')}
                   </CustomButton>
                   <CustomButton 
                     variant="orange" 
-                    size="default" 
-                    icon={<Download className="w-5 h-5" />} 
-                    className="text-sm px-6 py-2 h-10 min-h-0 w-48 font-medium"
+                    size="lg" 
+                    icon={<Download className="w-6 h-6" />} 
+                    className="text-base px-8 py-3 h-14 min-h-0 w-64 font-bold"
                   >
                     {t('books.coloring')}
                   </CustomButton>
