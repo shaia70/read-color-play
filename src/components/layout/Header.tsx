@@ -96,9 +96,7 @@ export default function Header() {
                 "px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 mx-1 flex items-center",
                 location.pathname === item.href
                   ? "bg-shelley-blue text-white shadow-md"
-                  : "hover:bg-shelley-blue/10",
-                // For contact item in Hebrew mode, align text to left
-                language === 'he' && item.name === t('nav.contact') ? "justify-start" : ""
+                  : "hover:bg-shelley-blue/10"
               )}
             >
               <span className={language === 'he' ? "ml-1.5" : "mr-1.5"}>{item.icon}</span>
@@ -147,10 +145,7 @@ export default function Header() {
                     location.pathname === item.href
                       ? "bg-shelley-blue text-white"
                       : "hover:bg-shelley-blue/10",
-                    // For all Hebrew navigation items, align to end (right), except "Contact" which aligns left
-                    language === 'he' 
-                      ? item.name === t('nav.contact') ? "justify-start" : "justify-end"
-                      : "justify-start"
+                    language === 'he' ? "justify-end" : "justify-start"
                   )}
                 >
                   <span className={language === 'he' ? "ml-2" : "mr-2"}>{item.icon}</span>

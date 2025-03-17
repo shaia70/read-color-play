@@ -135,16 +135,16 @@ const Contact = () => {
               </div>
               
               <div className="bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl">
-                <h2 className="text-2xl font-bold mb-6 text-center">
+                <h2 className={`text-2xl font-bold mb-6 ${language === 'en' ? 'text-left' : 'text-right'}`}>
                   {language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}
                 </h2>
                 
-                <div className="space-y-6 flex flex-col items-center">
-                  <div className="flex items-center">
-                    <div className="bg-shelley-blue/20 p-3 rounded-full mr-4">
+                <div className="space-y-6">
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div>
+                    <div className="w-full">
                       <LanguageDirectionWrapper>
                         {language === 'en' ? (
                           <p className="text-gray-600">
@@ -158,11 +158,11 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center">
-                    <div className="bg-shelley-orange/20 p-3 rounded-full mr-4">
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div>
+                    <div className="w-full">
                       <LanguageDirectionWrapper>
                         {language === 'en' ? (
                           <p className="text-gray-600">
@@ -176,11 +176,11 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center">
-                    <div className="bg-shelley-purple/20 p-3 rounded-full mr-4">
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div>
+                    <div className="w-full">
                       <LanguageDirectionWrapper>
                         {language === 'en' ? (
                           <p className="text-gray-600">
