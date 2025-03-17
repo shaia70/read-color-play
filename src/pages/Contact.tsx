@@ -172,26 +172,6 @@ const Contact = () => {
                     </div>
                   </div>
                 </div>
-                
-                <div className="mt-10">
-                  <h3 className={`font-bold mb-4 ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                    {language === 'en' ? 'Working Hours:' : 'שעות פעילות:'}
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{language === 'en' ? 'Sunday - Thursday:' : 'ראשון - חמישי:'}</span>
-                      <span>9:00 - 17:00</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">{language === 'en' ? 'Friday:' : 'שישי:'}</span>
-                      <span>9:00 - 13:00</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">{language === 'en' ? 'Saturday:' : 'שבת:'}</span>
-                      <span>{language === 'en' ? 'Closed' : 'סגור'}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -203,3 +183,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
