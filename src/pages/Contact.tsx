@@ -55,7 +55,7 @@ const Contact = () => {
         <div className="page-container">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold mb-6">{language === 'en' ? 'Contact Us' : 'צור קשר'}</h1>
-            <p className={`text-xl text-gray-600 max-w-3xl mx-auto text-right`}>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {language === 'en' ? 'Do you have questions or ideas? We are always happy to hear from you!' : 'יש לכם שאלות או רעיונות? אנחנו תמיד שמחים לשמוע מכם!'}
             </p>
           </div>
