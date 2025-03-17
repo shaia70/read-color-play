@@ -76,7 +76,7 @@ const Concept = () => {
               <ul className="w-full space-y-3 mb-6">
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
-                  <span className="text-right">{language === 'en' ? 'Free downloadable coloring pages' : 'דפי צביעה להורדה חינם'}</span>
+                  <span className="text-right">{language === 'en' ? 'Free download coloring pages' : 'דפי צביעה להורדה חינם'}</span>
                 </li>
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
