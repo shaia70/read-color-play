@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -132,7 +131,7 @@ const enTranslations: Record<string, string> = {
   'concept.coloring.title': 'Coloring',
   'concept.coloring.description': 'Download coloring pages of your favorite characters from the books and color them in your favorite colors',
   'concept.playing.title': 'Playing',
-  'concept.playing.description': 'The characters from the books jump off the page and transform into interactive games using augmented reality technology.',
+  'concept.playing.description': 'The characters from the books jump off the page and transform into interactive games using augmented reality technology',
   
   // Books section
   'books.title': 'Our Books',
