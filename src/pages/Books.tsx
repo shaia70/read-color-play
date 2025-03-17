@@ -83,7 +83,7 @@ const Books = () => {
                     variant="green" 
                     size="lg" 
                     icon={<Eye className="w-6 h-6" />} 
-                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'en' ? 'justify-start' : ''}`}
+                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-end' : ''}`}
                   >
                     {t('books.peek')}
                   </CustomButton>
@@ -91,7 +91,7 @@ const Books = () => {
                     variant="orange" 
                     size="lg" 
                     icon={<Download className="w-6 h-6" />} 
-                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'en' ? 'justify-start' : ''}`}
+                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-end' : ''}`}
                   >
                     {t('books.coloring')}
                   </CustomButton>
