@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -143,10 +142,9 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className="flex items-center justify-between w-full">
-                      {language === 'en' && <h3 className="font-bold">Email:</h3>}
-                      <p className="text-gray-600 mx-2">info@shelley.co.il</p>
-                      {language === 'he' && <h3 className="font-bold">:דוא"ל</h3>}
+                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                      {language === 'en' && <h3 className="font-bold mr-2">Email:</h3>}
+                      <p className="text-gray-600 inline">{language === 'he' ? 'info@shelley.co.il :דוא"ל' : 'info@shelley.co.il'}</p>
                     </div>
                   </div>
                   
@@ -154,10 +152,9 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className="flex items-center justify-between w-full">
-                      {language === 'en' && <h3 className="font-bold">Phone:</h3>}
-                      <p className="text-gray-600 mx-2">053-1234567</p>
-                      {language === 'he' && <h3 className="font-bold">:טלפון</h3>}
+                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                      {language === 'en' && <h3 className="font-bold mr-2">Phone:</h3>}
+                      <p className="text-gray-600 inline">{language === 'he' ? '053-1234567 :טלפון' : '053-1234567'}</p>
                     </div>
                   </div>
                   
@@ -165,10 +162,9 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className="flex items-center justify-between w-full">
-                      {language === 'en' && <h3 className="font-bold">Address:</h3>}
-                      <p className="text-gray-600 mx-2">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
-                      {language === 'he' && <h3 className="font-bold">:כתובת</h3>}
+                    <div className={`w-full ${language === 'he' ? 'text-right' : 'flex items-center'}`}>
+                      {language === 'en' && <h3 className="font-bold mr-2">Address:</h3>}
+                      <p className="text-gray-600 inline">{language === 'he' ? 'רחוב גלעד 28, בת חפר :כתובת' : '28 Gilad St., Bat Hefer'}</p>
                     </div>
                   </div>
                 </div>

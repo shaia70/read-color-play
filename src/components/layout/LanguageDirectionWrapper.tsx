@@ -10,7 +10,7 @@ export default function LanguageDirectionWrapper({ children }: LanguageDirection
   const { language } = useLanguage();
   
   return (
-    <div dir={language === 'he' ? 'rtl' : 'ltr'} className={language === 'he' ? 'font-he' : 'font-en'}>
+    <div dir={language === 'he' ? 'rtl' : 'ltr'} className={language === 'he' ? 'font-he text-right' : 'font-en text-left'}>
       {children}
     </div>
   );
