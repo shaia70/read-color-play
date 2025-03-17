@@ -7,6 +7,7 @@ import { CustomButton } from "@/components/ui/CustomButton";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -139,48 +140,54 @@ const Contact = () => {
                 </h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
+                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
                       {language === 'en' ? (
-                        <>
-                          <h3 className="font-bold mr-2">Email:</h3>
-                          <p className="text-gray-600 inline">info@shelley.co.il</p>
-                        </>
+                        <div className="flex items-start flex-col">
+                          <div className="flex">
+                            <h3 className="font-bold mr-2">Email:</h3>
+                            <p className="text-gray-600">info@shelley.co.il</p>
+                          </div>
+                        </div>
                       ) : (
                         <p className="text-gray-600 inline">דוא"ל: info@shelley.co.il</p>
                       )}
                     </div>
                   </div>
                   
-                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
+                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
                       {language === 'en' ? (
-                        <>
-                          <h3 className="font-bold mr-2">Phone:</h3>
-                          <p className="text-gray-600 inline">053-1234567</p>
-                        </>
+                        <div className="flex items-start flex-col">
+                          <div className="flex">
+                            <h3 className="font-bold mr-2">Phone:</h3>
+                            <p className="text-gray-600">053-1234567</p>
+                          </div>
+                        </div>
                       ) : (
                         <p className="text-gray-600 inline">טלפון: 053-1234567</p>
                       )}
                     </div>
                   </div>
                   
-                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
+                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
+                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
+                    <div className={`w-full ${language === 'en' ? 'text-left' : 'text-right'}`}>
                       {language === 'en' ? (
-                        <>
-                          <h3 className="font-bold mr-2">Address:</h3>
-                          <p className="text-gray-600 inline">28 Gilad St., Bat Hefer</p>
-                        </>
+                        <div className="flex items-start flex-col">
+                          <div className="flex">
+                            <h3 className="font-bold mr-2">Address:</h3>
+                            <p className="text-gray-600">28 Gilad St., Bat Hefer</p>
+                          </div>
+                        </div>
                       ) : (
                         <p className="text-gray-600 inline">כתובת: רחוב גלעד 28, בת חפר</p>
                       )}
