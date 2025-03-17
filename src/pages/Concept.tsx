@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -47,11 +48,11 @@ const Concept = () => {
                 </li>
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
-                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Quality hardcover' : 'כריכה קשה ואיכותית'}</span>
+                  <span className={language === 'en' ? 'text-right' : ''}>{language === 'en' ? 'Quality hardcover' : 'כריכה קשה ואיכותית'}</span>
                 </li>
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
-                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Thick and durable paper' : 'נייר עבה ועמיד'}</span>
+                  <span className={language === 'en' ? 'text-right' : ''}>{language === 'en' ? 'Thick and durable paper' : 'נייר עבה ועמיד'}</span>
                 </li>
               </ul>
               <Link to="/books" className="mt-auto">
