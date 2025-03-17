@@ -133,7 +133,7 @@ const Concept = () => {
 
           <div className="glass-card">
             <div className="p-8">
-              <h2 className="text-2xl font-bold mb-6 text-center">{language === 'en' ? 'Why "Read, Color, Play' : 'למה "קוראים, צובעים, משחקים"?'}</h2>
+              <h2 className="text-2xl font-bold mb-6 text-center">{language === 'en' ? 'Why "Read, Color, Play"' : 'למה "קוראים, צובעים, משחקים"?'}</h2>
               <div className={`max-w-3xl mx-auto ${language === 'en' ? 'text-left' : 'text-right'}`}>
                 
                 <p className="text-gray-600 mb-4">
