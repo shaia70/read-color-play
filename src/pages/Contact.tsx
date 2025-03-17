@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -139,34 +140,55 @@ const Contact = () => {
                 <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}</h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
-                      <Mail className="w-6 h-6 text-shelley-blue" />
-                    </div>
+                  <div className={`flex ${language === 'en' ? 'justify-start text-left' : 'justify-end text-right'} items-start`}>
+                    {language === 'en' && (
+                      <div className="bg-shelley-blue/20 p-3 rounded-full mr-4">
+                        <Mail className="w-6 h-6 text-shelley-blue" />
+                      </div>
+                    )}
                     <div>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Email' : 'דוא"ל'}</h3>
                       <p className="text-gray-600">info@shelley.co.il</p>
                     </div>
+                    {language === 'he' && (
+                      <div className="bg-shelley-blue/20 p-3 rounded-full ml-4">
+                        <Mail className="w-6 h-6 text-shelley-blue" />
+                      </div>
+                    )}
                   </div>
                   
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
-                      <Phone className="w-6 h-6 text-shelley-orange" />
-                    </div>
+                  <div className={`flex ${language === 'en' ? 'justify-start text-left' : 'justify-end text-right'} items-start`}>
+                    {language === 'en' && (
+                      <div className="bg-shelley-orange/20 p-3 rounded-full mr-4">
+                        <Phone className="w-6 h-6 text-shelley-orange" />
+                      </div>
+                    )}
                     <div>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Phone' : 'טלפון'}</h3>
                       <p className="text-gray-600">053-1234567</p>
                     </div>
+                    {language === 'he' && (
+                      <div className="bg-shelley-orange/20 p-3 rounded-full ml-4">
+                        <Phone className="w-6 h-6 text-shelley-orange" />
+                      </div>
+                    )}
                   </div>
                   
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
-                      <MapPin className="w-6 h-6 text-shelley-purple" />
-                    </div>
+                  <div className={`flex ${language === 'en' ? 'justify-start text-left' : 'justify-end text-right'} items-start`}>
+                    {language === 'en' && (
+                      <div className="bg-shelley-purple/20 p-3 rounded-full mr-4">
+                        <MapPin className="w-6 h-6 text-shelley-purple" />
+                      </div>
+                    )}
                     <div>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
                       <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
                     </div>
+                    {language === 'he' && (
+                      <div className="bg-shelley-purple/20 p-3 rounded-full ml-4">
+                        <MapPin className="w-6 h-6 text-shelley-purple" />
+                      </div>
+                    )}
                   </div>
                 </div>
                 
