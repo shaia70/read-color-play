@@ -136,12 +136,12 @@ const Contact = () => {
                 </form>
               </div>
               
-              <div className={`bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl ${language === 'en' ? 'text-left' : 'text-right'}`}>
+              <div className={`bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl ${language === 'en' ? 'text-right' : 'text-right'}`}>
                 <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Contact Details' : 'פרטי יצירת קשר'}</h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
                     <div>
@@ -150,8 +150,8 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
                     <div>
@@ -160,8 +160,8 @@ const Contact = () => {
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
                     <div>
