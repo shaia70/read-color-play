@@ -42,7 +42,7 @@ const Concept = () => {
               <ul className="w-full space-y-3 mb-6">
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
-                  <span className={language === 'en' ? 'text-right' : ''}>{language === 'en' ? 'Fascinating and enriching stories' : 'סיפורים מרתקים ומעשירים'}</span>
+                  <span className={language === 'en' ? 'text-right' : ''}>{language === 'en' ? 'Fascinating & enriching stories' : 'סיפורים מרתקים ומעשירים'}</span>
                 </li>
                 <li className="flex items-start">
                   <ArrowRight className={`w-5 h-5 text-shelley-blue ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
