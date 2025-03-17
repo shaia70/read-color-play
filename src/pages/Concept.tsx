@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -6,6 +5,7 @@ import { CustomButton } from "@/components/ui/CustomButton";
 import { BookOpen, Palette, Gamepad2, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 
 const Concept = () => {
   const { t, language } = useLanguage();
@@ -71,20 +71,20 @@ const Concept = () => {
               </p>
               <ul className="w-full space-y-3 mb-6">
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-orange ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Free downloadable coloring pages' : 'דפי צביעה להורדה חינם'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Free downloadable coloring pages' : 'דפי צביעה להורדה חינם'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-orange ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Strengthens motor skills' : 'מחזקים מיומנויות מוטוריות'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Strengthens motor skills' : 'מחזקים מיומנויות מוטוריות'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-orange ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Encourages creativity' : 'מעודדים יצירתיות'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Encourages creativity' : 'מעודדים יצירתיות'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-orange ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Easy to print at home' : 'קלים להדפסה בבית'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-orange ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Easy to print at home' : 'קלים להדפסה בבית'}</span>
                 </li>
               </ul>
               <Link to="/books" className="mt-auto">
@@ -104,20 +104,20 @@ const Concept = () => {
               </p>
               <ul className="w-full space-y-3 mb-6">
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-purple ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Characters come to life' : 'הדמויות קמות לחיים'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-purple ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Characters come to life' : 'הדמויות קמות לחיים'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-purple ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Interactive games' : 'משחקים אינטראקטיביים'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-purple ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Interactive games' : 'משחקים אינטראקטיביים'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-purple ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Easy to use via smartphone' : 'קל לשימוש דרך הסמארטפון'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-purple ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Easy to use via smartphone' : 'קל לשימוש דרך הסמארטפון'}</span>
                 </li>
                 <li className="flex items-start">
-                  <ArrowRight className="w-5 h-5 text-shelley-purple ml-2 mt-1 flex-shrink-0" />
-                  <span>{language === 'en' ? 'Increases story engagement' : 'מגביר מעורבות בסיפור'}</span>
+                  <ArrowRight className={`w-5 h-5 text-shelley-purple ${language === 'en' ? 'mr-2' : 'ml-2'} mt-1 flex-shrink-0`} />
+                  <span className={language === 'en' ? 'text-left' : ''}>{language === 'en' ? 'Increases story engagement' : 'מגביר מעורבות בסיפור'}</span>
                 </li>
               </ul>
               <Link to="/technology" className="mt-auto">
