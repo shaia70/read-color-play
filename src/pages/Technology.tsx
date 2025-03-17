@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -118,7 +117,7 @@ const Technology = () => {
           
           <div className="glass-card">
             <div className="p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4">{language === 'en' ? '!Try the AR Technology Yourself' : 'נסו את טכנולוגיית ה-AR בעצמכם!'}</h2>
+              <h2 className="text-2xl font-bold mb-4">{language === 'en' ? 'Try the AR Technology Yourself' : 'נסו את טכנולוגיית ה-AR בעצמכם!'}</h2>
               <div className="max-w-2xl mx-auto">
                 <div className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden my-6">
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-lg">
