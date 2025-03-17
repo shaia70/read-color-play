@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -25,7 +24,6 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form validation
     if (!formData.name || !formData.email || !formData.message) {
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
@@ -35,13 +33,11 @@ const Contact = () => {
       return;
     }
 
-    // Show success message (in a real app, this would send the form)
     toast({
       title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
       description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
     });
     
-    // Reset form
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -142,31 +138,31 @@ const Contact = () => {
                 </h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className="text-left">
+                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Email' : 'דוא"ל'}</h3>
                       <p className="text-gray-600">info@shelley.co.il</p>
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className="text-left">
+                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Phone' : 'טלפון'}</h3>
                       <p className="text-gray-600">053-1234567</p>
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'en' ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'ml-4' : 'ml-4'}`}>
+                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
+                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className="text-left">
+                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
                       <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
                     </div>
@@ -183,4 +179,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
