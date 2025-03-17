@@ -143,14 +143,14 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
                       {language === 'en' ? (
                         <>
                           <h3 className="font-bold mr-2">Email:</h3>
                           <p className="text-gray-600 inline">info@shelley.co.il</p>
                         </>
                       ) : (
-                        <p className="text-gray-600 inline">info@shelley.co.il :דוא"ל</p>
+                        <p className="text-gray-600 inline">דוא"ל: info@shelley.co.il</p>
                       )}
                     </div>
                   </div>
@@ -159,14 +159,14 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
                       {language === 'en' ? (
                         <>
                           <h3 className="font-bold mr-2">Phone:</h3>
                           <p className="text-gray-600 inline">053-1234567</p>
                         </>
                       ) : (
-                        <p className="text-gray-600 inline">053-1234567 :טלפון</p>
+                        <p className="text-gray-600 inline">טלפון: 053-1234567</p>
                       )}
                     </div>
                   </div>
@@ -175,14 +175,14 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`w-full ${language === 'he' ? 'text-left' : 'flex items-center'}`}>
+                    <div className={`w-full ${language === 'en' ? 'flex items-center' : 'text-right'}`}>
                       {language === 'en' ? (
                         <>
                           <h3 className="font-bold mr-2">Address:</h3>
                           <p className="text-gray-600 inline">28 Gilad St., Bat Hefer</p>
                         </>
                       ) : (
-                        <p className="text-gray-600 inline">רחוב גלעד 28, בת חפר :כתובת</p>
+                        <p className="text-gray-600 inline">כתובת: רחוב גלעד 28, בת חפר</p>
                       )}
                     </div>
                   </div>
