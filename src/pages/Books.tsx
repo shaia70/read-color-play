@@ -6,6 +6,7 @@ import { CustomButton } from "@/components/ui/CustomButton";
 import { Eye, Download } from "lucide-react";
 import bookCover from "@/assets/book-cover.svg";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 
 const Books = () => {
   const { t, language } = useLanguage();
@@ -44,15 +45,15 @@ const Books = () => {
                 </div>
               </div>
               
-              <div className={`flex flex-col justify-center ${language === 'en' ? 'text-left' : 'text-right'}`}>
+              <div className={`flex flex-col ${language === 'en' ? 'text-left' : 'text-right'}`}>
                 <h2 className="text-3xl font-bold mb-4">{t('book.daniel.title')}</h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6 text-left">
                   {t('book.daniel.description')}
                 </p>
                 
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
                   <h3 className="font-bold mb-2 text-left">{t('books.bookDescription')}</h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-left">
                     {t('book.daniel.story')}
                   </p>
                 </div>
