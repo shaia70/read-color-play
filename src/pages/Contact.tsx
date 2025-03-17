@@ -166,7 +166,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
-                      <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
+                      <p className="text-gray-600">{language === 'en' ? '123 Authors St., Tel Aviv' : 'רחוב הסופרים 123, תל אביב'}</p>
                     </div>
                   </div>
                 </div>
