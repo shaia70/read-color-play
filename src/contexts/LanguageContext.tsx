@@ -149,7 +149,7 @@ const enTranslations: Record<string, string> = {
   'ar.howItWorks': 'How Does It Work?',
   'ar.step1': 'Download the "Shelley Books AR" app from the app store',
   'ar.step2': 'Point the camera at an illustration in the book marked with the AR symbol',
-  'ar.step3': 'Watch how the illustration comes to life and creates an interactive game on the screen!',
+  'ar.step3': 'Watch how the illustration comes to life and creates an interactive game on the screen',
   'ar.download': 'Coming Soon: Download the App',
   'ar.moreInfo': 'More Information',
   
