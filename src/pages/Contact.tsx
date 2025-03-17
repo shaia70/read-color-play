@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -142,9 +143,10 @@ const Contact = () => {
                     <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
-                      <h3 className="font-bold mb-1">{language === 'en' ? 'Email' : 'דוא"ל'}</h3>
+                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
                       <p className="text-gray-600">info@shelley.co.il</p>
+                      {language === 'he' && <h3 className="font-bold mb-1">דוא"ל</h3>}
+                      {language === 'en' && <h3 className="font-bold mb-1">Email</h3>}
                     </div>
                   </div>
                   
@@ -152,9 +154,10 @@ const Contact = () => {
                     <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
-                      <h3 className="font-bold mb-1">{language === 'en' ? 'Phone' : 'טלפון'}</h3>
+                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
                       <p className="text-gray-600">053-1234567</p>
+                      {language === 'he' && <h3 className="font-bold mb-1">טלפון</h3>}
+                      {language === 'en' && <h3 className="font-bold mb-1">Phone</h3>}
                     </div>
                   </div>
                   
@@ -162,9 +165,10 @@ const Contact = () => {
                     <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left' : 'text-left'}`}>
-                      <h3 className="font-bold mb-1">{language === 'en' ? 'Address' : 'כתובת'}</h3>
+                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
                       <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
+                      {language === 'he' && <h3 className="font-bold mb-1">כתובת</h3>}
+                      {language === 'en' && <h3 className="font-bold mb-1">Address</h3>}
                     </div>
                   </div>
                 </div>
