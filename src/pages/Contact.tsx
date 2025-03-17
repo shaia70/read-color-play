@@ -139,36 +139,36 @@ const Contact = () => {
                 </h2>
                 
                 <div className="space-y-6">
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`bg-shelley-blue/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Mail className="w-6 h-6 text-shelley-blue" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
-                      <p className="text-gray-600">info@shelley.co.il</p>
-                      {language === 'he' && <h3 className="font-bold mb-1">דוא"ל</h3>}
-                      {language === 'en' && <h3 className="font-bold mb-1">Email</h3>}
+                    <div className="flex items-center justify-between w-full">
+                      {language === 'en' && <h3 className="font-bold">Email:</h3>}
+                      <p className="text-gray-600 mx-2">info@shelley.co.il</p>
+                      {language === 'he' && <h3 className="font-bold">:דוא"ל</h3>}
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <Phone className="w-6 h-6 text-shelley-orange" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
-                      <p className="text-gray-600">053-1234567</p>
-                      {language === 'he' && <h3 className="font-bold mb-1">טלפון</h3>}
-                      {language === 'en' && <h3 className="font-bold mb-1">Phone</h3>}
+                    <div className="flex items-center justify-between w-full">
+                      {language === 'en' && <h3 className="font-bold">Phone:</h3>}
+                      <p className="text-gray-600 mx-2">053-1234567</p>
+                      {language === 'he' && <h3 className="font-bold">:טלפון</h3>}
                     </div>
                   </div>
                   
-                  <div className={`flex items-start ${language === 'he' ? 'flex-row' : 'flex-row-reverse'}`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'mr-4' : 'ml-4'}`}>
+                  <div className={`flex items-center ${language === 'he' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'he' ? 'ml-4' : 'mr-4'}`}>
                       <MapPin className="w-6 h-6 text-shelley-purple" />
                     </div>
-                    <div className={`${language === 'he' ? 'text-left justify-between w-full flex' : 'text-left'}`}>
-                      <p className="text-gray-600">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
-                      {language === 'he' && <h3 className="font-bold mb-1">כתובת</h3>}
-                      {language === 'en' && <h3 className="font-bold mb-1">Address</h3>}
+                    <div className="flex items-center justify-between w-full">
+                      {language === 'en' && <h3 className="font-bold">Address:</h3>}
+                      <p className="text-gray-600 mx-2">{language === 'en' ? '28 Gilad St., Bat Hefer' : 'רחוב גלעד 28, בת חפר'}</p>
+                      {language === 'he' && <h3 className="font-bold">:כתובת</h3>}
                     </div>
                   </div>
                 </div>
