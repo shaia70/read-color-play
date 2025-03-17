@@ -83,7 +83,10 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1 space-x-reverse">
+        <nav className={cn(
+          "hidden md:flex items-center",
+          language === 'he' ? "space-x-reverse space-x-1" : "space-x-1"
+        )}>
           {navigationItems.map((item) => (
             <Link
               key={item.name}
@@ -101,7 +104,7 @@ export default function Header() {
             </Link>
           ))}
           
-          <div className="ml-2">
+          <div className={language === 'he' ? "mr-2" : "ml-2"}>
             <LanguageSwitcher />
           </div>
         </nav>
@@ -141,7 +144,8 @@ export default function Header() {
                     "block px-3 py-2 rounded-md text-base font-medium flex items-center",
                     location.pathname === item.href
                       ? "bg-shelley-blue text-white"
-                      : "hover:bg-shelley-blue/10"
+                      : "hover:bg-shelley-blue/10",
+                    language === 'he' ? "justify-end" : "justify-start"
                   )}
                 >
                   <span className={language === 'he' ? "ml-2" : "mr-2"}>{item.icon}</span>
