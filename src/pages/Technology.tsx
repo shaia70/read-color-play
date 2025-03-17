@@ -24,7 +24,7 @@ const Technology = () => {
           <div className="glass-card mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'What is Augmented Reality?' : 'מה זו מציאות רבודה?'}</h2>
+                <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'What is Augmented Reality' : 'מה זו מציאות רבודה?'}</h2>
                 <p className="text-gray-600 mb-4">
                   {language === 'en' 
                     ? 'Augmented Reality (AR) is a technology that allows digital elements to be integrated into the real world through smartphone or tablet cameras.'
@@ -36,7 +36,7 @@ const Technology = () => {
                     : 'בספרי "שלי ספרים", הילדים יכולים לראות את האיורים קמים לחיים ולהפוך לחלק ממשחק אינטראקטיבי, מה שהופך את חווית הקריאה למרתקת ומעשירה.'}
                 </p>
 
-                <h3 className="text-xl font-bold mb-4">{language === 'en' ? 'Benefits of Using Augmented Reality:' : 'יתרונות השימוש במציאות רבודה:'}</h3>
+                <h3 className="text-xl font-bold mb-4">{language === 'en' ? 'Benefits of Using Augmented Reality' : 'יתרונות השימוש במציאות רבודה:'}</h3>
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
                     <ArrowRight className="w-5 h-5 text-shelley-blue ml-2 mt-1 flex-shrink-0" />
