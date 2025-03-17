@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -67,7 +68,7 @@ const Technology = () => {
               <div className="bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col items-center justify-center rounded-tr-2xl rounded-br-2xl">
                 <div className="mb-6 text-center">
                   <Smartphone className="w-12 h-12 text-shelley-purple mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">{t('ar.howItWorks')}</h3>
+                  <h3 className="text-xl font-bold mb-2">{language === 'en' ? '?How Does It Work' : 'איך זה עובד?'}</h3>
                 </div>
                 
                 <div className="space-y-6 w-full max-w-md">

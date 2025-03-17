@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -67,7 +68,7 @@ export default function ARTechnology() {
               variants={itemVariants} 
               className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}
             >
-              <h3 className="text-2xl font-bold mb-4">{t('ar.howItWorks')}</h3>
+              <h3 className="text-2xl font-bold mb-4">{language === 'en' ? '?How Does It Work' : 'איך זה עובד?'}</h3>
               <ul className="space-y-4 mb-6">
                 <li className="flex items-start">
                   <div className={`bg-shelley-blue/10 rounded-full p-2 ${language === 'en' ? 'mr-4' : 'order-1 ml-4'}`}>
