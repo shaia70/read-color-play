@@ -2,6 +2,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { BookOpen } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -17,6 +18,11 @@ export default function Logo({
   isSquare = false 
 }: LogoProps) {
   const { language } = useLanguage();
+  const location = useLocation();
+  const isInHeader = location.pathname === "/";
+
+  // Check if this is the Hebrew version in the header
+  const shouldUseNewLogo = language === 'he' && isInHeader;
 
   if (isSquare) {
     return (
@@ -39,6 +45,20 @@ export default function Logo({
     );
   }
 
+  // New logo for Hebrew in the header
+  if (shouldUseNewLogo) {
+    return (
+      <div className={cn("flex items-center", className)}>
+        <img 
+          src="/lovable-uploads/72b13255-9d02-41af-8f67-d8daecdcc667.png" 
+          alt="שלי ספרים" 
+          className="h-16" 
+        />
+      </div>
+    );
+  }
+
+  // Original logo for all other cases
   return (
     <div className={cn("flex items-center", className)}>
       {showIcon && (
