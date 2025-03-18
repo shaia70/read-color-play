@@ -75,7 +75,7 @@ export default function Hero() {
       {/* Logo positioned at the left of the page (which is right in RTL) */}
       <div className="w-full container mx-auto px-4">
         <div className="flex justify-end">
-          <Logo isSquare={true} className="w-24 h-24 shadow-lg" />
+          <Logo isSquare={true} className="w-19 h-19 shadow-lg" />
         </div>
       </div>
       
