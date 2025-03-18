@@ -77,7 +77,7 @@ export default function Hero() {
         <div className="flex justify-end">
           <Logo 
             isSquare={true} 
-            className={`w-19 h-19 shadow-lg border border-black ${language === 'he' ? 'px-3' : ''}`} 
+            className={`w-19 h-19 shadow-lg border border-black ${language === 'he' ? 'px-2' : ''}`} 
           />
         </div>
       </div>
