@@ -57,7 +57,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
-                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'}
+                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-6px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
