@@ -54,7 +54,11 @@ const DownloadPage = () => {
                       </p>
                       <h4 className="text-xl font-bold">App Store</h4>
                     </div>
-                    <CustomButton variant="blue" icon={<Download />}>
+                    <CustomButton 
+                      variant="blue" 
+                      icon={<Download />}
+                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : ''}
+                    >
                       {t('download.download')}
                     </CustomButton>
                   </div>
@@ -69,7 +73,11 @@ const DownloadPage = () => {
                       </p>
                       <h4 className="text-xl font-bold">Google Play</h4>
                     </div>
-                    <CustomButton variant="green" icon={<Download />}>
+                    <CustomButton 
+                      variant="green" 
+                      icon={<Download />}
+                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : ''}
+                    >
                       {t('download.download')}
                     </CustomButton>
                   </div>
@@ -126,7 +134,11 @@ const DownloadPage = () => {
                 <p className="text-gray-600 mb-6">
                   {t('download.comingSoon')}
                 </p>
-                <CustomButton variant="blue" icon={<Download />} className="w-full sm:w-auto">
+                <CustomButton 
+                  variant="blue" 
+                  icon={<Download />} 
+                  className={`${language === 'en' ? 'text-xs px-2 py-1 h-8' : ''} w-full sm:w-auto`}
+                >
                   {t('download.notifyMe')}
                 </CustomButton>
               </div>
