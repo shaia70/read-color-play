@@ -1,5 +1,5 @@
-
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Apple, Download, Smartphone } from "lucide-react";
@@ -10,9 +10,16 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const DownloadPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const handleGooglePlayRedirect = () => {
     window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
+  };
+
+  const handleNotifyMeClick = () => {
+    if (language === 'he') {
+      navigate('/contact', { state: { prefilledSubject: 'עדכנו אותי בשחרור האפליקציה' } });
+    }
   };
 
   return (
@@ -162,6 +169,7 @@ const DownloadPage = () => {
                   variant="blue" 
                   icon={<Download />} 
                   className={`${language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'} w-full sm:w-auto`}
+                  onClick={handleNotifyMeClick}
                 >
                   {t('download.notifyMe')}
                 </CustomButton>

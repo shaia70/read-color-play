@@ -1,6 +1,6 @@
-
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
@@ -12,12 +12,19 @@ import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapp
 const Contact = () => {
   const { toast } = useToast();
   const { language, t } = useLanguage();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: ""
   });
+
+  useEffect(() => {
+    if (location.state?.prefilledSubject) {
+      setFormData(prev => ({ ...prev, subject: location.state.prefilledSubject }));
+    }
+  }, [location.state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
