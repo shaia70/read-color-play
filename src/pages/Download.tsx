@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -27,14 +28,16 @@ const DownloadPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {t('download.description')}
             </p>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+              {t('download.appDescription')}
+            </p>
           </div>
 
           <div className="glass-card mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
-                <h2 className="text-2xl font-bold">{t('download.appName')}</h2>
                 <p className="text-center text-gray-600">
-                  {t('download.appDescription')}
+                  {/* This text has been moved up to the main description section */}
                 </p>
               </div>
 
