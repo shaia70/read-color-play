@@ -1,4 +1,3 @@
-
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { BookOpen } from "lucide-react";
@@ -39,6 +38,25 @@ export default function Logo({
     );
   }
 
+  // Hebrew version with the new logo image
+  if (language === 'he') {
+    return (
+      <div className={cn("flex items-center", className)}>
+        <img 
+          src="/lovable-uploads/6d03cbbb-82f8-48dd-8d52-586766792eba.png" 
+          alt="שלי ספרים" 
+          className="h-16"
+        />
+        {showTagline && (
+          <span className="text-sm mt-1 text-gray-600 tracking-wide font-medium">
+            קוראים • צובעים • משחקים
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  // English version remains unchanged
   return (
     <div className={cn("flex items-center", className)}>
       {showIcon && (
