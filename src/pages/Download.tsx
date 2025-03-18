@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -18,7 +19,12 @@ const DownloadPage = () => {
 
   const handleNotifyMeClick = () => {
     if (language === 'he') {
-      navigate('/contact', { state: { prefilledSubject: 'עדכנו אותי בשחרור האפליקציה' } });
+      navigate('/contact', { 
+        state: { 
+          prefilledSubject: 'עדכנו אותי בשחרור האפליקציה',
+          prefilledMessage: 'שלום, אשמח לקבל עדכון כאשר האפליקציה שלכם מוכנה להורדה'
+        } 
+      });
     }
   };
 

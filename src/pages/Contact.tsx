@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -21,8 +22,19 @@ const Contact = () => {
   });
 
   useEffect(() => {
-    if (location.state?.prefilledSubject) {
-      setFormData(prev => ({ ...prev, subject: location.state.prefilledSubject }));
+    // Check for prefilled data from navigation state
+    if (location.state) {
+      const newFormData = { ...formData };
+      
+      if (location.state.prefilledSubject) {
+        newFormData.subject = location.state.prefilledSubject;
+      }
+      
+      if (location.state.prefilledMessage) {
+        newFormData.message = location.state.prefilledMessage;
+      }
+      
+      setFormData(newFormData);
     }
   }, [location.state]);
 
