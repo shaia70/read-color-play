@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -99,7 +100,7 @@ const DownloadPage = () => {
                     <img 
                       src={language === 'he' 
                         ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
-                        : "/lovable-uploads/3e3e94c6-ba7c-4c4f-a353-7fe42344ed7e.png"} 
+                        : "/lovable-uploads/21efd8ff-cb6f-4d6a-958c-894ef6dfb937.png"} 
                       alt="QR Code for App Download" 
                       className="w-48 h-48"
                     />
