@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -20,11 +19,9 @@ const DownloadPage = () => {
       <main className="pt-28 pb-20">
         <div className="page-container">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold mb-6">{language === 'en' ? 'Download Our App' : 'הורד את האפליקציה שלנו'}</h1>
+            <h1 className="text-4xl font-bold mb-6">{t('download.title')}</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {language === 'en' 
-                ? 'Experience the magic of augmented reality with our "Shelley Books AR" app'
-                : 'חווה את הקסם של מציאות רבודה עם אפליקציית "שלי ספרים AR" שלנו'}
+              {t('download.description')}
             </p>
           </div>
 
@@ -34,17 +31,15 @@ const DownloadPage = () => {
                 <div className="bg-gray-200 rounded-lg w-full max-w-[250px] aspect-square flex items-center justify-center">
                   <img src="/placeholder.svg" alt="App Icon" className="w-32 h-32" />
                 </div>
-                <h2 className="text-2xl font-bold">{language === 'en' ? 'Shelley Books AR' : 'שלי ספרים AR'}</h2>
+                <h2 className="text-2xl font-bold">{t('download.appName')}</h2>
                 <p className="text-center text-gray-600">
-                  {language === 'en'
-                    ? 'Scan book illustrations and watch them come to life with interactive AR experiences'
-                    : 'סרוק איורי ספרים וצפה בהם קמים לחיים עם חוויות AR אינטראקטיביות'}
+                  {t('download.appDescription')}
                 </p>
               </div>
 
               <div className="flex flex-col justify-center">
                 <h3 className="text-xl font-bold mb-6 text-center">
-                  {language === 'en' ? 'Available on:' : 'זמין ב:'}
+                  {t('download.availableOn')}:
                 </h3>
                 
                 <div className="flex flex-col space-y-4">
@@ -54,12 +49,12 @@ const DownloadPage = () => {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">
-                        {language === 'en' ? 'Download on the' : 'הורד מ-'}
+                        {t('download.downloadOn')}
                       </p>
                       <h4 className="text-xl font-bold">App Store</h4>
                     </div>
                     <CustomButton variant="blue" icon={<Download />}>
-                      {language === 'en' ? 'Download' : 'הורד'}
+                      {t('download.download')}
                     </CustomButton>
                   </div>
                   
@@ -69,12 +64,12 @@ const DownloadPage = () => {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">
-                        {language === 'en' ? 'Get it on' : 'קבל אותו ב-'}
+                        {t('download.getItOn')}
                       </p>
                       <h4 className="text-xl font-bold">Google Play</h4>
                     </div>
                     <CustomButton variant="green" icon={<Download />}>
-                      {language === 'en' ? 'Download' : 'הורד'}
+                      {t('download.download')}
                     </CustomButton>
                   </div>
                 </div>
@@ -85,7 +80,7 @@ const DownloadPage = () => {
           <div className="glass-card">
             <div className="p-8">
               <h2 className="text-2xl font-bold mb-6 text-center">
-                {language === 'en' ? 'App Features' : 'תכונות האפליקציה'}
+                {t('download.features')}
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -94,12 +89,10 @@ const DownloadPage = () => {
                     <Smartphone className="h-10 w-10 text-shelley-blue" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
-                    {language === 'en' ? 'Easy to Use' : 'קל לשימוש'}
+                    {t('download.easyToUse')}
                   </h3>
                   <p className="text-gray-600">
-                    {language === 'en' 
-                      ? 'Simple interface designed for children of all ages'
-                      : 'ממשק פשוט המיועד לילדים בכל הגילאים'}
+                    {t('download.easyToUseDesc')}
                   </p>
                 </div>
                 
@@ -108,12 +101,10 @@ const DownloadPage = () => {
                     <Download className="h-10 w-10 text-shelley-purple" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
-                    {language === 'en' ? 'Works Offline' : 'עובד ללא אינטרנט'}
+                    {t('download.worksOffline')}
                   </h3>
                   <p className="text-gray-600">
-                    {language === 'en'
-                      ? 'Download content to use the app without internet connection'
-                      : 'הורד תוכן כדי להשתמש באפליקציה ללא חיבור לאינטרנט'}
+                    {t('download.worksOfflineDesc')}
                   </p>
                 </div>
                 
@@ -122,24 +113,20 @@ const DownloadPage = () => {
                     <Apple className="h-10 w-10 text-shelley-green" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
-                    {language === 'en' ? 'Regular Updates' : 'עדכונים תקופתיים'}
+                    {t('download.regularUpdates')}
                   </h3>
                   <p className="text-gray-600">
-                    {language === 'en'
-                      ? 'New content and features added regularly'
-                      : 'תוכן ותכונות חדשים נוספים באופן קבוע'}
+                    {t('download.regularUpdatesDesc')}
                   </p>
                 </div>
               </div>
               
               <div className="mt-12 text-center">
                 <p className="text-gray-600 mb-6">
-                  {language === 'en'
-                    ? 'Coming soon to iOS and Android devices. Be the first to know when our app is available!'
-                    : 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!'}
+                  {t('download.comingSoon')}
                 </p>
                 <CustomButton variant="blue" icon={<Download />} className="w-full sm:w-auto">
-                  {language === 'en' ? 'Notify Me on Release' : 'עדכנו אותי בשחרור'}
+                  {t('download.notifyMe')}
                 </CustomButton>
               </div>
             </div>

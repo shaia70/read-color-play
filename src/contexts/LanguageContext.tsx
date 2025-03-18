@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -149,7 +150,7 @@ const enTranslations: Record<string, string> = {
   'download.description': 'Experience the magic of augmented reality with our "Shelley Books AR" app',
   'download.appName': 'Shelley Books AR',
   'download.appDescription': 'Scan book illustrations and watch them come to life with interactive AR experiences',
-  'download.availableOn': ':Available on',
+  'download.availableOn': 'Available on',
   'download.getItOn': 'Get it on',
   'download.downloadOn': 'Download on the',
   'download.download': 'Download',
