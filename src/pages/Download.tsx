@@ -100,7 +100,7 @@ const DownloadPage = () => {
                     <img 
                       src={language === 'he' 
                         ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
-                        : "/lovable-uploads/c3ef4fdc-e152-44c2-b262-f3c0469d39a6.png"} 
+                        : "/lovable-uploads/3e3e94c6-ba7c-4c4f-a353-7fe42344ed7e.png"} 
                       alt="QR Code for App Download" 
                       className="w-48 h-48"
                     />
