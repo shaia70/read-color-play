@@ -34,19 +34,19 @@ const DownloadPage = () => {
           </div>
 
           <div className="glass-card mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+            <div className="grid grid-cols-1 gap-8 p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
                 <p className="text-center text-gray-600">
                   {/* This text has been moved up to the main description section */}
                 </p>
               </div>
 
-              <div className="flex flex-col justify-center">
-                <h3 className={`text-xl font-bold mb-6 ${language === 'he' ? 'text-center' : 'text-center'}`}>
+              <div className="flex flex-col items-center justify-center">
+                <h3 className="text-xl font-bold mb-6 text-center">
                   {t('download.availableOn')}
                 </h3>
                 
-                <div className="flex flex-col space-y-4">
+                <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
                     <div className="bg-black rounded-full p-3 mr-4">
                       <Apple className="h-8 w-8 text-white" />
