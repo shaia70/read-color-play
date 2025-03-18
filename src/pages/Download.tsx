@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -38,7 +39,7 @@ const DownloadPage = () => {
               </div>
 
               <div className="flex flex-col justify-center">
-                <h3 className="text-xl font-bold mb-6 text-left">
+                <h3 className={`text-xl font-bold mb-6 ${language === 'en' ? 'text-center' : 'text-right'}`}>
                   {t('download.availableOn')}
                 </h3>
                 
