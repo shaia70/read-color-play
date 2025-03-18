@@ -99,7 +99,7 @@ const DownloadPage = () => {
                   <div className="border border-gray-200 p-4 rounded-lg">
                     <img 
                       src={language === 'he' 
-                        ? "/lovable-uploads/6d2e51a2-475f-4be3-ba85-ee4dc423667d.png" 
+                        ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
                         : "/lovable-uploads/c3ef4fdc-e152-44c2-b262-f3c0469d39a6.png"} 
                       alt="QR Code for App Download" 
                       className="w-48 h-48"
