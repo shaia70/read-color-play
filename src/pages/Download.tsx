@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -39,7 +40,7 @@ const DownloadPage = () => {
 
               <div className="flex flex-col justify-center">
                 <h3 className="text-xl font-bold mb-6 text-center">
-                  {t('download.availableOn')}:
+                  {t('download.availableOn')}
                 </h3>
                 
                 <div className="flex flex-col space-y-4">
