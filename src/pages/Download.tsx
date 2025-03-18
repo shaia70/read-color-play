@@ -64,7 +64,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
-                      className={language === 'en' ? 'text-sm px-4 py-2 h-10 -ml-6' : 'text-xs px-2 py-1 h-8 mr-[-6px]'}
+                      className={language === 'en' ? 'text-sm px-4 py-2 h-10 -ml-6' : 'text-md px-5 py-3 h-12 mr-[-6px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
@@ -85,7 +85,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="green" 
                       icon={<Download />}
-                      className={language === 'en' ? 'text-sm px-4 py-2 h-10 -ml-6' : 'text-xs px-2 py-1 h-8 mr-[-3px]'}
+                      className={language === 'en' ? 'text-sm px-4 py-2 h-10 -ml-6' : 'text-md px-5 py-3 h-12 mr-[-3px]'}
                       onClick={handleGooglePlayRedirect}
                     >
                       {t('download.download')}
