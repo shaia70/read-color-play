@@ -39,7 +39,7 @@ const DownloadPage = () => {
               </div>
 
               <div className="flex flex-col justify-center">
-                <h3 className={`text-xl font-bold mb-6 ${language === 'he' ? 'text-center' : 'text-right'}`}>
+                <h3 className={`text-xl font-bold mb-6 ${language === 'he' ? 'text-center' : 'text-center'}`}>
                   {t('download.availableOn')}
                 </h3>
                 
