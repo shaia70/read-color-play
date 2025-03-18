@@ -72,8 +72,8 @@ export default function Hero() {
         <div className="absolute bottom-20 right-1/5 w-48 h-48 rounded-full bg-shelley-green/10 animate-float" style={{ animationDelay: "1.5s" }}></div>
       </div>
       
-      {/* Centered Logo */}
-      <div className="w-full flex justify-center mb-8">
+      {/* Centered Logo with 15px top margin */}
+      <div className="w-full flex justify-center mb-8 mt-15">
         <Logo isSquare={true} className="w-24 h-24 shadow-lg" />
       </div>
       
