@@ -95,7 +95,7 @@ const DownloadPage = () => {
 
                 {/* QR Code Section */}
                 <div className="mt-8 flex flex-col items-center">
-                  <h4 className="text-lg font-medium mb-4">{t('download.scanQR')}</h4>
+                  <h4 className={`text-lg ${language === 'he' ? 'font-bold' : 'font-medium'} mb-4`}>{t('download.scanQR')}</h4>
                   <div className="border border-gray-200 p-4 rounded-lg">
                     <img 
                       src={language === 'he' 
