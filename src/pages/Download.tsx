@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -33,9 +32,6 @@ const DownloadPage = () => {
           <div className="glass-card mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
               <div className="flex flex-col items-center justify-center space-y-6">
-                <div className="bg-gray-200 rounded-lg w-full max-w-[250px] aspect-square flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="App Icon" className="w-32 h-32" />
-                </div>
                 <h2 className="text-2xl font-bold">{t('download.appName')}</h2>
                 <p className="text-center text-gray-600">
                   {t('download.appDescription')}
