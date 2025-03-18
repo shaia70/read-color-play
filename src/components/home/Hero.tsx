@@ -75,7 +75,10 @@ export default function Hero() {
       {/* Logo positioned at the left of the page (which is right in RTL) - moved down by 10px */}
       <div className="w-full container mx-auto px-4 mt-10">
         <div className="flex justify-end">
-          <Logo isSquare={true} className="w-19 h-19 shadow-lg border border-black" />
+          <Logo 
+            isSquare={true} 
+            className={`w-19 h-19 shadow-lg border border-black ${language === 'he' ? 'px-5' : ''}`} 
+          />
         </div>
       </div>
       
