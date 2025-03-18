@@ -33,7 +33,7 @@ const heTranslations: Record<string, string> = {
   'download.description': 'חווה את הקסם של מציאות רבודה עם אפליקציית "שלי ספרים AR" שלנו',
   'download.appName': 'שלי ספרים AR',
   'download.appDescription': 'סרוק איורי ספרים וצפה בהם קמים לחיים עם חוויות AR אינטראקטיביות',
-  'download.availableOn': 'זמין ב',
+  'download.availableOn': 'זמין ב:',
   'download.getItOn': 'קבל אותו ב-',
   'download.downloadOn': 'הורד מ-',
   'download.download': 'הורד',
