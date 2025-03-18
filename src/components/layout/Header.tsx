@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall } from "lucide-react";
+import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -66,6 +66,7 @@ export default function Header() {
     { name: t('nav.books'), href: "/books", icon: <Palette className="h-5 w-5" /> },
     { name: t('nav.technology'), href: "/technology", icon: <Gamepad2 className="h-5 w-5" /> },
     { name: t('nav.contact'), href: "/contact", icon: <PhoneCall className="h-5 w-5" /> },
+    { name: language === 'en' ? 'Download App' : 'הורד אפליקציה', href: "/download", icon: <Download className="h-5 w-5" /> },
   ];
 
   return (

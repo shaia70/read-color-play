@@ -18,6 +18,7 @@ const heTranslations: Record<string, string> = {
   'nav.books': 'הספרים שלנו',
   'nav.technology': 'טכנולוגיית AR',
   'nav.contact': 'צור קשר',
+  'nav.download': 'הורד אפליקציה',
   
   // Hero section
   'hero.tagline': 'קוראים • צובעים • משחקים',
@@ -26,6 +27,25 @@ const heTranslations: Record<string, string> = {
   'hero.description': 'ספרי ילדים מקוריים עם איורים שנוצרו באמצעות בינה מלאכותית ומשולבים בטכנולוגיית מציאות רבודה',
   'hero.books': 'הספרים שלנו',
   'hero.discover': 'גלה את טכנולוגיית ה-AR',
+  
+  // Download page
+  'download.title': 'הורד את האפליקציה שלנו',
+  'download.description': 'חווה את הקסם של מציאות רבודה עם אפליקציית "שלי ספרים AR" שלנו',
+  'download.appName': 'שלי ספרים AR',
+  'download.appDescription': 'סרוק איורי ספרים וצפה בהם קמים לחיים עם חוויות AR אינטראקטיביות',
+  'download.availableOn': 'זמין ב:',
+  'download.getItOn': 'קבל אותו ב-',
+  'download.downloadOn': 'הורד מ-',
+  'download.download': 'הורד',
+  'download.features': 'תכונות האפליקציה',
+  'download.easyToUse': 'קל לשימוש',
+  'download.easyToUseDesc': 'ממשק פשוט המיועד לילדים בכל הגילאים',
+  'download.worksOffline': 'עובד ללא אינטרנט',
+  'download.worksOfflineDesc': 'הורד תוכן כדי להשתמש באפליקציה ללא חיבור לאינטרנט',
+  'download.regularUpdates': 'עדכונים תקופתיים',
+  'download.regularUpdatesDesc': 'תוכן ותכונות חדשים נוספים באופן קבוע',
+  'download.comingSoon': 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!',
+  'download.notifyMe': 'עדכנו אותי בשחרור',
   
   // Concept section
   'concept.title': 'קוראים, צובעים, משחקים',
@@ -50,10 +70,10 @@ const heTranslations: Record<string, string> = {
   'ar.title': 'טכנולוגיית מציאות רבודה',
   'ar.description': 'הדמויות מהספרים קופצות מהדף והופכות למשחקים אינטראקטיביים',
   'ar.howItWorks': 'איך זה עובד?',
-  'ar.step1': 'הורידו את אפליקציית "שלי ספרים AR" מחנות האפליקציות',
+  'ar.step1': 'הורדו את אפליקציית "שלי ספרים AR" מחנות האפליקציות',
   'ar.step2': 'כוונו את המצלמה לאיור בספר המסומן בסמל ה-AR',
   'ar.step3': 'צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי על המסך!',
-  'ar.download': 'בקרוב: הורידו את האפליקציה',
+  'ar.download': 'בקרוב: הורדו את האפליקציה',
   'ar.moreInfo': 'למידע נוסף',
   
   // Footer
@@ -114,6 +134,7 @@ const enTranslations: Record<string, string> = {
   'nav.books': 'Our Books',
   'nav.technology': 'AR Technology',
   'nav.contact': 'Contact',
+  'nav.download': 'Download App',
   
   // Hero section
   'hero.tagline': 'Read • Color • Play',
@@ -122,6 +143,25 @@ const enTranslations: Record<string, string> = {
   'hero.description': 'Original children\'s books with illustrations created using artificial intelligence and integrated with augmented reality technology',
   'hero.books': 'Our Books',
   'hero.discover': 'Discover AR Technology',
+  
+  // Download page
+  'download.title': 'Download Our App',
+  'download.description': 'Experience the magic of augmented reality with our "Shelley Books AR" app',
+  'download.appName': 'Shelley Books AR',
+  'download.appDescription': 'Scan book illustrations and watch them come to life with interactive AR experiences',
+  'download.availableOn': 'Available on:',
+  'download.getItOn': 'Get it on',
+  'download.downloadOn': 'Download on the',
+  'download.download': 'Download',
+  'download.features': 'App Features',
+  'download.easyToUse': 'Easy to Use',
+  'download.easyToUseDesc': 'Simple interface designed for children of all ages',
+  'download.worksOffline': 'Works Offline',
+  'download.worksOfflineDesc': 'Download content to use the app without internet connection',
+  'download.regularUpdates': 'Regular Updates',
+  'download.regularUpdatesDesc': 'New content and features added regularly',
+  'download.comingSoon': 'Coming soon to iOS and Android devices. Be the first to know when our app is available!',
+  'download.notifyMe': 'Notify Me on Release',
   
   // Concept section
   'concept.title': 'Read, Color, Play',
