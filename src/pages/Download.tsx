@@ -9,6 +9,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const DownloadPage = () => {
   const { t, language } = useLanguage();
 
+  const handleGooglePlayRedirect = () => {
+    window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -77,6 +81,7 @@ const DownloadPage = () => {
                       variant="green" 
                       icon={<Download />}
                       className={language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'}
+                      onClick={handleGooglePlayRedirect}
                     >
                       {t('download.download')}
                     </CustomButton>
