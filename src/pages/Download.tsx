@@ -57,7 +57,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
-                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : ''}
+                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
@@ -76,7 +76,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="green" 
                       icon={<Download />}
-                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : ''}
+                      className={language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
@@ -137,7 +137,7 @@ const DownloadPage = () => {
                 <CustomButton 
                   variant="blue" 
                   icon={<Download />} 
-                  className={`${language === 'en' ? 'text-xs px-2 py-1 h-8' : ''} w-full sm:w-auto`}
+                  className={`${language === 'en' ? 'text-xs px-2 py-1 h-8' : 'mr-[-3px]'} w-full sm:w-auto`}
                 >
                   {t('download.notifyMe')}
                 </CustomButton>
