@@ -98,7 +98,9 @@ const DownloadPage = () => {
                   <h4 className="text-lg font-medium mb-4">{t('download.scanQR')}</h4>
                   <div className="border border-gray-200 p-4 rounded-lg">
                     <img 
-                      src="/lovable-uploads/0b568d8c-df0e-44bf-9c93-b711ffa2a80e.png" 
+                      src={language === 'he' 
+                        ? "/lovable-uploads/6d2e51a2-475f-4be3-ba85-ee4dc423667d.png" 
+                        : "/lovable-uploads/0b568d8c-df0e-44bf-9c93-b711ffa2a80e.png"} 
                       alt="QR Code for App Download" 
                       className="w-48 h-48"
                     />
