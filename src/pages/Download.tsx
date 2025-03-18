@@ -5,9 +5,11 @@ import Footer from "@/components/layout/Footer";
 import { Apple, Download, Smartphone } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DownloadPage = () => {
   const { t, language } = useLanguage();
+  const isMobile = useIsMobile();
 
   const handleGooglePlayRedirect = () => {
     window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
@@ -48,9 +50,11 @@ const DownloadPage = () => {
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    <div className="bg-black rounded-full p-3 mr-4">
-                      <Apple className="h-8 w-8 text-white" />
-                    </div>
+                    {!isMobile && (
+                      <div className="bg-black rounded-full p-3 mr-4">
+                        <Apple className="h-8 w-8 text-white" />
+                      </div>
+                    )}
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">
                         {t('download.downloadOn')}
@@ -67,9 +71,11 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    <div className="bg-green-600 rounded-full p-3 mr-4">
-                      <Smartphone className="h-8 w-8 text-white" />
-                    </div>
+                    {!isMobile && (
+                      <div className="bg-green-600 rounded-full p-3 mr-4">
+                        <Smartphone className="h-8 w-8 text-white" />
+                      </div>
+                    )}
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">
                         {t('download.getItOn')}
