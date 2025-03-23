@@ -26,7 +26,7 @@ const GalleryPage = () => {
     {
       src: '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png',
       alt: language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters',
-      title: language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download',
+      title: language === 'he' ? 'דף צביעה עם דמויות מהסיפור' : 'Coloring Page with Story Characters',
       description: language === 'he' ? 'דף צביעה עם דמויות מהעמוד' : 'Coloring page featuring characters from the story',
       downloadable: true
     },
