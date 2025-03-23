@@ -23,24 +23,48 @@ const GalleryPage = () => {
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
           
-          <div className="glass-card p-6 md:p-8 max-w-4xl mx-auto">
-            <h2 className="text-xl font-semibold mb-4 text-center">
-              {language === 'he' ? 'דף צביעה להדפסה' : 'Coloring Page for Printing'}
-            </h2>
-            
-            <div className="flex justify-center mb-6">
-              <img 
-                src="/lovable-uploads/39f022cd-7530-4471-ae97-2a769296c736.png" 
-                alt={language === 'he' ? 'דף צביעה' : 'Coloring Page'} 
-                className="max-w-full rounded-lg shadow-md border border-gray-200"
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* First Card - Original coloring page */}
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'דף צביעה להדפסה' : 'Coloring Page for Printing'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/39f022cd-7530-4471-ae97-2a769296c736.png" 
+                  alt={language === 'he' ? 'דף צביעה' : 'Coloring Page'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600">
+                {language === 'he' 
+                  ? 'ניתן להוריד דף צביעה זה מעמוד ההורדות' 
+                  : 'You can download this coloring page from the Downloads page'}
+              </p>
             </div>
             
-            <p className="text-center text-gray-600">
-              {language === 'he' 
-                ? 'ניתן להוריד דף צביעה זה מעמוד ההורדות' 
-                : 'You can download this coloring page from the Downloads page'}
-            </p>
+            {/* Second Card - New coloring page */}
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'דף צביעה חדש' : 'New Coloring Page'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png" 
+                  alt={language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600">
+                {language === 'he' 
+                  ? 'דף צביעה חדש עם דמויות מהסיפור' 
+                  : 'New coloring page featuring characters from the story'}
+              </p>
+            </div>
           </div>
         </LanguageDirectionWrapper>
       </motion.main>
