@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -115,7 +116,7 @@ export default function ARTechnology() {
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
                   </div>
                   <div className={language === 'en' ? '' : 'order-2'}>
-                    <p className="text-gray-700">{language === 'en' ? 'Point the camera at the illustration in the book' : 'כוונו את המצלמה לאיור בספר'}</p>
+                    <p className="text-gray-700">{t('ar.step3')}</p>
                   </div>
                 </li>
               </ul>
@@ -147,8 +148,8 @@ export default function ARTechnology() {
               <div className="w-full flex flex-col items-center">
                 <p className="text-center mb-4 text-shelley-blue font-medium">
                   {language === 'en' 
-                    ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part" 
-                    : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל"}
+                    ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
+                    : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל ולחץ התחל באפליקציה"}
                 </p>
                 
                 <div 
