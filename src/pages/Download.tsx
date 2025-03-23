@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -40,10 +39,8 @@ const DownloadPage = () => {
   };
 
   const downloadColoringPage = () => {
-    // Sample coloring page URL - this would be replaced with your actual PDF or image file
-    const coloringPageUrl = '/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png';
+    const coloringPageUrl = '/lovable-uploads/39f022cd-7530-4471-ae97-2a769296c736.png';
     
-    // Create an anchor element and trigger download
     const link = document.createElement('a');
     link.href = coloringPageUrl;
     link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
