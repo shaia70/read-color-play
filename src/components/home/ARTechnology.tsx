@@ -86,7 +86,7 @@ export default function ARTechnology() {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className={`glass-card ${isZoomed ? 'overflow-hidden' : ''}`}
+          className={`glass-card ${isZoomed ? 'overflow-visible' : 'overflow-hidden'}`}
         >
           <div className={`grid grid-cols-1 ${isZoomed ? '' : 'md:grid-cols-2'} gap-6`}>
             <motion.div 
@@ -150,7 +150,7 @@ export default function ARTechnology() {
                   imageState === "normal" 
                     ? "w-128" 
                     : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
-                } ${isZoomed ? "h-auto max-h-[90vh]" : "h-auto"} overflow-hidden`}
+                } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden`}
                 onClick={handleImageClick}
               >
                 <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
