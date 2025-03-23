@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -42,6 +41,8 @@ export default function ARTechnology() {
   };
 
   const handleImageClick = (e) => {
+    if (isMobile) return;
+    
     if (imageState !== "normal") {
       setImageState("normal");
       return;
@@ -154,13 +155,17 @@ export default function ARTechnology() {
               
               <div className="w-full flex flex-col items-center">
                 <p className="text-center mb-4 text-shelley-blue font-medium">
-                  {language === 'en' 
-                    ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
-                    : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל ולחץ התחל באפליקציה"}
+                  {isMobile 
+                    ? (language === 'en' 
+                      ? "Image zoom is available on desktop devices"
+                      : "הגדלת התמונה זמינה במכשירי דסקטופ בלבד")
+                    : (language === 'en' 
+                      ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
+                      : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל ולחץ התחל באפליקציה")}
                 </p>
                 
                 <div 
-                  className={`relative cursor-pointer transition-all duration-300 ease-in-out ${
+                  className={`relative ${!isMobile ? "cursor-pointer" : ""} transition-all duration-300 ease-in-out ${
                     imageState === "normal" 
                       ? "w-128" 
                       : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
