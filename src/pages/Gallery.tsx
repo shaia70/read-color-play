@@ -27,7 +27,7 @@ const GalleryPage = () => {
             {/* Coloring page card */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
-                {language === 'he' ? 'דף צביעה חדש' : 'New Coloring Page'}
+                {language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download'}
               </h2>
               
               <div className="flex justify-center mb-6">
