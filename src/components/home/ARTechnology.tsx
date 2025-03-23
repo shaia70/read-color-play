@@ -113,13 +113,10 @@ export default function ARTechnology() {
                 <div className="relative bg-white p-4 rounded-2xl shadow-lg">
                   <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
                     <img 
-                      src="https://via.placeholder.com/300x600?text=AR+Demo" 
+                      src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
                       alt="AR Demo" 
                       className="w-full h-auto"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Smartphone className="w-12 h-12 text-white opacity-50" />
-                    </div>
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-800 rounded-full"></div>
                 </div>
