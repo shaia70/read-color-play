@@ -122,7 +122,7 @@ const GalleryPage = () => {
         transition={{ duration: 0.5 }}
       >
         <LanguageDirectionWrapper>
-          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center mt-10">
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
           
