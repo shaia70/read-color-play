@@ -13,14 +13,8 @@ export default function ARTechnology() {
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
   const [imageState, setImageState] = useState("normal"); // "normal", "left-zoomed", "right-zoomed"
-  const [mobileImageIndex, setMobileImageIndex] = useState(0);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-
-  const mobileImages = [
-    "/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png",
-    "/lovable-uploads/fea66530-778c-4ac9-a65a-25a8f14c0ce4.png"
-  ];
 
   useEffect(() => {
     if (inView) {
@@ -48,11 +42,7 @@ export default function ARTechnology() {
   };
 
   const handleImageClick = (e) => {
-    if (isMobile) {
-      // In mobile, cycle through available images
-      setMobileImageIndex((prevIndex) => (prevIndex + 1) % mobileImages.length);
-      return;
-    }
+    if (isMobile) return;
     
     if (imageState !== "normal") {
       setImageState("normal");
@@ -168,7 +158,7 @@ export default function ARTechnology() {
                 <p className="text-center mb-4 text-shelley-blue font-medium">
                   {isMobile 
                     ? (language === 'en' 
-                      ? "Tap the image to switch between pages"
+                      ? "Image zoom is available on desktop devices"
                       : "לחץ על התמונה להחלפתה (במחשבי דסקטופ ניתן לבצע הדגמה אינטראקטיבת של האפליקציה)")
                     : (language === 'en' 
                       ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
@@ -189,7 +179,7 @@ export default function ARTechnology() {
                       <div className="relative overflow-hidden">
                         <img 
                           src={isMobile 
-                            ? mobileImages[mobileImageIndex]
+                            ? "/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png" 
                             : "/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png"} 
                           alt="AR Demo" 
                           className={`w-full h-auto transition-all duration-300 ease-in-out ${
