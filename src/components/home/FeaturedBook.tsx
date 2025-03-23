@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -67,7 +66,6 @@ export default function FeaturedBook() {
                   src={bookCover} 
                   alt={t('book.daniel.title')} 
                   className="w-full h-full object-cover"
-                  style={{ objectFit: "cover" }}
                 />
               </div>
             </motion.div>
