@@ -119,7 +119,7 @@ export default function ARTechnology() {
               className={`relative flex items-center justify-center p-8 ${isEnlarged ? 'col-span-full' : ''}`}
             >
               <div 
-                className={`relative ${isEnlarged ? 'w-[64rem] md:w-[48rem] sm:w-[32rem]' : 'w-128'} h-auto cursor-pointer transition-all duration-300 ease-in-out`}
+                className={`relative ${isEnlarged ? 'w-[96rem] md:w-[72rem] sm:w-[48rem]' : 'w-128'} h-auto cursor-pointer transition-all duration-300 ease-in-out`}
                 onClick={toggleImageSize}
               >
                 <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
