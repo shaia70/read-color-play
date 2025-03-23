@@ -5,9 +5,9 @@ import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { PaintBucket, Printer } from "lucide-react";
+import { PaintBucket, Printer, AlertCircle } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Carousel,
@@ -21,6 +21,7 @@ const GalleryPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([false, false, false]);
 
   const images = [
     {
@@ -45,6 +46,32 @@ const GalleryPage = () => {
       downloadable: false
     }
   ];
+
+  // Check if images are properly loaded
+  useEffect(() => {
+    // Pre-load images to check if they exist
+    images.forEach((image, index) => {
+      const img = new Image();
+      img.onload = () => {
+        setImagesLoaded(prev => {
+          const newState = [...prev];
+          newState[index] = true;
+          return newState;
+        });
+      };
+      img.onerror = () => {
+        console.error(`Failed to load image: ${image.src}`);
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'שגיאה בטעינת תמונה' : 'Image Loading Error',
+          description: language === 'he' 
+            ? `לא ניתן לטעון את התמונה: ${image.title}` 
+            : `Could not load image: ${image.title}`,
+        });
+      };
+      img.src = image.src;
+    });
+  }, [language]);
 
   const downloadColoringPage = () => {
     const coloringPageUrl = images[0].src;
@@ -185,16 +212,33 @@ const GalleryPage = () => {
                   <CarouselContent>
                     {images.map((image, index) => (
                       <CarouselItem key={index}>
-                        <div className="flex justify-center">
-                          <img 
-                            src={image.src} 
-                            alt={image.alt} 
-                            className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
-                            onError={(e) => {
-                              console.error(`Failed to load image: ${image.src}`);
-                              e.currentTarget.src = '/placeholder.svg';
-                            }}
-                          />
+                        <div className="flex flex-col items-center justify-center">
+                          <div className="relative">
+                            <img 
+                              src={image.src} 
+                              alt={image.alt} 
+                              className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
+                              onError={(e) => {
+                                console.error(`Failed to load image: ${image.src}`);
+                                // Use placeholder for error
+                                e.currentTarget.src = '/placeholder.svg';
+                                // Set a minimum height so the UI doesn't collapse
+                                e.currentTarget.style.minHeight = '300px';
+                                // Add border to make it more visible
+                                e.currentTarget.classList.add('border-red-300');
+                              }}
+                            />
+                            {!imagesLoaded[index] && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
+                                <div className="animate-pulse flex flex-col items-center p-4">
+                                  <AlertCircle className="h-10 w-10 text-amber-500 mb-2" />
+                                  <p className="text-sm text-gray-600 text-center">
+                                    {language === 'he' ? 'טוען תמונה...' : 'Loading image...'}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </CarouselItem>
                     ))}
