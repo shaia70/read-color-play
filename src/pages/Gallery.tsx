@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -22,6 +21,7 @@ const GalleryPage = () => {
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
 
+  // Removed the last two images, keeping only the first one (coloring page)
   const images = [
     {
       src: '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png',
@@ -29,20 +29,6 @@ const GalleryPage = () => {
       title: language === 'he' ? 'דף צביעה עם דמויות מהסיפור' : 'Coloring Page with Story Characters',
       description: language === 'he' ? 'דף צביעה עם דמויות מהעמוד' : 'Coloring page featuring characters from the story',
       downloadable: true
-    },
-    {
-      src: '/lovable-uploads/4de5569f-ea73-4cd9-aedc-cdd6aa755ce3.png',
-      alt: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text',
-      title: language === 'he' ? 'עמוד מהספר' : 'Book Page',
-      description: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Page from the book with Hebrew text',
-      downloadable: false
-    },
-    {
-      src: '/lovable-uploads/dce53c42-e496-4f13-a51a-73556b927788.png',
-      alt: language === 'he' ? 'ילד במיטה עם חיות על המדף' : 'Boy in bed with animals on the shelf',
-      title: language === 'he' ? 'תמונה מהעמוד' : 'Story Illustration',
-      description: language === 'he' ? 'ילד במיטה עם האריה וחיות על המדף' : 'Boy in bed with the lion and animals on the shelf',
-      downloadable: false
     }
   ];
 
@@ -162,7 +148,7 @@ const GalleryPage = () => {
           </h1>
           
           <div className="max-w-3xl mx-auto mb-12">
-            {/* Carousel with all images */}
+            {/* Carousel with the coloring page image */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
                 {images[activeImage].title}
@@ -195,8 +181,13 @@ const GalleryPage = () => {
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className={`${isMobile ? 'hidden' : ''} -left-8 lg:-left-12`} />
-                  <CarouselNext className={`${isMobile ? 'hidden' : ''} -right-8 lg:-right-12`} />
+                  {/* Hide carousel navigation since we now only have one image */}
+                  {images.length > 1 && (
+                    <>
+                      <CarouselPrevious className={`${isMobile ? 'hidden' : ''} -left-8 lg:-left-12`} />
+                      <CarouselNext className={`${isMobile ? 'hidden' : ''} -right-8 lg:-right-12`} />
+                    </>
+                  )}
                 </Carousel>
               </div>
               
@@ -204,45 +195,42 @@ const GalleryPage = () => {
                 {images[activeImage].description}
               </p>
               
-              {/* Download and print buttons (only for the first image) */}
-              {activeImage === 0 && (
-                <>
-                  {/* Download button */}
-                  <div className="flex justify-center">
-                    <CustomButton 
-                      variant="orange" 
-                      icon={<PaintBucket />}
-                      onClick={downloadColoringPage}
-                      className="w-full sm:w-auto"
-                    >
-                      {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
-                    </CustomButton>
-                  </div>
-                  
-                  {/* Print button */}
-                  <div className="flex justify-center mt-3">
-                    <CustomButton 
-                      variant="blue" 
-                      icon={<Printer />}
-                      onClick={printColoringPage}
-                      className="w-full sm:w-auto"
-                    >
-                      {language === 'en' ? 'Print Coloring Page' : 'הדפס דף צביעה'}
-                    </CustomButton>
-                  </div>
-                </>
-              )}
+              {/* Download and print buttons */}
+              <div className="flex justify-center">
+                <CustomButton 
+                  variant="orange" 
+                  icon={<PaintBucket />}
+                  onClick={downloadColoringPage}
+                  className="w-full sm:w-auto"
+                >
+                  {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
+                </CustomButton>
+              </div>
               
-              {/* Instruction text for mobile/desktop */}
-              <p className="text-center text-sm text-gray-500 mt-6">
-                {isMobile 
-                  ? (language === 'he' 
-                    ? "החלק שמאלה או ימינה כדי לראות תמונות נוספות" 
-                    : "Swipe left or right to see more images")
-                  : (language === 'he' 
-                    ? "לחץ על החצים כדי לראות תמונות נוספות" 
-                    : "Click the arrows to see more images")}
-              </p>
+              {/* Print button */}
+              <div className="flex justify-center mt-3">
+                <CustomButton 
+                  variant="blue" 
+                  icon={<Printer />}
+                  onClick={printColoringPage}
+                  className="w-full sm:w-auto"
+                >
+                  {language === 'en' ? 'Print Coloring Page' : 'הדפס דף צביעה'}
+                </CustomButton>
+              </div>
+              
+              {/* Only show instruction text if we have multiple images */}
+              {images.length > 1 && (
+                <p className="text-center text-sm text-gray-500 mt-6">
+                  {isMobile 
+                    ? (language === 'he' 
+                      ? "החלק שמאלה או ימינה כדי לראות תמונות נוספות" 
+                      : "Swipe left or right to see more images")
+                    : (language === 'he' 
+                      ? "לחץ על החצים כדי לראות תמונות נוספות" 
+                      : "Click the arrows to see more images")}
+                </p>
+              )}
             </div>
           </div>
         </LanguageDirectionWrapper>
