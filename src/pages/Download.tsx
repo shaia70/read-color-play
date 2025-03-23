@@ -41,7 +41,8 @@ const DownloadPage = () => {
   };
 
   const downloadColoringPage = () => {
-    const coloringPageUrl = '/lovable-uploads/39f022cd-7530-4471-ae97-2a769296c736.png';
+    // Updated to use the coloring page from the gallery
+    const coloringPageUrl = '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png';
     
     // Use fetch to get the file as a blob
     fetch(coloringPageUrl)
