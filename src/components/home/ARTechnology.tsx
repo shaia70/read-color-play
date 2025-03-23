@@ -181,7 +181,7 @@ export default function ARTechnology() {
                   </div>
                 </div>
               </div>
-              <div className={`absolute top-6 right-0 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
+              <div className={`absolute top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
               <div className={`absolute bottom-10 left-0 w-16 h-16 rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`} style={{ animationDelay: "1.5s" }}></div>
             </motion.div>
           </div>
