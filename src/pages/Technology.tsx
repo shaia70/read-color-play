@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -97,7 +98,7 @@ const Technology = () => {
                     </div>
                     <div>
                       <h4 className="font-bold mb-1">{language === 'en' ? 'Scan the Illustration' : 'סרקו את האיור'}</h4>
-                      <p className="text-sm text-gray-600">{language === 'en' ? 'Point the camera at the illustration in the book and aim the app at the enlarged image' : 'כוונו את המצלמה לאיור בספר וכוון את האפליקציה אל התמונה המוגדלת'}</p>
+                      <p className="text-sm text-gray-600">{language === 'en' ? 'Point the camera at the illustration in the book' : 'כוונו את המצלמה לאיור בספר'}</p>
                     </div>
                   </div>
                   

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -74,7 +73,7 @@ const heTranslations: Record<string, string> = {
   'ar.howItWorks': 'איך זה עובד?',
   'ar.step1': 'הורדו את אפליקציית "שלי ספרים AR" מחנות האפליקציות',
   'ar.step2': 'כוונו את המצלמה לאיור בספר המסומן בסמל ה-AR',
-  'ar.step3': 'צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי על המסך! וכוון את האפליקציה אל התמונה המוגדלת',
+  'ar.step3': 'צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי על המסך!',
   'ar.download': 'בקרוב: הורדו את האפליקציה',
   'ar.moreInfo': 'למידע נוסף',
   
@@ -190,7 +189,7 @@ const enTranslations: Record<string, string> = {
   'ar.howItWorks': 'How Does It Work?',
   'ar.step1': 'Download the "Shelley Books AR" app from the app store',
   'ar.step2': 'Point the camera at an illustration in the book marked with the AR symbol',
-  'ar.step3': 'Watch how the illustration comes to life and creates an interactive game on the screen and aim the app at the enlarged image',
+  'ar.step3': 'Watch how the illustration comes to life and creates an interactive game on the screen',
   'ar.download': 'Coming Soon: Download the App',
   'ar.moreInfo': 'More Information',
   
