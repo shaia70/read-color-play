@@ -5,9 +5,15 @@ import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { Smartphone, ArrowRight, Download } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 const Technology = () => {
   const { t, language } = useLanguage();
+  const navigate = useNavigate();
+
+  const navigateToDownload = () => {
+    navigate('/download');
+  };
 
   return (
     <motion.div>
@@ -60,8 +66,13 @@ const Technology = () => {
                   </li>
                 </ul>
                 
-                <CustomButton variant="green" icon={<Download />} className="w-full sm:w-auto">
-                  {t('ar.download')}
+                <CustomButton 
+                  variant="green" 
+                  icon={<Download />} 
+                  className="w-full sm:w-auto"
+                  onClick={navigateToDownload}
+                >
+                  {language === 'en' ? 'Download the App' : 'הורידו את האפליקציה'}
                 </CustomButton>
               </div>
               
@@ -131,8 +142,13 @@ const Technology = () => {
                     : 'בקרוב נשחרר את אפליקציית "שלי ספרים AR" שתאפשר לכם לחוות את הספרים בדרך חדשה ומרתקת. תוכלו לסרוק איורים מהספרים ולראות כיצד הדמויות קמות לחיים ומשחקות איתכם!'}
                 </p>
                 <div className="flex justify-center">
-                  <CustomButton variant="green" icon={<Download />} className="w-auto">
-                    {t('ar.download')}
+                  <CustomButton 
+                    variant="green" 
+                    icon={<Download />} 
+                    className="w-auto"
+                    onClick={navigateToDownload}
+                  >
+                    {language === 'en' ? 'Download the App' : 'הורידו את האפליקציה'}
                   </CustomButton>
                 </div>
               </div>
