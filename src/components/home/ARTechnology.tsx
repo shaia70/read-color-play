@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -206,8 +205,8 @@ export default function ARTechnology() {
                   </div>
                 </div>
               </div>
-              <div className={`absolute top-16 right-0 ${isMobile ? 'w-[60px] h-[60px]' : 'w-20 h-20'} rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
-              <div className={`absolute bottom-10 left-0 ${isMobile ? 'w-[56px] h-[56px]' : 'w-16 h-16'} rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float ${isMobile ? 'bottom-[25px]' : 'bottom-10'} ${isZoomed ? 'scale-150' : ''}`} style={{ animationDelay: "1.5s" }}></div>
+              <div className={`absolute top-16 right-0 ${isMobile ? 'w-[56px] h-[56px]' : 'w-20 h-20'} rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
+              <div className={`absolute bottom-10 left-0 ${isMobile ? 'w-[52px] h-[52px]' : 'w-16 h-16'} rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float ${isMobile ? 'bottom-[25px]' : 'bottom-10'} ${isZoomed ? 'scale-150' : ''}`} style={{ animationDelay: "1.5s" }}></div>
             </motion.div>
           </div>
         </motion.div>
