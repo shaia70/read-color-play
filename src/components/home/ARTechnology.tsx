@@ -1,16 +1,24 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Smartphone, Download, Info } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function ARTechnology() {
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
+  const [isZoomed, setIsZoomed] = useState(false);
+  const isMobile = useIsMobile();
+
+  const toggleZoom = () => {
+    if (isMobile) return; // Prevent zooming on mobile
+    setIsZoomed(!isZoomed);
+  };
 
   useEffect(() => {
     if (inView) {
@@ -108,9 +116,12 @@ export default function ARTechnology() {
             </motion.div>
             
             <motion.div variants={itemVariants} className="relative flex items-center justify-center p-8">
-              <div className="relative w-64 h-auto">
-                <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
-                <div className="relative bg-white p-4 rounded-2xl shadow-lg">
+              <div className={`relative ${isZoomed ? 'w-full h-auto z-10' : 'w-64 h-auto'} transition-all duration-300`}>
+                <div className={`absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl`}></div>
+                <div 
+                  className={`relative bg-white p-4 rounded-2xl shadow-lg ${!isMobile ? 'cursor-pointer' : ''}`}
+                  onClick={toggleZoom}
+                >
                   <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
                     <img 
                       src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
@@ -121,6 +132,12 @@ export default function ARTechnology() {
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-800 rounded-full"></div>
                 </div>
               </div>
+              {isZoomed && (
+                <div 
+                  className="fixed inset-0 bg-black/50 z-0"
+                  onClick={toggleZoom}
+                ></div>
+              )}
               <div className="absolute top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float"></div>
               <div className="absolute bottom-10 left-10 w-16 h-16 rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float" style={{ animationDelay: "1.5s" }}></div>
             </motion.div>
