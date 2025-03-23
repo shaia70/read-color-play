@@ -42,6 +42,13 @@ const GalleryPage = () => {
       title: language === 'he' ? 'טכנולוגיית מציאות רבודה' : 'AR Technology Demonstration',
       description: language === 'he' ? 'הדגמה של טכנולוגיית המציאות הרבודה המשולבת בספר' : 'Demonstration of the AR technology integrated in the book',
       downloadable: false
+    },
+    {
+      src: '/lovable-uploads/c2fa00b2-4e2c-4722-a379-5d9e26920efc.png',
+      alt: language === 'he' ? 'דניאל בחדר השינה עם חיות' : 'Daniel in bedroom with animals',
+      title: language === 'he' ? 'דניאל והחברים' : 'Daniel and Friends',
+      description: language === 'he' ? 'דניאל בחדר השינה עם חיות החברות שלו' : 'Daniel in his bedroom with his animal friends',
+      downloadable: false
     }
   ];
 
@@ -75,7 +82,7 @@ const GalleryPage = () => {
         toast({
           variant: "destructive",
           title: language === 'he' ? 'ההורדה נכשלה' : 'Download Failed',
-          description: language === 'he' ? 'אירעה ש��יאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
+          description: language === 'he' ? 'אירעה שגיאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
         });
       });
   };
