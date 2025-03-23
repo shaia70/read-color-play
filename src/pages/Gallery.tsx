@@ -190,6 +190,10 @@ const GalleryPage = () => {
                             src={image.src} 
                             alt={image.alt} 
                             className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
+                            onError={(e) => {
+                              console.error(`Failed to load image: ${image.src}`);
+                              e.currentTarget.src = '/placeholder.svg';
+                            }}
                           />
                         </div>
                       </CarouselItem>
