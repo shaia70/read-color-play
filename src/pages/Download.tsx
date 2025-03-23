@@ -1,8 +1,9 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { Apple, Download, Smartphone, Play } from "lucide-react";
+import { Apple, Download, Smartphone, Play, PaintBucket } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -36,6 +37,19 @@ const DownloadPage = () => {
         arSection.scrollIntoView({ behavior: 'smooth' });
       }
     }, 100);
+  };
+
+  const downloadColoringPage = () => {
+    // Sample coloring page URL - this would be replaced with your actual PDF or image file
+    const coloringPageUrl = '/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png';
+    
+    // Create an anchor element and trigger download
+    const link = document.createElement('a');
+    link.href = coloringPageUrl;
+    link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -129,7 +143,7 @@ const DownloadPage = () => {
                     />
                   </div>
                   
-                  {/* New Try the App button below QR code */}
+                  {/* Try the App button below QR code */}
                   <div className="mt-6">
                     <CustomButton 
                       variant="purple" 
@@ -138,6 +152,18 @@ const DownloadPage = () => {
                       className="w-full"
                     >
                       {language === 'en' ? 'Try the App' : 'נסו את האפליקציה'}
+                    </CustomButton>
+                  </div>
+                  
+                  {/* New Download coloring page button */}
+                  <div className="mt-4">
+                    <CustomButton 
+                      variant="orange" 
+                      icon={<PaintBucket />}
+                      onClick={downloadColoringPage}
+                      className="w-full"
+                    >
+                      {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
                     </CustomButton>
                   </div>
                 </div>

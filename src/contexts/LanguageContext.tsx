@@ -64,7 +64,7 @@ const heTranslations: Record<string, string> = {
   'books.all': 'כל הספרים',
   'book.firstSeries': 'הספר הראשון בסדרה',
   'book.daniel.title': 'דניאל הולך לגן',
-  'book.daniel.description': 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה.',
+  'book.daniel.description': 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מ��יאות רבודה.',
   'book.daniel.story': 'יום ראשון בגן הוא יום מיוחד עבור דניאל. הוא קצת חושש, אבל גם נרגש מאוד. בואו נגלה יחד איך יתמודד ביומו הראשון',
   
   // AR Technology section
@@ -125,6 +125,9 @@ const heTranslations: Record<string, string> = {
   // 404 page
   '404.title': 'אופס! הדף לא נמצא',
   '404.back': 'חזרה לדף הבית',
+  
+  // Add new translation
+  'download.coloringPage': 'הורד דף צביעה (דוגמא)',
 };
 
 // English translations
@@ -242,6 +245,9 @@ const enTranslations: Record<string, string> = {
   // 404 page
   '404.title': 'Oops! Page not found',
   '404.back': 'Return to Home',
+  
+  // Add new translation
+  'download.coloringPage': 'Download Coloring Page (Sample)',
 };
 
 const translations: Record<Language, Record<string, string>> = {
