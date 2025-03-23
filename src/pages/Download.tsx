@@ -40,8 +40,8 @@ const DownloadPage = () => {
   };
 
   const downloadColoringPage = () => {
-    // Sample coloring page URL - this would be replaced with your actual PDF or image file
-    const coloringPageUrl = '/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png';
+    // Updated coloring page URL to use the new illustration
+    const coloringPageUrl = '/lovable-uploads/9e2d1d37-07f9-4061-aa74-06291ddf2186.png';
     
     // Create an anchor element and trigger download
     const link = document.createElement('a');
