@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -115,7 +116,7 @@ export default function ARTechnology() {
                     <span className="flex items-center justify-center w-6 h-6 text-shelley-purple font-bold">3</span>
                   </div>
                   <div className={language === 'en' ? '' : 'order-2'}>
-                    <p className="text-gray-700">{language === 'en' ? 'Point the camera at the illustration in the book' : 'כוונו את המצלמה לאיור בספר'}</p>
+                    <p className="text-gray-700">{language === 'en' ? 'Point the camera at the illustration in the book and aim the app at the enlarged image' : 'כוונו את המצלמה לאיור בספר וכוון את האפליקציה אל התמונה המוגדלת'}</p>
                   </div>
                 </li>
               </ul>
