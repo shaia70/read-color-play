@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -29,13 +28,6 @@ const GalleryPage = () => {
       title: language === 'he' ? 'דף צביעה עם דמויות מהסיפור' : 'Coloring Page with Story Characters',
       description: language === 'he' ? 'דף צביעה עם דמויות מהעמוד' : 'Coloring page featuring characters from the story',
       downloadable: true
-    },
-    {
-      src: '/lovable-uploads/3ef3ca80-a847-4130-b336-90da076378f6.png',
-      alt: language === 'he' ? 'איור של הסיפור' : 'Story illustration',
-      title: language === 'he' ? 'איור מהסיפור' : 'Story Illustration',
-      description: language === 'he' ? 'איור מתוך הסיפור האינטראקטיבי' : 'Illustration from the interactive story',
-      downloadable: false
     },
     {
       src: '/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png',
