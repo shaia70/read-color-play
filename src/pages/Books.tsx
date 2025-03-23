@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
@@ -12,10 +13,19 @@ const Books = () => {
   const { t, language } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const toggleZoom = () => {
     if (isMobile) return; // Prevent zooming on mobile
     setIsZoomed(!isZoomed);
+  };
+
+  const navigateToARSection = () => {
+    navigate('/#ar-technology');
+  };
+
+  const navigateToDownload = () => {
+    navigate('/download');
   };
 
   return (
@@ -101,6 +111,7 @@ const Books = () => {
                     size="lg" 
                     icon={<Eye className="w-6 h-6" />} 
                     className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
+                    onClick={navigateToARSection}
                   >
                     {t('books.peek')}
                   </CustomButton>
@@ -109,6 +120,7 @@ const Books = () => {
                     size="lg" 
                     icon={<Download className="w-6 h-6" />} 
                     className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
+                    onClick={navigateToDownload}
                   >
                     {t('books.coloring')}
                   </CustomButton>
