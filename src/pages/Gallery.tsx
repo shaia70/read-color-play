@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -30,7 +31,7 @@ const GalleryPage = () => {
       downloadable: true
     },
     {
-      src: '/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png',
+      src: '/lovable-uploads/3ef3ca80-a847-4130-b336-90da076378f6.png',
       alt: language === 'he' ? 'איור של הסיפור' : 'Story illustration',
       title: language === 'he' ? 'איור מהסיפור' : 'Story Illustration',
       description: language === 'he' ? 'איור מתוך הסיפור האינטראקטיבי' : 'Illustration from the interactive story',
