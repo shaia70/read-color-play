@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -168,7 +169,7 @@ export default function ARTechnology() {
                   {isMobile 
                     ? (language === 'en' 
                       ? "Tap the image to see the poem" 
-                      : "לחץ על כדי לעבור בין התמונה למלל הסיפור וחזרה")
+                      : "לחץ על כדי לעבור בין התמונה למלל העמוד וחזרה")
                     : (language === 'en' 
                       ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
                       : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל ולחץ התחל באפליקציה")}
