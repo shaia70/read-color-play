@@ -159,7 +159,7 @@ export default function ARTechnology() {
                   {isMobile 
                     ? (language === 'en' 
                       ? "Image zoom is available on desktop devices"
-                      : "לחץ על הסרטון למטה לצפיה בהדגמה (במחשבי דסקטופ ניתן לבצע הדגמה אינטראקטיבית מלאה לאפליקציה)")
+                      : "לחץ על התמונה להחלפתה (במחשבי דסקטופ ניתן לבצע הדגמה אינטראקטיבת של האפליקציה)")
                     : (language === 'en' 
                       ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
                       : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל ולחץ התחל באפליקציה")}
