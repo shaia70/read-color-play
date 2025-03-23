@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -42,17 +41,14 @@ export default function ARTechnology() {
 
   const handleImageClick = (e) => {
     if (imageState !== "normal") {
-      // If already zoomed, return to normal
       setImageState("normal");
       return;
     }
 
-    // Get click position relative to the image
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const isLeftSide = x < rect.width / 2;
 
-    // Set the appropriate zoom state
     setImageState(isLeftSide ? "left-zoomed" : "right-zoomed");
   };
 
@@ -148,8 +144,8 @@ export default function ARTechnology() {
               <div className="w-full flex flex-col items-center">
                 <p className="text-center mb-4 text-shelley-blue font-medium">
                   {language === 'en' 
-                    ? "Click on the left or right half of the image to zoom in" 
-                    : "לחץ על החצי השמאלי או הימני של התמונה להגדלה"}
+                    ? "Click on the left or right half of the image to zoom in and explore the details" 
+                    : "לחץ על החצי השמאלי או הימני של התמונה להגדלה וחקירת הפרטים"}
                 </p>
                 
                 <div 
