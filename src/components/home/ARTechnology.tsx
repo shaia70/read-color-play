@@ -168,7 +168,7 @@ export default function ARTechnology() {
                 <div 
                   className={`relative ${!isMobile ? "cursor-pointer" : ""} transition-all duration-300 ease-in-out ${
                     imageState === "normal" 
-                      ? "w-128" 
+                      ? "w-full max-w-md" 
                       : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
                   } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden`}
                   onClick={handleImageClick}
