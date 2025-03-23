@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
-import { Smartphone, Download, Info } from "lucide-react";
+import { Smartphone, Download, Info, X } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -12,7 +12,7 @@ export default function ARTechnology() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
-  const [isEnlarged, setIsEnlarged] = useState(false);
+  const [imageState, setImageState] = useState("normal"); // "normal", "left-zoomed", "right-zoomed"
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -40,9 +40,27 @@ export default function ARTechnology() {
     }
   };
 
-  const toggleImageSize = () => {
-    setIsEnlarged(prev => !prev);
+  const handleImageClick = (e) => {
+    if (imageState !== "normal") {
+      // If already zoomed, return to normal
+      setImageState("normal");
+      return;
+    }
+
+    // Get click position relative to the image
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const isLeftSide = x < rect.width / 2;
+
+    // Set the appropriate zoom state
+    setImageState(isLeftSide ? "left-zoomed" : "right-zoomed");
   };
+
+  const resetZoom = () => {
+    setImageState("normal");
+  };
+
+  const isZoomed = imageState !== "normal";
 
   return (
     <section ref={ref} className="py-20 bg-gradient-to-t from-white to-blue-50">
@@ -68,12 +86,12 @@ export default function ARTechnology() {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className={`glass-card ${isEnlarged ? 'overflow-hidden' : ''}`}
+          className={`glass-card ${isZoomed ? 'overflow-hidden' : ''}`}
         >
-          <div className={`grid grid-cols-1 ${isEnlarged ? '' : 'md:grid-cols-2'} gap-6`}>
+          <div className={`grid grid-cols-1 ${isZoomed ? '' : 'md:grid-cols-2'} gap-6`}>
             <motion.div 
               variants={itemVariants} 
-              className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'} ${isEnlarged && !isMobile ? 'hidden' : ''}`}
+              className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'} ${isZoomed && !isMobile ? 'hidden' : ''}`}
             >
               <h3 className="text-2xl font-bold mb-4">{language === 'en' ? '?How Does It Work' : 'איך זה עובד?'}</h3>
               <ul className="space-y-4 mb-6">
@@ -116,26 +134,47 @@ export default function ARTechnology() {
             
             <motion.div 
               variants={itemVariants} 
-              className={`relative flex items-center justify-center p-8 ${isEnlarged ? 'col-span-full' : ''}`}
+              className={`relative flex items-center justify-center p-8 ${isZoomed ? 'col-span-full' : ''}`}
             >
+              {isZoomed && (
+                <button 
+                  onClick={resetZoom} 
+                  className="absolute top-4 right-4 z-10 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors"
+                >
+                  <X size={24} className="text-shelley-blue" />
+                </button>
+              )}
+              
               <div 
-                className={`relative ${isEnlarged ? 'w-[96rem] md:w-[72rem] sm:w-[48rem]' : 'w-128'} h-auto cursor-pointer transition-all duration-300 ease-in-out`}
-                onClick={toggleImageSize}
+                className={`relative cursor-pointer transition-all duration-300 ease-in-out ${
+                  imageState === "normal" 
+                    ? "w-128" 
+                    : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
+                } h-auto overflow-hidden`}
+                onClick={handleImageClick}
               >
                 <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
                 <div className="relative bg-white p-4 rounded-2xl shadow-lg">
                   <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
-                    <img 
-                      src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
-                      alt="AR Demo" 
-                      className="w-full h-auto"
-                    />
+                    <div className="relative overflow-hidden">
+                      <img 
+                        src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
+                        alt="AR Demo" 
+                        className={`w-full h-auto transition-all duration-300 ease-in-out ${
+                          imageState === "left-zoomed" 
+                            ? "scale-[3] origin-left" 
+                            : imageState === "right-zoomed" 
+                              ? "scale-[3] origin-right" 
+                              : "scale-100"
+                        }`}
+                      />
+                    </div>
                   </div>
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-800 rounded-full"></div>
                 </div>
               </div>
-              <div className={`absolute top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isEnlarged ? 'scale-150' : ''}`}></div>
-              <div className={`absolute bottom-10 left-10 w-16 h-16 rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float ${isEnlarged ? 'scale-150' : ''}`} style={{ animationDelay: "1.5s" }}></div>
+              <div className={`absolute top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
+              <div className={`absolute bottom-10 left-10 w-16 h-16 rounded-full bg-gradient-to-tr from-purple-200 to-purple-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`} style={{ animationDelay: "1.5s" }}></div>
             </motion.div>
           </div>
         </motion.div>
