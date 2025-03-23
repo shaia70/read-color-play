@@ -91,7 +91,7 @@ export default function ARTechnology() {
           <div className={`grid grid-cols-1 ${isZoomed ? '' : 'md:grid-cols-2'} gap-6`}>
             <motion.div 
               variants={itemVariants} 
-              className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'} ${isZoomed && !isMobile ? 'hidden' : ''}`}
+              className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'} ${isZoomed && !isMobile ? 'hidden' : ''} ${isZoomed ? '' : 'h-full flex flex-col justify-center'}`}
             >
               <h3 className="text-2xl font-bold mb-4">{language === 'en' ? '?How Does It Work' : 'איך זה עובד?'}</h3>
               <ul className="space-y-4 mb-6">
@@ -150,7 +150,7 @@ export default function ARTechnology() {
                   imageState === "normal" 
                     ? "w-128" 
                     : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
-                } h-auto overflow-hidden`}
+                } ${isZoomed ? "h-auto max-h-[80vh]" : "h-auto"} overflow-hidden`}
                 onClick={handleImageClick}
               >
                 <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
