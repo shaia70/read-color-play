@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			scale: {
+				'200': '2'
+			},
 			width: {
 				'128': '32rem',
 			},
