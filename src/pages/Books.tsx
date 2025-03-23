@@ -4,7 +4,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { Eye, Download } from "lucide-react";
-import bookCover from "@/assets/book-cover.svg";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Books = () => {
@@ -33,7 +32,7 @@ const Books = () => {
                 <div className="book-cover relative">
                   <div className="w-64 h-80 rounded-lg shadow-xl overflow-hidden transform hover:rotate-0 transition-all duration-500 relative">
                     <img 
-                      src={bookCover} 
+                      src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
                       alt={t('book.daniel.title')} 
                       className="w-full h-full object-cover"
                     />

@@ -1,10 +1,11 @@
+
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { ArrowLeft, Eye } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
-import bookCover from "@/assets/book-cover.svg";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 export default function FeaturedBook() {
   const controls = useAnimation();
@@ -63,7 +64,7 @@ export default function FeaturedBook() {
               <div className="w-64 h-80 rounded-lg shadow-xl overflow-hidden transform rotate-3 hover:rotate-0 transition-all duration-500 relative">
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>
                 <img 
-                  src={bookCover} 
+                  src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
                   alt={t('book.daniel.title')} 
                   className="w-full h-full object-cover"
                 />
