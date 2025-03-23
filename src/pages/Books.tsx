@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
@@ -8,6 +9,11 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const Books = () => {
   const { t, language } = useLanguage();
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const toggleZoom = () => {
+    setIsZoomed(!isZoomed);
+  };
 
   return (
     <motion.div
@@ -30,7 +36,10 @@ const Books = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="flex justify-center">
                 <div className="book-cover relative">
-                  <div className="w-64 h-80 rounded-lg shadow-xl overflow-hidden transform hover:rotate-0 transition-all duration-500 relative">
+                  <div 
+                    className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 cursor-pointer`}
+                    onClick={toggleZoom}
+                  >
                     <img 
                       src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
                       alt={t('book.daniel.title')} 
@@ -40,6 +49,12 @@ const Books = () => {
                       {t('books.new')}
                     </div>
                   </div>
+                  {isZoomed && (
+                    <div 
+                      className="fixed inset-0 bg-black/50 z-0"
+                      onClick={toggleZoom}
+                    ></div>
+                  )}
                 </div>
               </div>
               

@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { ArrowLeft, Eye } from "lucide-react";
@@ -12,6 +12,11 @@ export default function FeaturedBook() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const toggleZoom = () => {
+    setIsZoomed(!isZoomed);
+  };
 
   useEffect(() => {
     if (inView) {
@@ -61,7 +66,10 @@ export default function FeaturedBook() {
               variants={itemVariants}
               className="p-8 flex items-center justify-center"
             >
-              <div className="w-64 h-80 rounded-lg shadow-xl overflow-hidden transform rotate-3 hover:rotate-0 transition-all duration-500 relative">
+              <div 
+                className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transform ${isZoomed ? 'rotate-0' : 'rotate-3 hover:rotate-0'} transition-all duration-500 relative cursor-pointer`}
+                onClick={toggleZoom}
+              >
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>
                 <img 
                   src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
@@ -69,6 +77,12 @@ export default function FeaturedBook() {
                   className="w-full h-full object-cover"
                 />
               </div>
+              {isZoomed && (
+                <div 
+                  className="fixed inset-0 bg-black/50 z-0"
+                  onClick={toggleZoom}
+                ></div>
+              )}
             </motion.div>
             
             <motion.div 
