@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { Apple, Download, Smartphone } from "lucide-react";
+import { Apple, Download, Smartphone, Play } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -26,6 +26,10 @@ const DownloadPage = () => {
         } 
       });
     }
+  };
+
+  const navigateToARSection = () => {
+    navigate('/#ar-technology');
   };
 
   return (
@@ -117,6 +121,18 @@ const DownloadPage = () => {
                       alt="QR Code for App Download" 
                       className="w-48 h-48"
                     />
+                  </div>
+                  
+                  {/* New Try the App button below QR code */}
+                  <div className="mt-6">
+                    <CustomButton 
+                      variant="purple" 
+                      icon={<Play />}
+                      onClick={navigateToARSection}
+                      className="w-full"
+                    >
+                      {language === 'en' ? 'Try the App' : 'נסו את האפליקציה'}
+                    </CustomButton>
                   </div>
                 </div>
               </div>

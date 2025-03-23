@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -64,7 +65,7 @@ export default function ARTechnology() {
   const isZoomed = imageState !== "normal";
 
   return (
-    <section ref={ref} className="py-20 bg-gradient-to-t from-white to-blue-50">
+    <section id="ar-technology" ref={ref} className="py-20 bg-gradient-to-t from-white to-blue-50">
       <div className="container mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -196,4 +197,3 @@ export default function ARTechnology() {
     </section>
   );
 }
-
