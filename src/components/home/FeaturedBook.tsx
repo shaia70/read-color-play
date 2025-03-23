@@ -6,6 +6,7 @@ import { ArrowLeft, Eye } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AspectRatio } from "../ui/aspect-ratio";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function FeaturedBook() {
   const controls = useAnimation();
@@ -13,8 +14,10 @@ export default function FeaturedBook() {
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleZoom = () => {
+    if (isMobile) return; // Prevent zooming on mobile
     setIsZoomed(!isZoomed);
   };
 
@@ -67,7 +70,7 @@ export default function FeaturedBook() {
               className="p-8 flex items-center justify-center"
             >
               <div 
-                className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transform ${isZoomed ? 'rotate-0' : 'rotate-3 hover:rotate-0'} transition-all duration-500 relative cursor-pointer`}
+                className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transform ${isZoomed ? 'rotate-0' : 'rotate-3 hover:rotate-0'} transition-all duration-500 relative ${isMobile ? '' : 'cursor-pointer'}`}
                 onClick={toggleZoom}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>

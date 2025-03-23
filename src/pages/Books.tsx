@@ -6,12 +6,15 @@ import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { Eye, Download } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Books = () => {
   const { t, language } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleZoom = () => {
+    if (isMobile) return; // Prevent zooming on mobile
     setIsZoomed(!isZoomed);
   };
 
@@ -37,7 +40,7 @@ const Books = () => {
               <div className="flex justify-center">
                 <div className="book-cover relative">
                   <div 
-                    className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 cursor-pointer`}
+                    className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 ${isMobile ? '' : 'cursor-pointer'}`}
                     onClick={toggleZoom}
                   >
                     <img 
