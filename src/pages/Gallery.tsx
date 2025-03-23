@@ -1,14 +1,14 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { PaintBucket, Printer, AlertCircle, ImageIcon } from "lucide-react";
+import { PaintBucket, Printer } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
   CarouselContent,
@@ -21,8 +21,6 @@ const GalleryPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
-  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([false, false, false]);
-  const [imageErrors, setImageErrors] = useState<boolean[]>([false, false, false]);
 
   const images = [
     {
@@ -40,58 +38,13 @@ const GalleryPage = () => {
       downloadable: false
     },
     {
-      src: '/lovable-uploads/3a4f550f-a70e-4b92-99c0-65d0a3f1e79a.png',
-      alt: language === 'he' ? 'ילד במיטה עם האריה וחיות על המדף' : 'Boy in bed with the lion and animals on the shelf',
+      src: '/lovable-uploads/dce53c42-e496-4f13-a51a-73556b927788.png',
+      alt: language === 'he' ? 'ילד במיטה עם חיות על המדף' : 'Boy in bed with animals on the shelf',
       title: language === 'he' ? 'תמונה מהעמוד' : 'Story Illustration',
       description: language === 'he' ? 'ילד במיטה עם האריה וחיות על המדף' : 'Boy in bed with the lion and animals on the shelf',
       downloadable: false
     }
   ];
-
-  // Check if images are properly loaded
-  useEffect(() => {
-    // Reset states when language changes
-    setImagesLoaded([false, false, false]);
-    setImageErrors([false, false, false]);
-    
-    // Pre-load images to check if they exist
-    images.forEach((image, index) => {
-      const img = new Image();
-      
-      img.onload = () => {
-        setImagesLoaded(prev => {
-          const newState = [...prev];
-          newState[index] = true;
-          return newState;
-        });
-        // Clear any previous errors
-        setImageErrors(prev => {
-          const newState = [...prev];
-          newState[index] = false;
-          return newState;
-        });
-      };
-      
-      img.onerror = () => {
-        console.error(`Failed to load image: ${image.src}`);
-        setImageErrors(prev => {
-          const newState = [...prev];
-          newState[index] = true;
-          return newState;
-        });
-        toast({
-          variant: "destructive",
-          title: language === 'he' ? 'שגיאה בטעינת תמונה' : 'Image Loading Error',
-          description: language === 'he' 
-            ? `לא ניתן לטעון את התמונה: ${image.title}` 
-            : `Could not load image: ${image.title}`,
-        });
-      };
-      
-      // Force reload by adding timestamp to prevent cache issues
-      img.src = `${image.src}?t=${new Date().getTime()}`;
-    });
-  }, [language, images]);
 
   const downloadColoringPage = () => {
     const coloringPageUrl = images[0].src;
@@ -193,53 +146,6 @@ const GalleryPage = () => {
     }
   };
 
-  // Function to render image with proper error handling
-  const renderGalleryImage = (image, index) => {
-    if (imageErrors[index]) {
-      // Show error placeholder if image failed to load
-      return (
-        <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg min-h-[300px] border border-red-300 p-4">
-          <ImageIcon className="h-16 w-16 text-gray-400 mb-2" />
-          <p className="text-gray-600 text-center font-medium">
-            {language === 'he' ? 'לא ניתן לטעון את התמונה' : 'Image could not be loaded'}
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            {image.title}
-          </p>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="relative">
-        <img 
-          src={`${image.src}?t=${new Date().getTime()}`} 
-          alt={image.alt} 
-          className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
-          onError={(e) => {
-            console.error(`Failed to load image directly: ${image.src}`);
-            setImageErrors(prev => {
-              const newState = [...prev];
-              newState[index] = true;
-              return newState;
-            });
-          }}
-        />
-        {!imagesLoaded[index] && !imageErrors[index] && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
-            <div className="animate-pulse flex flex-col items-center p-4">
-              <Skeleton className="h-12 w-12 rounded-full mb-2" />
-              <Skeleton className="h-4 w-32 mb-2" />
-              <p className="text-sm text-gray-600 text-center">
-                {language === 'he' ? 'טוען תמונה...' : 'Loading image...'}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <>
       <Header />
@@ -279,8 +185,12 @@ const GalleryPage = () => {
                   <CarouselContent>
                     {images.map((image, index) => (
                       <CarouselItem key={index}>
-                        <div className="flex flex-col items-center justify-center">
-                          {renderGalleryImage(image, index)}
+                        <div className="flex justify-center">
+                          <img 
+                            src={image.src} 
+                            alt={image.alt} 
+                            className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
+                          />
                         </div>
                       </CarouselItem>
                     ))}
