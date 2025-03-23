@@ -170,7 +170,7 @@ export default function ARTechnology() {
                     imageState === "normal" 
                       ? "w-128" 
                       : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
-                  } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden`}
+                  } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden ${isMobile ? "max-w-[50%]" : ""}`}
                   onClick={handleImageClick}
                 >
                   <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
