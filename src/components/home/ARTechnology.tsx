@@ -146,34 +146,21 @@ export default function ARTechnology() {
               )}
               
               <div 
-                className={`relative cursor-pointer transition-all duration-500 ease-in-out ${
+                className={`relative cursor-pointer transition-all duration-300 ease-in-out ${
                   imageState === "normal" 
                     ? "w-128" 
-                    : imageState === "left-zoomed"
-                      ? "w-[96rem] md:w-[72rem] sm:w-[48rem] transform-gpu origin-left"
-                      : "w-[96rem] md:w-[72rem] sm:w-[48rem] transform-gpu origin-right"
+                    : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
                 } h-auto overflow-hidden`}
+                onClick={handleImageClick}
               >
                 <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
-                <div 
-                  className={`relative bg-white p-4 rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
-                    imageState === "left-zoomed" || imageState === "right-zoomed"
-                      ? "scale-[1.2]"
-                      : ""
-                  }`}
-                >
-                  <div 
-                    className={`border-8 border-gray-800 rounded-3xl overflow-hidden relative transition-all duration-500 ease-in-out ${
-                      imageState === "left-zoomed" || imageState === "right-zoomed"
-                        ? "scale-[1.2]"
-                        : ""
-                    }`}
-                  >
-                    <div className="relative overflow-hidden" onClick={handleImageClick}>
+                <div className="relative bg-white p-4 rounded-2xl shadow-lg">
+                  <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
+                    <div className="relative overflow-hidden">
                       <img 
                         src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
                         alt="AR Demo" 
-                        className={`w-full h-auto transition-all duration-500 ease-in-out ${
+                        className={`w-full h-auto transition-all duration-300 ease-in-out ${
                           imageState === "left-zoomed" 
                             ? "scale-[3] origin-left" 
                             : imageState === "right-zoomed" 
