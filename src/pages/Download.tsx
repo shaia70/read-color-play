@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -6,6 +7,7 @@ import { Apple, Download, Smartphone, Play, PaintBucket } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "@/components/ui/use-toast";
 
 const DownloadPage = () => {
   const { t, language } = useLanguage();
@@ -41,12 +43,42 @@ const DownloadPage = () => {
   const downloadColoringPage = () => {
     const coloringPageUrl = '/lovable-uploads/39f022cd-7530-4471-ae97-2a769296c736.png';
     
-    const link = document.createElement('a');
-    link.href = coloringPageUrl;
-    link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Use fetch to get the file as a blob
+    fetch(coloringPageUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        
+        // Create an anchor element and trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        toast({
+          title: language === 'he' ? 'ההורדה הצליחה' : 'Download Successful',
+          description: language === 'he' ? 'דף הצביעה הורד בהצלחה' : 'The coloring page was downloaded successfully',
+        });
+      })
+      .catch(error => {
+        console.error('Download failed:', error);
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'ההורדה נכשלה' : 'Download Failed',
+          description: language === 'he' ? 'אירעה שגיאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
+        });
+      });
   };
 
   return (
