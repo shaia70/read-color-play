@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -22,7 +21,6 @@ const GalleryPage = () => {
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
 
-  // Updated to include 3 images
   const images = [
     {
       src: '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png',
@@ -44,13 +42,19 @@ const GalleryPage = () => {
       title: language === 'he' ? 'טכנולוגיית מציאות רבודה' : 'AR Technology Demonstration',
       description: language === 'he' ? 'הדגמה של טכנולוגיית המציאות הרבודה המשולבת בספר' : 'Demonstration of the AR technology integrated in the book',
       downloadable: false
+    },
+    {
+      src: '/lovable-uploads/c2fa00b2-4e2c-4722-a379-5d9e26920efc.png',
+      alt: language === 'he' ? 'דניאל בחדר השינה עם חיות' : 'Daniel in bedroom with animals',
+      title: language === 'he' ? 'דניאל והחברים' : 'Daniel and Friends',
+      description: language === 'he' ? 'דניאל בחדר השינה עם חיות החברות שלו' : 'Daniel in his bedroom with his animal friends',
+      downloadable: false
     }
   ];
 
   const downloadColoringPage = () => {
     const coloringPageUrl = images[0].src;
     
-    // Use fetch to get the file as a blob
     fetch(coloringPageUrl)
       .then(response => {
         if (!response.ok) {
@@ -59,17 +63,12 @@ const GalleryPage = () => {
         return response.blob();
       })
       .then(blob => {
-        // Create a URL for the blob
         const url = window.URL.createObjectURL(blob);
-        
-        // Create an anchor element and trigger download
         const link = document.createElement('a');
         link.href = url;
         link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
         document.body.appendChild(link);
         link.click();
-        
-        // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
@@ -91,7 +90,6 @@ const GalleryPage = () => {
   const printColoringPage = () => {
     const coloringPageUrl = images[0].src;
     
-    // Create a new window for printing
     const printWindow = window.open('', '_blank');
     
     if (printWindow) {
@@ -163,7 +161,6 @@ const GalleryPage = () => {
           </h1>
           
           <div className="max-w-3xl mx-auto mb-12">
-            {/* Carousel with 3 images */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
                 {images[activeImage].title}
@@ -174,7 +171,6 @@ const GalleryPage = () => {
                   className="w-full max-w-xl"
                   setApi={(api) => {
                     api?.on("select", () => {
-                      // Update active image index when carousel changes
                       setActiveImage(api.selectedScrollSnap());
                     });
                   }}
@@ -205,7 +201,6 @@ const GalleryPage = () => {
                 {images[activeImage].description}
               </p>
               
-              {/* Download button - only show for the coloring page (first image) */}
               {activeImage === 0 && (
                 <div className="flex justify-center">
                   <CustomButton 
@@ -219,7 +214,6 @@ const GalleryPage = () => {
                 </div>
               )}
               
-              {/* Print button - only show for the coloring page (first image) */}
               {activeImage === 0 && (
                 <div className="flex justify-center mt-3">
                   <CustomButton 
