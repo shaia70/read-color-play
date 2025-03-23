@@ -116,7 +116,7 @@ export default function ARTechnology() {
             </motion.div>
             
             <motion.div variants={itemVariants} className="relative flex items-center justify-center p-8">
-              <div className={`relative ${isZoomed ? 'w-full scale-[4] z-20' : 'w-64 h-auto'} transition-all duration-300 transform-gpu`}>
+              <div className={`relative ${isZoomed ? 'w-full h-auto z-10' : 'w-64 h-auto'} transition-all duration-300`}>
                 <div className={`absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl`}></div>
                 <div 
                   className={`relative bg-white p-4 rounded-2xl shadow-lg ${!isMobile ? 'cursor-pointer' : ''}`}
@@ -134,7 +134,7 @@ export default function ARTechnology() {
               </div>
               {isZoomed && (
                 <div 
-                  className="fixed inset-0 bg-black/70 z-10"
+                  className="fixed inset-0 bg-black/50 z-0"
                   onClick={toggleZoom}
                 ></div>
               )}
