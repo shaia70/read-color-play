@@ -27,21 +27,21 @@ const GalleryPage = () => {
       src: '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png',
       alt: language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters',
       title: language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download',
-      description: language === 'he' ? 'דף צביעה עם דמויות מהסיפור' : 'Coloring page featuring characters from the story',
+      description: language === 'he' ? 'דף צביעה עם דמויות מהעמוד' : 'Coloring page featuring characters from the story',
       downloadable: true
-    },
-    {
-      src: '/lovable-uploads/e7bd6284-29df-40b1-92c5-c58e894c62d0.png',
-      alt: language === 'he' ? 'ילד במיטה עם חיות' : 'Boy in bed with animals',
-      title: language === 'he' ? 'תמונה מהסיפור' : 'Story Illustration',
-      description: language === 'he' ? 'ילד במיטה עם האריה והחיות מהסיפור' : 'Boy in bed with the lion and other animals from the story',
-      downloadable: false
     },
     {
       src: '/lovable-uploads/4de5569f-ea73-4cd9-aedc-cdd6aa755ce3.png',
       alt: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text',
       title: language === 'he' ? 'עמוד מהספר' : 'Book Page',
       description: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Page from the book with Hebrew text',
+      downloadable: false
+    },
+    {
+      src: '/lovable-uploads/e7bd6284-29df-40b1-92c5-c58e894c62d0.png',
+      alt: language === 'he' ? 'ילד במיטה עם חיות' : 'Boy in bed with animals',
+      title: language === 'he' ? 'תמונה מהעמוד' : 'Story Illustration',
+      description: language === 'he' ? 'ילד במיטה עם האריה והחיות מהעמוד' : 'Boy in bed with the lion and other animals from the story',
       downloadable: false
     }
   ];
