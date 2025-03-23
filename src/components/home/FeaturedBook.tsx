@@ -5,6 +5,7 @@ import { motion, useAnimation, useInView } from "framer-motion";
 import { ArrowLeft, Eye } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+import bookCover from "@/assets/book-cover.svg";
 
 export default function FeaturedBook() {
   const controls = useAnimation();
@@ -63,7 +64,7 @@ export default function FeaturedBook() {
               <div className="w-64 h-80 rounded-lg shadow-xl overflow-hidden transform rotate-3 hover:rotate-0 transition-all duration-500 relative">
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>
                 <img 
-                  src="https://via.placeholder.com/300x400?text=דניאל+הולך+לגן" 
+                  src={bookCover} 
                   alt={t('book.daniel.title')} 
                   className="w-full h-full object-cover"
                   style={{ objectFit: "cover" }}
