@@ -40,8 +40,8 @@ const GalleryPage = () => {
               
               <p className="text-center text-gray-600">
                 {language === 'he' 
-                  ? 'דף צביעה חדש עם דמויות מהסיפור' 
-                  : 'New coloring page featuring characters from the story'}
+                  ? 'דף צביעה עם דמויות מהסיפור' 
+                  : 'Coloring page featuring characters from the story'}
               </p>
             </div>
           </div>
