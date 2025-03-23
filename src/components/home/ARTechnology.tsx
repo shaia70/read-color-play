@@ -145,32 +145,40 @@ export default function ARTechnology() {
                 </button>
               )}
               
-              <div 
-                className={`relative cursor-pointer transition-all duration-300 ease-in-out ${
-                  imageState === "normal" 
-                    ? "w-128" 
-                    : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
-                } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden`}
-                onClick={handleImageClick}
-              >
-                <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
-                <div className="relative bg-white p-4 rounded-2xl shadow-lg">
-                  <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
-                    <div className="relative overflow-hidden">
-                      <img 
-                        src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
-                        alt="AR Demo" 
-                        className={`w-full h-auto transition-all duration-300 ease-in-out ${
-                          imageState === "left-zoomed" 
-                            ? "scale-[1.5] origin-left" 
-                            : imageState === "right-zoomed" 
-                              ? "scale-[1.5] origin-right" 
-                              : "scale-100"
-                        }`}
-                      />
+              <div className="w-full flex flex-col items-center">
+                <p className="text-center mb-4 text-shelley-blue font-medium">
+                  {language === 'en' 
+                    ? "Click on the left or right half of the image to zoom in" 
+                    : "לחץ על החצי השמאלי או הימני של התמונה להגדלה"}
+                </p>
+                
+                <div 
+                  className={`relative cursor-pointer transition-all duration-300 ease-in-out ${
+                    imageState === "normal" 
+                      ? "w-128" 
+                      : "w-[96rem] md:w-[72rem] sm:w-[48rem]"
+                  } ${isZoomed ? "h-auto" : "h-auto"} overflow-hidden`}
+                  onClick={handleImageClick}
+                >
+                  <div className="absolute -inset-4 bg-gradient-to-tr from-shelley-blue via-shelley-purple to-shelley-green opacity-20 blur-lg rounded-2xl"></div>
+                  <div className="relative bg-white p-4 rounded-2xl shadow-lg">
+                    <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
+                      <div className="relative overflow-hidden">
+                        <img 
+                          src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
+                          alt="AR Demo" 
+                          className={`w-full h-auto transition-all duration-300 ease-in-out ${
+                            imageState === "left-zoomed" 
+                              ? "scale-[1.5] origin-left" 
+                              : imageState === "right-zoomed" 
+                                ? "scale-[1.5] origin-right" 
+                                : "scale-100"
+                          }`}
+                        />
+                      </div>
                     </div>
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-800 rounded-full"></div>
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-800 rounded-full"></div>
                 </div>
               </div>
               <div className={`absolute top-6 right-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-200 to-green-300 opacity-60 animate-float ${isZoomed ? 'scale-150' : ''}`}></div>
