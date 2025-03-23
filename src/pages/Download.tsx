@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -29,7 +28,14 @@ const DownloadPage = () => {
   };
 
   const navigateToARSection = () => {
-    navigate('/#ar-technology');
+    navigate('/');
+    
+    setTimeout(() => {
+      const arSection = document.getElementById('ar-technology');
+      if (arSection) {
+        arSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
