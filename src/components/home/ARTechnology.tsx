@@ -178,7 +178,9 @@ export default function ARTechnology() {
                     <div className="border-8 border-gray-800 rounded-3xl overflow-hidden relative">
                       <div className="relative overflow-hidden">
                         <img 
-                          src="/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png" 
+                          src={isMobile 
+                            ? "/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png" 
+                            : "/lovable-uploads/409a1845-2abd-436e-ad91-e690c43bb547.png"} 
                           alt="AR Demo" 
                           className={`w-full h-auto transition-all duration-300 ease-in-out ${
                             imageState === "left-zoomed" 
