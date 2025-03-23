@@ -1,6 +1,5 @@
-
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Smartphone, Download, Info, X } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -14,6 +13,7 @@ export default function ARTechnology() {
   const { t, language } = useLanguage();
   const [imageState, setImageState] = useState("normal"); // "normal", "left-zoomed", "right-zoomed"
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (inView) {
@@ -42,22 +42,23 @@ export default function ARTechnology() {
 
   const handleImageClick = (e) => {
     if (imageState !== "normal") {
-      // If already zoomed, return to normal
       setImageState("normal");
       return;
     }
 
-    // Get click position relative to the image
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const isLeftSide = x < rect.width / 2;
 
-    // Set the appropriate zoom state
     setImageState(isLeftSide ? "left-zoomed" : "right-zoomed");
   };
 
   const resetZoom = () => {
     setImageState("normal");
+  };
+
+  const navigateToDownload = () => {
+    navigate('/download');
   };
 
   const isZoomed = imageState !== "normal";
@@ -121,8 +122,13 @@ export default function ARTechnology() {
                 </li>
               </ul>
               <div className="flex flex-wrap gap-3">
-                <CustomButton variant="green" icon={<Download />} className="mb-2 sm:mb-0">
-                  {t('ar.download')}
+                <CustomButton 
+                  variant="green" 
+                  icon={<Download />} 
+                  className="mb-2 sm:mb-0"
+                  onClick={navigateToDownload}
+                >
+                  {language === 'en' ? 'Download the App' : 'הורידו את האפליקציה'}
                 </CustomButton>
                 <Link to="/technology">
                   <CustomButton variant="ghost" icon={<Info />} className="text-shelley-blue">
@@ -190,3 +196,4 @@ export default function ARTechnology() {
     </section>
   );
 }
+
