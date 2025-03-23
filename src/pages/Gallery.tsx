@@ -38,8 +38,8 @@ const GalleryPage = () => {
       downloadable: false
     },
     {
-      src: '/lovable-uploads/dce53c42-e496-4f13-a51a-73556b927788.png',
-      alt: language === 'he' ? 'ילד במיטה עם חיות על המדף' : 'Boy in bed with animals on the shelf',
+      src: '/lovable-uploads/3a4f550f-a70e-4b92-99c0-65d0a3f1e79a.png',
+      alt: language === 'he' ? 'ילד במיטה עם האריה וחיות על המדף' : 'Boy in bed with the lion and animals on the shelf',
       title: language === 'he' ? 'תמונה מהעמוד' : 'Story Illustration',
       description: language === 'he' ? 'ילד במיטה עם האריה וחיות על המדף' : 'Boy in bed with the lion and animals on the shelf',
       downloadable: false
