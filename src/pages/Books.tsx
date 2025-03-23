@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +20,13 @@ const Books = () => {
   };
 
   const navigateToARSection = () => {
-    navigate('/#ar-technology');
+    navigate('/');
+    setTimeout(() => {
+      const arSection = document.getElementById('ar-technology');
+      if (arSection) {
+        arSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const navigateToDownload = () => {
