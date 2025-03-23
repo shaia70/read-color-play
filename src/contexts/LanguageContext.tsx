@@ -43,7 +43,7 @@ const heTranslations: Record<string, string> = {
   'download.worksOffline': 'עובד ללא אינטרנט',
   'download.worksOfflineDesc': 'הורד תוכן כדי להשתמש באפליקציה ללא חיבור לאינטרנט',
   'download.regularUpdates': 'עדכונים תקופתיים',
-  'download.regularUpdatesDesc': 'תוכן ותכונות חדשים נוספים באופן קבוע',
+  'download.regularUpdatesDesc': 'תוכן ותכונות חדשות נוספים באופן קבוע',
   'download.comingSoon': 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!',
   'download.notifyMe': 'עדכנו אותי בשחרור',
   'download.scanQR': 'הורד בסריקת הQR',
@@ -163,6 +163,7 @@ const enTranslations: Record<string, string> = {
   'download.regularUpdatesDesc': 'New content and features added regularly',
   'download.comingSoon': 'Coming soon to iOS and Android devices. Be the first to know when our app is available!',
   'download.notifyMe': 'Notify Me on Release',
+  'download.scanQR': 'Download by scanning the QR',
   
   // Concept section
   'concept.title': 'Read, Color, Play',

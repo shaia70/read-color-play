@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
@@ -147,8 +148,8 @@ export default function ARTechnology() {
               <div className="w-full flex flex-col items-center">
                 <p className="text-center mb-4 text-shelley-blue font-medium">
                   {language === 'en' 
-                    ? "Click on the left or right half of the image to zoom in" 
-                    : "לחץ על החצי השמאלי או הימני של התמונה להגדלה"}
+                    ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part" 
+                    : "לחץ על החצי השמאלי (תמונה) או החצי הימני (טקסט) להגדלה וכוון את האפליקציה אל החלק המוגדל"}
                 </p>
                 
                 <div 
