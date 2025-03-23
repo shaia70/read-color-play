@@ -40,7 +40,9 @@ export default function Footer() {
     { name: t('footer.concept'), href: "/concept" },
     { name: t('footer.books'), href: "/books" },
     { name: t('footer.technology'), href: "/technology" },
+    { name: language === 'he' ? 'גלריה' : 'Gallery', href: "/gallery" },
     { name: t('footer.contactUs'), href: "/contact" },
+    { name: language === 'he' ? 'הורד אפליקציה' : 'Download App', href: "/download" },
   ];
 
   return (
