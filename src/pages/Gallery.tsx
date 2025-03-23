@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { PaintBucket } from "lucide-react";
+import { PaintBucket, Printer } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 
 const GalleryPage = () => {
@@ -50,6 +50,65 @@ const GalleryPage = () => {
           description: language === 'he' ? 'אירעה שגיאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
         });
       });
+  };
+
+  const printColoringPage = () => {
+    const coloringPageUrl = '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png';
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>${language === 'he' ? 'דף צביעה' : 'Coloring Page'}</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+              }
+              img {
+                max-width: 100%;
+                max-height: 100vh;
+              }
+              @media print {
+                body {
+                  height: auto;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${coloringPageUrl}" alt="${language === 'he' ? 'דף צביעה' : 'Coloring Page'}" />
+            <script>
+              window.onload = function() {
+                setTimeout(function() {
+                  window.print();
+                }, 200);
+              }
+            </script>
+          </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      
+      toast({
+        title: language === 'he' ? 'מדפיס...' : 'Printing...',
+        description: language === 'he' ? 'דף הצביעה נשלח להדפסה' : 'The coloring page was sent to the printer',
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: language === 'he' ? 'ההדפסה נכשלה' : 'Print Failed',
+        description: language === 'he' ? 'לא ניתן לפתוח חלון הדפסה' : 'Could not open print window',
+      });
+    }
   };
 
   return (
@@ -97,6 +156,18 @@ const GalleryPage = () => {
                   className="w-full sm:w-auto"
                 >
                   {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
+                </CustomButton>
+              </div>
+              
+              {/* Print button */}
+              <div className="flex justify-center mt-3">
+                <CustomButton 
+                  variant="blue" 
+                  icon={<Printer />}
+                  onClick={printColoringPage}
+                  className="w-full sm:w-auto"
+                >
+                  {language === 'en' ? 'Print Coloring Page' : 'הדפס דף צביעה'}
                 </CustomButton>
               </div>
             </div>
