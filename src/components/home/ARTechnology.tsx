@@ -162,9 +162,9 @@ export default function ARTechnology() {
                         alt="AR Demo" 
                         className={`w-full h-auto transition-all duration-300 ease-in-out ${
                           imageState === "left-zoomed" 
-                            ? "scale-[3] origin-left" 
+                            ? "scale-[1.5] origin-left" 
                             : imageState === "right-zoomed" 
-                              ? "scale-[3] origin-right" 
+                              ? "scale-[1.5] origin-right" 
                               : "scale-100"
                         }`}
                       />
