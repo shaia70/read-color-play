@@ -73,7 +73,7 @@ const heTranslations: Record<string, string> = {
   'ar.howItWorks': 'איך זה עובד?',
   'ar.step1': 'הורדו את אפליקציית "שלי ספרים AR" מחנות האפליקציות',
   'ar.step2': 'כוונו את המצלמה לאיור בספר המסומן בסמל ה-AR',
-  'ar.step3': 'כוונו את המצלמה לאיור או הטקסט המוגדלים ולחצו התחל באפליקציה',
+  'ar.step3': 'צפו כיצד האיור קם לחיים וייצר משחק אינטראקטיבי על המסך!',
   'ar.download': 'בקרוב: הורדו את האפליקציה',
   'ar.moreInfo': 'למידע נוסף',
   
@@ -190,7 +190,7 @@ const enTranslations: Record<string, string> = {
   'ar.howItWorks': 'How Does It Work?',
   'ar.step1': 'Download the "Shelley Books AR" app from the app store',
   'ar.step2': 'Point the camera at an illustration in the book marked with the AR symbol',
-  'ar.step3': 'Point the camera at the zoomed illustration or text and press Start in the app',
+  'ar.step3': 'Watch how the illustration comes to life and creates an interactive game on the screen',
   'ar.download': 'Coming Soon: Download the App',
   'ar.moreInfo': 'More Information',
   
