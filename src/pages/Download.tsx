@@ -116,7 +116,7 @@ const DownloadPage = () => {
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
                     {!isMobile && language === 'he' && (
-                      <div className="bg-black rounded-full p-3 mr-4">
+                      <div className="bg-black rounded-full p-3 mr-4 ml-[50px]">
                         <Apple className="h-8 w-8 text-white" />
                       </div>
                     )}
@@ -124,7 +124,7 @@ const DownloadPage = () => {
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
                         alt="Download on the App Store" 
-                        className="h-[50px] w-auto mr-4" 
+                        className="h-[50px] w-auto mr-4 ml-[50px]" 
                       />
                     )}
                     {language === 'he' && (
