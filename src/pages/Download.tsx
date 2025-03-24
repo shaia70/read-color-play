@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -217,13 +218,23 @@ const DownloadPage = () => {
                     )}
                     
                     {!isMobile && language === 'he' && (
-                      <div className="flex-1">
-                        <img 
-                          src="/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
-                          alt="קבל ב-Google Play" 
-                          className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
-                        />
-                      </div>
+                      <>
+                        <div className="flex-1">
+                          <img 
+                            src="/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
+                            alt="קבל ב-Google Play" 
+                            className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
+                          />
+                        </div>
+                        <CustomButton 
+                          variant="green" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]"
+                          onClick={handleGooglePlayRedirect}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
                     )}
                     {isMobile && language === 'he' && (
                       <div className="flex justify-center w-full">
@@ -236,16 +247,6 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {(!isMobile && language === 'he') ? (
-                      <CustomButton 
-                        variant="green" 
-                        icon={<Download />}
-                        className="text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]"
-                        onClick={handleGooglePlayRedirect}
-                      >
-                        {t('download.download')}
-                      </CustomButton>
-                    ) : null}
                   </div>
                 </div>
 
