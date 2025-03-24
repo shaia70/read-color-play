@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -121,22 +120,18 @@ const DownloadPage = () => {
                       </div>
                     )}
                     {!isMobile && language === 'en' && (
-                      <div className="flex justify-center w-full">
-                        <img 
-                          src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
-                          alt="Download on the App Store" 
-                          className="h-[50px] w-auto" 
-                        />
-                      </div>
+                      <img 
+                        src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
+                        alt="Download on the App Store" 
+                        className="h-[50px] w-auto mr-4 ml-[50px]" 
+                      />
                     )}
                     {isMobile && language === 'en' && (
-                      <div className="flex justify-center w-full">
-                        <img 
-                          src="/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
-                          alt="Download on the App Store" 
-                          className="h-[50px] w-auto" 
-                        />
-                      </div>
+                      <img 
+                        src="/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
+                        alt="Download on the App Store" 
+                        className="h-[50px] w-auto mr-4" 
+                      />
                     )}
                     {language === 'he' && (
                       <div className="flex-1">
