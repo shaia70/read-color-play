@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -7,14 +6,6 @@ import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapp
 import { CustomButton } from "@/components/ui/CustomButton";
 import { PaintBucket, Printer } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 
 const GalleryPage = () => {
   const { t, language } = useLanguage();
@@ -112,58 +103,6 @@ const GalleryPage = () => {
     }
   };
 
-  const galleryItems = [
-    {
-      title: language === 'he' ? 'תמונה מהסיפור' : 'Image from the Story',
-      imgSrc: '/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png',
-      imgAlt: language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom',
-      description: language === 'he' 
-        ? 'סצנה מרכזית מהסיפור - הילד בחדר השינה עם החיות' 
-        : 'A key scene from the story - the boy in his bedroom with the animals'
-    },
-    {
-      title: language === 'he' ? 'עמוד מהסיפור' : 'Page from the Story',
-      imgSrc: '/lovable-uploads/f9826867-282e-4752-b00f-a31ba48f1ce7.png',
-      imgAlt: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text',
-      description: language === 'he' 
-        ? 'דף דוגמא למלל מהסיפור' 
-        : 'Page sample - with text from the story'
-    },
-    {
-      title: language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download',
-      imgSrc: '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png',
-      imgAlt: language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters',
-      description: language === 'he' 
-        ? 'דף צביעה עם דמויות מהסיפור' 
-        : 'Coloring page featuring characters from the story',
-      actions: (
-        <>
-          <div className="flex justify-center">
-            <CustomButton 
-              variant="orange" 
-              icon={<PaintBucket />}
-              onClick={downloadColoringPage}
-              className="w-full sm:w-auto"
-            >
-              {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
-            </CustomButton>
-          </div>
-          
-          <div className="flex justify-center mt-3">
-            <CustomButton 
-              variant="blue" 
-              icon={<Printer />}
-              onClick={printColoringPage}
-              className="w-full sm:w-auto"
-            >
-              {language === 'en' ? 'Print Coloring Page' : 'הדפס דף צביעה'}
-            </CustomButton>
-          </div>
-        </>
-      )
-    }
-  ];
-
   return (
     <>
       <Header />
@@ -179,48 +118,88 @@ const GalleryPage = () => {
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
           
-          <div className="max-w-5xl mx-auto mb-12 px-4">
-            <Carousel className="w-full"
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-            >
-              <CarouselContent>
-                {galleryItems.map((item, index) => (
-                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                    <div className="p-1">
-                      <Card className="glass-card p-3 border-0 shadow-md">
-                        <CardContent className="flex flex-col p-3">
-                          <h2 className="text-xl font-semibold mb-4 text-center">
-                            {item.title}
-                          </h2>
-                          <div className="flex justify-center mb-6">
-                            <img 
-                              src={item.imgSrc}
-                              alt={item.imgAlt}
-                              className="max-w-full rounded-lg shadow-md border border-gray-200"
-                            />
-                          </div>
-                          <p className="text-center text-gray-600 mb-2">
-                            {item.description}
-                          </p>
-                          {item.actions && (
-                            <div className="mt-4">
-                              {item.actions}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="mt-4 flex justify-center gap-4">
-                <CarouselPrevious className="static transform-none" />
-                <CarouselNext className="static transform-none" />
+          <div className="max-w-5xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'תמונה מהסיפור' : 'Image from the Story'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png" 
+                  alt={language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
               </div>
-            </Carousel>
+              
+              <p className="text-center text-gray-600 mb-2">
+                {language === 'he' 
+                  ? 'סצנה מרכזית מהסיפור - הילד בחדר השינה עם החיות' 
+                  : 'A key scene from the story - the boy in his bedroom with the animals'}
+              </p>
+            </div>
+            
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'עמוד מהסיפור' : 'Page from the Story'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/f9826867-282e-4752-b00f-a31ba48f1ce7.png" 
+                  alt={language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600 mb-2">
+                {language === 'he' 
+                  ? 'דף דוגמא למלל מהסיפור' 
+                  : 'Page 6 - with text from the story'}
+              </p>
+            </div>
+            
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png" 
+                  alt={language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600 mb-6">
+                {language === 'he' 
+                  ? 'דף צביעה עם דמויות מהסיפור' 
+                  : 'Coloring page featuring characters from the story'}
+              </p>
+              
+              <div className="flex justify-center">
+                <CustomButton 
+                  variant="orange" 
+                  icon={<PaintBucket />}
+                  onClick={downloadColoringPage}
+                  className="w-full sm:w-auto"
+                >
+                  {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
+                </CustomButton>
+              </div>
+              
+              <div className="flex justify-center mt-3">
+                <CustomButton 
+                  variant="blue" 
+                  icon={<Printer />}
+                  onClick={printColoringPage}
+                  className="w-full sm:w-auto"
+                >
+                  {language === 'en' ? 'Print Coloring Page' : 'הדפס דף צביעה'}
+                </CustomButton>
+              </div>
+            </div>
           </div>
         </LanguageDirectionWrapper>
       </motion.main>
