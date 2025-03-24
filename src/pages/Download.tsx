@@ -173,17 +173,14 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && language === 'en' && (
-                      <div className="bg-green-600 rounded-full p-3 mr-4">
-                        <Smartphone className="h-8 w-8 text-white" />
-                      </div>
-                    )}
                     {language === 'en' && (
                       <div className="flex-1">
-                        <p className="text-sm text-gray-500">
-                          {t('download.getItOn')}
-                        </p>
-                        <h4 className="text-xl font-bold">Google Play</h4>
+                        <img 
+                          src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
+                          alt="Get it on Google Play" 
+                          className="h-[50px] w-auto ml-[50px] hover:opacity-90 transition-opacity cursor-pointer" 
+                          onClick={handleGooglePlayRedirect}
+                        />
                       </div>
                     )}
                     {/* Replace phone icon and text with image for Hebrew */}
@@ -208,7 +205,7 @@ const DownloadPage = () => {
                       </div>
                     )}
                     {/* Only show green button for desktop view or English mobile */}
-                    {(!isMobile) || (isMobile && language === 'en') ? (
+                    {(!isMobile && language === 'he') || (isMobile && language === 'en') ? (
                       <CustomButton 
                         variant="green" 
                         icon={<Download />}
