@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
@@ -43,7 +42,7 @@ const GalleryPage = () => {
       hasDownload: false
     },
     {
-      title: language === 'he' ? 'דף צביעה דוגמא' : 'Coloring page sample',
+      title: language === 'he' ? 'דף צביעה לדוגמא' : 'Coloring page sample',
       image: "/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png",
       alt: language === 'he' ? 'ילד ודמויות אנימציה' : 'Boy and animated characters',
       description: language === 'he' 
