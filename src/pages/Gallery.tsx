@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -14,7 +13,6 @@ const GalleryPage = () => {
   const downloadColoringPage = () => {
     const coloringPageUrl = '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png';
     
-    // Use fetch to get the file as a blob
     fetch(coloringPageUrl)
       .then(response => {
         if (!response.ok) {
@@ -23,17 +21,12 @@ const GalleryPage = () => {
         return response.blob();
       })
       .then(blob => {
-        // Create a URL for the blob
         const url = window.URL.createObjectURL(blob);
-        
-        // Create an anchor element and trigger download
         const link = document.createElement('a');
         link.href = url;
         link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
         document.body.appendChild(link);
         link.click();
-        
-        // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
@@ -55,7 +48,6 @@ const GalleryPage = () => {
   const printColoringPage = () => {
     const coloringPageUrl = '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png';
     
-    // Create a new window for printing
     const printWindow = window.open('', '_blank');
     
     if (printWindow) {
@@ -127,7 +119,6 @@ const GalleryPage = () => {
           </h1>
           
           <div className="max-w-5xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-            {/* New image from the story */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
                 {language === 'he' ? 'תמונה מהסיפור' : 'Image from the Story'}
@@ -148,10 +139,9 @@ const GalleryPage = () => {
               </p>
             </div>
             
-            {/* New page with Hebrew text */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
-                {language === 'he' ? 'עמוד מהספר' : 'Book Page'}
+                {language === 'he' ? 'עמוד מהסיפור' : 'Page from the Story'}
               </h2>
               
               <div className="flex justify-center mb-6">
@@ -169,7 +159,6 @@ const GalleryPage = () => {
               </p>
             </div>
             
-            {/* Coloring page card */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
                 {language === 'he' ? 'דף צביעה דוגמא להורדה' : 'Coloring Page Sample for Download'}
@@ -189,7 +178,6 @@ const GalleryPage = () => {
                   : 'Coloring page featuring characters from the story'}
               </p>
               
-              {/* Download button */}
               <div className="flex justify-center">
                 <CustomButton 
                   variant="orange" 
@@ -201,7 +189,6 @@ const GalleryPage = () => {
                 </CustomButton>
               </div>
               
-              {/* Print button */}
               <div className="flex justify-center mt-3">
                 <CustomButton 
                   variant="blue" 
