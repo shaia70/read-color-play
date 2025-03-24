@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
@@ -162,7 +163,7 @@ const GalleryPage = () => {
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5 }}
       >
-        <LanguageDirectionWrapper>
+        <LanguageDirectionWrapper forceDirection={false}>
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center mt-10">
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
@@ -173,7 +174,8 @@ const GalleryPage = () => {
               opts={{ 
                 loop: true,
                 dragFree: false,
-                align: "center"
+                align: "center",
+                direction: language === 'he' ? 'rtl' : 'ltr'
               }}
               onSelect={onCarouselSelect}
             >
@@ -197,7 +199,7 @@ const GalleryPage = () => {
                         {item.description}
                       </p>
                       
-                      {index === 2 && (
+                      {item.hasDownload && (
                         <>
                           <div className="flex justify-center">
                             <CustomButton 
@@ -227,9 +229,9 @@ const GalleryPage = () => {
                 ))}
               </CarouselContent>
               
-              <div className="hidden sm:block">
-                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
-                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+              <div className={`hidden sm:block ${language === 'he' ? 'rtl' : 'ltr'}`}>
+                <CarouselPrevious className={`absolute ${language === 'he' ? 'right-2' : 'left-2'} top-1/2 -translate-y-1/2`} />
+                <CarouselNext className={`absolute ${language === 'he' ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`} />
               </div>
               
               <div className="flex justify-center mt-6 gap-2">
