@@ -36,7 +36,9 @@ const GalleryPage = () => {
     },
     {
       title: language === 'he' ? 'עמוד מהסיפור' : 'Page from the Story',
-      image: "/lovable-uploads/24347697-6068-40c5-8205-ddd5e5004994.png",
+      image: isMobile 
+        ? "/lovable-uploads/24347697-6068-40c5-8205-ddd5e5004994.png" 
+        : "/lovable-uploads/f9826867-282e-4752-b00f-a31ba48f1ce7.png",
       alt: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text',
       description: language === 'he' 
         ? 'דף דוגמא למלל מהסיפור' 
