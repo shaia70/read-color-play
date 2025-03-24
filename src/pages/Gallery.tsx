@@ -1,5 +1,4 @@
-
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -160,6 +159,18 @@ const GalleryPage = () => {
       setActiveSlide(index);
     }
   };
+
+  useEffect(() => {
+    if (!api) return;
+    
+    api.on('select', () => {
+      setActiveSlide(api.selectedScrollSnap());
+    });
+    
+    return () => {
+      api.off('select');
+    };
+  }, [api]);
 
   return (
     <>
