@@ -43,6 +43,7 @@ export default function Footer() {
     { name: language === 'he' ? 'גלריה' : 'Gallery', href: "/gallery" },
     { name: t('footer.contactUs'), href: "/contact" },
     { name: language === 'he' ? 'הורד אפליקציה' : 'Download App', href: "/download" },
+    { name: language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy', href: "/privacy-policy" },
   ];
 
   return (
