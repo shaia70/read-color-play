@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -115,10 +114,17 @@ const DownloadPage = () => {
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && (
+                    {!isMobile && language === 'he' && (
                       <div className="bg-black rounded-full p-3 mr-4">
                         <Apple className="h-8 w-8 text-white" />
                       </div>
+                    )}
+                    {!isMobile && language === 'en' && (
+                      <img 
+                        src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
+                        alt="Download on the App Store" 
+                        className="h-10 mr-4"
+                      />
                     )}
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">
