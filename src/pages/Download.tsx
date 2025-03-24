@@ -18,7 +18,6 @@ const DownloadPage = () => {
   };
 
   const handleAppStoreRedirect = () => {
-    // This would ideally redirect to the actual App Store URL
     toast({
       title: language === 'he' ? 'הודעה' : 'Notice',
       description: language === 'he' ? 'האפליקציה תהיה זמינה בקרוב' : 'The app will be available soon',
@@ -140,7 +139,15 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {language === 'he' && (
+                    {language === 'he' && !isMobile && (
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500">
+                          {t('download.downloadOn')}
+                        </p>
+                        <h4 className="text-xl font-bold">App Store</h4>
+                      </div>
+                    )}
+                    {language === 'he' && isMobile && (
                       <div className="flex justify-center w-full">
                         <button onClick={handleAppStoreRedirect} className="focus:outline-none">
                           <img 
@@ -151,8 +158,8 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {/* Remove the blue button for mobile English and Hebrew */}
-                    {!(isMobile && language === 'en') && !language === 'he' && (
+                    {/* Show blue button for desktop in Hebrew and for desktop in English */}
+                    {(!isMobile && language === 'he') || (!isMobile && language === 'en') ? (
                       <CustomButton 
                         variant="blue" 
                         icon={<Download />}
@@ -161,7 +168,7 @@ const DownloadPage = () => {
                       >
                         {t('download.download')}
                       </CustomButton>
-                    )}
+                    ) : null}
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
@@ -294,3 +301,4 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
+
