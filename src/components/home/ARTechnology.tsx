@@ -168,7 +168,7 @@ export default function ARTechnology() {
                 <p className="text-center mb-4 text-shelley-blue font-medium">
                   {isMobile 
                     ? (language === 'en' 
-                      ? "Tap the image to see the poem" 
+                      ? "Tap the image to see the text, tap again for the image" 
                       : "לחץ על כדי לעבור בין התמונה למלל העמוד וחזרה")
                     : (language === 'en' 
                       ? "Click on the left (image) or right (text) side of the image to zoom in and point your app to the zoomed part and press Start in the app" 
