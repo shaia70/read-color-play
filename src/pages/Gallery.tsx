@@ -7,7 +7,7 @@ import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapp
 import { CustomButton } from "@/components/ui/CustomButton";
 import { PaintBucket, Printer } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Carousel,
@@ -21,6 +21,7 @@ const GalleryPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
   const images = [
     {
@@ -45,6 +46,24 @@ const GalleryPage = () => {
       downloadable: false
     }
   ];
+
+  // Initialize image loading states
+  useEffect(() => {
+    setImagesLoaded(Array(images.length).fill(false));
+  }, [images.length]);
+
+  const handleImageLoad = (index: number) => {
+    setImagesLoaded(prev => {
+      const newState = [...prev];
+      newState[index] = true;
+      return newState;
+    });
+    console.log(`Image ${index} loaded successfully`);
+  };
+
+  const handleImageError = (index: number) => {
+    console.error(`Failed to load image at index ${index}: ${images[index].src}`);
+  };
 
   const downloadColoringPage = () => {
     const coloringPageUrl = images[0].src;
@@ -176,15 +195,18 @@ const GalleryPage = () => {
                   <CarouselContent>
                     {images.map((image, index) => (
                       <CarouselItem key={index}>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center h-[400px] flex-col items-center">
+                          {!imagesLoaded[index] && (
+                            <div className="w-full h-[400px] flex items-center justify-center">
+                              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-shelley-blue"></div>
+                            </div>
+                          )}
                           <img 
                             src={image.src} 
                             alt={image.alt} 
-                            className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
-                            onError={(e) => {
-                              console.error(`Failed to load image: ${image.src}`);
-                              e.currentTarget.src = '/placeholder.svg'; // Fallback image if the original fails to load
-                            }}
+                            className={`max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[400px] transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0 absolute'}`}
+                            onLoad={() => handleImageLoad(index)}
+                            onError={() => handleImageError(index)}
                           />
                         </div>
                       </CarouselItem>
