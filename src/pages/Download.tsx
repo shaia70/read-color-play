@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -173,16 +174,40 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {language === 'en' && (
-                      <div className="flex-1">
-                        <img 
-                          src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
-                          alt="Get it on Google Play" 
-                          className="h-[50px] w-auto ml-[50px] hover:opacity-90 transition-opacity cursor-pointer" 
+                    {/* For English desktop, show the image with a green button */}
+                    {!isMobile && language === 'en' && (
+                      <>
+                        <div className="flex-1">
+                          <img 
+                            src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
+                            alt="Get it on Google Play" 
+                            className="h-[50px] w-auto ml-[50px]" 
+                          />
+                        </div>
+                        <CustomButton 
+                          variant="green" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-26 mr-[60px]"
                           onClick={handleGooglePlayRedirect}
-                        />
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
+                    )}
+                    
+                    {/* For English mobile, show only the clickable image centered */}
+                    {isMobile && language === 'en' && (
+                      <div className="flex justify-center w-full">
+                        <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
+                          <img 
+                            src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
+                            alt="Get it on Google Play" 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          />
+                        </button>
                       </div>
                     )}
+                    
                     {/* Replace phone icon and text with image for Hebrew */}
                     {!isMobile && language === 'he' && (
                       <div className="flex-1">
@@ -204,12 +229,12 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {/* Only show green button for desktop view or English mobile */}
-                    {(!isMobile && language === 'he') || (isMobile && language === 'en') ? (
+                    {/* Only show green button for Hebrew desktop */}
+                    {(!isMobile && language === 'he') ? (
                       <CustomButton 
                         variant="green" 
                         icon={<Download />}
-                        className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]' : 'text-sm px-4 py-2 h-10 -ml-6 mr-[30px]'}
+                        className="text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]"
                         onClick={handleGooglePlayRedirect}
                       >
                         {t('download.download')}
