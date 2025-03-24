@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -146,6 +145,10 @@ const GalleryPage = () => {
     }
   };
 
+  const handleSelectSlide = (index: number) => {
+    setActiveSlide(index);
+  };
+
   return (
     <>
       <Header />
@@ -164,7 +167,8 @@ const GalleryPage = () => {
           <div className="max-w-5xl mx-auto mb-12 px-4">
             <Carousel 
               className="w-full"
-              onSelect={(index) => setActiveSlide(index)}
+              opts={{ loop: true }}
+              onSelect={handleSelectSlide}
             >
               <CarouselContent>
                 {galleryItems.map((item, index) => (
