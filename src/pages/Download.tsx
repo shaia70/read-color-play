@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -141,7 +142,11 @@ const DownloadPage = () => {
                     )}
                     {language === 'he' && !isMobile && (
                       <div className="flex-1">
-                        <h4 className="text-xl font-bold">App Store</h4>
+                        <img 
+                          src="/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
+                          alt="הורד מ-App Store" 
+                          className="h-[40px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                        />
                       </div>
                     )}
                     {language === 'he' && isMobile && (
