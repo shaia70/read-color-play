@@ -175,7 +175,7 @@ const DownloadPage = () => {
                               ? "/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
                               : "/lovable-uploads/cd98fd58-0725-4662-b758-9de502710b6b.png"} 
                             alt={language === 'en' ? "Download on the App Store" : "הורד מ App Store"} 
-                            className={language === 'en' ? "h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity mx-2" : "h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity"} 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
@@ -223,14 +223,14 @@ const DownloadPage = () => {
                     )}
                     
                     {isMobile && (
-                      <div className="flex justify-center w-full -mx-1">
+                      <div className="flex justify-center w-full">
                         <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
                           <img 
                             src={language === 'en' 
                               ? "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
                               : "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png"} 
                             alt={language === 'en' ? "Get it on Google Play" : "קבל ב-Google Play"} 
-                            className={language === 'en' ? "h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity -mx-0.5" : "h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity"} 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
