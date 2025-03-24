@@ -30,7 +30,7 @@ const GalleryPage = () => {
       alt: language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom',
       description: language === 'he' 
         ? 'סצנה מרכזית מהסיפור - דניאל בחלומו בחדר השינה עם האריה' 
-        : 'A key scene from the story - Daniel dreaming in his bedroom with the lion',
+        : 'A key scene from the story - Daniel in his bedroom with the lion',
       hasDownload: false
     },
     {
