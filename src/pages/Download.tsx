@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -123,11 +122,6 @@ const DownloadPage = () => {
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && language === 'he' && (
-                      <div className="bg-black rounded-full p-3 mr-4 ml-[50px]">
-                        <Apple className="h-8 w-8 text-white" />
-                      </div>
-                    )}
                     {!isMobile && language === 'en' && (
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
@@ -147,15 +141,18 @@ const DownloadPage = () => {
                       </div>
                     )}
                     {language === 'he' && (
-                      <div className="flex-1">
-                        <p className="text-sm text-gray-500">
-                          {t('download.downloadOn')}
-                        </p>
-                        <h4 className="text-xl font-bold">App Store</h4>
+                      <div className="flex justify-center w-full">
+                        <button onClick={handleAppStoreRedirect} className="focus:outline-none">
+                          <img 
+                            src="/lovable-uploads/cd98fd58-0725-4662-b758-9de502710b6b.png" 
+                            alt="הורד מ App Store" 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          />
+                        </button>
                       </div>
                     )}
-                    {/* Remove the blue button for mobile English */}
-                    {!(isMobile && language === 'en') && (
+                    {/* Remove the blue button for mobile English and Hebrew */}
+                    {!(isMobile && language === 'en') && !language === 'he' && (
                       <CustomButton 
                         variant="blue" 
                         icon={<Download />}
@@ -297,4 +294,3 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
-
