@@ -230,7 +230,7 @@ const DownloadPage = () => {
                               ? "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
                               : "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png"} 
                             alt={language === 'en' ? "Get it on Google Play" : "קבל ב-Google Play"} 
-                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                            className="h-[48px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
