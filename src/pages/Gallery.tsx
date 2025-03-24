@@ -163,14 +163,16 @@ const GalleryPage = () => {
   useEffect(() => {
     if (!api) return;
     
-    api.on('select', () => {
+    const handleSelect = () => {
       setActiveSlide(api.selectedScrollSnap());
-    });
+    };
+    
+    api.on('select', handleSelect);
     
     return () => {
-      api.off('select');
+      api.off('select', handleSelect);
     };
-  }, [api]);
+  }, [api, language]);
 
   return (
     <>
