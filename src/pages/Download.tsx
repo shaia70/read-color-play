@@ -92,7 +92,7 @@ const DownloadPage = () => {
             <p className="text-xl max-w-3xl mx-auto" style={{ color: "#5e86c7" }}>
               {t('download.description')}
             </p>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+            <p className="text-xl max-w-3xl mx-auto mt-4" style={{ color: "#886fc8" }}>
               {t('download.appDescription')}
             </p>
             <p className="text-xl text-shelley-blue font-bold max-w-3xl mx-auto mt-4">
