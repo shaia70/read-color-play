@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -19,10 +18,7 @@ const DownloadPage = () => {
   };
 
   const handleAppStoreRedirect = () => {
-    toast({
-      title: language === 'he' ? 'הודעה' : 'Notice',
-      description: language === 'he' ? 'האפליקציה תהיה זמינה בקרוב' : 'The app will be available soon',
-    });
+    window.open('https://apps.apple.com/us/app/ar-%D7%A9%D7%9C%D7%99-%D7%A1%D7%A4%D7%A8%D7%99%D7%9D/id6743387119', '_blank');
   };
 
   const handleNotifyMeClick = () => {
@@ -130,11 +126,21 @@ const DownloadPage = () => {
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
                     {!isMobile && language === 'en' && (
-                      <img 
-                        src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
-                        alt="Download on the App Store" 
-                        className="h-[50px] w-auto mr-4 ml-[50px]" 
-                      />
+                      <>
+                        <img 
+                          src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
+                          alt="Download on the App Store" 
+                          className="h-[50px] w-auto mr-4 ml-[50px]" 
+                        />
+                        <CustomButton 
+                          variant="blue" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-26 mr-[60px]"
+                          onClick={handleAppStoreRedirect}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
                     )}
                     {isMobile && language === 'en' && (
                       <div className="flex justify-center w-full">
@@ -148,13 +154,23 @@ const DownloadPage = () => {
                       </div>
                     )}
                     {language === 'he' && !isMobile && (
-                      <div className="flex-1">
-                        <img 
-                          src="/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
-                          alt="הורד מ-App Store" 
-                          className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
-                        />
-                      </div>
+                      <>
+                        <div className="flex-1">
+                          <img 
+                            src="/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
+                            alt="הורד מ-App Store" 
+                            className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
+                          />
+                        </div>
+                        <CustomButton 
+                          variant="blue" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]"
+                          onClick={handleAppStoreRedirect}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
                     )}
                     {language === 'he' && isMobile && (
                       <div className="flex justify-center w-full">
@@ -167,16 +183,6 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {(!isMobile && language === 'he') || (!isMobile && language === 'en') ? (
-                      <CustomButton 
-                        variant="blue" 
-                        icon={<Download />}
-                        className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]' : 'text-sm px-4 py-2 h-10 -ml-26 mr-[60px]'}
-                        onClick={handleAppStoreRedirect}
-                      >
-                        {t('download.download')}
-                      </CustomButton>
-                    ) : null}
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
@@ -350,4 +356,3 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
-
