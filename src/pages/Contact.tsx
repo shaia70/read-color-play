@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
@@ -172,42 +172,6 @@ const Contact = () => {
                           </p>
                         ) : (
                           <p className="text-gray-600">דוא"ל: info@shelley.co.il</p>
-                        )}
-                      </LanguageDirectionWrapper>
-                    </div>
-                  </div>
-                  
-                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
-                    <div className={`bg-shelley-orange/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
-                      <Phone className="w-6 h-6 text-shelley-orange" />
-                    </div>
-                    <div className="w-full">
-                      <LanguageDirectionWrapper>
-                        {language === 'en' ? (
-                          <p className="text-gray-600">
-                            <span className="font-bold mr-2">Phone:</span>
-                            053-1234567
-                          </p>
-                        ) : (
-                          <p className="text-gray-600">טלפון: 053-1234567</p>
-                        )}
-                      </LanguageDirectionWrapper>
-                    </div>
-                  </div>
-                  
-                  <div className={`flex ${language === 'en' ? 'flex-row' : 'flex-row-reverse'} items-center`}>
-                    <div className={`bg-shelley-purple/20 p-3 rounded-full ${language === 'en' ? 'mr-4' : 'ml-4'}`}>
-                      <MapPin className="w-6 h-6 text-shelley-purple" />
-                    </div>
-                    <div className="w-full">
-                      <LanguageDirectionWrapper>
-                        {language === 'en' ? (
-                          <p className="text-gray-600">
-                            <span className="font-bold mr-2">Address:</span>
-                            28 Gilad St., Bat Hefer
-                          </p>
-                        ) : (
-                          <p className="text-gray-600">כתובת: רחוב גלעד 28, בת חפר</p>
                         )}
                       </LanguageDirectionWrapper>
                     </div>

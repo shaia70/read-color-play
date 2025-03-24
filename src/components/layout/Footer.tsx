@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Instagram, Facebook, Mail, Phone } from "lucide-react";
+import { Instagram, Facebook, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 
@@ -98,10 +98,6 @@ export default function Footer() {
             <div className="flex items-center justify-center mb-2">
               <Mail className="w-5 h-5 text-shelley-orange mr-2" />
               <span className="text-gray-600">info@shelley.co.il</span>
-            </div>
-            <div className="flex items-center justify-center">
-              <Phone className="w-5 h-5 text-shelley-orange mr-2" />
-              <span className="text-gray-600">053-1234567</span>
             </div>
           </div>
         </div>
