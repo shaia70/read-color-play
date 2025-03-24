@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -123,7 +124,7 @@ const DownloadPage = () => {
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
                         alt="Download on the App Store" 
-                        className="h-[44px] w-auto mr-4" // Increased height by 2px on each side (from 40px to 44px)
+                        className="h-[50px] w-auto mr-4" // Increased height by 5px on each side (from 40px to 50px)
                       />
                     )}
                     {language === 'he' && (
