@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
@@ -15,7 +16,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 
 const GalleryPage = () => {
   const { t, language } = useLanguage();
@@ -258,6 +258,7 @@ const GalleryPage = () => {
                 <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
               </div>
               
+              {/* Force LTR for dots container to ensure consistent visual behavior */}
               <div className="flex justify-center mt-6 gap-2" dir="ltr">
                 {galleryItems.map((_, index) => (
                   <button

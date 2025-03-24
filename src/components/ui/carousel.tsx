@@ -76,36 +76,36 @@ const Carousel = React.forwardRef<
       setCanScrollNext(api.canScrollNext())
     }, [])
 
-    // Modified: Make scrollPrev and scrollNext work consistently regardless of RTL
+    // Visual navigation should always work consistently regardless of RTL/LTR
     const scrollPrev = React.useCallback(() => {
       if (!api) return
-      
-      // In RTL mode, the "previous" is actually the next slide visually
-      const isRTL = opts?.direction === 'rtl'
-      isRTL ? api.scrollNext() : api.scrollPrev()
-    }, [api, opts?.direction])
+      api.scrollPrev()
+    }, [api])
 
     const scrollNext = React.useCallback(() => {
       if (!api) return
-      
-      // In RTL mode, the "next" is actually the previous slide visually
-      const isRTL = opts?.direction === 'rtl'
-      isRTL ? api.scrollPrev() : api.scrollNext()
-    }, [api, opts?.direction])
+      api.scrollNext()
+    }, [api])
 
+    // Make arrow key navigation consistent regardless of RTL/LTR
+    // This makes the LEFT arrow always move visually left and RIGHT arrow always move visually right
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        const isRTL = opts?.direction === 'rtl'
+        const isRTL = document.dir === 'rtl' || opts?.direction === 'rtl'
         
         if (event.key === "ArrowLeft") {
           event.preventDefault()
-          isRTL ? scrollNext() : scrollPrev()
+          // In RTL mode, left should still move left visually (which is Next in the embla context)
+          // In LTR mode, left is Prev
+          isRTL ? api?.scrollNext() : api?.scrollPrev()
         } else if (event.key === "ArrowRight") {
           event.preventDefault()
-          isRTL ? scrollPrev() : scrollNext()
+          // In RTL mode, right should still move right visually (which is Prev in the embla context)
+          // In LTR mode, right is Next
+          isRTL ? api?.scrollPrev() : api?.scrollNext()
         }
       },
-      [scrollPrev, scrollNext, opts?.direction]
+      [api, opts?.direction]
     )
 
     React.useEffect(() => {
