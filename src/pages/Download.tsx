@@ -181,7 +181,7 @@ const DownloadPage = () => {
                           <img 
                             src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
                             alt="Get it on Google Play" 
-                            className="h-[50px] w-auto ml-[50px]" 
+                            className="h-[46px] w-auto ml-[50px]" 
                           />
                         </div>
                         <CustomButton 
@@ -202,7 +202,7 @@ const DownloadPage = () => {
                           <img 
                             src="/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
                             alt="Get it on Google Play" 
-                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                            className="h-[46px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
