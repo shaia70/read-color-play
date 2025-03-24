@@ -144,7 +144,7 @@ const DownloadPage = () => {
                         <img 
                           src="/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
                           alt="הורד מ-App Store" 
-                          className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
                         />
                       </div>
                     )}
