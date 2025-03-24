@@ -126,7 +126,28 @@ const GalleryPage = () => {
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
           
-          <div className="grid grid-cols-1 max-w-3xl mx-auto mb-12">
+          <div className="max-w-5xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+            {/* New image from the story */}
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'תמונה מהסיפור' : 'Image from the Story'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png" 
+                  alt={language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600 mb-2">
+                {language === 'he' 
+                  ? 'סצנה מרכזית מהסיפור - הילד בחדר השינה עם החיות' 
+                  : 'A key scene from the story - the boy in his bedroom with the animals'}
+              </p>
+            </div>
+            
             {/* Coloring page card */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
