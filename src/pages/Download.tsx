@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -15,6 +16,14 @@ const DownloadPage = () => {
 
   const handleGooglePlayRedirect = () => {
     window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
+  };
+
+  const handleAppStoreRedirect = () => {
+    // This would ideally redirect to the actual App Store URL
+    toast({
+      title: language === 'he' ? 'הודעה' : 'Notice',
+      description: language === 'he' ? 'האפליקציה תהיה זמינה בקרוב' : 'The app will be available soon',
+    });
   };
 
   const handleNotifyMeClick = () => {
@@ -127,11 +136,15 @@ const DownloadPage = () => {
                       />
                     )}
                     {isMobile && language === 'en' && (
-                      <img 
-                        src="/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
-                        alt="Download on the App Store" 
-                        className="h-[50px] w-auto mr-4" 
-                      />
+                      <div className="flex justify-center w-full">
+                        <button onClick={handleAppStoreRedirect} className="focus:outline-none">
+                          <img 
+                            src="/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
+                            alt="Download on the App Store" 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          />
+                        </button>
+                      </div>
                     )}
                     {language === 'he' && (
                       <div className="flex-1">
@@ -141,13 +154,17 @@ const DownloadPage = () => {
                         <h4 className="text-xl font-bold">App Store</h4>
                       </div>
                     )}
-                    <CustomButton 
-                      variant="blue" 
-                      icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]' : 'text-sm px-4 py-2 h-10 -ml-26 mr-[60px]'}
-                    >
-                      {t('download.download')}
-                    </CustomButton>
+                    {/* Remove the blue button for mobile English */}
+                    {!(isMobile && language === 'en') && (
+                      <CustomButton 
+                        variant="blue" 
+                        icon={<Download />}
+                        className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]' : 'text-sm px-4 py-2 h-10 -ml-26 mr-[60px]'}
+                        onClick={handleAppStoreRedirect}
+                      >
+                        {t('download.download')}
+                      </CustomButton>
+                    )}
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
@@ -280,3 +297,4 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
+
