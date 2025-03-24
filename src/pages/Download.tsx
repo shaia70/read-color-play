@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -125,7 +126,7 @@ const DownloadPage = () => {
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
                         alt="Download on the App Store" 
-                        className="h-[54px] w-auto mr-4 ml-[50px]" 
+                        className="h-[50px] w-auto mr-4 ml-[50px]" 
                       />
                     )}
                     {isMobile && language === 'en' && (
@@ -134,7 +135,7 @@ const DownloadPage = () => {
                           <img 
                             src="/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
                             alt="Download on the App Store" 
-                            className="h-[54px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
@@ -159,6 +160,7 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
+                    {/* Show blue button for desktop in Hebrew and for desktop in English */}
                     {(!isMobile && language === 'he') || (!isMobile && language === 'en') ? (
                       <CustomButton 
                         variant="blue" 
@@ -172,6 +174,7 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
+                    {/* For English desktop, show the image with a green button */}
                     {!isMobile && language === 'en' && (
                       <>
                         <div className="flex-1">
@@ -192,6 +195,7 @@ const DownloadPage = () => {
                       </>
                     )}
                     
+                    {/* For English mobile, show only the clickable image centered */}
                     {isMobile && language === 'en' && (
                       <div className="flex justify-center w-full">
                         <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
@@ -204,6 +208,7 @@ const DownloadPage = () => {
                       </div>
                     )}
                     
+                    {/* Replace phone icon and text with image for Hebrew */}
                     {!isMobile && language === 'he' && (
                       <div className="flex-1">
                         <img 
@@ -224,6 +229,7 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
+                    {/* Only show green button for Hebrew desktop */}
                     {(!isMobile && language === 'he') ? (
                       <CustomButton 
                         variant="green" 
