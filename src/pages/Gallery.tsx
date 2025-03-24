@@ -39,7 +39,7 @@ const GalleryPage = () => {
       alt: language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text',
       description: language === 'he' 
         ? 'דף דוגמא למלל מהסיפור' 
-        : 'page sample of text from the story',
+        : 'Page sample of text from the story',
       hasDownload: false
     },
     {
