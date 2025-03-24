@@ -126,12 +126,14 @@ const DownloadPage = () => {
                         className="h-10 mr-4"
                       />
                     )}
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-500">
-                        {t('download.downloadOn')}
-                      </p>
-                      <h4 className="text-xl font-bold">App Store</h4>
-                    </div>
+                    {language === 'he' && (
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500">
+                          {t('download.downloadOn')}
+                        </p>
+                        <h4 className="text-xl font-bold">App Store</h4>
+                      </div>
+                    )}
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
