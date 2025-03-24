@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
@@ -31,7 +30,7 @@ const GalleryPage = () => {
       alt: language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom',
       description: language === 'he' 
         ? 'סצנה מרכזית מהסיפור - דניאל בחלומו בחדר השינה עם האריה' 
-        : 'A key scene from the story - the boy in his bedroom with the animals',
+        : 'A key scene from the story - Daniel dreaming in his bedroom with the lion',
       hasDownload: false
     },
     {
