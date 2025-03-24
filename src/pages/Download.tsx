@@ -126,7 +126,7 @@ const DownloadPage = () => {
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   {/* Single container for both download options with less padding on mobile */}
-                  <div className={`p-6 ${isMobile ? 'px-4' : ''} border border-gray-200 rounded-lg hover:shadow-lg transition-all`}>
+                  <div className={`p-6 ${isMobile ? 'px-2.5' : ''} border border-gray-200 rounded-lg hover:shadow-lg transition-all`}>
                     {/* App Store Download */}
                     {!isMobile && (
                       <div className="flex items-center justify-between mb-4">
