@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -41,10 +40,8 @@ const DownloadPage = () => {
   };
 
   const downloadColoringPage = () => {
-    // Updated to use the coloring page from the gallery
     const coloringPageUrl = '/lovable-uploads/8fe0d7ba-092e-4454-8eeb-601b69a16847.png';
     
-    // Use fetch to get the file as a blob
     fetch(coloringPageUrl)
       .then(response => {
         if (!response.ok) {
@@ -53,17 +50,14 @@ const DownloadPage = () => {
         return response.blob();
       })
       .then(blob => {
-        // Create a URL for the blob
         const url = window.URL.createObjectURL(blob);
         
-        // Create an anchor element and trigger download
         const link = document.createElement('a');
         link.href = url;
         link.download = language === 'he' ? 'דף_צביעה_דוגמא.png' : 'coloring_page_sample.png';
         document.body.appendChild(link);
         link.click();
         
-        // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
@@ -100,7 +94,7 @@ const DownloadPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               {t('download.appDescription')}
             </p>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+            <p className="text-xl text-shelley-blue max-w-3xl mx-auto mt-4">
               {t('download.voiceRecording')}
             </p>
           </div>
@@ -163,7 +157,6 @@ const DownloadPage = () => {
                   </div>
                 </div>
 
-                {/* QR Code Section - Hidden on mobile */}
                 {!isMobile && (
                   <div className="mt-8 flex flex-col items-center">
                     <h4 className="text-lg font-bold mb-4">{t('download.scanQR')}</h4>
@@ -179,7 +172,6 @@ const DownloadPage = () => {
                   </div>
                 )}
                 
-                {/* Try the App button - always visible */}
                 <div className={isMobile ? "mt-6" : "mt-6"}>
                   <CustomButton 
                     variant="purple" 
@@ -191,7 +183,6 @@ const DownloadPage = () => {
                   </CustomButton>
                 </div>
                 
-                {/* Download coloring page button - always visible */}
                 <div className="mt-4">
                   <CustomButton 
                     variant="orange" 
