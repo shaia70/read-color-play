@@ -126,7 +126,7 @@ const GalleryPage = () => {
             {language === 'he' ? 'גלריה' : 'Gallery'}
           </h1>
           
-          <div className="max-w-5xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+          <div className="max-w-5xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
             {/* New image from the story */}
             <div className="glass-card p-6 md:p-8">
               <h2 className="text-xl font-semibold mb-4 text-center">
@@ -145,6 +145,27 @@ const GalleryPage = () => {
                 {language === 'he' 
                   ? 'סצנה מרכזית מהסיפור - הילד בחדר השינה עם החיות' 
                   : 'A key scene from the story - the boy in his bedroom with the animals'}
+              </p>
+            </div>
+            
+            {/* New page with Hebrew text */}
+            <div className="glass-card p-6 md:p-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                {language === 'he' ? 'עמוד מהספר' : 'Book Page'}
+              </h2>
+              
+              <div className="flex justify-center mb-6">
+                <img 
+                  src="/lovable-uploads/f9826867-282e-4752-b00f-a31ba48f1ce7.png" 
+                  alt={language === 'he' ? 'עמוד מהספר עם טקסט בעברית' : 'Book page with Hebrew text'} 
+                  className="max-w-full rounded-lg shadow-md border border-gray-200"
+                />
+              </div>
+              
+              <p className="text-center text-gray-600 mb-2">
+                {language === 'he' 
+                  ? 'עמוד מספר 6 - עם טקסט מתוך הסיפור' 
+                  : 'Page 6 - with text from the story'}
               </p>
             </div>
             
