@@ -1,3 +1,4 @@
+import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -15,7 +16,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState, useCallback } from "react";
 
 const GalleryPage = () => {
   const { t, language } = useLanguage();
@@ -145,7 +145,7 @@ const GalleryPage = () => {
     }
   };
 
-  const onCarouselSelect = React.useCallback((api: any) => {
+  const onCarouselSelect = useCallback((api: any) => {
     if (!api) return;
     
     const selectedIndex = api.selectedScrollSnap();
