@@ -141,9 +141,6 @@ const DownloadPage = () => {
                     )}
                     {language === 'he' && !isMobile && (
                       <div className="flex-1">
-                        <p className="text-sm text-gray-500">
-                          {t('download.downloadOn')}
-                        </p>
                         <h4 className="text-xl font-bold">App Store</h4>
                       </div>
                     )}
@@ -301,4 +298,3 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
-
