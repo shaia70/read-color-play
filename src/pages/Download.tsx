@@ -124,7 +124,7 @@ const DownloadPage = () => {
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
                         alt="Download on the App Store" 
-                        className="h-[50px] w-auto mr-4" // Increased height by 5px on each side (from 40px to 50px)
+                        className="h-[50px] w-auto mr-4" 
                       />
                     )}
                     {language === 'he' && (
@@ -138,7 +138,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-6 pr-[12px] mr-[30px]' : 'text-sm px-4 py-2 h-10 -ml-6 mr-[30px]'}
+                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-36 pr-[12px] mr-[30px]' : 'text-sm px-4 py-2 h-10 -ml-36 mr-[30px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
