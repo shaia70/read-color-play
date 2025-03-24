@@ -254,17 +254,8 @@ const GalleryPage = () => {
               </CarouselContent>
               
               <div className="hidden sm:block">
-                {isRTL ? (
-                  <>
-                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
-                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
-                  </>
-                ) : (
-                  <>
-                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
-                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
-                  </>
-                )}
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
               </div>
               
               <div className="flex justify-center mt-6 gap-2" dir="ltr">
