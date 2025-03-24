@@ -138,7 +138,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="blue" 
                       icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-36 pr-[12px] mr-[30px]' : 'text-sm px-4 py-2 h-10 -ml-36 mr-[30px]'}
+                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-56 pr-[12px] mr-[30px]' : 'text-sm px-4 py-2 h-10 -ml-56 mr-[30px]'}
                     >
                       {t('download.download')}
                     </CustomButton>
