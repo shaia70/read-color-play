@@ -15,7 +15,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const GalleryPage = () => {
   const { t, language } = useLanguage();
@@ -145,9 +145,12 @@ const GalleryPage = () => {
     }
   };
 
-  const handleSelectSlide = (index: number) => {
-    setActiveSlide(index);
-  };
+  const onCarouselSelect = React.useCallback((api: any) => {
+    if (!api) return;
+    
+    const selectedIndex = api.selectedScrollSnap();
+    setActiveSlide(selectedIndex);
+  }, []);
 
   return (
     <>
@@ -166,9 +169,13 @@ const GalleryPage = () => {
           
           <div className="max-w-5xl mx-auto mb-12 px-4">
             <Carousel 
-              className="w-full"
-              opts={{ loop: true }}
-              onSelect={handleSelectSlide}
+              className="w-full relative"
+              opts={{ 
+                loop: true,
+                dragFree: false,
+                align: "center"
+              }}
+              onSelect={onCarouselSelect}
             >
               <CarouselContent>
                 {galleryItems.map((item, index) => (
@@ -220,21 +227,28 @@ const GalleryPage = () => {
                 ))}
               </CarouselContent>
               
-              <div className="flex justify-center mt-8">
-                <CarouselPrevious className="static mr-2 transform-none" />
-                <div className="flex items-center space-x-2 mx-4">
-                  {galleryItems.map((_, index) => (
-                    <span
-                      key={index}
-                      className={`block h-2 w-2 rounded-full ${
-                        activeSlide === index ? "bg-primary" : "bg-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <CarouselNext className="static ml-2 transform-none" />
+              <div className="hidden sm:block">
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+              </div>
+              
+              <div className="flex justify-center mt-6 gap-2">
+                {galleryItems.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
+                      activeSlide === index ? "bg-primary" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
               </div>
             </Carousel>
+            
+            {isMobile && (
+              <p className="text-center text-gray-500 text-sm mt-4">
+                {language === 'he' ? 'החלק ימינה או שמאלה כדי לדפדף בין התמונות' : 'Swipe left or right to navigate between images'}
+              </p>
+            )}
           </div>
         </LanguageDirectionWrapper>
       </motion.main>
