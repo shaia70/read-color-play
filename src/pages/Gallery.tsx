@@ -5,9 +5,9 @@ import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { PaintBucket, Printer } from "lucide-react";
+import { Loader2, PaintBucket, Printer } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Carousel,
@@ -21,6 +21,8 @@ const GalleryPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [activeImage, setActiveImage] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+  const [imageErrors, setImageErrors] = useState<boolean[]>([]);
 
   const images = [
     {
@@ -45,6 +47,33 @@ const GalleryPage = () => {
       downloadable: false
     }
   ];
+
+  // Initialize loading state for images
+  useEffect(() => {
+    setImagesLoaded(new Array(images.length).fill(false));
+    setImageErrors(new Array(images.length).fill(false));
+  }, [images.length]);
+
+  const handleImageLoad = (index: number) => {
+    console.log(`Image ${index} loaded successfully`);
+    const newLoadedState = [...imagesLoaded];
+    newLoadedState[index] = true;
+    setImagesLoaded(newLoadedState);
+
+    // If this was marked as error before, clear it
+    if (imageErrors[index]) {
+      const newErrorState = [...imageErrors];
+      newErrorState[index] = false;
+      setImageErrors(newErrorState);
+    }
+  };
+
+  const handleImageError = (index: number) => {
+    console.error(`Failed to load image: ${images[index].src}`);
+    const newErrorState = [...imageErrors];
+    newErrorState[index] = true;
+    setImageErrors(newErrorState);
+  };
 
   const downloadColoringPage = () => {
     const coloringPageUrl = images[0].src;
@@ -76,7 +105,7 @@ const GalleryPage = () => {
         toast({
           variant: "destructive",
           title: language === 'he' ? 'ההורדה נכשלה' : 'Download Failed',
-          description: language === 'he' ? 'אירעה ש��יאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
+          description: language === 'he' ? 'אירעה שגיאה בהורדת דף הצביעה' : 'There was an error downloading the coloring page',
         });
       });
   };
@@ -175,17 +204,29 @@ const GalleryPage = () => {
                 >
                   <CarouselContent>
                     {images.map((image, index) => (
-                      <CarouselItem key={index}>
-                        <div className="flex justify-center">
+                      <CarouselItem key={index} className="flex justify-center items-center">
+                        <div className="flex justify-center items-center h-[400px]">
+                          {!imagesLoaded[index] && !imageErrors[index] && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                            </div>
+                          )}
                           <img 
+                            key={`img-${image.src}`} // Add a key to force re-render
                             src={image.src} 
                             alt={image.alt} 
-                            className="max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[500px]"
-                            onError={(e) => {
-                              console.error(`Failed to load image: ${image.src}`);
-                              e.currentTarget.src = '/placeholder.svg'; // Fallback image if the original fails to load
-                            }}
+                            className={`max-w-full rounded-lg shadow-md border border-gray-200 object-contain max-h-[400px] transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
+                            onLoad={() => handleImageLoad(index)}
+                            onError={() => handleImageError(index)}
+                            style={{ display: imageErrors[index] ? 'none' : 'block' }}
                           />
+                          {imageErrors[index] && (
+                            <div className="text-center p-4 bg-gray-100 rounded-lg">
+                              <p className="text-red-500">
+                                {language === 'he' ? 'לא ניתן לטעון את התמונה' : 'Failed to load image'}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </CarouselItem>
                     ))}
