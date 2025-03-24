@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'he' | 'en';
@@ -33,6 +34,7 @@ const heTranslations: Record<string, string> = {
   'download.description': 'חווה את הקסם של מציאות רבודה עם אפליקציית "שלי ספרים AR" שלנו',
   'download.appName': 'שלי ספרים AR',
   'download.appDescription': 'סרוק איורי ספרים וצפה בהם קמים לחיים עם חוויות AR אינטראקטיביות',
+  'download.voiceRecording': 'אפשרות הקלטת קול של ההורים כמספרי הסיפור כך שהילד יוכל לשמוע את הסיפור בקול ההורה (אם הוא במילואים או סתם לא בבית)',
   'download.availableOn': 'זמין ב:',
   'download.getItOn': 'קבל אותו ב-',
   'download.downloadOn': 'הורד מ-',
@@ -153,6 +155,7 @@ const enTranslations: Record<string, string> = {
   'download.description': 'Experience the magic of augmented reality with our "Shelley Books AR" app',
   'download.appName': 'Shelley Books AR',
   'download.appDescription': 'Scan book illustrations and watch them come to life with interactive AR experiences',
+  'download.voiceRecording': 'Parents can record their voice as storytellers so children can hear the story in their parent\'s voice (if they\'re on reserve duty or simply away from home)',
   'download.availableOn': ':Available on',
   'download.getItOn': 'Get it on',
   'download.downloadOn': 'Download on the',

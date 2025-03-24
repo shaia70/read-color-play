@@ -100,6 +100,9 @@ const DownloadPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               {t('download.appDescription')}
             </p>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+              {t('download.voiceRecording')}
+            </p>
           </div>
 
           <div className="glass-card mb-16">
