@@ -8,6 +8,7 @@ import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/components/ui/use-toast";
+import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 
 const DownloadPage = () => {
   const { t, language } = useLanguage();
@@ -115,46 +116,84 @@ const DownloadPage = () => {
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && (
-                      <div className="bg-black rounded-full p-3 mr-4">
-                        <Apple className="h-8 w-8 text-white" />
+                    {language === 'en' ? (
+                      <div className="flex items-center justify-between w-full">
+                        <img 
+                          src="/lovable-uploads/2060e5fe-eb09-4678-8cae-bc61166e452e.png" 
+                          alt="Get it on Google Play" 
+                          className="h-12"
+                          onClick={handleGooglePlayRedirect}
+                          style={{ cursor: 'pointer' }}
+                        />
                       </div>
+                    ) : (
+                      <>
+                        {!isMobile && (
+                          <div className="bg-black rounded-full p-3 mr-4">
+                            <Apple className="h-8 w-8 text-white" />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-500">
+                            {t('download.downloadOn')}
+                          </p>
+                          <h4 className="text-xl font-bold">App Store</h4>
+                        </div>
+                        <CustomButton 
+                          variant="blue" 
+                          icon={<Download />}
+                          className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-6 pr-[12px]' : 'text-sm px-4 py-2 h-10 -ml-6'}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
                     )}
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-500">
-                        {t('download.downloadOn')}
-                      </p>
-                      <h4 className="text-xl font-bold">App Store</h4>
-                    </div>
-                    <CustomButton 
-                      variant="blue" 
-                      icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-6 pr-[12px]' : 'text-sm px-4 py-2 h-10 -ml-6'}
-                    >
-                      {t('download.download')}
-                    </CustomButton>
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && (
+                    {!isMobile && language === 'he' && (
                       <div className="bg-green-600 rounded-full p-3 mr-4">
                         <Smartphone className="h-8 w-8 text-white" />
                       </div>
                     )}
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-500">
-                        {t('download.getItOn')}
-                      </p>
-                      <h4 className="text-xl font-bold">Google Play</h4>
-                    </div>
-                    <CustomButton 
-                      variant="green" 
-                      icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-6 pr-[12px]' : 'text-sm px-4 py-2 h-10 -ml-6'}
-                      onClick={handleGooglePlayRedirect}
-                    >
-                      {t('download.download')}
-                    </CustomButton>
+                    {language === 'en' ? (
+                      <>
+                        <div className="bg-green-600 rounded-full p-3 mr-4">
+                          <Smartphone className="h-8 w-8 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-500">
+                            {t('download.getItOn')}
+                          </p>
+                          <h4 className="text-xl font-bold">Google Play</h4>
+                        </div>
+                        <CustomButton 
+                          variant="green" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-6"
+                          onClick={handleGooglePlayRedirect}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-500">
+                            {t('download.getItOn')}
+                          </p>
+                          <h4 className="text-xl font-bold">Google Play</h4>
+                        </div>
+                        <CustomButton 
+                          variant="green" 
+                          icon={<Download />}
+                          className="text-sm px-4 py-2 h-10 -ml-6 pr-[12px]"
+                          onClick={handleGooglePlayRedirect}
+                        >
+                          {t('download.download')}
+                        </CustomButton>
+                      </>
+                    )}
                   </div>
                 </div>
 
