@@ -22,6 +22,7 @@ const GalleryPage = () => {
   const isMobile = useIsMobile();
   const [activeSlide, setActiveSlide] = useState(0);
   const [api, setApi] = useState<any>(null);
+  const isRTL = language === 'he';
   
   const galleryItems = [
     {
@@ -172,7 +173,7 @@ const GalleryPage = () => {
     return () => {
       api.off('select', handleSelect);
     };
-  }, [api, language]);
+  }, [api]);
 
   return (
     <>
@@ -196,7 +197,7 @@ const GalleryPage = () => {
                 loop: true,
                 dragFree: false,
                 align: "center",
-                direction: language === 'he' ? 'rtl' : 'ltr'
+                direction: isRTL ? 'rtl' : 'ltr'
               }}
               onSelect={onCarouselSelect}
               setApi={setApi}
@@ -256,7 +257,7 @@ const GalleryPage = () => {
                 <CarouselNext className={`absolute ${language === 'he' ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`} />
               </div>
               
-              <div className="flex justify-center mt-6 gap-2">
+              <div className="flex justify-center mt-6 gap-2" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
                 {galleryItems.map((_, index) => (
                   <button
                     key={index}
