@@ -30,7 +30,7 @@ const GalleryPage = () => {
       image: "/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png",
       alt: language === 'he' ? 'ילד וחיות אנימציה בחדר שינה' : 'Boy and animated animals in bedroom',
       description: language === 'he' 
-        ? 'סצנה מרכזית מהסיפור - הילד בחדר השינה עם החיות' 
+        ? 'סצנה מרכזית מהסיפור - דניאל בחלומו בחדר השינה עם האריה' 
         : 'A key scene from the story - the boy in his bedroom with the animals',
       hasDownload: false
     },
