@@ -165,7 +165,8 @@ const GalleryPage = () => {
     if (!api) return;
     
     const handleSelect = () => {
-      setActiveSlide(api.selectedScrollSnap());
+      const selectedIndex = api.selectedScrollSnap();
+      setActiveSlide(selectedIndex);
     };
     
     api.on('select', handleSelect);
@@ -173,7 +174,7 @@ const GalleryPage = () => {
     return () => {
       api.off('select', handleSelect);
     };
-  }, [api]);
+  }, [api, language]);
 
   return (
     <>
@@ -252,12 +253,12 @@ const GalleryPage = () => {
                 ))}
               </CarouselContent>
               
-              <div className={`hidden sm:block ${language === 'he' ? 'rtl' : 'ltr'}`}>
-                <CarouselPrevious className={`absolute ${language === 'he' ? 'right-2' : 'left-2'} top-1/2 -translate-y-1/2`} />
-                <CarouselNext className={`absolute ${language === 'he' ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`} />
+              <div className={`hidden sm:block ${isRTL ? 'rtl' : 'ltr'}`}>
+                <CarouselPrevious className={`absolute ${isRTL ? 'right-2' : 'left-2'} top-1/2 -translate-y-1/2`} />
+                <CarouselNext className={`absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`} />
               </div>
               
-              <div className="flex justify-center mt-6 gap-2" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+              <div className="flex justify-center mt-6 gap-2" dir="ltr">
                 {galleryItems.map((_, index) => (
                   <button
                     key={index}

@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
@@ -75,25 +76,36 @@ const Carousel = React.forwardRef<
       setCanScrollNext(api.canScrollNext())
     }, [])
 
+    // Modified: Make scrollPrev and scrollNext work consistently regardless of RTL
     const scrollPrev = React.useCallback(() => {
-      api?.scrollPrev()
-    }, [api])
+      if (!api) return
+      
+      // In RTL mode, the "previous" is actually the next slide visually
+      const isRTL = opts?.direction === 'rtl'
+      isRTL ? api.scrollNext() : api.scrollPrev()
+    }, [api, opts?.direction])
 
     const scrollNext = React.useCallback(() => {
-      api?.scrollNext()
-    }, [api])
+      if (!api) return
+      
+      // In RTL mode, the "next" is actually the previous slide visually
+      const isRTL = opts?.direction === 'rtl'
+      isRTL ? api.scrollPrev() : api.scrollNext()
+    }, [api, opts?.direction])
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        const isRTL = opts?.direction === 'rtl'
+        
         if (event.key === "ArrowLeft") {
           event.preventDefault()
-          scrollPrev()
+          isRTL ? scrollNext() : scrollPrev()
         } else if (event.key === "ArrowRight") {
           event.preventDefault()
-          scrollNext()
+          isRTL ? scrollPrev() : scrollNext()
         }
       },
-      [scrollPrev, scrollNext]
+      [scrollPrev, scrollNext, opts?.direction]
     )
 
     React.useEffect(() => {
@@ -204,7 +216,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute  h-8 w-8 rounded-full",
+        "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
