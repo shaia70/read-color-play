@@ -46,7 +46,7 @@ const heTranslations: Record<string, string> = {
   'download.regularUpdatesDesc': 'תוכן ותכונות חדשות נוספים באופן קבוע',
   'download.comingSoon': 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!',
   'download.notifyMe': 'עדכנו אותי בשחרור',
-  'download.scanQR': 'הורד בסריקת הQR',
+  'download.scanQR': 'הורד לנייד באמצעות סריקת הQR',
   
   // Concept section
   'concept.title': 'קוראים, צובעים, משחקים',
