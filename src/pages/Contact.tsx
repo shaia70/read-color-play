@@ -168,10 +168,10 @@ const Contact = () => {
                         {language === 'en' ? (
                           <p className="text-gray-600">
                             <span className="font-bold mr-2">Email:</span>
-                            info@shelley.co.il
+                            contact@shelley.co.il
                           </p>
                         ) : (
-                          <p className="text-gray-600">דוא"ל: info@shelley.co.il</p>
+                          <p className="text-gray-600">דוא"ל: contact@shelley.co.il</p>
                         )}
                       </LanguageDirectionWrapper>
                     </div>

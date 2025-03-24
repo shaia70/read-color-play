@@ -97,7 +97,7 @@ export default function Footer() {
             <h3 className="text-xl font-bold text-shelley-blue mb-3">{t('footer.contact')}</h3>
             <div className="flex items-center justify-center mb-2">
               <Mail className="w-5 h-5 text-shelley-orange mr-2" />
-              <span className="text-gray-600">info@shelley.co.il</span>
+              <span className="text-gray-600">contact@shelley.co.il</span>
             </div>
           </div>
         </div>
