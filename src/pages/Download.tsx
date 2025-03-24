@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -31,6 +32,13 @@ const DownloadPage = () => {
           prefilledSubject: 'עדכנו אותי בשחרור האפליקציה',
           prefilledMessage: 'שלום, אשמח לקבל עדכון כאשר האפליקציה שלכם מוכנה להורדה'
         } 
+      });
+    } else {
+      navigate('/contact', {
+        state: {
+          prefilledSubject: 'Notify me when the app is released',
+          prefilledMessage: 'Hello, I would like to be notified when your app is available for download'
+        }
       });
     }
   };
