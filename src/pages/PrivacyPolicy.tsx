@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -207,7 +208,7 @@ const PrivacyPolicy = () => {
       <p>אם יש לך שאלות כלשהן לגבי מדיניות פרטיות זו, אתה יכול ליצור איתנו קשר:</p>
       <ul className="list-disc mr-6 my-3">
         <li>
-          <p>בדוא"ל: contact@shelley.co.il</p>
+          <p>בדוא"ל: <a href="mailto:contact@shelley.co.il" className="text-blue-600 hover:underline">contact@shelley.co.il</a></p>
         </li>
         <li>
           <p>על ידי ביקור בדף זה באתר האינטרנט שלנו: <a href="https://www.shelley.co.il/contact" rel="external nofollow noopener" target="_blank" className="text-blue-600 hover:underline">https://www.shelley.co.il/contact</a></p>
@@ -416,7 +417,7 @@ const PrivacyPolicy = () => {
       <p>If you have any questions about this Privacy Policy, You can contact us:</p>
       <ul className="list-disc ml-6 my-3">
         <li>
-          <p>By email: contact@shelley.co.il</p>
+          <p>By email: <a href="mailto:contact@shelley.co.il" className="text-blue-600 hover:underline">contact@shelley.co.il</a></p>
         </li>
         <li>
           <p>By visiting this page on our website: <a href="https://www.shelley.co.il/contact" rel="external nofollow noopener" target="_blank" className="text-blue-600 hover:underline">https://www.shelley.co.il/contact</a></p>
