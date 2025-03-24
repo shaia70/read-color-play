@@ -94,7 +94,7 @@ const DownloadPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               {t('download.appDescription')}
             </p>
-            <p className="text-xl text-shelley-blue max-w-3xl mx-auto mt-4">
+            <p className="text-xl text-shelley-blue font-bold max-w-3xl mx-auto mt-4">
               {t('download.voiceRecording')}
             </p>
           </div>
