@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -168,20 +169,30 @@ const DownloadPage = () => {
                     )}
                     
                     {isMobile && (
-                      <div className="flex justify-center w-full mb-4">
+                      <div className="flex flex-col items-center space-y-2 px-2">
                         <button onClick={handleAppStoreRedirect} className="focus:outline-none">
                           <img 
                             src={language === 'en' 
                               ? "/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png" 
                               : "/lovable-uploads/cd98fd58-0725-4662-b758-9de502710b6b.png"} 
                             alt={language === 'en' ? "Download on the App Store" : "הורד מ App Store"} 
-                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                            className="h-[40px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          />
+                        </button>
+                      
+                        <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
+                          <img 
+                            src={language === 'en' 
+                              ? "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
+                              : "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png"} 
+                            alt={language === 'en' ? "Get it on Google Play" : "קבל ב-Google Play"} 
+                            className="h-[40px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
                           />
                         </button>
                       </div>
                     )}
                     
-                    {/* Google Play Download */}
+                    {/* Google Play Download - Only for desktop */}
                     {!isMobile && (
                       <div className="flex items-center justify-between">
                         {language === 'en' ? (
@@ -219,20 +230,6 @@ const DownloadPage = () => {
                             </CustomButton>
                           </>
                         )}
-                      </div>
-                    )}
-                    
-                    {isMobile && (
-                      <div className="flex justify-center w-full">
-                        <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
-                          <img 
-                            src={language === 'en' 
-                              ? "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png" 
-                              : "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png"} 
-                            alt={language === 'en' ? "Get it on Google Play" : "קבל ב-Google Play"} 
-                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
-                          />
-                        </button>
                       </div>
                     )}
                   </div>
