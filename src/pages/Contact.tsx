@@ -21,6 +21,9 @@ const Contact = () => {
     message: ""
   });
 
+  // Track if we arrived from the notify me button
+  const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
+
   useEffect(() => {
     // Check for prefilled data from navigation state
     if (location.state) {
@@ -28,6 +31,11 @@ const Contact = () => {
       
       if (location.state.prefilledSubject) {
         newFormData.subject = location.state.prefilledSubject;
+        // If it's a notify subject, mark that we came from notify me
+        if (location.state.prefilledSubject === 'עדכנו אותי בשחרור האפליקציה' || 
+            location.state.prefilledSubject === 'Notify me when the app is released') {
+          setIsFromNotifyMe(true);
+        }
       }
       
       if (location.state.prefilledMessage) {
@@ -37,6 +45,23 @@ const Contact = () => {
       setFormData(newFormData);
     }
   }, [location.state]);
+
+  // Effect to handle language changes for the notify me prefilled content
+  useEffect(() => {
+    if (isFromNotifyMe) {
+      const updatedFormData = { ...formData };
+      
+      if (language === 'he') {
+        updatedFormData.subject = 'עדכנו אותי בשחרור האפליקציה';
+        updatedFormData.message = 'שלום, אשמח לקבל עדכון כאשר האפליקציה שלכם מוכנה להורדה';
+      } else {
+        updatedFormData.subject = 'Notify me when the app is released';
+        updatedFormData.message = 'Hello, I would like to be notified when your app is available for download';
+      }
+      
+      setFormData(updatedFormData);
+    }
+  }, [language, isFromNotifyMe]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
