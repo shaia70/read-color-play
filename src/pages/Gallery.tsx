@@ -164,7 +164,7 @@ const GalleryPage = () => {
               
               <p className="text-center text-gray-600 mb-2">
                 {language === 'he' 
-                  ? 'עמוד מספר 6 - עם טקסט מתוך הסיפור' 
+                  ? 'דף דוגמא למלל מהסיפור' 
                   : 'Page 6 - with text from the story'}
               </p>
             </div>
