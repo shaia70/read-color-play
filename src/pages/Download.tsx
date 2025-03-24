@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -173,6 +174,11 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
+                    {!isMobile && language === 'en' && (
+                      <div className="bg-green-600 rounded-full p-3 mr-4">
+                        <Smartphone className="h-8 w-8 text-white" />
+                      </div>
+                    )}
                     {language === 'en' && (
                       <div className="flex-1">
                         <img 
@@ -204,7 +210,7 @@ const DownloadPage = () => {
                         </button>
                       </div>
                     )}
-                    {/* Only show green button for desktop view or English mobile */}
+                    {/* Only show green button for desktop view in Hebrew or English mobile */}
                     {(!isMobile && language === 'he') || (isMobile && language === 'en') ? (
                       <CustomButton 
                         variant="green" 
