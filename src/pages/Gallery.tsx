@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -28,6 +29,13 @@ const GalleryPage = () => {
       title: language === 'he' ? 'דף צביעה עם דמויות מהסיפור' : 'Coloring Page with Story Characters',
       description: language === 'he' ? 'דף צביעה עם דמויות מהעמוד' : 'Coloring page featuring characters from the story',
       downloadable: true
+    },
+    {
+      src: '/lovable-uploads/16e246a7-d0e8-4555-827a-a7a2abc38931.png',
+      alt: language === 'he' ? 'עמוד מהסיפור עם טקסט בעברית' : 'Story page with Hebrew text',
+      title: language === 'he' ? 'עמוד מהספר' : 'Page from the Book',
+      description: language === 'he' ? 'עמוד מתוך הספר האינטראקטיבי עם טקסט בעברית' : 'Page from the interactive book with Hebrew text',
+      downloadable: false
     },
     {
       src: '/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png',
