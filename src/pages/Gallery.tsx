@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
@@ -21,6 +22,7 @@ const GalleryPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [api, setApi] = useState<any>(null);
   
   const galleryItems = [
     {
@@ -151,6 +153,13 @@ const GalleryPage = () => {
     const selectedIndex = api.selectedScrollSnap();
     setActiveSlide(selectedIndex);
   }, []);
+  
+  const handleDotClick = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+      setActiveSlide(index);
+    }
+  };
 
   return (
     <>
@@ -177,6 +186,7 @@ const GalleryPage = () => {
                 direction: language === 'he' ? 'rtl' : 'ltr'
               }}
               onSelect={onCarouselSelect}
+              setApi={setApi}
             >
               <CarouselContent>
                 {galleryItems.map((item, index) => (
@@ -235,11 +245,13 @@ const GalleryPage = () => {
               
               <div className="flex justify-center mt-6 gap-2">
                 {galleryItems.map((_, index) => (
-                  <span
+                  <button
                     key={index}
-                    className={`inline-block h-2 w-2 rounded-full transition-colors duration-300 ${
-                      activeSlide === index ? "bg-primary" : "bg-gray-300"
+                    onClick={() => handleDotClick(index)}
+                    className={`inline-block h-3 w-3 rounded-full transition-colors duration-300 cursor-pointer ${
+                      activeSlide === index ? "bg-primary" : "bg-gray-300 hover:bg-gray-400"
                     }`}
+                    aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
               </div>
