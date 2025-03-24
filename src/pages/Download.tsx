@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -173,17 +174,40 @@ const DownloadPage = () => {
                   </div>
                   
                   <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all flex items-center">
-                    {!isMobile && (
+                    {!isMobile && language === 'en' && (
                       <div className="bg-green-600 rounded-full p-3 mr-4">
                         <Smartphone className="h-8 w-8 text-white" />
                       </div>
                     )}
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-500">
-                        {t('download.getItOn')}
-                      </p>
-                      <h4 className="text-xl font-bold">Google Play</h4>
-                    </div>
+                    {language === 'en' && (
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500">
+                          {t('download.getItOn')}
+                        </p>
+                        <h4 className="text-xl font-bold">Google Play</h4>
+                      </div>
+                    )}
+                    {/* Replace phone icon and text with image for Hebrew */}
+                    {!isMobile && language === 'he' && (
+                      <div className="flex-1">
+                        <img 
+                          src="/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
+                          alt="קבל ב-Google Play" 
+                          className="h-[50px] w-auto hover:opacity-90 transition-opacity" 
+                        />
+                      </div>
+                    )}
+                    {isMobile && language === 'he' && (
+                      <div className="flex justify-center w-full">
+                        <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
+                          <img 
+                            src="/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
+                            alt="קבל ב-Google Play" 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
+                          />
+                        </button>
+                      </div>
+                    )}
                     <CustomButton 
                       variant="green" 
                       icon={<Download />}
