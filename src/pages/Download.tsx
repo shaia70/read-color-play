@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -210,7 +211,7 @@ const DownloadPage = () => {
                     <CustomButton 
                       variant="green" 
                       icon={<Download />}
-                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-6 pr-[12px] mr-[25px]' : 'text-sm px-4 py-2 h-10 -ml-6 mr-[30px]'}
+                      className={language === 'he' ? 'text-sm px-4 py-2 h-10 -ml-26 pr-[12px] mr-[60px]' : 'text-sm px-4 py-2 h-10 -ml-6 mr-[30px]'}
                       onClick={handleGooglePlayRedirect}
                     >
                       {t('download.download')}
