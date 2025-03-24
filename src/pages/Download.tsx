@@ -95,7 +95,7 @@ const DownloadPage = () => {
             <p className="text-xl max-w-3xl mx-auto mt-4" style={{ color: "#886fc8" }}>
               {t('download.appDescription')}
             </p>
-            <p className="text-xl text-shelley-blue font-bold max-w-3xl mx-auto mt-4">
+            <p className="text-xl max-w-3xl mx-auto mt-4" style={{ color: "#b564a7" }}>
               {t('download.voiceRecording')}
             </p>
           </div>
