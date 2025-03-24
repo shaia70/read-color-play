@@ -124,21 +124,21 @@ const DownloadPage = () => {
                 </h3>
                 
                 <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
-                  {/* Combined container for both App Store and Google Play */}
-                  <div className="flex flex-col space-y-4">
-                    {/* App Store */}
-                    <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all">
-                      {!isMobile ? (
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 flex justify-center">
-                            <img 
-                              src={language === 'he' 
-                                ? "/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
-                                : "/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png"} 
-                              alt={language === 'he' ? "הורד מ-App Store" : "Download on the App Store"} 
-                              className="h-[50px] w-auto" 
-                            />
-                          </div>
+                  {/* Single combined container for both App Store and Google Play */}
+                  <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all">
+                    <div className="flex flex-col space-y-4">
+                      {/* App Store */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 flex justify-center">
+                          <img 
+                            src={language === 'he' 
+                              ? "/lovable-uploads/35dd9296-8f66-41f2-9e78-422f55eb3805.png" 
+                              : "/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png"} 
+                            alt={language === 'he' ? "הורד מ-App Store" : "Download on the App Store"} 
+                            className="h-[50px] w-auto" 
+                          />
+                        </div>
+                        {!isMobile && (
                           <CustomButton 
                             variant="blue" 
                             icon={<Download />}
@@ -147,35 +147,21 @@ const DownloadPage = () => {
                           >
                             {t('download.download')}
                           </CustomButton>
+                        )}
+                      </div>
+                      
+                      {/* Google Play */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 flex justify-center">
+                          <img 
+                            src={language === 'he' 
+                              ? "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
+                              : "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png"} 
+                            alt={language === 'he' ? "קבל ב-Google Play" : "Get it on Google Play"} 
+                            className="h-[50px] w-auto" 
+                          />
                         </div>
-                      ) : (
-                        <div className="flex justify-center w-full">
-                          <button onClick={handleAppStoreRedirect} className="focus:outline-none">
-                            <img 
-                              src={language === 'he' 
-                                ? "/lovable-uploads/cd98fd58-0725-4662-b758-9de502710b6b.png" 
-                                : "/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png"} 
-                              alt={language === 'he' ? "הורד מ App Store" : "Download on the App Store"} 
-                              className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
-                            />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Google Play */}
-                    <div className="p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-all">
-                      {!isMobile ? (
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 flex justify-center">
-                            <img 
-                              src={language === 'he' 
-                                ? "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
-                                : "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png"} 
-                              alt={language === 'he' ? "קבל ב-Google Play" : "Get it on Google Play"} 
-                              className="h-[50px] w-auto" 
-                            />
-                          </div>
+                        {!isMobile && (
                           <CustomButton 
                             variant="green" 
                             icon={<Download />}
@@ -184,21 +170,33 @@ const DownloadPage = () => {
                           >
                             {t('download.download')}
                           </CustomButton>
-                        </div>
-                      ) : (
-                        <div className="flex justify-center w-full">
-                          <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
-                            <img 
-                              src={language === 'he' 
-                                ? "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
-                                : "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png"} 
-                              alt={language === 'he' ? "קבל ב-Google Play" : "Get it on Google Play"} 
-                              className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity" 
-                            />
-                          </button>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
+                    
+                    {/* Mobile view - just show the images as clickable buttons */}
+                    {isMobile && (
+                      <div className="flex flex-col space-y-4 mt-4">
+                        <button onClick={handleAppStoreRedirect} className="focus:outline-none">
+                          <img 
+                            src={language === 'he' 
+                              ? "/lovable-uploads/cd98fd58-0725-4662-b758-9de502710b6b.png" 
+                              : "/lovable-uploads/22f2f13e-8bc1-4b90-9ae3-036e3ae93e45.png"} 
+                            alt={language === 'he' ? "הורד מ App Store" : "Download on the App Store"} 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity mx-auto" 
+                          />
+                        </button>
+                        <button onClick={handleGooglePlayRedirect} className="focus:outline-none">
+                          <img 
+                            src={language === 'he' 
+                              ? "/lovable-uploads/2f584bb6-86b1-4f25-9e98-3196dded5656.png" 
+                              : "/lovable-uploads/03e7a450-9b7f-4364-b0b6-80dcdd6345a4.png"} 
+                            alt={language === 'he' ? "קבל ב-Google Play" : "Get it on Google Play"} 
+                            className="h-[50px] w-auto cursor-pointer hover:opacity-90 transition-opacity mx-auto" 
+                          />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {!isMobile && (
@@ -309,4 +307,3 @@ const DownloadPage = () => {
 };
 
 export default DownloadPage;
-
