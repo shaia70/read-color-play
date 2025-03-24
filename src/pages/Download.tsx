@@ -124,7 +124,7 @@ const DownloadPage = () => {
                       <img 
                         src="/lovable-uploads/3d32c013-a9f6-4328-a2f5-c63021aba4d7.png" 
                         alt="Download on the App Store" 
-                        className="h-10 mr-4"
+                        className="h-[46px] w-auto mr-4" // Increased height by 3px on each side (from 40px to 46px)
                       />
                     )}
                     {language === 'he' && (
