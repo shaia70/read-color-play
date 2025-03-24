@@ -160,42 +160,44 @@ const DownloadPage = () => {
                   </div>
                 </div>
 
-                {/* QR Code Section */}
-                <div className="mt-8 flex flex-col items-center">
-                  <h4 className="text-lg font-bold mb-4">{t('download.scanQR')}</h4>
-                  <div className="border border-gray-200 p-4 rounded-lg">
-                    <img 
-                      src={language === 'he' 
-                        ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
-                        : "/lovable-uploads/21efd8ff-cb6f-4d6a-958c-894ef6dfb937.png"} 
-                      alt="QR Code for App Download" 
-                      className="w-48 h-48"
-                    />
+                {/* QR Code Section - Hidden on mobile */}
+                {!isMobile && (
+                  <div className="mt-8 flex flex-col items-center">
+                    <h4 className="text-lg font-bold mb-4">{t('download.scanQR')}</h4>
+                    <div className="border border-gray-200 p-4 rounded-lg">
+                      <img 
+                        src={language === 'he' 
+                          ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
+                          : "/lovable-uploads/21efd8ff-cb6f-4d6a-958c-894ef6dfb937.png"} 
+                        alt="QR Code for App Download" 
+                        className="w-48 h-48"
+                      />
+                    </div>
                   </div>
-                  
-                  {/* Try the App button below QR code */}
-                  <div className="mt-6">
-                    <CustomButton 
-                      variant="purple" 
-                      icon={<Play />}
-                      onClick={navigateToARSection}
-                      className="w-full"
-                    >
-                      {language === 'en' ? 'Try the App' : 'נסו את האפליקציה'}
-                    </CustomButton>
-                  </div>
-                  
-                  {/* New Download coloring page button */}
-                  <div className="mt-4">
-                    <CustomButton 
-                      variant="orange" 
-                      icon={<PaintBucket />}
-                      onClick={downloadColoringPage}
-                      className="w-full"
-                    >
-                      {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
-                    </CustomButton>
-                  </div>
+                )}
+                
+                {/* Try the App button - always visible */}
+                <div className={isMobile ? "mt-6" : "mt-6"}>
+                  <CustomButton 
+                    variant="purple" 
+                    icon={<Play />}
+                    onClick={navigateToARSection}
+                    className="w-full"
+                  >
+                    {language === 'en' ? 'Try the App' : 'נסו את האפליקציה'}
+                  </CustomButton>
+                </div>
+                
+                {/* Download coloring page button - always visible */}
+                <div className="mt-4">
+                  <CustomButton 
+                    variant="orange" 
+                    icon={<PaintBucket />}
+                    onClick={downloadColoringPage}
+                    className="w-full"
+                  >
+                    {language === 'en' ? 'Download Coloring Page (Sample)' : 'הורד דף צביעה (דוגמא)'}
+                  </CustomButton>
                 </div>
               </div>
             </div>
