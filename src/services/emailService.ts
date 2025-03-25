@@ -20,10 +20,14 @@ export interface EmailParams {
 export const sendEmail = async (params: EmailParams, language: string) => {
   const defaultSubject = language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר';
   
+  // EmailJS expects specific parameter names based on your template
+  // Make sure these match exactly with your EmailJS template variables
   const templateParams = {
     from_name: params.name,
     from_email: params.email,
-    to_email: TO_EMAIL, // Adding the recipient email
+    to_name: "Shelley Team", // Add recipient name
+    to_email: TO_EMAIL,
+    reply_to: params.email, // Add reply-to field
     subject: params.subject || defaultSubject,
     message: params.message,
   };
@@ -36,7 +40,7 @@ export const sendEmail = async (params: EmailParams, language: string) => {
       SERVICE_ID,
       TEMPLATE_ID,
       templateParams,
-      PUBLIC_KEY // Add the PUBLIC_KEY as the fourth parameter
+      PUBLIC_KEY
     );
   } catch (error) {
     console.error("Error in emailService:", error);
