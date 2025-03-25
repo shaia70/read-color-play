@@ -11,7 +11,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,12 +79,10 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // Here we would normally send the data to a server
-      // Since we're not opening the email client, we'll simulate a successful submission
-      // In a real application, you would use a service like EmailJS, Formspree, or your own backend
-      
-      // Simulate server delay
+      // Simulate server delay - this just simulates sending without opening any email client
       await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      console.log("Form submitted with data:", data);
       
       // Show success toast
       toast({
@@ -104,6 +102,12 @@ const Contact = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Prevent default form submission (which might be opening email client)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    form.handleSubmit(onSubmit)(e);
   };
 
   return (
@@ -129,7 +133,7 @@ const Contact = () => {
                 <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Send Us a Message' : 'שלחו לנו הודעה'}</h2>
                 
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-4">
                     <FormField
                       control={form.control}
                       name="name"
@@ -145,6 +149,7 @@ const Contact = () => {
                               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -165,6 +170,7 @@ const Contact = () => {
                               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -184,6 +190,7 @@ const Contact = () => {
                               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -204,6 +211,7 @@ const Contact = () => {
                               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
