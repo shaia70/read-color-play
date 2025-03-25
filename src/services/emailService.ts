@@ -5,6 +5,7 @@ import emailjs from 'emailjs-com';
 const SERVICE_ID = "service_b8wznhv";
 const TEMPLATE_ID = "template_n7g59yj";
 const PUBLIC_KEY = "jWPCnv-Rf3v6GmioO";
+const TO_EMAIL = "contact@shelley.co.il";
 
 // Initialize EmailJS
 emailjs.init(PUBLIC_KEY);
@@ -22,6 +23,7 @@ export const sendEmail = async (params: EmailParams, language: string) => {
   const templateParams = {
     from_name: params.name,
     from_email: params.email,
+    to_email: TO_EMAIL, // Adding the recipient email
     subject: params.subject || defaultSubject,
     message: params.message,
   };
@@ -33,7 +35,8 @@ export const sendEmail = async (params: EmailParams, language: string) => {
     return await emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
-      templateParams
+      templateParams,
+      PUBLIC_KEY // Add the PUBLIC_KEY as the fourth parameter
     );
   } catch (error) {
     console.error("Error in emailService:", error);
