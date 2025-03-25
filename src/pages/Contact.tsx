@@ -71,21 +71,22 @@ const Contact = () => {
 
   const sendEmail = async (data: typeof formData) => {
     try {
-      // Create a formatted email body
-      const emailBody = `
-Name: ${data.name}
-Email: ${data.email}
-Subject: ${data.subject}
-Message: ${data.message}
-      `;
+      // Create a FormData object to send
+      const formSubmitData = new FormData();
+      formSubmitData.append('name', data.name);
+      formSubmitData.append('email', data.email);
+      formSubmitData.append('subject', data.subject || 'Contact Form Submission');
+      formSubmitData.append('message', data.message);
+      formSubmitData.append('_to', 'contact@shelley.co.il'); // Destination email
 
-      // Create a mailto URL
-      const mailtoUrl = `mailto:contact@shelley.co.il?subject=${encodeURIComponent(data.subject || 'Contact Form Submission')}&body=${encodeURIComponent(emailBody)}`;
-      
-      // Open the default email client
-      window.location.href = mailtoUrl;
-      
-      return true;
+      // Using formsubmit.co service to handle email sending
+      const response = await fetch('https://formsubmit.co/ajax/contact@shelley.co.il', {
+        method: 'POST',
+        body: formSubmitData
+      });
+
+      const result = await response.json();
+      return result.success;
     } catch (error) {
       console.error("Error sending email:", error);
       return false;
