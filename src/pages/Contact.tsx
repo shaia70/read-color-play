@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Mail, Send, Check, Copy } from "lucide-react";
+import { Mail, Send, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
@@ -15,8 +15,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import emailjs from 'emailjs-com';
 
 const TARGET_EMAIL = "contact@shelley.co.il";
+const EMAILJS_SERVICE_ID = "service_jgbftoh";
+const EMAILJS_TEMPLATE_ID = "template_8sxafbd";
+const EMAILJS_PUBLIC_KEY = "8_unLVPbP1v1Jjzv5";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -25,7 +29,6 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [submittedData, setSubmittedData] = useState<z.infer<typeof formSchema> | null>(null);
 
   const formSchema = z.object({
     name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
@@ -73,38 +76,8 @@ const Contact = () => {
     }
   }, [language, isFromNotifyMe, form]);
 
-  const copyToClipboard = () => {
-    if (!submittedData) return;
-    
-    const { name, email, subject, message } = submittedData;
-    const formattedSubject = subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר');
-    
-    const textToCopy = 
-      `${language === 'en' ? 'Name' : 'שם'}: ${name}\n` +
-      `${language === 'en' ? 'Email' : 'אימייל'}: ${email}\n` +
-      `${language === 'en' ? 'Subject' : 'נושא'}: ${formattedSubject}\n\n` +
-      `${message}`;
-    
-    navigator.clipboard.writeText(textToCopy)
-      .then(() => {
-        toast({
-          title: language === 'en' ? "Copied to clipboard" : "הועתק ללוח",
-          description: language === 'en' ? "You can now paste this information elsewhere" : "כעת ניתן להדביק מידע זה במקום אחר",
-        });
-      })
-      .catch((err) => {
-        console.error('Failed to copy: ', err);
-        toast({
-          title: language === 'en' ? "Failed to copy" : "העתקה נכשלה",
-          description: language === 'en' ? "Please try again" : "אנא נסה שוב",
-          variant: "destructive",
-        });
-      });
-  };
-
   const resetForm = () => {
     setFormSubmitted(false);
-    setSubmittedData(null);
     form.reset();
   };
 
@@ -112,23 +85,38 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      console.log("Form submitted with data:", data);
+      const templateParams = {
+        from_name: data.name,
+        from_email: data.email,
+        to_email: TARGET_EMAIL,
+        subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
+        message: data.message
+      };
       
-      // Save the submitted data
-      setSubmittedData(data);
+      // Send the email using EmailJS
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+      
       setFormSubmitted(true);
       
       toast({
-        title: language === 'en' ? "Form Submitted" : "הטופס נשלח",
+        title: language === 'en' ? "Message Sent" : "ההודעה נשלחה",
         description: language === 'en' 
-          ? "Your message has been received. Please copy the details to send via email." 
-          : "ההודעה שלך התקבלה. אנא העתק את הפרטים לשליחה באמצעות דוא״ל.",
+          ? "Your message has been sent successfully. We'll get back to you soon!" 
+          : "הודעתך נשלחה בהצלחה. נחזור אליך בהקדם!",
+        variant: "default",
       });
     } catch (error) {
-      console.error("Error processing form:", error);
+      console.error("Error sending email:", error);
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
-        description: language === 'en' ? "An error occurred while processing your form" : "אירעה שגיאה בעיבוד הטופס שלך",
+        description: language === 'en' 
+          ? "An error occurred while sending your message. Please try again later." 
+          : "אירעה שגיאה בשליחת ההודעה שלך. אנא נסה שוב מאוחר יותר.",
         variant: "destructive",
       });
     } finally {
@@ -256,7 +244,7 @@ const Contact = () => {
                         disabled={isSubmitting}
                       >
                         {isSubmitting 
-                          ? (language === 'en' ? 'Submitting...' : 'שולח...') 
+                          ? (language === 'en' ? 'Sending...' : 'שולח...') 
                           : (language === 'en' ? 'Send Message' : 'שלח הודעה')}
                       </CustomButton>
                     </form>
@@ -265,24 +253,14 @@ const Contact = () => {
               ) : (
                 <div className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">{language === 'en' ? 'Message Submitted' : 'ההודעה נשלחה'}</h2>
-                    <div className="flex gap-2">
-                      <CustomButton 
-                        variant="outline" 
-                        icon={<Copy />} 
-                        onClick={copyToClipboard}
-                        size="sm"
-                      >
-                        {language === 'en' ? 'Copy' : 'העתק'}
-                      </CustomButton>
-                      <CustomButton 
-                        variant="secondary" 
-                        onClick={resetForm}
-                        size="sm"
-                      >
-                        {language === 'en' ? 'New Message' : 'הודעה חדשה'}
-                      </CustomButton>
-                    </div>
+                    <h2 className="text-2xl font-bold">{language === 'en' ? 'Message Sent' : 'ההודעה נשלחה'}</h2>
+                    <CustomButton 
+                      variant="secondary" 
+                      onClick={resetForm}
+                      size="sm"
+                    >
+                      {language === 'en' ? 'New Message' : 'הודעה חדשה'}
+                    </CustomButton>
                   </div>
                   
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
@@ -290,50 +268,16 @@ const Contact = () => {
                       <Check className="text-green-500" />
                       <p className="text-green-700 font-medium">
                         {language === 'en' 
-                          ? 'Your message has been received!' 
-                          : 'ההודעה שלך התקבלה!'}
+                          ? 'Your message has been sent successfully!' 
+                          : 'ההודעה שלך נשלחה בהצלחה!'}
                       </p>
                     </div>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-gray-600">
                       {language === 'en' 
-                        ? 'To send this message to our team, please:' 
-                        : 'כדי לשלוח הודעה זו לצוות שלנו, אנא:'}
+                        ? `We've sent your message to ${TARGET_EMAIL} and will get back to you soon.` 
+                        : `שלחנו את הודעתך ל-${TARGET_EMAIL} ונחזור אליך בהקדם.`}
                     </p>
-                    <ol className="list-decimal list-inside space-y-1 text-gray-600 mb-4">
-                      <li>{language === 'en' ? 'Click the "Copy" button above' : 'לחץ על כפתור "העתק" למעלה'}</li>
-                      <li>
-                        {language === 'en' 
-                          ? `Send an email to ${TARGET_EMAIL} with the copied content` 
-                          : `שלח אימייל ל-${TARGET_EMAIL} עם התוכן שהעתקת`}
-                      </li>
-                    </ol>
                   </div>
-                  
-                  {submittedData && (
-                    <div className="border border-gray-200 rounded-lg p-6">
-                      <h3 className="font-bold mb-4">{language === 'en' ? 'Message Details:' : 'פרטי ההודעה:'}</h3>
-                      <div className="space-y-3">
-                        <div>
-                          <p className="font-medium">{language === 'en' ? 'Name:' : 'שם:'}</p>
-                          <p className="text-gray-600">{submittedData.name}</p>
-                        </div>
-                        <div>
-                          <p className="font-medium">{language === 'en' ? 'Email:' : 'אימייל:'}</p>
-                          <p className="text-gray-600">{submittedData.email}</p>
-                        </div>
-                        <div>
-                          <p className="font-medium">{language === 'en' ? 'Subject:' : 'נושא:'}</p>
-                          <p className="text-gray-600">
-                            {submittedData.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר')}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-medium">{language === 'en' ? 'Message:' : 'הודעה:'}</p>
-                          <p className="text-gray-600 whitespace-pre-wrap">{submittedData.message}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
               
