@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import Logo from "./Logo";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -51,9 +52,9 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
-            <h3 className="text-xl font-bold text-shelley-blue mb-3">
-              {language === 'he' ? 'שלי ספרים' : 'Shelley Books'}
-            </h3>
+            <Link to="/">
+              <Logo showTagline={false} showIcon={false} className="mx-auto" />
+            </Link>
             <p className="text-gray-600 mb-4">
               {language === 'he' 
                 ? 'ספרי ילדים מקוריים עם טכנולוגיית מציאות רבודה'

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download, Image } from "lucide-react";
@@ -31,12 +30,8 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [location]);
 
-  // Enhanced scrollToTop function to ensure it always works
   const scrollToTop = () => {
-    // Force scroll to exactly 0
     window.scrollTo(0, 0);
-    
-    // Then do the smooth scroll for better UX
     setTimeout(() => {
       window.scrollTo({
         top: 0,
@@ -44,18 +39,13 @@ export default function Header() {
       });
     }, 10);
   };
-  
+
   const handleNavLinkClick = (event: React.MouseEvent, href: string) => {
-    // Always close the mobile menu regardless of which link is clicked
     setMobileMenuOpen(false);
-    
-    // If we're already on the current page, prevent default navigation
-    // and just scroll to top
     if (location.pathname === href) {
       event.preventDefault();
       scrollToTop();
     } else {
-      // For other pages, we'll still scroll to top but let the navigation happen
       scrollToTop();
     }
   };
@@ -80,11 +70,8 @@ export default function Header() {
       )}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center" onClick={scrollToTop}>
-          <Logo showTagline={!isScrolled} />
-        </Link>
+        <Logo showTagline={!isScrolled} linkToHome={true} />
 
-        {/* Desktop Navigation */}
         <nav className={cn(
           "hidden md:flex items-center",
           language === 'he' ? "space-x-reverse space-x-1" : "space-x-1"
@@ -111,7 +98,6 @@ export default function Header() {
           </div>
         </nav>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
           <LanguageSwitcher />
           <button
@@ -127,7 +113,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
