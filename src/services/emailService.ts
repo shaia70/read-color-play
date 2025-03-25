@@ -1,4 +1,3 @@
-
 import emailjs from 'emailjs-com';
 
 // EmailJS configuration
@@ -28,10 +27,13 @@ export const sendEmail = async (params: EmailParams, language: string) => {
       subject: params.subject || defaultSubject,
       message: params.message,
       
-      // Recipient information - trying all possible formats
+      // Add the explicit email field that the EmailJS template expects
+      email: "contact@shelley.co.il",
+      
+      // Keep other recipient formats for compatibility
       to_name: "Shelley Team",
-      to_email: "contact@shelley.co.il", // Add explicit recipient email
-      recipient: "contact@shelley.co.il", // Another format some templates use
+      to_email: "contact@shelley.co.il",
+      recipient: "contact@shelley.co.il",
       reply_to: params.email,
     };
 
@@ -42,7 +44,7 @@ export const sendEmail = async (params: EmailParams, language: string) => {
       SERVICE_ID, 
       TEMPLATE_ID, 
       templateParams,
-      PUBLIC_KEY // Include PUBLIC_KEY again as recommended in some EmailJS docs
+      PUBLIC_KEY
     );
     
     console.log("Email sent successfully:", response);
