@@ -2,12 +2,17 @@
 # Enable rewriting
 RewriteEngine On
 
-# If the request is not for a file that exists
+# If request is for a specific file or directory that exists, serve it directly
 RewriteCond %{REQUEST_FILENAME} !-f
-# If the request is not for a directory that exists
 RewriteCond %{REQUEST_FILENAME} !-d
-# Rewrite everything to index.html
-RewriteRule ^ index.html [QSA,L]
+
+# For all routes and subroutes, redirect to index.html
+RewriteRule ^(.*)$ index.html [QSA,L]
+
+# Set proper content type for JSON files
+<Files *.json>
+  ForceType application/json
+</Files>
 
 # Set security headers
 <IfModule mod_headers.c>
@@ -17,10 +22,22 @@ RewriteRule ^ index.html [QSA,L]
   # Security headers
   Header set X-Content-Type-Options "nosniff"
   Header set X-XSS-Protection "1; mode=block"
+  Header set X-Frame-Options "SAMEORIGIN"
   
-  # Cache control - adjust as needed
+  # Cache control
   Header set Cache-Control "max-age=86400, public"
+  
+  # Avoid caching for HTML files to ensure fresh content
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
 </IfModule>
 
 # Prevent directory listing
 Options -Indexes
+
+# Handle 404 errors
+ErrorDocument 404 /index.html
+
