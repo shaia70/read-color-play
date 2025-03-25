@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -86,16 +85,14 @@ const Contact = () => {
     
     try {
       const templateParams = {
-        name: data.name,
         from_name: data.name,
         from_email: data.email,
         to_email: TARGET_EMAIL,
-        title: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
         subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
-        message: data.message
+        message: data.message,
+        name: data.name
       };
       
-      // Send the email using EmailJS
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
