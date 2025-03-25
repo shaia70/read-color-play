@@ -20,6 +20,7 @@ const Contact = () => {
     subject: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Track if we arrived from the notify me button
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
@@ -68,7 +69,30 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const sendEmail = async (data: typeof formData) => {
+    try {
+      // Create a formatted email body
+      const emailBody = `
+Name: ${data.name}
+Email: ${data.email}
+Subject: ${data.subject}
+Message: ${data.message}
+      `;
+
+      // Create a mailto URL
+      const mailtoUrl = `mailto:contact@shelley.co.il?subject=${encodeURIComponent(data.subject || 'Contact Form Submission')}&body=${encodeURIComponent(emailBody)}`;
+      
+      // Open the default email client
+      window.location.href = mailtoUrl;
+      
+      return true;
+    } catch (error) {
+      console.error("Error sending email:", error);
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       toast({
@@ -79,12 +103,33 @@ const Contact = () => {
       return;
     }
 
-    toast({
-      title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
-      description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
-    });
+    setIsSubmitting(true);
     
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    try {
+      const success = await sendEmail(formData);
+      
+      if (success) {
+        toast({
+          title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
+          description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        toast({
+          title: language === 'en' ? "Error" : "שגיאה",
+          description: language === 'en' ? "Failed to send message. Please try again later." : "שליחת ההודעה נכשלה. אנא נסו שוב מאוחר יותר.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: language === 'en' ? "Error" : "שגיאה",
+        description: language === 'en' ? "An unexpected error occurred" : "אירעה שגיאה בלתי צפויה",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -172,8 +217,16 @@ const Contact = () => {
                     ></textarea>
                   </div>
                   
-                  <CustomButton type="submit" variant="purple" icon={<Send />} className="w-full">
-                    {language === 'en' ? 'Send Message' : 'שלח הודעה'}
+                  <CustomButton 
+                    type="submit" 
+                    variant="purple" 
+                    icon={<Send />} 
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting 
+                      ? (language === 'en' ? 'Sending...' : 'שולח...') 
+                      : (language === 'en' ? 'Send Message' : 'שלח הודעה')}
                   </CustomButton>
                 </form>
               </div>
