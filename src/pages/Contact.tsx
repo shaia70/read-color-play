@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -15,6 +14,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import emailjs from 'emailjs-com';
+
+const EMAILJS_SERVICE_ID = "default_service";
+const EMAILJS_TEMPLATE_ID = "template_contact";
+const EMAILJS_PUBLIC_KEY = "your_public_key";
+const TARGET_EMAIL = "contact@shelley.co.il";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -23,7 +28,6 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
 
-  // Create form schema based on language
   const formSchema = z.object({
     name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
     email: z.string().email(language === 'en' ? "Invalid email address" : "כתובת אימייל לא תקינה"),
@@ -31,7 +35,6 @@ const Contact = () => {
     message: z.string().min(1, language === 'en' ? "Message is required" : "נדרשת הודעה")
   });
 
-  // Initialize the form with react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,14 +45,11 @@ const Contact = () => {
     }
   });
 
-  // Track if we arrived from the notify me button
   useEffect(() => {
-    // Check for prefilled data from navigation state
     if (location.state) {
       if (location.state.prefilledSubject) {
         form.setValue("subject", location.state.prefilledSubject);
         
-        // If it's a notify subject, mark that we came from notify me
         if (location.state.prefilledSubject === 'עדכנו אותי בשחרור האפליקציה' || 
             location.state.prefilledSubject === 'Notify me when the app is released') {
           setIsFromNotifyMe(true);
@@ -62,7 +62,6 @@ const Contact = () => {
     }
   }, [location.state, form]);
 
-  // Effect to handle language changes for the notify me prefilled content
   useEffect(() => {
     if (isFromNotifyMe) {
       if (language === 'he') {
@@ -79,18 +78,30 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate server delay - this just simulates sending without opening any email client
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const templateParams = {
+        from_name: data.name,
+        from_email: data.email,
+        subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
+        message: data.message,
+        to_email: TARGET_EMAIL
+      };
+      
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
       
       console.log("Form submitted with data:", data);
       
-      // Show success toast
       toast({
         title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
-        description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
+        description: language === 'en' 
+          ? `Thank you for your message! We will get back to you soon at ${data.email}` 
+          : `תודה על פנייתך! נחזור אליך בהקדם ל-${data.email}`,
       });
       
-      // Reset the form
       form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -104,7 +115,6 @@ const Contact = () => {
     }
   };
 
-  // Prevent default form submission (which might be opening email client)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     form.handleSubmit(onSubmit)(e);
@@ -246,10 +256,10 @@ const Contact = () => {
                         {language === 'en' ? (
                           <p className="text-gray-600">
                             <span className="font-bold mr-2">Email:</span>
-                            contact@shelley.co.il
+                            {TARGET_EMAIL}
                           </p>
                         ) : (
-                          <p className="text-gray-600">דוא"ל: contact@shelley.co.il</p>
+                          <p className="text-gray-600">דוא"ל: {TARGET_EMAIL}</p>
                         )}
                       </LanguageDirectionWrapper>
                     </div>
