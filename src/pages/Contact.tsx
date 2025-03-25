@@ -86,9 +86,11 @@ const Contact = () => {
     
     try {
       const templateParams = {
+        name: data.name,
         from_name: data.name,
         from_email: data.email,
         to_email: TARGET_EMAIL,
+        title: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
         subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
         message: data.message
       };
