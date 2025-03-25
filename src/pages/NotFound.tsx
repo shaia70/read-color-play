@@ -2,7 +2,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Home } from "lucide-react";
+import { Home, RefreshCw } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
@@ -14,6 +14,11 @@ const NotFound = () => {
       location.pathname
     );
   }, [location.pathname]);
+
+  const handleRefresh = () => {
+    // Force a hard refresh of the page
+    window.location.href = '/';
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -27,13 +32,22 @@ const NotFound = () => {
             ? 'The page you are looking for might have been removed or is temporarily unavailable.' 
             : 'הדף שאתה מחפש אולי הוסר או אינו זמין באופן זמני.'}
         </p>
-        <Link 
-          to="/" 
-          className="inline-flex items-center px-6 py-3 bg-shelley-blue text-white rounded-full hover:bg-blue-600 transition-colors"
-        >
-          <Home className="mr-2 h-5 w-5" />
-          {language === 'en' ? 'Return to Home' : 'חזרה לדף הבית'}
-        </Link>
+        <div className="flex justify-center gap-4">
+          <Link 
+            to="/" 
+            className="inline-flex items-center px-6 py-3 bg-shelley-blue text-white rounded-full hover:bg-blue-600 transition-colors"
+          >
+            <Home className="mr-2 h-5 w-5" />
+            {language === 'en' ? 'Return to Home' : 'חזרה לדף הבית'}
+          </Link>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+          >
+            <RefreshCw className="mr-2 h-5 w-5" />
+            {language === 'en' ? 'Refresh App' : 'רענן אפליקציה'}
+          </button>
+        </div>
       </div>
     </div>
   );

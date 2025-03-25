@@ -8,6 +8,8 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Add historyApiFallback to ensure dev server redirects all requests to index.html
+    historyApiFallback: true,
   },
   plugins: [
     react(),
