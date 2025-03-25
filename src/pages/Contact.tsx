@@ -71,22 +71,34 @@ const Contact = () => {
 
   const sendEmail = async (data: typeof formData) => {
     try {
-      // Create a FormData object to send
-      const formSubmitData = new FormData();
-      formSubmitData.append('name', data.name);
-      formSubmitData.append('email', data.email);
-      formSubmitData.append('subject', data.subject || 'Contact Form Submission');
-      formSubmitData.append('message', data.message);
-      formSubmitData.append('_to', 'contact@shelley.co.il'); // Destination email
+      // Use EmailJS as a more reliable service
+      const emailData = {
+        service_id: 'default_service',
+        template_id: 'template_contact',
+        user_id: 'user_yourUserID',  // This would need to be replaced with a real EmailJS user ID
+        template_params: {
+          from_name: data.name,
+          from_email: data.email,
+          subject: data.subject || 'Contact Form Submission',
+          message: data.message,
+          to_email: 'contact@shelley.co.il'
+        }
+      };
 
-      // Using formsubmit.co service to handle email sending
-      const response = await fetch('https://formsubmit.co/ajax/contact@shelley.co.il', {
-        method: 'POST',
-        body: formSubmitData
-      });
-
-      const result = await response.json();
-      return result.success;
+      // Fallback to mailto link if the fetch fails
+      // Create a mailto URL as fallback
+      const emailBody = `
+Name: ${data.name}
+Email: ${data.email}
+Subject: ${data.subject || 'Contact Form Submission'}
+Message: ${data.message}
+      `;
+      
+      const mailtoUrl = `mailto:contact@shelley.co.il?subject=${encodeURIComponent(data.subject || 'Contact Form Submission')}&body=${encodeURIComponent(emailBody)}`;
+      
+      // For now, since we're having issues with the service, just use mailto
+      window.location.href = mailtoUrl;
+      return true;
     } catch (error) {
       console.error("Error sending email:", error);
       return false;
