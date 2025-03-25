@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download, Image } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, language } = useLanguage();
 
   useEffect(() => {
@@ -60,6 +61,15 @@ export default function Header() {
     }
   };
 
+  const handleLogoClick = () => {
+    if (location.pathname === "/") {
+      scrollToTop();
+    } else {
+      navigate("/");
+      scrollToTop();
+    }
+  };
+
   const navigationItems = [
     { name: t('nav.home'), href: "/", icon: <BookType className="h-5 w-5" /> },
     { name: t('nav.concept'), href: "/concept", icon: <BookOpen className="h-5 w-5" /> },
@@ -80,9 +90,9 @@ export default function Header() {
       )}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center" onClick={scrollToTop}>
+        <div className="cursor-pointer" onClick={handleLogoClick}>
           <Logo showTagline={!isScrolled} />
-        </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className={cn(

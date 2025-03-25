@@ -2,7 +2,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -56,9 +55,5 @@ export default function Logo({
     </div>
   );
 
-  return (
-    <Link to="/" className="focus:outline-none">
-      {logoContent}
-    </Link>
-  );
+  return logoContent;
 }
