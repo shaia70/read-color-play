@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -14,11 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import emailjs from 'emailjs-com';
 
-const EMAILJS_SERVICE_ID = "default_service";
-const EMAILJS_TEMPLATE_ID = "template_contact";
-const EMAILJS_PUBLIC_KEY = "your_public_key";
 const TARGET_EMAIL = "contact@shelley.co.il";
 
 const Contact = () => {
@@ -78,36 +75,41 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const templateParams = {
-        from_name: data.name,
-        from_email: data.email,
-        subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
-        message: data.message,
-        to_email: TARGET_EMAIL
-      };
+      // Create subject with default if not provided
+      const subject = data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר');
       
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
+      // Create and encode the mailto link parameters
+      const mailtoSubject = encodeURIComponent(subject);
+      const mailtoBody = encodeURIComponent(
+        `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
       );
+      
+      // Create the mailto URL
+      const mailtoLink = `mailto:${TARGET_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
+      
+      // Open the default email client
+      window.location.href = mailtoLink;
       
       console.log("Form submitted with data:", data);
       
       toast({
-        title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
+        title: language === 'en' ? "Email Client Opened" : "נפתח תוכנת דואר",
         description: language === 'en' 
-          ? `Thank you for your message! We will get back to you soon at ${data.email}` 
-          : `תודה על פנייתך! נחזור אליך בהקדם ל-${data.email}`,
+          ? `Please send the email from your email client to complete your message` 
+          : `אנא שלח את האימייל מתוכנת הדואר שלך כדי להשלים את ההודעה`,
       });
       
-      form.reset();
+      // Don't reset the form immediately so the user can refer back to it
+      // Only reset if they close the email client and return
+      setTimeout(() => {
+        form.reset();
+      }, 2000);
+      
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error opening email client:", error);
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
-        description: language === 'en' ? "An error occurred while sending your message" : "אירעה שגיאה בשליחת ההודעה",
+        description: language === 'en' ? "An error occurred while opening your email client" : "אירעה שגיאה בפתיחת תוכנת הדואר",
         variant: "destructive",
       });
     } finally {
@@ -234,7 +236,7 @@ const Contact = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting 
-                        ? (language === 'en' ? 'Sending...' : 'שולח...') 
+                        ? (language === 'en' ? 'Opening Email...' : 'פותח תוכנת דואר...') 
                         : (language === 'en' ? 'Send Message' : 'שלח הודעה')}
                     </CustomButton>
                   </form>
