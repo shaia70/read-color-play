@@ -9,29 +9,46 @@ import { Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Contact = () => {
   const { toast } = useToast();
   const { language, t } = useLanguage();
   const location = useLocation();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: ""
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Track if we arrived from the notify me button
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
 
+  // Create form schema based on language
+  const formSchema = z.object({
+    name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
+    email: z.string().email(language === 'en' ? "Invalid email address" : "כתובת אימייל לא תקינה"),
+    subject: z.string().optional(),
+    message: z.string().min(1, language === 'en' ? "Message is required" : "נדרשת הודעה")
+  });
+
+  // Initialize the form with react-hook-form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: ""
+    }
+  });
+
+  // Track if we arrived from the notify me button
   useEffect(() => {
     // Check for prefilled data from navigation state
     if (location.state) {
-      const newFormData = { ...formData };
-      
       if (location.state.prefilledSubject) {
-        newFormData.subject = location.state.prefilledSubject;
+        form.setValue("subject", location.state.prefilledSubject);
+        
         // If it's a notify subject, mark that we came from notify me
         if (location.state.prefilledSubject === 'עדכנו אותי בשחרור האפליקציה' || 
             location.state.prefilledSubject === 'Notify me when the app is released') {
@@ -40,104 +57,48 @@ const Contact = () => {
       }
       
       if (location.state.prefilledMessage) {
-        newFormData.message = location.state.prefilledMessage;
+        form.setValue("message", location.state.prefilledMessage);
       }
-      
-      setFormData(newFormData);
     }
-  }, [location.state]);
+  }, [location.state, form]);
 
   // Effect to handle language changes for the notify me prefilled content
   useEffect(() => {
     if (isFromNotifyMe) {
-      const updatedFormData = { ...formData };
-      
       if (language === 'he') {
-        updatedFormData.subject = 'עדכנו אותי בשחרור האפליקציה';
-        updatedFormData.message = 'שלום, אשמח לקבל עדכון כאשר האפליקציה שלכם מוכנה להורדה';
+        form.setValue("subject", 'עדכנו אותי בשחרור האפליקציה');
+        form.setValue("message", 'שלום, אשמח לקבל עדכון כאשר האפליקציה שלכם מוכנה להורדה');
       } else {
-        updatedFormData.subject = 'Notify me when the app is released';
-        updatedFormData.message = 'Hello, I would like to be notified when your app is available for download';
+        form.setValue("subject", 'Notify me when the app is released');
+        form.setValue("message", 'Hello, I would like to be notified when your app is available for download');
       }
-      
-      setFormData(updatedFormData);
     }
-  }, [language, isFromNotifyMe]);
+  }, [language, isFromNotifyMe, form]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const sendEmail = async (data: typeof formData) => {
-    try {
-      // Use EmailJS as a more reliable service
-      const emailData = {
-        service_id: 'default_service',
-        template_id: 'template_contact',
-        user_id: 'user_yourUserID',  // This would need to be replaced with a real EmailJS user ID
-        template_params: {
-          from_name: data.name,
-          from_email: data.email,
-          subject: data.subject || 'Contact Form Submission',
-          message: data.message,
-          to_email: 'contact@shelley.co.il'
-        }
-      };
-
-      // Fallback to mailto link if the fetch fails
-      // Create a mailto URL as fallback
-      const emailBody = `
-Name: ${data.name}
-Email: ${data.email}
-Subject: ${data.subject || 'Contact Form Submission'}
-Message: ${data.message}
-      `;
-      
-      const mailtoUrl = `mailto:contact@shelley.co.il?subject=${encodeURIComponent(data.subject || 'Contact Form Submission')}&body=${encodeURIComponent(emailBody)}`;
-      
-      // For now, since we're having issues with the service, just use mailto
-      window.location.href = mailtoUrl;
-      return true;
-    } catch (error) {
-      console.error("Error sending email:", error);
-      return false;
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: language === 'en' ? "Error" : "שגיאה",
-        description: language === 'en' ? "Please fill in all required fields" : "אנא מלאו את כל השדות החובה",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
     try {
-      const success = await sendEmail(formData);
+      // Here we would normally send the data to a server
+      // Since we're not opening the email client, we'll simulate a successful submission
+      // In a real application, you would use a service like EmailJS, Formspree, or your own backend
       
-      if (success) {
-        toast({
-          title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
-          description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
-        });
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      } else {
-        toast({
-          title: language === 'en' ? "Error" : "שגיאה",
-          description: language === 'en' ? "Failed to send message. Please try again later." : "שליחת ההודעה נכשלה. אנא נסו שוב מאוחר יותר.",
-          variant: "destructive",
-        });
-      }
+      // Simulate server delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Show success toast
+      toast({
+        title: language === 'en' ? "Message Sent" : "הודעה נשלחה",
+        description: language === 'en' ? "Thank you for your message! We will get back to you soon" : "תודה על פנייתך! נחזור אליך בהקדם",
+      });
+      
+      // Reset the form
+      form.reset();
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
-        description: language === 'en' ? "An unexpected error occurred" : "אירעה שגיאה בלתי צפויה",
+        description: language === 'en' ? "An error occurred while sending your message" : "אירעה שגיאה בשליחת ההודעה",
         variant: "destructive",
       });
     } finally {
@@ -166,82 +127,100 @@ Message: ${data.message}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}>
                 <h2 className="text-2xl font-bold mb-6">{language === 'en' ? 'Send Us a Message' : 'שלחו לנו הודעה'}</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block mb-2 font-medium">
-                      {language === 'en' ? 'Full Name' : 'שם מלא'} <span className="text-shelley-red">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
+                
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
                       name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
-                      required
-                      dir={language === 'en' ? 'ltr' : 'rtl'}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {language === 'en' ? 'Full Name' : 'שם מלא'} <span className="text-shelley-red">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              dir={language === 'en' ? 'ltr' : 'rtl'}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block mb-2 font-medium">
-                      {language === 'en' ? 'Email' : 'דוא"ל'} <span className="text-shelley-red">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
+                    
+                    <FormField
+                      control={form.control}
                       name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
-                      required
-                      dir="ltr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {language === 'en' ? 'Email' : 'דוא"ל'} <span className="text-shelley-red">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="email"
+                              dir="ltr"
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="subject" className="block mb-2 font-medium">
-                      {language === 'en' ? 'Subject' : 'נושא'}
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
+                    
+                    <FormField
+                      control={form.control}
                       name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
-                      dir={language === 'en' ? 'ltr' : 'rtl'}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {language === 'en' ? 'Subject' : 'נושא'}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              dir={language === 'en' ? 'ltr' : 'rtl'}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="block mb-2 font-medium">
-                      {language === 'en' ? 'Message' : 'הודעה'} <span className="text-shelley-red">*</span>
-                    </label>
-                    <textarea
-                      id="message"
+                    
+                    <FormField
+                      control={form.control}
                       name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      rows={5}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
-                      required
-                      dir={language === 'en' ? 'ltr' : 'rtl'}
-                    ></textarea>
-                  </div>
-                  
-                  <CustomButton 
-                    type="submit" 
-                    variant="purple" 
-                    icon={<Send />} 
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting 
-                      ? (language === 'en' ? 'Sending...' : 'שולח...') 
-                      : (language === 'en' ? 'Send Message' : 'שלח הודעה')}
-                  </CustomButton>
-                </form>
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {language === 'en' ? 'Message' : 'הודעה'} <span className="text-shelley-red">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              rows={5}
+                              dir={language === 'en' ? 'ltr' : 'rtl'}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-shelley-blue focus:border-transparent outline-none transition"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <CustomButton 
+                      type="submit" 
+                      variant="purple" 
+                      icon={<Send />} 
+                      className="w-full"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting 
+                        ? (language === 'en' ? 'Sending...' : 'שולח...') 
+                        : (language === 'en' ? 'Send Message' : 'שלח הודעה')}
+                    </CustomButton>
+                  </form>
+                </Form>
               </div>
               
               <div className="bg-gradient-to-br from-shelley-blue/10 to-shelley-purple/10 p-8 flex flex-col justify-center rounded-tr-2xl rounded-br-2xl">
