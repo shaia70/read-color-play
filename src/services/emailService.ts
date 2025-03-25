@@ -1,4 +1,3 @@
-
 import emailjs from 'emailjs-com';
 
 // EmailJS configuration
@@ -26,12 +25,11 @@ export const sendEmail = async (params: EmailParams, language: string) => {
       name: params.name, // This maps to {{name}} in the template
       title: params.subject || defaultSubject, // This maps to {{title}} in the template
       from_name: params.name,
-      from_email: params.email,
+      from_email: params.email, // This maps to {{from_email}} in the template
       subject: params.subject || defaultSubject,
       message: params.message,
       
-      // Add the explicit email field that the EmailJS template expects
-      email: "contact@shelley.co.il",
+      // Remove the incorrect email field and ensure from_email is used
       
       // Keep other recipient formats for compatibility
       to_name: "Shelley Team",
