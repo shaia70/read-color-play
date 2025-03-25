@@ -1,11 +1,10 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Mail, Send, Check, ExternalLink } from "lucide-react";
+import { Mail, Send, Check, ExternalLink, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
@@ -15,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { sendEmail } from "@/services/emailService";
+import { sendEmail, generateMailtoLink, EmailParams } from "@/services/emailService";
 
 const TARGET_EMAIL = "contact@shelley.co.il";
 
@@ -26,7 +25,8 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState<any>(null);
+  const [formData, setFormData] = useState<EmailParams | null>(null);
+  const [useDirectEmail, setUseDirectEmail] = useState(false);
 
   const formSchema = z.object({
     name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
@@ -77,50 +77,52 @@ const Contact = () => {
   const resetForm = () => {
     setFormSubmitted(false);
     setFormData(null);
+    setUseDirectEmail(false);
     form.reset();
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
+    const emailData: EmailParams = {
+      name: data.name,
+      email: data.email,
+      subject: data.subject,
+      message: data.message
+    };
+    
     try {
-      // First attempt with EmailJS
-      try {
-        const response = await sendEmail({
-          name: data.name,
-          email: data.email,
-          subject: data.subject,
-          message: data.message
-        }, language);
-        
-        console.log("Email response:", response);
-        
-        setFormSubmitted(true);
-        setFormData(data);
-        
-        toast({
-          title: language === 'en' ? "Message Sent" : "ההודעה נשלחה",
-          description: language === 'en' 
-            ? "Your message has been sent successfully. We'll get back to you soon!" 
-            : "הודעתך נשלחה בהצלחה. נחזור אליך בהקדם!",
-          variant: "default",
-        });
-        
-        return;
-      } catch (emailJsError) {
-        console.error("EmailJS error:", emailJsError);
-        // If EmailJS fails, we'll use the fallback method below
+      if (!useDirectEmail) {
+        try {
+          const response = await sendEmail(emailData, language);
+          console.log("Email response:", response);
+          
+          setFormSubmitted(true);
+          setFormData(emailData);
+          
+          toast({
+            title: language === 'en' ? "Message Sent" : "ההודעה נשלחה",
+            description: language === 'en' 
+              ? "Your message has been sent successfully. We'll get back to you soon!" 
+              : "הודעתך נשלחה בהצלחה. נחזור אליך בהקדם!",
+            variant: "default",
+          });
+          
+          return;
+        } catch (emailJsError) {
+          console.error("EmailJS error:", emailJsError);
+          setUseDirectEmail(true);
+        }
       }
       
-      // Fallback method - store form data and show manual email link
       setFormSubmitted(true);
-      setFormData(data);
+      setFormData(emailData);
       
       toast({
-        title: language === 'en' ? "Form Completed" : "הטופס הושלם",
+        title: language === 'en' ? "Almost There!" : "כמעט שם!",
         description: language === 'en' 
-          ? "Please use the email link to send your message." 
-          : "אנא השתמש בקישור הדוא\"ל לשליחת ההודעה.",
+          ? "Please click the email link below to complete sending your message." 
+          : "אנא לחץ על קישור הדוא\"ל למטה כדי להשלים את שליחת ההודעה שלך.",
         variant: "default",
       });
     } catch (error) {
@@ -146,6 +148,56 @@ const Contact = () => {
     const subject = encodeURIComponent(data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'));
     const body = encodeURIComponent(`Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`);
     return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+  };
+
+  const renderSuccessMessage = () => {
+    if (!formData) return null;
+    
+    const mailtoLink = generateMailtoLink(formData, language);
+    
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          {useDirectEmail ? (
+            <AlertTriangle className="text-amber-500" />
+          ) : (
+            <Check className="text-green-500" />
+          )}
+          <p className={`${useDirectEmail ? 'text-amber-700' : 'text-green-700'} font-medium`}>
+            {useDirectEmail 
+              ? (language === 'en' 
+                  ? 'One more step to complete your submission!' 
+                  : 'עוד צעד אחד להשלמת השליחה!')
+              : (language === 'en' 
+                  ? 'Your form has been submitted successfully!' 
+                  : 'הטופס שלך נשלח בהצלחה!')}
+          </p>
+        </div>
+        
+        <p className="text-gray-600 mb-4">
+          {useDirectEmail 
+            ? (language === 'en'
+                ? `Please click the button below to send your message via your email app.`
+                : `אנא לחץ על הכפתור למטה כדי לשלוח את ההודעה שלך דרך אפליקציית האימייל שלך.`)
+            : (language === 'en' 
+                ? `We've received your message and will get back to you soon at ${formData.email}.` 
+                : `קיבלנו את הודעתך ונחזור אליך בהקדם בכתובת ${formData.email}.`)}
+        </p>
+        
+        {useDirectEmail && (
+          <CustomButton 
+            variant="blue"
+            className="mt-4 w-full"
+            icon={<Mail />}
+            onClick={() => window.open(mailtoLink, '_blank')}
+          >
+            {language === 'en' 
+              ? 'Complete Sending via Email'
+              : 'השלם שליחה באמצעות דוא"ל'}
+          </CustomButton>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -272,7 +324,11 @@ const Contact = () => {
               ) : (
                 <div className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">{language === 'en' ? 'Message Received' : 'ההודעה התקבלה'}</h2>
+                    <h2 className="text-2xl font-bold">
+                      {useDirectEmail 
+                        ? (language === 'en' ? 'Complete Your Message' : 'השלם את ההודעה שלך')
+                        : (language === 'en' ? 'Message Received' : 'ההודעה התקבלה')}
+                    </h2>
                     <CustomButton 
                       variant="secondary" 
                       onClick={resetForm}
@@ -282,36 +338,7 @@ const Contact = () => {
                     </CustomButton>
                   </div>
                   
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Check className="text-green-500" />
-                      <p className="text-green-700 font-medium">
-                        {language === 'en' 
-                          ? 'Your form has been submitted successfully!' 
-                          : 'הטופס שלך נשלח בהצלחה!'}
-                      </p>
-                    </div>
-                    <p className="text-gray-600 mb-4">
-                      {language === 'en' 
-                        ? `We've received your message and will get back to you soon at ${formData?.email}.` 
-                        : `קיבלנו את הודעתך ונחזור אליך בהקדם בכתובת ${formData?.email}.`}
-                    </p>
-                    
-                    {formData && (
-                      <a 
-                        href={constructMailtoLink(formData)} 
-                        className="inline-flex items-center gap-2 text-shelley-blue hover:text-shelley-purple transition-colors mt-2"
-                      >
-                        <Mail size={18} />
-                        <span>
-                          {language === 'en' 
-                            ? 'If the email was not sent automatically, click here to send via your email client' 
-                            : 'אם האימייל לא נשלח אוטומטית, לחץ כאן כדי לשלוח באמצעות תוכנת האימייל שלך'}
-                        </span>
-                        <ExternalLink size={16} />
-                      </a>
-                    )}
-                  </div>
+                  {renderSuccessMessage()}
                 </div>
               )}
               
@@ -350,3 +377,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
