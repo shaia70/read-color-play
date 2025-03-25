@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -21,7 +22,7 @@ const EMAILJS_SERVICE_ID = "service_b8wznhv";
 const EMAILJS_TEMPLATE_ID = "template_n7g59yj";
 const EMAILJS_PUBLIC_KEY = "WPCnv-Rf3v6GmioO";
 
-// Initialize EmailJS
+// Initialize EmailJS with the public key
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 const Contact = () => {
@@ -89,6 +90,7 @@ const Contact = () => {
     try {
       console.log("Sending email with the following parameters:");
       
+      // Simplify template params to match exactly what the EmailJS template expects
       const templateParams = {
         from_name: data.name,
         from_email: data.email,
@@ -99,11 +101,11 @@ const Contact = () => {
       
       console.log("Template params:", templateParams);
       
+      // Send the email using the initialized EmailJS SDK
       const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
+        templateParams
       );
       
       console.log("EmailJS response:", response);
