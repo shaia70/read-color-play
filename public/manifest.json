@@ -1,0 +1,17 @@
+
+{
+  "name": "Shelley Books",
+  "short_name": "Shelley",
+  "icons": [
+    {
+      "src": "/shelley-books-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}
