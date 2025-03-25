@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -15,15 +14,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import emailjs from 'emailjs-com';
+import { sendEmail } from "@/services/emailService";
 
 const TARGET_EMAIL = "contact@shelley.co.il";
-const EMAILJS_SERVICE_ID = "service_b8wznhv";
-const EMAILJS_TEMPLATE_ID = "template_n7g59yj";
-const EMAILJS_PUBLIC_KEY = "jWPCnv-Rf3v6GmioO"; // Fixed the public key with correct value
-
-// Initialize EmailJS with the public key
-emailjs.init(EMAILJS_PUBLIC_KEY);
 
 const Contact = () => {
   const { toast } = useToast();
@@ -88,28 +81,14 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      console.log("Sending email with the following parameters:");
-      
-      // Prepare the template params exactly as expected by EmailJS
-      const templateParams = {
-        from_name: data.name,
-        from_email: data.email,
-        to_email: TARGET_EMAIL,
-        subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
+      const response = await sendEmail({
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
         message: data.message
-      };
+      }, language);
       
-      console.log("Template params:", templateParams);
-      
-      // Send the email using EmailJS with the correct parameters
-      const response = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY // Add back the public key as the fourth parameter
-      );
-      
-      console.log("EmailJS response:", response);
+      console.log("Email response:", response);
       
       setFormSubmitted(true);
       
@@ -121,7 +100,7 @@ const Contact = () => {
         variant: "default",
       });
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error sending email in component:", error);
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
         description: language === 'en' 
