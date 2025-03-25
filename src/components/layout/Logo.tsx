@@ -1,6 +1,7 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { BookOpen } from "lucide-react";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -24,11 +25,15 @@ export default function Logo({
         className
       )}>
         <div className="flex flex-col items-center">
-          <img 
-            src="/shelley-books-logo.png" 
-            alt="Shelley Books Logo" 
-            className="h-12 w-auto"
-          />
+          <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+            {language === 'he' ? 'שלי' : 'Shelley'}
+          </span>
+          <div className="flex-shrink-0 my-[-2px]">
+            <BookOpen className="h-6 w-6 text-shelley-blue" />
+          </div>
+          <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+            {language === 'he' ? 'ספרים' : 'Books'}
+          </span>
         </div>
       </div>
     );
@@ -38,11 +43,7 @@ export default function Logo({
     <div className={cn("flex items-center", className)}>
       {showIcon && (
         <div className="flex-shrink-0 mr-2">
-          <img 
-            src="/shelley-books-logo.png" 
-            alt="Shelley Books Logo" 
-            className="h-8 w-auto"
-          />
+          <BookOpen className="h-8 w-8 text-shelley-blue" />
         </div>
       )}
       <div className="flex flex-col">
