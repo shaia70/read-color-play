@@ -1,3 +1,4 @@
+
 import emailjs from 'emailjs-com';
 
 // EmailJS configuration
@@ -21,7 +22,9 @@ export const sendEmail = async (params: EmailParams, language: string) => {
   try {
     // Create template parameters with all possible recipient fields
     const templateParams = {
-      // User information
+      // User information with correct template fields
+      name: params.name, // This maps to {{name}} in the template
+      title: params.subject || defaultSubject, // This maps to {{title}} in the template
       from_name: params.name,
       from_email: params.email,
       subject: params.subject || defaultSubject,
