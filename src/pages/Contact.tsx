@@ -21,6 +21,9 @@ const EMAILJS_SERVICE_ID = "service_b8wznhv";
 const EMAILJS_TEMPLATE_ID = "template_n7g59yj";
 const EMAILJS_PUBLIC_KEY = "WPCnv-Rf3v6GmioO";
 
+// Initialize EmailJS
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 const Contact = () => {
   const { toast } = useToast();
   const { language, t } = useLanguage();
@@ -84,21 +87,26 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Sending email with the following parameters:");
+      
       const templateParams = {
         from_name: data.name,
         from_email: data.email,
         to_email: TARGET_EMAIL,
         subject: data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'),
-        message: data.message,
-        name: data.name
+        message: data.message
       };
       
-      await emailjs.send(
+      console.log("Template params:", templateParams);
+      
+      const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
+      
+      console.log("EmailJS response:", response);
       
       setFormSubmitted(true);
       
