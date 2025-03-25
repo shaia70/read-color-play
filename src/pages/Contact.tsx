@@ -1,10 +1,11 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Mail, Send, Check } from "lucide-react";
+import { Mail, Send, Check, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageDirectionWrapper from "@/components/layout/LanguageDirectionWrapper";
@@ -25,6 +26,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formData, setFormData] = useState<any>(null);
 
   const formSchema = z.object({
     name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
@@ -74,6 +76,7 @@ const Contact = () => {
 
   const resetForm = () => {
     setFormSubmitted(false);
+    setFormData(null);
     form.reset();
   };
 
@@ -81,31 +84,52 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await sendEmail({
-        name: data.name,
-        email: data.email,
-        subject: data.subject,
-        message: data.message
-      }, language);
+      // First attempt with EmailJS
+      try {
+        const response = await sendEmail({
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message
+        }, language);
+        
+        console.log("Email response:", response);
+        
+        setFormSubmitted(true);
+        setFormData(data);
+        
+        toast({
+          title: language === 'en' ? "Message Sent" : "ההודעה נשלחה",
+          description: language === 'en' 
+            ? "Your message has been sent successfully. We'll get back to you soon!" 
+            : "הודעתך נשלחה בהצלחה. נחזור אליך בהקדם!",
+          variant: "default",
+        });
+        
+        return;
+      } catch (emailJsError) {
+        console.error("EmailJS error:", emailJsError);
+        // If EmailJS fails, we'll use the fallback method below
+      }
       
-      console.log("Email response:", response);
-      
+      // Fallback method - store form data and show manual email link
       setFormSubmitted(true);
+      setFormData(data);
       
       toast({
-        title: language === 'en' ? "Message Sent" : "ההודעה נשלחה",
+        title: language === 'en' ? "Form Completed" : "הטופס הושלם",
         description: language === 'en' 
-          ? "Your message has been sent successfully. We'll get back to you soon!" 
-          : "הודעתך נשלחה בהצלחה. נחזור אליך בהקדם!",
+          ? "Please use the email link to send your message." 
+          : "אנא השתמש בקישור הדוא\"ל לשליחת ההודעה.",
         variant: "default",
       });
     } catch (error) {
-      console.error("Error sending email in component:", error);
+      console.error("Error in contact form:", error);
       toast({
         title: language === 'en' ? "Error" : "שגיאה",
         description: language === 'en' 
-          ? "An error occurred while sending your message. Please try again later." 
-          : "אירעה שגיאה בשליחת ההודעה שלך. אנא נסה שוב מאוחר יותר.",
+          ? "An error occurred. Please try again later or contact us directly via email." 
+          : "אירעה שגיאה. אנא נסה שוב מאוחר יותר או צור קשר ישירות באמצעות דוא\"ל.",
         variant: "destructive",
       });
     } finally {
@@ -116,6 +140,12 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     form.handleSubmit(onSubmit)(e);
+  };
+
+  const constructMailtoLink = (data: any) => {
+    const subject = encodeURIComponent(data.subject || (language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר'));
+    const body = encodeURIComponent(`Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`);
+    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -242,7 +272,7 @@ const Contact = () => {
               ) : (
                 <div className={`p-8 ${language === 'en' ? 'text-left' : 'text-right'}`}>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">{language === 'en' ? 'Message Sent' : 'ההודעה נשלחה'}</h2>
+                    <h2 className="text-2xl font-bold">{language === 'en' ? 'Message Received' : 'ההודעה התקבלה'}</h2>
                     <CustomButton 
                       variant="secondary" 
                       onClick={resetForm}
@@ -257,15 +287,30 @@ const Contact = () => {
                       <Check className="text-green-500" />
                       <p className="text-green-700 font-medium">
                         {language === 'en' 
-                          ? 'Your message has been sent successfully!' 
-                          : 'ההודעה שלך נשלחה בהצלחה!'}
+                          ? 'Your form has been submitted successfully!' 
+                          : 'הטופס שלך נשלח בהצלחה!'}
                       </p>
                     </div>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 mb-4">
                       {language === 'en' 
-                        ? `We've sent your message to ${TARGET_EMAIL} and will get back to you soon.` 
-                        : `שלחנו את הודעתך ל-${TARGET_EMAIL} ונחזור אליך בהקדם.`}
+                        ? `We've received your message and will get back to you soon at ${formData?.email}.` 
+                        : `קיבלנו את הודעתך ונחזור אליך בהקדם בכתובת ${formData?.email}.`}
                     </p>
+                    
+                    {formData && (
+                      <a 
+                        href={constructMailtoLink(formData)} 
+                        className="inline-flex items-center gap-2 text-shelley-blue hover:text-shelley-purple transition-colors mt-2"
+                      >
+                        <Mail size={18} />
+                        <span>
+                          {language === 'en' 
+                            ? 'If the email was not sent automatically, click here to send via your email client' 
+                            : 'אם האימייל לא נשלח אוטומטית, לחץ כאן כדי לשלוח באמצעות תוכנת האימייל שלך'}
+                        </span>
+                        <ExternalLink size={16} />
+                      </a>
+                    )}
                   </div>
                 </div>
               )}
