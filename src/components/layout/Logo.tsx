@@ -2,6 +2,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import { BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -18,28 +19,24 @@ export default function Logo({
 }: LogoProps) {
   const { language } = useLanguage();
 
-  if (isSquare) {
-    return (
-      <div className={cn(
-        "flex items-center justify-center aspect-square bg-white rounded-lg p-2", 
-        className
-      )}>
-        <div className="flex flex-col items-center">
-          <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
-            {language === 'he' ? 'שלי' : 'Shelley'}
-          </span>
-          <div className="flex-shrink-0 my-[-2px]">
-            <BookOpen className="h-6 w-6 text-shelley-blue" />
-          </div>
-          <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
-            {language === 'he' ? 'ספרים' : 'Books'}
-          </span>
+  const logoContent = isSquare ? (
+    <div className={cn(
+      "flex items-center justify-center aspect-square bg-white rounded-lg p-2", 
+      className
+    )}>
+      <div className="flex flex-col items-center">
+        <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+          {language === 'he' ? 'שלי' : 'Shelley'}
+        </span>
+        <div className="flex-shrink-0 my-[-2px]">
+          <BookOpen className="h-6 w-6 text-shelley-blue" />
         </div>
+        <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+          {language === 'he' ? 'ספרים' : 'Books'}
+        </span>
       </div>
-    );
-  }
-
-  return (
+    </div>
+  ) : (
     <div className={cn("flex items-center", className)}>
       {showIcon && (
         <div className="flex-shrink-0 mr-2">
@@ -57,5 +54,11 @@ export default function Logo({
         )}
       </div>
     </div>
+  );
+
+  return (
+    <Link to="/" className="focus:outline-none">
+      {logoContent}
+    </Link>
   );
 }

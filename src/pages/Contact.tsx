@@ -18,9 +18,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import emailjs from 'emailjs-com';
 
 const TARGET_EMAIL = "contact@shelley.co.il";
-const EMAILJS_SERVICE_ID = "service_jgbftoh";
-const EMAILJS_TEMPLATE_ID = "template_8sxafbd";
-const EMAILJS_PUBLIC_KEY = "8_unLVPbP1v1Jjzv5";
+const EMAILJS_SERVICE_ID = "service_b8wznhv";
+const EMAILJS_TEMPLATE_ID = "template_n7g59yj";
+const EMAILJS_PUBLIC_KEY = "WPCnv-Rf3v6GmioO";
 
 const Contact = () => {
   const { toast } = useToast();
