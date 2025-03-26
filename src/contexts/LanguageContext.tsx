@@ -47,7 +47,7 @@ const heTranslations: Record<string, string> = {
   'download.regularUpdatesDesc': 'תוכן ותכונות חדשות נוספים באופן קבוע',
   'download.comingSoon': 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!',
   'download.notifyMe': 'עדכנו אותי בשחרור',
-  'download.scanQR': 'הורד לנייד באמצעות סריקת הQR',
+  'download.scanQR': 'סרוק את ה-QR בנייד כדי להגיע ישירות לדף זה להורדת האפליקציה',
   
   // Concept section
   'concept.title': 'קוראים, צובעים, משחקים',
@@ -168,7 +168,7 @@ const enTranslations: Record<string, string> = {
   'download.regularUpdatesDesc': 'New content and features added regularly',
   'download.comingSoon': 'Coming soon to iOS and Android devices. Be the first to know when our app is available!',
   'download.notifyMe': 'Notify Me on Release',
-  'download.scanQR': 'Download by scanning the QR',
+  'download.scanQR': 'Scan the QR code on your mobile to directly access this download page',
   
   // Concept section
   'concept.title': 'Read, Color, Play',
