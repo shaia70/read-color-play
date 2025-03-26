@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -244,9 +243,7 @@ const DownloadPage = () => {
                     <h4 className="text-lg font-bold mb-4">{t('download.scanQR')}</h4>
                     <div className="border border-gray-200 p-4 rounded-lg">
                       <img 
-                        src={language === 'he' 
-                          ? "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png" 
-                          : "/lovable-uploads/21efd8ff-cb6f-4d6a-958c-894ef6dfb937.png"} 
+                        src="/lovable-uploads/51a16e0a-7938-41aa-b510-013c91d16360.png" 
                         alt="QR Code for App Download" 
                         className="w-48 h-48"
                       />
