@@ -6,19 +6,28 @@ import './index.css'
 // Register service worker for PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=3', { 
-      scope: '/' 
-    }).then(registration => {
-      console.log('Service worker registered successfully:', registration);
+    // Unregister any existing service workers first
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for(let registration of registrations) {
+        registration.unregister();
+        console.log('Unregistered old service worker');
+      }
       
-      // Check for updates every hour
-      setInterval(() => {
-        registration.update();
-        console.log('Checking for service worker updates');
-      }, 60 * 60 * 1000);
-      
-    }).catch(err => {
-      console.error('Service worker registration failed:', err);
+      // Register the new service worker
+      navigator.serviceWorker.register('/sw.js?v=4', { 
+        scope: '/' 
+      }).then(registration => {
+        console.log('Service worker registered successfully:', registration);
+        
+        // Check for updates every hour
+        setInterval(() => {
+          registration.update();
+          console.log('Checking for service worker updates');
+        }, 60 * 60 * 1000);
+        
+      }).catch(err => {
+        console.error('Service worker registration failed:', err);
+      });
     });
   });
 }
