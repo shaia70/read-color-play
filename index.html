@@ -4,16 +4,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/app-icon.png" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/app-icon.png" />
-    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Standard favicon -->
+    <link rel="icon" type="image/png" href="/app-icon.png?v=3" />
+    <link rel="icon" href="/favicon.ico?v=3" />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/app-icon.png?v=3" />
+    
+    <!-- Microsoft Tile Icon -->
+    <meta name="msapplication-TileImage" content="/app-icon.png?v=3" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/manifest.json?v=3" />
+    
     <title>Shelley Books</title>
     <meta name="description" content="Read • Color • Play" />
     <meta name="author" content="Shelley Books" />
     <meta property="og:image" content="/og-image.png" />
-    <!-- Force favicon refresh -->
-    <link rel="shortcut icon" href="/app-icon.png?v=2" />
+    
+    <!-- Force favicon refresh - specifically for Chrome and Edge -->
+    <link rel="shortcut icon" href="/app-icon.png?v=3" />
   </head>
 
   <body>

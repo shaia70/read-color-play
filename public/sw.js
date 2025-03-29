@@ -1,6 +1,6 @@
 
 // This is a simple service worker that caches the app shell
-const CACHE_NAME = 'shelley-books-v1';
+const CACHE_NAME = 'shelley-books-v3';
 
 // Assets to cache
 const urlsToCache = [
@@ -13,6 +13,9 @@ const urlsToCache = [
 
 // Install service worker and cache the app shell
 self.addEventListener('install', event => {
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -56,6 +59,9 @@ self.addEventListener('fetch', event => {
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
+  
+  // Claim control immediately
+  event.waitUntil(self.clients.claim());
   
   event.waitUntil(
     caches.keys().then(cacheNames => {

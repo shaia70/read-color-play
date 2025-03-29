@@ -4,16 +4,16 @@
   "short_name": "Shelley",
   "icons": [
     {
-      "src": "/app-icon.png",
+      "src": "/app-icon.png?v=3",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/app-icon.png",
+      "src": "/app-icon.png?v=3",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "theme_color": "#ffffff",
