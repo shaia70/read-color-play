@@ -5,24 +5,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Base favicon - critical for Chrome and Edge -->
-    <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
+    <!-- Explicit favicon declaration with forced cache busting -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=5" />
     
-    <!-- PNG icons with different sizes -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/app-icon.png?v=4" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/app-icon.png?v=4" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/app-icon.png?v=4" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/app-icon.png?v=4" />
+    <!-- Multiple size PNG icons with explicit dimensions -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/app-icon.png?v=5" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/app-icon.png?v=5" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/app-icon.png?v=5" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/app-icon.png?v=5" />
     
     <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/app-icon.png?v=4" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/app-icon.png?v=5" />
     
     <!-- Microsoft Tile Icons -->
-    <meta name="msapplication-TileImage" content="/app-icon.png?v=4" />
+    <meta name="msapplication-TileImage" content="/app-icon.png?v=5" />
     <meta name="msapplication-TileColor" content="#ffffff" />
     
-    <!-- PWA manifest -->
-    <link rel="manifest" href="/manifest.json?v=4" />
+    <!-- PWA manifest with cache busting -->
+    <link rel="manifest" href="/manifest.json?v=5" />
     
     <title>Shelley Books</title>
     <meta name="description" content="Read • Color • Play" />
@@ -30,8 +30,8 @@
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:image" content="/og-image.png" />
     
-    <!-- Chrome-specific, put favicon last to override any previous declarations -->
-    <link rel="shortcut icon" href="/favicon.ico?v=4" />
+    <!-- Chrome-specific, must be the last favicon declaration -->
+    <link rel="shortcut icon" href="/favicon.ico?v=5" />
   </head>
 
   <body>

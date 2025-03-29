@@ -14,7 +14,7 @@ if ('serviceWorker' in navigator) {
       }
       
       // Register the new service worker
-      navigator.serviceWorker.register('/sw.js?v=4', { 
+      navigator.serviceWorker.register('/sw.js?v=5', { 
         scope: '/' 
       }).then(registration => {
         console.log('Service worker registered successfully:', registration);
