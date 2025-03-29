@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 type Language = 'he' | 'en';
 
@@ -258,7 +259,27 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('he');
+  // Get stored language from localStorage or default to Hebrew
+  const getStoredLanguage = (): Language => {
+    const storedLanguage = localStorage.getItem('shelley-language');
+    return (storedLanguage === 'en' || storedLanguage === 'he') ? storedLanguage : 'he';
+  };
+
+  const [language, setLanguageState] = useState<Language>(getStoredLanguage);
+
+  // Update localStorage when language changes
+  const setLanguage = (newLanguage: Language) => {
+    localStorage.setItem('shelley-language', newLanguage);
+    setLanguageState(newLanguage);
+  };
+
+  // Initialize with stored language on component mount
+  useEffect(() => {
+    const storedLanguage = getStoredLanguage();
+    if (storedLanguage !== language) {
+      setLanguageState(storedLanguage);
+    }
+  }, []);
 
   const t = (key: string): string => {
     return translations[language][key] || key;
