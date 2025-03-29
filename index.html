@@ -5,33 +5,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Explicit favicon declaration with forced cache busting -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=5" />
+    <!-- Force browsers to fetch new favicons with unique query parameters -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=6" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=6" />
     
-    <!-- Multiple size PNG icons with explicit dimensions -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/app-icon.png?v=5" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/app-icon.png?v=5" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/app-icon.png?v=5" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/app-icon.png?v=5" />
+    <!-- Explicit PNG icons with forced reload -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/app-icon.png?v=6" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/app-icon.png?v=6" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/app-icon.png?v=6" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/app-icon.png?v=6" />
     
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/app-icon.png?v=5" />
+    <!-- Apple Touch Icon with forced reload -->
+    <link rel="apple-touch-icon" href="/app-icon.png?v=6" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/app-icon.png?v=6" />
     
     <!-- Microsoft Tile Icons -->
-    <meta name="msapplication-TileImage" content="/app-icon.png?v=5" />
+    <meta name="msapplication-TileImage" content="/app-icon.png?v=6" />
     <meta name="msapplication-TileColor" content="#ffffff" />
     
     <!-- PWA manifest with cache busting -->
-    <link rel="manifest" href="/manifest.json?v=5" />
+    <link rel="manifest" href="/manifest.json?v=6" />
     
     <title>Shelley Books</title>
     <meta name="description" content="Read • Color • Play" />
     <meta name="author" content="Shelley Books" />
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:image" content="/og-image.png" />
-    
-    <!-- Chrome-specific, must be the last favicon declaration -->
-    <link rel="shortcut icon" href="/favicon.ico?v=5" />
   </head>
 
   <body>
