@@ -1,13 +1,13 @@
 
 // This is a simple service worker that caches the app shell
-const CACHE_NAME = 'shelley-books-v13';
+const CACHE_NAME = 'shelley-books-v14';
 
 // Assets to cache
 const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json?v=13',
-  '/favicon.png?v=13'
+  '/manifest.json?v=14',
+  '/favicon.png?v=14'
 ];
 
 // Install service worker and cache the app shell
