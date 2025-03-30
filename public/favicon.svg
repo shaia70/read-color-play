@@ -1,7 +1,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <rect width="64" height="64" fill="#ffffff" rx="12" ry="12"/>
-  <text x="44" y="46" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#df6168">ש</text>
-  <text x="26" y="46" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#c26394">ל</text>
-  <text x="8" y="46" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#a165c4">י</text>
+  <text x="44" y="48" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#df6168">ש</text>
+  <text x="26" y="48" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#c26394">ל</text>
+  <text x="8" y="48" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#a165c4">י</text>
 </svg>
