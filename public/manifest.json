@@ -4,20 +4,21 @@
   "short_name": "Shelley",
   "icons": [
     {
-      "src": "/favicon.ico?v=8",
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+LnNoZWxsZXktcHVycGxle2ZpbGw6IzgxNjJDQzt9LnNoZWxsZXktcmVke2ZpbGw6I0U4NTc1Nzt9PC9zdHlsZT48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCwxMHYxNWgxNVYxMEgxMHogTTI1LDI1djE1aDI1VjI1SDI1eiBNNTAsMTB2MTVoMjVWMTBINTB6IE0xMCw1MHYyMGgxNVY1MEgxMHogTTI1LDUwdjIwaDEwVjUwSDI1eiBNNDUsNTB2MjBoMTVWNTBINDV6Ii8+PHBhdGggY2xhc3M9InNoZWxsZXktcmVkIiBkPSJNNTAsNTB2MTBjMCwxMCwxMCwxMCwxNSwxMGM1LDAsMTUtNSwxNS0xNVYzNUg2NXYxNWMwLDUtNCw1LTUsNXMtNS0yLTUtNVY1MEg1MHoiLz48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCw3NXYxNWgxNWMxMCwwLDEwLTUsNS0xMHMxLTUsNS01aDIwdjEwaC01djVoMTV2LTE1SDUwdi01SDEweiIvPjwvc3ZnPg==",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/app-icon.png?v=8",
-      "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/app-icon.png?v=8",
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+LnNoZWxsZXktcHVycGxle2ZpbGw6IzgxNjJDQzt9LnNoZWxsZXktcmVke2ZpbGw6I0U4NTc1Nzt9PC9zdHlsZT48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCwxMHYxNWgxNVYxMEgxMHogTTI1LDI1djE1aDI1VjI1SDI1eiBNNTAsMTB2MTVoMjVWMTBINTB6IE0xMCw1MHYyMGgxNVY1MEgxMHogTTI1LDUwdjIwaDEwVjUwSDI1eiBNNDUsNTB2MjBoMTVWNTBINDV6Ii8+PHBhdGggY2xhc3M9InNoZWxsZXktcmVkIiBkPSJNNTAsNTB2MTBjMCwxMCwxMCwxMCwxNSwxMGM1LDAsMTUtNSwxNS0xNVYzNUg2NXYxNWMwLDUtNCw1LTUsNXMtNS0yLTUtNVY1MEg1MHoiLz48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCw3NXYxNWgxNWMxMCwwLDEwLTUsNS0xMHMxLTUsNS01aDIwdjEwaC01djVoMTV2LTE1SDUwdi01SDEweiIvPjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+LnNoZWxsZXktcHVycGxle2ZpbGw6IzgxNjJDQzt9LnNoZWxsZXktcmVke2ZpbGw6I0U4NTc1Nzt9PC9zdHlsZT48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCwxMHYxNWgxNVYxMEgxMHogTTI1LDI1djE1aDI1VjI1SDI1eiBNNTAsMTB2MTVoMjVWMTBINTB6IE0xMCw1MHYyMGgxNVY1MEgxMHogTTI1LDUwdjIwaDEwVjUwSDI1eiBNNDUsNTB2MjBoMTVWNTBINDV6Ii8+PHBhdGggY2xhc3M9InNoZWxsZXktcmVkIiBkPSJNNTAsNTB2MTBjMCwxMCwxMCwxMCwxNSwxMGM1LDAsMTUtNSwxNS0xNVYzNUg2NXYxNWMwLDUtNCw1LTUsNXMtNS0yLTUtNVY1MEg1MHoiLz48cGF0aCBjbGFzcz0ic2hlbGxleS1wdXJwbGUiIGQ9Ik0xMCw3NXYxNWgxNWMxMCwwLDEwLTUsNS0xMHMxLTUsNS01aDIwdjEwaC01djVoMTV2LTE1SDUwdi01SDEweiIvPjwvc3ZnPg==",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
