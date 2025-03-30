@@ -1,7 +1,6 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
-import { BookOpen } from "lucide-react";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -24,13 +23,19 @@ export default function Logo({
       className
     )}>
       <div className="flex flex-col items-center">
-        <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+        <span className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-l from-[#7451d9] via-[#b1539c] to-[#e5494d] leading-none">
           {language === 'he' ? 'שלי' : 'Shelley'}
         </span>
-        <div className="flex-shrink-0 my-[-2px]">
-          <BookOpen className="h-6 w-6 text-shelley-blue" />
-        </div>
-        <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red leading-none">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="h-6 w-6 my-[-2px]">
+          <g transform="translate(20,20) scale(0.8)">
+            <path d="M0 0 h25 v50 h50 v-25 h25 v25 c0 0 0 25 -25 25 h-50 v-50 h-25 z" fill="#b1539c"/>
+            <path d="M75 50 h50 c0 0 25 0 25 25 v25 h-25 v-25 h-50 v25 c0 0 0 25 -25 25 h-25 v-25 h25 v-25 h50 v-25" fill="#e5494d"/>
+            <path d="M0 100 h25 v50 h-25 z" fill="#7451d9"/>
+            <path d="M25 150 h75 v25 h-75 z" fill="#7451d9"/>
+            <path d="M25 100 h75 v50 h-75 z" fill="#7451d9"/>
+          </g>
+        </svg>
+        <span className="text-xs bg-clip-text text-transparent bg-gradient-to-l from-[#7451d9] via-[#b1539c] to-[#e5494d] leading-none">
           {language === 'he' ? 'ספרים' : 'Books'}
         </span>
       </div>
@@ -39,11 +44,19 @@ export default function Logo({
     <div className={cn("flex items-center", className)}>
       {showIcon && (
         <div className="flex-shrink-0 mr-2">
-          <BookOpen className="h-8 w-8 text-shelley-blue" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="h-8 w-8">
+            <g transform="translate(20,20) scale(0.8)">
+              <path d="M0 0 h25 v50 h50 v-25 h25 v25 c0 0 0 25 -25 25 h-50 v-50 h-25 z" fill="#b1539c"/>
+              <path d="M75 50 h50 c0 0 25 0 25 25 v25 h-25 v-25 h-50 v25 c0 0 0 25 -25 25 h-25 v-25 h25 v-25 h50 v-25" fill="#e5494d"/>
+              <path d="M0 100 h25 v50 h-25 z" fill="#7451d9"/>
+              <path d="M25 150 h75 v25 h-75 z" fill="#7451d9"/>
+              <path d="M25 100 h75 v50 h-75 z" fill="#7451d9"/>
+            </g>
+          </svg>
         </div>
       )}
       <div className="flex flex-col">
-        <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-l from-shelley-blue via-shelley-purple to-shelley-red">
+        <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-l from-[#7451d9] via-[#b1539c] to-[#e5494d]">
           {language === 'he' ? 'שלי ספרים' : 'Shelley Books'}
         </span>
         {showTagline && (
