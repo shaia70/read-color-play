@@ -4,18 +4,18 @@
   "short_name": "Shelley",
   "icons": [
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Ik0zMCwzMCBDMzUsNDUgMzUsNzAgMzUsODUgQzM1LDEwMCA0MCwxMDUgNTAsMTA1IEM2MCwxMDUgNjUsMTAwIDY1LDkwIEM2NSw4MCAxMDAsODAgOTAsNTAgQzgwLDIwIDUwLDIwIDMwLDMwIFoiIGZpbGw9IiNGRjY0NjQiLz4KICA8cGF0aCBkPSJNODAsMzAgQzg1LDIwIDEwMCwyMCAxMjAsMjAgQzE0MCwyMCAxNTAsMzAgMTUwLDUwIEMxNTAsNzAgMTQwLDgwIDEyMCw4MCBDMTA1LDgwIDkwLDgwIDkwLDcwIEM5MCw2MCA5MCw1MCAxMDAsNTAgQzExMCw1MCAxMjAsNDAgMTIwLDQwIEMxMTUsNDAgMTAwLDM1IDEwMCw1MCBDMTA1LDYwIDEwNSw2MCAxMDAsNzAgQzk1LDgwIDgwLDcwIDgwLDUwIFoiIGZpbGw9IiM4MDgwRkYiLz4KICA8cGF0aCBkPSJNNzAsMTIwIEM3MCwxNDAgNjAsMTUwIDQwLDE1MCBDMjAsMTUwIDEwLDE0MCAxMCwxMjAgQzEwLDEwMCAyMCw5MCA0MCw5MCBDNjAsOTAgNzAsMTAwIDcwLDEyMCBaIE00MCwxMTAgQzMwLDExMCAyNSwxMTUgMjUsMTIwIEMyNSwxMzAgMzAsMTM1IDQwLDEzNSBDNTAsMTM1IDU1LDEzMCA1NSwxMjAgQzU1LDExMCA1MCwxMTAgNDAsMTEwIFoiIGZpbGw9IiM5OTk5RkYiLz4KICA8cGF0aCBkPSJNMTMwLDEyMCBDMTMwLDE0MCAxMjAsMTUwIDEwMCwxNTAgQzgwLDE1MCA3MCwxNDAgNzAsMTIwIEM3MCwxMTAgODAsMTAwIDEwMCwxMDAgQzEyMCwxMDAgMTMwLDExMCAxMzAsMTIwIFogTTEwMCwxMTUgQzkwLDExNSA4NSwxMTUgODUsMTIwIEM4NSwxMzAgOTAsMTM1IDEwMCwxMzUgQzExMCwxMzUgMTE1LDEzMCAxMTUsMTIwIEMxMTUsMTEwIDExMCwxMTUgMTAwLDExNSBaIiBmaWxsPSIjRkY2NDY0Ii8+Cjwvc3ZnPg==",
+      "src": "/favicon.ico?v=8",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/svg+xml"
+      "type": "image/x-icon"
     },
     {
-      "src": "/app-icon.png?v=7",
+      "src": "/app-icon.png?v=8",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/app-icon.png?v=7",
+      "src": "/app-icon.png?v=8",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
