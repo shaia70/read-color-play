@@ -5,6 +5,6 @@
   <text x="26" y="42" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#c26394">ל</text>
   <text x="8" y="42" font-family="Arial, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#a165c4">י</text>
   <!-- Book icon (smaller) -->
-  <path d="M32 48c0 0-6-0.75-9-0.75s-6 0.75-6 0.75V32c0 0 3-0.75 6-0.75s9 0.75 9 0.75m0 0c0 0 6-0.75 9-0.75s6 0.75 6 0.75v16c0 0-3-0.75-6-0.75s-9 0.75-9 0.75" stroke="#000000" stroke-width="1.5" fill="none" />
-  <path d="M32 32v16" stroke="#000000" stroke-width="1.5" fill="none" />
+  <path d="M32 52c0 0-6-0.75-9-0.75s-6 0.75-6 0.75V36c0 0 3-0.75 6-0.75s9 0.75 9 0.75m0 0c0 0 6-0.75 9-0.75s6 0.75 6 0.75v16c0 0-3-0.75-6-0.75s-9 0.75-9 0.75" stroke="#000000" stroke-width="1.5" fill="none" />
+  <path d="M32 36v16" stroke="#000000" stroke-width="1.5" fill="none" />
 </svg>
