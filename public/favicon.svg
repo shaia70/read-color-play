@@ -1,8 +1,8 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <rect width="64" height="64" fill="#ffffff" stroke="#000000" stroke-width="2" rx="12" ry="12"/>
-  <!-- Hebrew text (reduced size) -->
-  <text x="44" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#df6168">ש</text>
-  <text x="26" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#c26394">ל</text>
-  <text x="8" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#a165c4">י</text>
+  <!-- Hebrew text (with updated colors) -->
+  <text x="44" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#9b87f5">ש</text>
+  <text x="26" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#9b87f5">ל</text>
+  <text x="8" y="50" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#9b87f5">י</text>
 </svg>
