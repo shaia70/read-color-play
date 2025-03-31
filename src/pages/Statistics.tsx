@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SimpleAuth from "@/components/statistics/SimpleAuth";
 import AdminSettings from "@/components/statistics/AdminSettings";
 import { VisitorStats } from "@/components/statistics/VisitorStats";
