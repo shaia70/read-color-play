@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -23,6 +24,8 @@ const DownloadPage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
+      className="download-page"
+      data-testid="download-page"
     >
       <DownloadSEO />
       
@@ -30,7 +33,7 @@ const DownloadPage = () => {
       <main className="pt-28 pb-20">
         <div className="page-container">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold mb-6">{t('download.title')}</h1>
+            <h1 className="text-4xl font-bold mb-6" id="download-app-title">{t('download.title')}</h1>
             <p className="text-xl max-w-3xl mx-auto" style={{ color: "#5e86c7" }}>
               {t('download.description')}
             </p>

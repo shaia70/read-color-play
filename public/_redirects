@@ -9,3 +9,7 @@ http://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
 
 # Canonical domain enforcement (remove www)
 https://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
+
+# Language redirects
+/en  /en/  301!
+/he  /  301!
