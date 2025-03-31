@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Eye, EyeOff, KeyRound, ShieldAlert } from "lucide-react";
+import { Eye, EyeOff, KeyRound, ShieldAlert, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -21,28 +21,23 @@ export const PasswordManagement: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isDisableTestKeyDialogOpen, setIsDisableTestKeyDialogOpen] = useState(false);
   
-  // Check if production key has been successfully used
   const [productionKeyWorking, setProductionKeyWorking] = useState(() => {
     return localStorage.getItem('shelley_production_key_working') === 'true';
   });
   
-  // Check if test key is already permanently disabled
   const [testKeyDisabled, setTestKeyDisabled] = useState(() => {
     return localStorage.getItem('shelley_disable_test_recaptcha') === 'true';
   });
   
-  // Get the current production key
   const productionKey = localStorage.getItem('shelley_recaptcha_key') || "";
   const isUsingTestKey = localStorage.getItem('shelley_use_test_recaptcha') === 'true';
   const testKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
   const hasCustomProductionKey = productionKey && productionKey !== testKey;
   
   useEffect(() => {
-    // Check if production key is working on component mount
     const workingKey = localStorage.getItem('shelley_production_key_working') === 'true';
     setProductionKeyWorking(workingKey);
     
-    // Check if test key is disabled
     const disabled = localStorage.getItem('shelley_disable_test_recaptcha') === 'true';
     setTestKeyDisabled(disabled);
   }, []);
@@ -60,31 +55,26 @@ export const PasswordManagement: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Get stored password or use default if not set
       const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
       
-      // Verify current password
       if (currentPassword !== storedPassword) {
         toast.error("Current password is incorrect");
         setIsLoading(false);
         return;
       }
       
-      // Validate new password
       if (newPassword.length < 8) {
         toast.error("New password must be at least 8 characters");
         setIsLoading(false);
         return;
       }
       
-      // Confirm passwords match
       if (newPassword !== confirmPassword) {
         toast.error("New passwords do not match");
         setIsLoading(false);
         return;
       }
       
-      // Save new password
       localStorage.setItem('shelley_admin_password', newPassword);
       
       toast.success("Password changed successfully");
@@ -100,9 +90,7 @@ export const PasswordManagement: React.FC = () => {
   
   const handleDisableTestKey = () => {
     try {
-      // Permanently disable test key
       localStorage.setItem('shelley_disable_test_recaptcha', 'true');
-      // Force using production key
       localStorage.setItem('shelley_use_test_recaptcha', 'false');
       
       setTestKeyDisabled(true);
@@ -111,6 +99,24 @@ export const PasswordManagement: React.FC = () => {
     } catch (error) {
       console.error("Error disabling test key:", error);
       toast.error("Failed to disable test key");
+    }
+  };
+  
+  const toggleTestKeyAvailability = () => {
+    try {
+      if (testKeyDisabled) {
+        localStorage.setItem('shelley_disable_test_recaptcha', 'false');
+        setTestKeyDisabled(false);
+        toast.success("Test key re-enabled");
+      } else {
+        localStorage.setItem('shelley_disable_test_recaptcha', 'true');
+        localStorage.setItem('shelley_use_test_recaptcha', 'false');
+        setTestKeyDisabled(true);
+        toast.success("Test key permanently disabled");
+      }
+    } catch (error) {
+      console.error("Error toggling test key availability:", error);
+      toast.error("Failed to update test key settings");
     }
   };
   
@@ -258,23 +264,68 @@ export const PasswordManagement: React.FC = () => {
               </div>
             </div>
             
-            {!testKeyDisabled && productionKeyWorking && hasCustomProductionKey && (
+            {productionKeyWorking && hasCustomProductionKey && (
               <>
                 <Separator />
                 
                 <div className="space-y-2">
-                  <h3 className="font-medium text-left text-amber-600">Disable Test Key Permanently</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium text-left">Test Key Availability</h3>
+                      <p className="text-sm text-muted-foreground text-left">
+                        {testKeyDisabled 
+                          ? "Test key is permanently disabled. Toggle to re-enable it." 
+                          : "Permanently disable the test key for enhanced security."}
+                      </p>
+                    </div>
+                    <Switch 
+                      checked={!testKeyDisabled} 
+                      onCheckedChange={() => toggleTestKeyAvailability()} 
+                      aria-label="Toggle test key availability"
+                    />
+                  </div>
+                  
+                  <Alert variant={testKeyDisabled ? "default" : "warning"} className="mt-2">
+                    {testKeyDisabled ? (
+                      <>
+                        <CheckCircle2 className="h-4 w-4" />
+                        <AlertTitle>Enhanced Security</AlertTitle>
+                        <AlertDescription>
+                          Test reCAPTCHA key is disabled. Only your production key will be used for verification.
+                        </AlertDescription>
+                      </>
+                    ) : (
+                      <>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Security Notice</AlertTitle>
+                        <AlertDescription>
+                          The test reCAPTCHA key is currently enabled. For production environments, 
+                          we recommend disabling it to enforce proper verification.
+                        </AlertDescription>
+                      </>
+                    )}
+                  </Alert>
+                </div>
+              </>
+            )}
+            
+            {!testKeyDisabled && productionKeyWorking && hasCustomProductionKey && (
+              <>
+                <Separator className="my-4" />
+                
+                <div className="space-y-2">
+                  <h3 className="font-medium text-left text-amber-600">Legacy Option: Disable Test Key Permanently</h3>
                   <p className="text-sm text-muted-foreground text-left">
-                    Once disabled, you will no longer be able to use the test reCAPTCHA key. This is recommended for production
-                    environments but should only be done after confirming your production key is working correctly.
+                    The toggle above is the recommended way to manage test key availability.
+                    This legacy option is kept for backward compatibility.
                   </p>
                   
                   <div className="pt-2">
                     <Dialog open={isDisableTestKeyDialogOpen} onOpenChange={setIsDisableTestKeyDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="destructive" className="mt-2">
+                        <Button variant="outline" className="mt-2">
                           <ShieldAlert className="mr-2 h-4 w-4" />
-                          Permanently Disable Test Key
+                          Legacy: Disable Test Key
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
@@ -315,7 +366,7 @@ export const PasswordManagement: React.FC = () => {
               </>
             )}
             
-            {testKeyDisabled && (
+            {testKeyDisabled && !productionKeyWorking && (
               <Alert className="mt-4">
                 <ShieldAlert className="h-4 w-4" />
                 <AlertTitle>Test Key Disabled</AlertTitle>
