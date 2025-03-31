@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const [password, setPassword] = useState("");
   const [captchaValue, setCaptchaValue] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +38,8 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
         toast.error("Invalid password");
         // Reset the CAPTCHA on failed login attempt
         setCaptchaValue(null);
-        // @ts-ignore - We need to access the reset method which exists but TypeScript doesn't recognize it
-        if (window.recaptchaRef && window.recaptchaRef.reset) {
-          window.recaptchaRef.reset();
+        if (recaptchaRef.current) {
+          recaptchaRef.current.reset();
         }
       }
     } catch (error) {
@@ -52,12 +52,6 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   
   const handleCaptchaChange = (value: string | null) => {
     setCaptchaValue(value);
-  };
-  
-  // Function to set the recaptcha reference
-  const setCaptchaRef = (ref: any) => {
-    // @ts-ignore - This is a safe workaround for storing the ref
-    window.recaptchaRef = ref;
   };
   
   return (
@@ -89,7 +83,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                 <ReCAPTCHA
                   sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // This is Google's test key - replace with your actual key in production
                   onChange={handleCaptchaChange}
-                  ref={setCaptchaRef}
+                  ref={recaptchaRef}
                 />
               </div>
               

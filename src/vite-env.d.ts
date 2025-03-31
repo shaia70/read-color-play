@@ -7,5 +7,5 @@ interface Window {
   dataLayer?: any[];
   fbq?: (...args: any[]) => void;
   _fbq?: any;
+  recaptchaRef?: any; // Add this property for the reCAPTCHA reference
 }
-
