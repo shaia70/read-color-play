@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Shield, Eye, EyeOff, KeyRound } from "lucide-react";
 
 interface SimpleAuthProps {
   onAuthenticate: () => void;
@@ -61,8 +61,8 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   };
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50">
+      <Card className="w-full max-w-md shadow-lg border-blue-100">
         <CardHeader className="text-center">
           <div className="flex items-center gap-2 justify-center">
             <Shield className="h-6 w-6 text-primary" />
@@ -76,6 +76,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
           <CardContent>
             <div className="space-y-4">
               <div className="relative flex items-center">
+                <div className="absolute left-3 text-gray-400">
+                  <KeyRound size={18} />
+                </div>
                 <Input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
@@ -84,7 +87,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                   id="admin-password"
                   name="admin-password"
                   autoComplete="current-password"
-                  className="text-left dir-ltr pr-10" // Added padding-right for the icon
+                  className="text-left dir-ltr pl-10 pr-10" // Added left padding for the key icon
                 />
                 <button 
                   type="button"
