@@ -116,8 +116,19 @@ const heTranslations: Record<string, string> = {
   '404.title': 'אופס! הדף לא נמצא',
   '404.back': 'חזרה לדף הבית',
   
-  // Add new translation
+  // Downloads
   'download.coloringPage': 'הורד דף צביעה (דוגמא)',
+  
+  // SEO Analytics section
+  'seo.keywords': 'מילות מפתח',
+  'seo.position': 'מיקום בחיפוש',
+  'seo.change': 'שינוי',
+  'seo.volume': 'נפח חיפוש',
+  'seo.improvement': 'המלצות לשיפור',
+  'seo.meta': 'תיאורי מטא',
+  'seo.mobile': 'אופטימיזציה למובייל',
+  'seo.content': 'אסטרטגיית תוכן',
+  'seo.export': 'יצוא דוח SEO מלא',
 };
 
 export default heTranslations;

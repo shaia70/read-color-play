@@ -1,14 +1,14 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Download } from "lucide-react";
+import { ArrowUpRight, Download, Language } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Sample data for demonstration
-const keywordRankingData = [
+// Sample data for demonstration - English keywords
+const enKeywordRankingData = [
   { keyword: 'augmented reality children books', position: 3, change: '+2', volume: 1200 },
   { keyword: 'AR books for kids', position: 5, change: '-1', volume: 880 },
   { keyword: 'interactive children books', position: 8, change: '+4', volume: 2400 },
@@ -16,6 +16,17 @@ const keywordRankingData = [
   { keyword: 'AR reading for children', position: 12, change: '+6', volume: 720 },
 ];
 
+// Sample data for demonstration - Hebrew keywords
+const heKeywordRankingData = [
+  { keyword: 'ספרי מציאות רבודה לילדים', position: 2, change: '+3', volume: 1450 },
+  { keyword: 'ספרים אינטראקטיביים', position: 4, change: '+1', volume: 1800 },
+  { keyword: 'שלי ספרים', position: 1, change: '0', volume: 580 },
+  { keyword: 'AR לילדים', position: 6, change: '+2', volume: 960 },
+  { keyword: 'ספרי ילדים עם טכנולוגיה', position: 7, change: '-1', volume: 720 },
+  { keyword: 'דפי צביעה אינטראקטיביים', position: 5, change: '+4', volume: 1100 },
+];
+
+// Keep existing data definitions
 const organicTrafficData = [
   { month: 'Jan', visitors: 1240 },
   { month: 'Feb', visitors: 1380 },
@@ -52,42 +63,96 @@ export const SeoAnalytics: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Keyword Rankings</CardTitle>
-          <CardDescription>Your position in search results for key terms</CardDescription>
+          <div className="flex flex-row justify-between items-center">
+            <div>
+              <CardTitle>Keyword Rankings</CardTitle>
+              <CardDescription>Your position in search results for key terms</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Keyword</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Change</TableHead>
-                <TableHead>Search Volume</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {keywordRankingData.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.keyword}</TableCell>
-                  <TableCell>{item.position}</TableCell>
-                  <TableCell>
-                    <span 
-                      className={
-                        item.change.startsWith("+") 
-                          ? "text-green-500" 
-                          : item.change === "0" 
-                            ? "text-gray-500" 
-                            : "text-red-500"
-                      }
-                    >
-                      {item.change}
-                    </span>
-                  </TableCell>
-                  <TableCell>{item.volume}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <Tabs defaultValue="hebrew" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="hebrew" className="flex items-center gap-1">
+                <Language className="h-4 w-4" />
+                עברית
+              </TabsTrigger>
+              <TabsTrigger value="english" className="flex items-center gap-1">
+                <Language className="h-4 w-4" />
+                English
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="hebrew">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>מילת מפתח</TableHead>
+                    <TableHead>מיקום</TableHead>
+                    <TableHead>שינוי</TableHead>
+                    <TableHead>נפח חיפוש</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {heKeywordRankingData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{item.keyword}</TableCell>
+                      <TableCell>{item.position}</TableCell>
+                      <TableCell>
+                        <span 
+                          className={
+                            item.change.startsWith("+") 
+                              ? "text-green-500" 
+                              : item.change === "0" 
+                                ? "text-gray-500" 
+                                : "text-red-500"
+                          }
+                        >
+                          {item.change}
+                        </span>
+                      </TableCell>
+                      <TableCell>{item.volume}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+            
+            <TabsContent value="english">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Keyword</TableHead>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Change</TableHead>
+                    <TableHead>Search Volume</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {enKeywordRankingData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.keyword}</TableCell>
+                      <TableCell>{item.position}</TableCell>
+                      <TableCell>
+                        <span 
+                          className={
+                            item.change.startsWith("+") 
+                              ? "text-green-500" 
+                              : item.change === "0" 
+                                ? "text-gray-500" 
+                                : "text-red-500"
+                          }
+                        >
+                          {item.change}
+                        </span>
+                      </TableCell>
+                      <TableCell>{item.volume}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
@@ -194,24 +259,24 @@ export const SeoAnalytics: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             <div className="p-4 border rounded-md bg-green-50">
-              <h3 className="font-medium">Meta Description Improvements</h3>
-              <p className="text-sm text-muted-foreground">Update meta descriptions for Books and Gallery pages to include more relevant keywords.</p>
+              <h3 className="font-medium">דפי מטא תיאור (Meta Description)</h3>
+              <p className="text-sm text-muted-foreground">עדכון תיאורי מטא עבור דפי הספרים והגלריה כדי לכלול יותר מילות מפתח רלוונטיות בעברית.</p>
             </div>
             
             <div className="p-4 border rounded-md bg-amber-50">
-              <h3 className="font-medium">Mobile Optimization</h3>
-              <p className="text-sm text-muted-foreground">Improve loading speed on mobile devices for the Gallery and Download pages.</p>
+              <h3 className="font-medium">אופטימיזציה למובייל</h3>
+              <p className="text-sm text-muted-foreground">שיפור מהירות הטעינה במכשירים ניידים עבור דפי הגלריה וההורדה.</p>
             </div>
             
             <div className="p-4 border rounded-md bg-blue-50">
-              <h3 className="font-medium">Content Strategy</h3>
-              <p className="text-sm text-muted-foreground">Add more content about AR technology for children's education to target high-value keywords.</p>
+              <h3 className="font-medium">אסטרטגית תוכן</h3>
+              <p className="text-sm text-muted-foreground">הוספת תוכן נוסף בעברית על טכנולוגיית AR לחינוך ילדים כדי למקד מילות מפתח בעלות ערך גבוה.</p>
             </div>
             
             <div className="flex justify-end mt-6">
               <Button>
                 <Download className="h-4 w-4 mr-2" />
-                Export Full SEO Report
+                יצוא דוח SEO מלא
               </Button>
             </div>
           </div>

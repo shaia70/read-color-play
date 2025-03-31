@@ -116,8 +116,19 @@ const enTranslations: Record<string, string> = {
   '404.title': 'Oops! Page not found',
   '404.back': 'Return to Home',
   
-  // Add new translation
+  // Downloads
   'download.coloringPage': 'Download Coloring Page (Sample)',
+  
+  // SEO Analytics section
+  'seo.keywords': 'Keywords',
+  'seo.position': 'Position',
+  'seo.change': 'Change',
+  'seo.volume': 'Search Volume',
+  'seo.improvement': 'Improvement Recommendations',
+  'seo.meta': 'Meta Descriptions',
+  'seo.mobile': 'Mobile Optimization',
+  'seo.content': 'Content Strategy',
+  'seo.export': 'Export Full SEO Report',
 };
 
 export default enTranslations;
