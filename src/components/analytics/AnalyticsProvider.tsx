@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GoogleAnalytics from './GoogleAnalytics';
 import FacebookPixel from './FacebookPixel';
 
@@ -12,19 +12,49 @@ const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   children,
   disabled = false
 }) => {
+  const [pixelConfig, setPixelConfig] = useState({
+    googleAnalyticsId: 'G-XXXXXXXXXX', // Default placeholder
+    facebookPixelId: 'XXXXXXXXXX'      // Default placeholder
+  });
+  
+  useEffect(() => {
+    // Get configuration from local storage if available
+    const storedConfig = localStorage.getItem('analytics_pixel_config');
+    if (storedConfig) {
+      try {
+        const parsedConfig = JSON.parse(storedConfig);
+        setPixelConfig(parsedConfig);
+      } catch (error) {
+        console.error("Error parsing stored pixel configuration:", error);
+      }
+    }
+  }, []);
+  
   // Only render in production and when not disabled
   if (process.env.NODE_ENV !== 'production' || disabled) {
     return <>{children}</>;
   }
   
-  // Replace these with your actual IDs
-  const googleAnalyticsId = 'G-XXXXXXXXXX'; // Replace with your Google Analytics measurement ID
-  const facebookPixelId = 'XXXXXXXXXX';    // Replace with your Facebook Pixel ID
+  // Skip tracking if using placeholder IDs
+  const skipTracking = 
+    pixelConfig.googleAnalyticsId === 'G-XXXXXXXXXX' &&
+    pixelConfig.facebookPixelId === 'XXXXXXXXXX';
+  
+  if (skipTracking) {
+    console.warn('Analytics tracking is disabled: using placeholder IDs. Configure real IDs from the Statistics page.');
+    return <>{children}</>;
+  }
   
   return (
     <>
-      <GoogleAnalytics measurementId={googleAnalyticsId} />
-      <FacebookPixel pixelId={facebookPixelId} />
+      {pixelConfig.googleAnalyticsId && pixelConfig.googleAnalyticsId !== 'G-XXXXXXXXXX' && (
+        <GoogleAnalytics measurementId={pixelConfig.googleAnalyticsId} />
+      )}
+      
+      {pixelConfig.facebookPixelId && pixelConfig.facebookPixelId !== 'XXXXXXXXXX' && (
+        <FacebookPixel pixelId={pixelConfig.facebookPixelId} />
+      )}
+      
       {children}
     </>
   );
