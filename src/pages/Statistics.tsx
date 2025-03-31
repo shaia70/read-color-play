@@ -21,6 +21,8 @@ const Statistics: React.FC = () => {
   const isMobile = useIsMobile();
   
   const handleAuthenticate = () => {
+    // Store authentication state in session storage
+    sessionStorage.setItem('shelley_admin_authenticated', 'true');
     setIsAuthenticated(true);
   };
   
@@ -55,58 +57,63 @@ const Statistics: React.FC = () => {
               {activeTab === "performance" && "Page Performance"}
               {activeTab === "seo" && "SEO Analytics"}
               {activeTab === "settings" && "Settings"}
+              <span className="text-xs text-muted-foreground ml-2">Select Tab</span>
             </Button>
           </DrawerTrigger>
           <DrawerContent>
             <div className="p-4">
-              <TabsList className="grid grid-cols-2 gap-2">
-                <TabsTrigger 
-                  value="visitors" 
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant={activeTab === "visitors" ? "default" : "outline"}
                   onClick={() => {
                     setActiveTab("visitors");
                     setIsDrawerOpen(false);
                   }}
+                  className="w-full"
                 >
                   Visitors
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="interactions" 
+                </Button>
+                <Button 
+                  variant={activeTab === "interactions" ? "default" : "outline"}
                   onClick={() => {
                     setActiveTab("interactions");
                     setIsDrawerOpen(false);
                   }}
+                  className="w-full"
                 >
                   Interactions
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="performance" 
+                </Button>
+                <Button 
+                  variant={activeTab === "performance" ? "default" : "outline"}
                   onClick={() => {
                     setActiveTab("performance");
                     setIsDrawerOpen(false);
                   }}
+                  className="w-full"
                 >
                   Performance
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="seo" 
+                </Button>
+                <Button 
+                  variant={activeTab === "seo" ? "default" : "outline"}
                   onClick={() => {
                     setActiveTab("seo");
                     setIsDrawerOpen(false);
                   }}
+                  className="w-full"
                 >
                   SEO
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="settings" 
+                </Button>
+                <Button 
+                  variant={activeTab === "settings" ? "default" : "outline"}
                   onClick={() => {
                     setActiveTab("settings");
                     setIsDrawerOpen(false);
                   }}
-                  className="col-span-2"
+                  className="w-full col-span-2"
                 >
                   Settings
-                </TabsTrigger>
-              </TabsList>
+                </Button>
+              </div>
             </div>
           </DrawerContent>
         </Drawer>
