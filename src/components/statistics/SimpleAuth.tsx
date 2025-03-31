@@ -100,7 +100,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               <div className="flex justify-center py-2">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // This is Google's test key - replace with your actual key in production
+                  sitekey="6LeSSwUrAAAAAGyKh0S3aX4UWJljoUPMBlSi4I62"
                   onChange={handleCaptchaChange}
                   theme="light"
                 />
