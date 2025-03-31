@@ -1,36 +1,25 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from "recharts";
 import { format } from "date-fns";
+import {
+  getClickData,
+  getNavigationFlowData,
+  ClickData,
+  NavigationFlowData
+} from "@/services/analyticsService";
 
-// Sample data for demonstration
-const clickData = [
-  { element: 'Download App Button', clicks: 523, conversionRate: '12.5%', timestamp: new Date(2025, 2, 28, 17, 45) },
-  { element: 'Navigation Menu Items', clicks: 487, conversionRate: '8.2%', timestamp: new Date(2025, 2, 28, 17, 45) },
-  { element: 'Book Images', clicks: 345, conversionRate: '10.1%', timestamp: new Date(2025, 2, 28, 15, 30) },
-  { element: 'AR Demo Video', clicks: 289, conversionRate: '15.3%', timestamp: new Date(2025, 2, 28, 12, 15) },
-  { element: 'Contact Form Submit', clicks: 156, conversionRate: '4.2%', timestamp: new Date(2025, 2, 27, 23, 40) },
-  { element: 'Gallery Thumbnails', clicks: 234, conversionRate: '7.8%', timestamp: new Date(2025, 2, 27, 18, 25) },
-];
-
-const navigationFlowData = [
-  { from: 'Home', to: 'Books', count: 248, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { from: 'Home', to: 'Download', count: 215, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { from: 'Books', to: 'Download', count: 189, timestamp: new Date(2025, 2, 28, 15, 30) },
-  { from: 'Technology', to: 'Download', count: 167, timestamp: new Date(2025, 2, 28, 12, 15) },
-  { from: 'Gallery', to: 'Books', count: 124, timestamp: new Date(2025, 2, 27, 23, 40) },
-  { from: 'Contact', to: 'Home', count: 98, timestamp: new Date(2025, 2, 27, 18, 25) },
-];
-
+// Sample data for user journey dropoff - this is harder to calculate from client-side only
+// In a real implementation, this would come from server-side analytics
 const dropoffData = [
-  { point: 'Initial Load', percentage: 100, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { point: 'Home Scroll', percentage: 85, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { point: 'Books View', percentage: 67, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { point: 'Download Page', percentage: 42, timestamp: new Date(2025, 2, 28, 17, 45) },
-  { point: 'App Download Link Click', percentage: 23, timestamp: new Date(2025, 2, 28, 17, 45) },
+  { point: 'Initial Load', percentage: 100, timestamp: new Date() },
+  { point: 'Home Scroll', percentage: 85, timestamp: new Date() },
+  { point: 'Books View', percentage: 67, timestamp: new Date() },
+  { point: 'Download Page', percentage: 42, timestamp: new Date() },
+  { point: 'App Download Link Click', percentage: 23, timestamp: new Date() },
 ];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
@@ -42,11 +31,37 @@ const chartConfig = {
 };
 
 export const UserInteractions: React.FC = () => {
-  const [lastUpdated] = useState<Date>(new Date(2025, 2, 28, 17, 45));
+  const [clickData, setClickData] = useState<ClickData[]>([]);
+  const [navigationFlowData, setNavigationFlowData] = useState<NavigationFlowData[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  
+  useEffect(() => {
+    // Load real analytics data
+    const loadData = () => {
+      const clicks = getClickData();
+      const navigationFlow = getNavigationFlowData();
+      
+      setClickData(clicks);
+      setNavigationFlowData(navigationFlow);
+      setLastUpdated(new Date());
+    };
+    
+    // Load data immediately
+    loadData();
+    
+    // Then refresh data every 60 seconds
+    const intervalId = setInterval(loadData, 60000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
   
   const formatDateTime = (date: Date) => {
     return format(date, 'dd/MM/yyyy HH:mm');
   };
+  
+  // Check if we have data
+  const noClickData = clickData.length === 0;
+  const noNavigationData = navigationFlowData.length === 0;
   
   return (
     <div className="space-y-6">
@@ -61,26 +76,32 @@ export const UserInteractions: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Element</TableHead>
-                <TableHead>Clicks</TableHead>
-                <TableHead>Conversion Rate</TableHead>
-                <TableHead>Timestamp</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {clickData.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.element}</TableCell>
-                  <TableCell>{item.clicks}</TableCell>
-                  <TableCell>{item.conversionRate}</TableCell>
-                  <TableCell>{formatDateTime(item.timestamp)}</TableCell>
+          {noClickData ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No click data available yet. Interact with the site to generate data.</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Element</TableHead>
+                  <TableHead>Clicks</TableHead>
+                  <TableHead>Conversion Rate</TableHead>
+                  <TableHead>Timestamp</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {clickData.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.element}</TableCell>
+                    <TableCell>{item.clicks}</TableCell>
+                    <TableCell>{item.conversionRate}</TableCell>
+                    <TableCell>{formatDateTime(item.timestamp)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
@@ -96,26 +117,32 @@ export const UserInteractions: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>From</TableHead>
-                  <TableHead>To</TableHead>
-                  <TableHead>Count</TableHead>
-                  <TableHead>Timestamp</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {navigationFlowData.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.from}</TableCell>
-                    <TableCell>{item.to}</TableCell>
-                    <TableCell>{item.count}</TableCell>
-                    <TableCell>{formatDateTime(item.timestamp)}</TableCell>
+            {noNavigationData ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No navigation flow data available yet. Browse between pages to generate data.</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>From</TableHead>
+                    <TableHead>To</TableHead>
+                    <TableHead>Count</TableHead>
+                    <TableHead>Timestamp</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {navigationFlowData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.from}</TableCell>
+                      <TableCell>{item.to}</TableCell>
+                      <TableCell>{item.count}</TableCell>
+                      <TableCell>{formatDateTime(item.timestamp)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
 
@@ -125,7 +152,7 @@ export const UserInteractions: React.FC = () => {
             <CardDescription>
               Where users stop in their journey
               <div className="text-xs mt-1 text-muted-foreground">
-                Last updated: {formatDateTime(dropoffData[0].timestamp)}
+                Last updated: {formatDateTime(lastUpdated)}
               </div>
             </CardDescription>
           </CardHeader>

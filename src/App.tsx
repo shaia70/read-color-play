@@ -19,7 +19,7 @@ import Statistics from "./pages/Statistics";
 import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
-// Scroll restoration component
+// Scroll restoration and analytics tracking component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   
