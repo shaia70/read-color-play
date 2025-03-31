@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, CheckCircle, XCircle } from "lucide-react";
 
 interface RecaptchaKeySettingsProps {
   testKeyDisabled: boolean;
@@ -28,6 +28,12 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   const [devMode, setDevMode] = useState(() => {
     return localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
   });
+  
+  const [localProductionKey, setLocalProductionKey] = useState(
+    productionSiteKey !== testSiteKey ? productionSiteKey : ''
+  );
+  
+  const [keyStatus, setKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
   
   useEffect(() => {
     // Don't save test key preference if it's disabled permanently
@@ -55,11 +61,70 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     );
   };
   
+  const validateRecaptchaKey = (key: string) => {
+    if (!key || key.length < 10) {
+      setKeyStatus('idle');
+      return;
+    }
+    
+    setKeyStatus('validating');
+    
+    // Create a temporary script element
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=explicit&onload=validateRecaptchaCallback`;
+    script.async = true;
+    script.defer = true;
+    
+    // Create a temporary container for the reCAPTCHA
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.visibility = 'hidden';
+    container.id = 'temp-recaptcha-container';
+    document.body.appendChild(container);
+    
+    // Set up a global callback function
+    window.validateRecaptchaCallback = () => {
+      try {
+        // Try to render the reCAPTCHA
+        const widgetId = window.grecaptcha.render('temp-recaptcha-container', {
+          sitekey: key,
+          size: 'invisible',
+          callback: () => {}
+        });
+        
+        // If it renders successfully, the key is valid
+        setKeyStatus('valid');
+        localStorage.setItem('shelley_production_key_working', 'true');
+        toast.success("reCAPTCHA site key validated successfully");
+        
+        // Clean up
+        window.grecaptcha.reset(widgetId);
+      } catch (error) {
+        console.error("reCAPTCHA key validation failed:", error);
+        setKeyStatus('invalid');
+        localStorage.setItem('shelley_production_key_working', 'false');
+        toast.error("Invalid reCAPTCHA site key");
+      } finally {
+        // Clean up
+        document.body.removeChild(container);
+        document.body.removeChild(script);
+        delete window.validateRecaptchaCallback;
+      }
+    };
+    
+    // Add the script to the page
+    document.body.appendChild(script);
+  };
+  
   const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
     const key = e.target.value;
+    setLocalProductionKey(key);
+    
     if (key && key.length > 10) { // Simple validation to ensure it looks like a key
       localStorage.setItem('shelley_recaptcha_key', key);
-      toast.success("reCAPTCHA site key updated");
+      validateRecaptchaKey(key);
+    } else {
+      setKeyStatus('idle');
     }
   };
   
@@ -80,15 +145,30 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       
       {(!useTestKey || testKeyDisabled) && !isEnterpriseMode && (
         <div className="mt-2">
-          <Input
-            type="text"
-            placeholder="Enter production reCAPTCHA site key"
-            defaultValue={productionSiteKey !== testSiteKey ? productionSiteKey : ''}
-            onChange={updateProductionKey}
-            className="text-xs"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Enter production reCAPTCHA site key"
+              value={localProductionKey}
+              onChange={updateProductionKey}
+              className="text-xs pr-8"
+            />
+            {keyStatus === 'validating' && (
+              <div className="absolute right-2 top-2">
+                <div className="h-4 w-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+              </div>
+            )}
+            {keyStatus === 'valid' && (
+              <CheckCircle className="absolute right-2 top-2 h-4 w-4 text-green-500" />
+            )}
+            {keyStatus === 'invalid' && (
+              <XCircle className="absolute right-2 top-2 h-4 w-4 text-red-500" />
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1 flex items-center">
             Enter your production reCAPTCHA v2 site key
+            {keyStatus === 'valid' && <span className="ml-1 text-green-500">(Key validated)</span>}
+            {keyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
           </p>
         </div>
       )}
