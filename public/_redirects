@@ -3,3 +3,9 @@
 # This ensures that all routes are handled by the SPA
 /*    /index.html   200
 
+# Force HTTPS
+http://shelley.co.il/*  https://shelley.co.il/:splat 301!
+http://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
+
+# Canonical domain enforcement (remove www)
+https://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
