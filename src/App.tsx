@@ -14,6 +14,7 @@ import Download from "./pages/Download";
 import Gallery from "./pages/Gallery";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
+import Statistics from "./pages/Statistics";
 import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/download" element={<Download />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/admin-statistics" element={<Statistics />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AnimatePresence>

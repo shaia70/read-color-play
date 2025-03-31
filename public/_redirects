@@ -22,3 +22,7 @@ https://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
 
 # Redirect for mobile app deep linking
 /app/* /download 302
+
+# Ensure the statistics page is always accessible
+/admin-statistics  /admin-statistics  200
+
