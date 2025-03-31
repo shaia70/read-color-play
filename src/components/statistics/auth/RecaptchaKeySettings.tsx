@@ -12,6 +12,8 @@ interface RecaptchaKeySettingsProps {
   setUseTestKey: (useTestKey: boolean) => void;
   productionSiteKey: string;
   testSiteKey: string;
+  isEnterpriseMode?: boolean;
+  enterpriseSiteKey?: string;
 }
 
 export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
@@ -19,7 +21,9 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   useTestKey,
   setUseTestKey,
   productionSiteKey,
-  testSiteKey
+  testSiteKey,
+  isEnterpriseMode = false,
+  enterpriseSiteKey
 }) => {
   const [devMode, setDevMode] = useState(() => {
     return localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
@@ -74,7 +78,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
         </div>
       )}
       
-      {(!useTestKey || testKeyDisabled) && (
+      {(!useTestKey || testKeyDisabled) && !isEnterpriseMode && (
         <div className="mt-2">
           <Input
             type="text"
@@ -109,13 +113,25 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
         </Alert>
       )}
       
+      {isEnterpriseMode && (
+        <Alert className="mt-2 p-2 bg-blue-50 border-blue-200">
+          <InfoIcon className="h-4 w-4 mr-2 text-blue-500" />
+          <AlertDescription className="text-xs">
+            Using reCAPTCHA Enterprise with invisible verification
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <p className="text-xs text-muted-foreground">
-        {testKeyDisabled 
-          ? "Using production reCAPTCHA key only" 
-          : (useTestKey 
-            ? "Using Google's test key - this will always pass verification" 
-            : "Using production reCAPTCHA key"
-          )
+        {isEnterpriseMode 
+          ? "Using reCAPTCHA Enterprise (invisible mode)"
+          : (testKeyDisabled 
+              ? "Using production reCAPTCHA key only" 
+              : (useTestKey 
+                ? "Using Google's test key - this will always pass verification" 
+                : "Using production reCAPTCHA key"
+              )
+            )
         }
       </p>
     </div>

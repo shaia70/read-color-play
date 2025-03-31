@@ -16,6 +16,8 @@ interface AuthFormProps {
   setUseTestKey: (useTestKey: boolean) => void;
   productionSiteKey: string;
   testSiteKey: string;
+  isEnterpriseMode?: boolean;
+  enterpriseSiteKey?: string;
 }
 
 export const AuthForm: React.FC<AuthFormProps> = ({
@@ -25,7 +27,9 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   useTestKey,
   setUseTestKey,
   productionSiteKey,
-  testSiteKey
+  testSiteKey,
+  isEnterpriseMode = false,
+  enterpriseSiteKey
 }) => {
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -36,12 +40,49 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     setRecaptchaToken(null);
   }, [activeSiteKey, useTestKey]);
   
+  // For enterprise reCAPTCHA, load the script when component mounts
+  useEffect(() => {
+    if (isEnterpriseMode && typeof window !== 'undefined') {
+      // Check if the script already exists
+      const existingScript = document.querySelector(`script[src*="recaptcha/enterprise.js"]`);
+      if (!existingScript && enterpriseSiteKey) {
+        const script = document.createElement('script');
+        script.src = `https://www.google.com/recaptcha/enterprise.js?render=${enterpriseSiteKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+        
+        // Clean up on unmount
+        return () => {
+          if (document.head.contains(script)) {
+            document.head.removeChild(script);
+          }
+        };
+      }
+    }
+  }, [isEnterpriseMode, enterpriseSiteKey]);
+  
   const handleVerify = (token: string | null) => {
     console.log("reCAPTCHA token received:", token);
     setRecaptchaToken(token);
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const executeEnterpriseRecaptcha = async () => {
+    if (!isEnterpriseMode || !window.grecaptcha || !enterpriseSiteKey) {
+      return null;
+    }
+    
+    try {
+      const token = await window.grecaptcha.enterprise.execute(enterpriseSiteKey, {action: 'login'});
+      console.log("Enterprise reCAPTCHA token:", token);
+      return token;
+    } catch (error) {
+      console.error("Enterprise reCAPTCHA error:", error);
+      return null;
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!password.trim()) {
@@ -51,13 +92,26 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     
     // For test key, we'll accept the verification without requiring a token
     const isTestKeyActive = !testKeyDisabled && useTestKey;
+    const isDevMode = localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
     
-    if (!isTestKeyActive && !recaptchaToken) {
+    // For non-test, non-dev, non-enterprise modes, require a token
+    if (!isTestKeyActive && !isDevMode && !isEnterpriseMode && !recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
       return;
     }
     
     setIsAuthenticating(true);
+    
+    // If enterprise mode, execute the reCAPTCHA
+    let enterpriseToken = null;
+    if (isEnterpriseMode) {
+      enterpriseToken = await executeEnterpriseRecaptcha();
+      if (!enterpriseToken && !isDevMode) {
+        toast.error("reCAPTCHA verification failed. Please try again.");
+        setIsAuthenticating(false);
+        return;
+      }
+    }
     
     // For demo purposes, check if the password is the test password
     // In a real app, this would make an API call to validate
@@ -99,12 +153,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               />
             </div>
             
-            <RecaptchaVerification
-              siteKey={activeSiteKey}
-              onVerify={handleVerify}
-              testKeyDisabled={testKeyDisabled}
-              useTestKey={useTestKey}
-            />
+            {!isEnterpriseMode && (
+              <RecaptchaVerification
+                siteKey={activeSiteKey}
+                onVerify={handleVerify}
+                testKeyDisabled={testKeyDisabled}
+                useTestKey={useTestKey}
+              />
+            )}
             
             <RecaptchaKeySettings
               testKeyDisabled={testKeyDisabled}
@@ -112,6 +168,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               setUseTestKey={setUseTestKey}
               productionSiteKey={productionSiteKey}
               testSiteKey={testSiteKey}
+              isEnterpriseMode={isEnterpriseMode}
+              enterpriseSiteKey={enterpriseSiteKey}
             />
           </div>
         </form>
@@ -122,7 +180,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (!useTestKey && !recaptchaToken)}
+          disabled={isAuthenticating || (!useTestKey && !localStorage.getItem('shelley_recaptcha_dev_mode') === 'true' && !isEnterpriseMode && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>
