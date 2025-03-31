@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SimpleAuth from "@/components/statistics/SimpleAuth";
 import AdminSettings from "@/components/statistics/AdminSettings";
 import { VisitorStats } from "@/components/statistics/VisitorStats";
@@ -118,7 +118,7 @@ const Statistics: React.FC = () => {
           </DrawerContent>
         </Drawer>
         
-        <div className="space-y-4 bg-background">
+        <div className="space-y-4">
           {activeTab === "visitors" && <VisitorStats />}
           {activeTab === "interactions" && <UserInteractions />}
           {activeTab === "performance" && <PagePerformance />}
@@ -153,19 +153,19 @@ const Statistics: React.FC = () => {
           <TabsTrigger value="seo">SEO Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
-        <TabsContent value="visitors" className="bg-background">
+        <TabsContent value="visitors">
           <VisitorStats />
         </TabsContent>
-        <TabsContent value="interactions" className="bg-background">
+        <TabsContent value="interactions">
           <UserInteractions />
         </TabsContent>
-        <TabsContent value="performance" className="bg-background">
+        <TabsContent value="performance">
           <PagePerformance />
         </TabsContent>
-        <TabsContent value="seo" className="bg-background">
+        <TabsContent value="seo">
           <SeoAnalytics />
         </TabsContent>
-        <TabsContent value="settings" className="bg-background">
+        <TabsContent value="settings">
           <AdminSettings />
         </TabsContent>
       </Tabs>

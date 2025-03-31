@@ -49,7 +49,7 @@ export const AdminSettings: React.FC = () => {
   
   // Desktop view with tabs
   return (
-    <div className="container mx-auto py-6 px-4 md:px-6">
+    <div className="w-full">
       <h1 className="text-2xl font-bold mb-6 text-left">Admin Settings</h1>
       <Tabs defaultValue="password" className="w-full">
         <TabsList className="mb-4">
