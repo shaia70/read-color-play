@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import PasswordManagement from "./PasswordManagement";
 import PixelManagement from "./PixelManagement";
+import { Settings } from "lucide-react";
 
 export const AdminSettings: React.FC = () => {
   const isMobile = useIsMobile();
@@ -14,6 +15,11 @@ export const AdminSettings: React.FC = () => {
   if (isMobile) {
     return (
       <div className="space-y-4">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-semibold">Settings</h2>
+          <Settings className="h-5 w-5 text-muted-foreground" />
+        </div>
+        
         <div className="flex space-x-2">
           <Button
             variant={activeTab === "password" ? "default" : "outline"}
