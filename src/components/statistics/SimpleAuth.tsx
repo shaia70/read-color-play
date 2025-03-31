@@ -31,7 +31,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const activeSiteKey = (!testKeyDisabled && useTestKey) ? testSiteKey : productionSiteKey;
   
   return (
-    <div className={`flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 ${isMobile ? 'p-4' : ''}`}>
+    <div className={`flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 ${isMobile ? 'p-4' : 'p-6'}`}>
       <AuthCard className={isMobile ? "w-full max-w-full" : ""}>
         <AuthForm 
           onAuthenticate={onAuthenticate}
