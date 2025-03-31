@@ -24,11 +24,22 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const isMobile = useIsMobile();
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // For handling enterprise/v3 recaptcha
   useEffect(() => {
     if (isEnterpriseMode && !useTestKey && siteKey) {
       setIsLoading(true);
+      
+      // Set a timeout to catch loading issues
+      const timeout = setTimeout(() => {
+        console.error("reCAPTCHA Enterprise verification timed out");
+        setIsLoading(false);
+        if (onError) onError();
+        toast.error("reCAPTCHA verification timed out. Please try again.");
+      }, 10000); // 10 seconds timeout
+      
+      setLoadingTimeout(timeout);
       
       // Check if script already exists to avoid duplicates
       const existingScript = document.querySelector(`script[src*="recaptcha/enterprise.js"]`);
@@ -40,39 +51,31 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
         
         script.onload = () => {
           if (window.grecaptcha && window.grecaptcha.enterprise) {
-            window.grecaptcha.enterprise.ready(() => {
-              try {
-                window.grecaptcha.enterprise.execute(siteKey, { action: 'login' })
-                  .then((token) => {
-                    console.log("Enterprise token generated:", token ? "success" : "failed");
-                    onVerify(token);
-                    setIsLoading(false);
-                  })
-                  .catch((err) => {
-                    console.error("Enterprise reCAPTCHA error:", err);
-                    if (onError) onError();
-                    setIsLoading(false);
-                    toast.error("Failed to validate with reCAPTCHA Enterprise");
-                  });
-              } catch (error) {
-                console.error("Enterprise execution error:", error);
-                if (onError) onError();
-                setIsLoading(false);
-                toast.error("Failed to initialize reCAPTCHA Enterprise");
-              }
-            });
+            try {
+              window.grecaptcha.enterprise.ready(() => {
+                executeEnterpriseRecaptcha(siteKey, timeout);
+              });
+            } catch (error) {
+              console.error("Enterprise reCAPTCHA ready error:", error);
+              clearTimeout(timeout);
+              setIsLoading(false);
+              if (onError) onError();
+              toast.error("Failed to initialize reCAPTCHA Enterprise");
+            }
           } else {
             console.error("Enterprise reCAPTCHA not available after loading");
-            if (onError) onError();
+            clearTimeout(timeout);
             setIsLoading(false);
+            if (onError) onError();
             toast.error("reCAPTCHA Enterprise failed to initialize");
           }
         };
         
         script.onerror = () => {
           console.error("Failed to load Enterprise reCAPTCHA script");
-          if (onError) onError();
+          clearTimeout(timeout);
           setIsLoading(false);
+          if (onError) onError();
           toast.error("Failed to load reCAPTCHA Enterprise script");
         };
         
@@ -82,35 +85,66 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
           if (document.head.contains(script)) {
             document.head.removeChild(script);
           }
+          
+          if (timeout) {
+            clearTimeout(timeout);
+          }
         };
       } else {
         // Script already exists, try to use it
         if (window.grecaptcha && window.grecaptcha.enterprise) {
-          window.grecaptcha.enterprise.ready(() => {
-            try {
-              window.grecaptcha.enterprise.execute(siteKey, { action: 'login' })
-                .then((token) => {
-                  onVerify(token);
-                  setIsLoading(false);
-                })
-                .catch(() => {
-                  if (onError) onError();
-                  setIsLoading(false);
-                });
-            } catch (error) {
-              console.error("Enterprise execution error:", error);
-              if (onError) onError();
-              setIsLoading(false);
-            }
-          });
+          try {
+            window.grecaptcha.enterprise.ready(() => {
+              executeEnterpriseRecaptcha(siteKey, timeout);
+            });
+          } catch (error) {
+            console.error("Enterprise execution error with existing script:", error);
+            clearTimeout(timeout);
+            setIsLoading(false);
+            if (onError) onError();
+            toast.error("Failed to execute reCAPTCHA verification");
+          }
         } else {
-          console.error("Enterprise reCAPTCHA not available");
-          if (onError) onError();
+          console.error("Enterprise reCAPTCHA not available with existing script");
+          clearTimeout(timeout);
           setIsLoading(false);
+          if (onError) onError();
+          toast.error("reCAPTCHA Enterprise not available");
         }
       }
     }
+    
+    return () => {
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
+    };
   }, [siteKey, isEnterpriseMode, useTestKey, onVerify, onError]);
+  
+  const executeEnterpriseRecaptcha = (key: string, timeout: NodeJS.Timeout) => {
+    try {
+      window.grecaptcha.enterprise.execute(key, { action: 'login' })
+        .then((token) => {
+          console.log("Enterprise token generated:", token ? "success" : "failed");
+          if (timeout) clearTimeout(timeout);
+          onVerify(token);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error("Enterprise reCAPTCHA error:", err);
+          if (timeout) clearTimeout(timeout);
+          if (onError) onError();
+          setIsLoading(false);
+          toast.error("Failed to validate with reCAPTCHA Enterprise");
+        });
+    } catch (error) {
+      console.error("Enterprise execution error:", error);
+      if (timeout) clearTimeout(timeout);
+      if (onError) onError();
+      setIsLoading(false);
+      toast.error("Failed to initialize reCAPTCHA Enterprise");
+    }
+  };
   
   useEffect(() => {
     // Reset captcha when key changes
