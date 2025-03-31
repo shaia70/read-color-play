@@ -68,14 +68,24 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   };
   
   const executeEnterpriseRecaptcha = async () => {
-    if (!isEnterpriseMode || !window.grecaptcha || !enterpriseSiteKey) {
+    if (!isEnterpriseMode || !window.grecaptcha || !window.grecaptcha.enterprise || !enterpriseSiteKey) {
       return null;
     }
     
     try {
-      const token = await window.grecaptcha.enterprise.execute(enterpriseSiteKey, {action: 'login'});
-      console.log("Enterprise reCAPTCHA token:", token);
-      return token;
+      // Make sure the enterprise API is ready
+      return new Promise<string | null>((resolve) => {
+        window.grecaptcha.enterprise.ready(async () => {
+          try {
+            const token = await window.grecaptcha.enterprise.execute(enterpriseSiteKey, {action: 'login'});
+            console.log("Enterprise reCAPTCHA token:", token);
+            resolve(token);
+          } catch (error) {
+            console.error("Enterprise reCAPTCHA error:", error);
+            resolve(null);
+          }
+        });
+      });
     } catch (error) {
       console.error("Enterprise reCAPTCHA error:", error);
       return null;
@@ -106,6 +116,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     let enterpriseToken = null;
     if (isEnterpriseMode) {
       enterpriseToken = await executeEnterpriseRecaptcha();
+      
+      // In dev mode, we'll bypass the token check
       if (!enterpriseToken && !isDevMode) {
         toast.error("reCAPTCHA verification failed. Please try again.");
         setIsAuthenticating(false);
