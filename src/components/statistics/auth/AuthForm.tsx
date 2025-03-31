@@ -1,11 +1,12 @@
 
 import React, { useState } from "react";
-import { CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield } from "lucide-react";
-import { PasswordInput } from "./PasswordInput";
-import { RecaptchaVerification } from "./RecaptchaVerification";
-import { RecaptchaKeySettings } from "./RecaptchaKeySettings";
+import { Lock } from "lucide-react";
+import { toast } from "sonner";
+import PasswordInput from "./PasswordInput";
+import RecaptchaVerification from "./RecaptchaVerification";
+import RecaptchaKeySettings from "./RecaptchaKeySettings";
 
 interface AuthFormProps {
   onAuthenticate: () => void;
@@ -27,99 +28,97 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   testSiteKey
 }) => {
   const [password, setPassword] = useState("");
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  
+  const handleVerify = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!captchaToken) {
-      import('sonner').then(({ toast }) => {
-        toast.error("Please complete the CAPTCHA verification");
-      });
+    if (!recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
       return;
     }
     
-    setIsSubmitting(true);
-    
-    try {
-      // Get stored password or use default if not set
-      const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
-      
-      if (password === storedPassword) {
-        // Only track successful production key login if:
-        // 1. Not using test key
-        // 2. Production key is different from test key
-        // 3. We're actually using the production key for verification
-        if (!useTestKey && productionSiteKey !== testSiteKey) {
-          localStorage.setItem('shelley_production_key_working', 'true');
-        }
-        
-        onAuthenticate();
-        import('sonner').then(({ toast }) => {
-          toast.success("Authentication successful");
-        });
-      } else {
-        import('sonner').then(({ toast }) => {
-          toast.error("Invalid password");
-        });
-        // Reset the CAPTCHA on failed login attempt
-        setCaptchaToken(null);
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      import('sonner').then(({ toast }) => {
-        toast.error("An error occurred during login");
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (!password.trim()) {
+      toast.error("Please enter the admin password");
+      return;
     }
+    
+    setIsAuthenticating(true);
+    
+    // For demo purposes, check if the password is the test password
+    // In a real app, this would make an API call to validate
+    setTimeout(() => {
+      const testPassword = "admin1234"; // This would normally be stored securely
+      
+      if (password === testPassword) {
+        toast.success("Authentication successful");
+        
+        // Store authentication state in session storage
+        sessionStorage.setItem('shelley_admin_authenticated', 'true');
+        
+        // Call the onAuthenticate callback
+        onAuthenticate();
+      } else {
+        toast.error("Invalid password");
+      }
+      
+      setIsAuthenticating(false);
+    }, 1000);
   };
   
   return (
-    <form onSubmit={handleSubmit}>
-      <CardHeader className="text-center">
-        <div className="flex items-center gap-2 justify-center">
-          <Shield className="h-6 w-6 text-primary" />
-          <CardTitle>Admin Statistics</CardTitle>
-        </div>
-        <CardDescription className="text-center">
-          Enter the admin password to view statistics
-        </CardDescription>
+    <>
+      <CardHeader>
+        <CardTitle className="text-center flex items-center justify-center gap-2">
+          <Lock className="h-5 w-5" />
+          Admin Authentication
+        </CardTitle>
       </CardHeader>
+      
       <CardContent>
-        <div className="space-y-4">
-          <PasswordInput 
-            password={password} 
-            setPassword={setPassword} 
-          />
-          
-          <RecaptchaVerification
-            siteKey={activeSiteKey}
-            onVerify={setCaptchaToken}
-            testKeyDisabled={testKeyDisabled}
-            useTestKey={useTestKey}
-          />
-          
-          <RecaptchaKeySettings
-            testKeyDisabled={testKeyDisabled}
-            useTestKey={useTestKey}
-            setUseTestKey={setUseTestKey}
-            productionSiteKey={productionSiteKey}
-            testSiteKey={testSiteKey}
-          />
-        </div>
+        <form onSubmit={handleSubmit} id="auth-form">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <PasswordInput
+                password={password}
+                setPassword={setPassword}
+              />
+            </div>
+            
+            <RecaptchaVerification
+              siteKey={activeSiteKey}
+              onVerify={handleVerify}
+              testKeyDisabled={testKeyDisabled}
+              useTestKey={useTestKey}
+            />
+            
+            <RecaptchaKeySettings
+              testKeyDisabled={testKeyDisabled}
+              useTestKey={useTestKey}
+              setUseTestKey={setUseTestKey}
+              productionSiteKey={productionSiteKey}
+              testSiteKey={testSiteKey}
+            />
+          </div>
+        </form>
       </CardContent>
+      
       <CardFooter>
         <Button 
           type="submit" 
-          className="w-full"
-          disabled={isSubmitting || !captchaToken}
+          form="auth-form" 
+          className="w-full" 
+          disabled={isAuthenticating || !recaptchaToken}
         >
-          {isSubmitting ? "Verifying..." : "Access Statistics"}
+          {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>
       </CardFooter>
-    </form>
+    </>
   );
 };
 
