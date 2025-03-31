@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,34 +30,37 @@ const ScrollToTop = () => {
   return null;
 };
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/books" element={<Books />} />
-              <Route path="/technology" element={<Technology />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/concept" element={<Concept />} />
-              <Route path="/download" element={<Download />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/admin-statistics" element={<Statistics />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LanguageProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // Create a new QueryClient instance within the component
+  const queryClient = new QueryClient();
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/books" element={<Books />} />
+                <Route path="/technology" element={<Technology />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/concept" element={<Concept />} />
+                <Route path="/download" element={<Download />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/admin-statistics" element={<Statistics />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AnimatePresence>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
