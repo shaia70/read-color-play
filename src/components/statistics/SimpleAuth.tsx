@@ -63,9 +63,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-start">
             <Shield className="h-6 w-6 text-primary" />
-            <CardTitle>Admin Statistics</CardTitle>
+            <CardTitle className="text-left">Admin Statistics</CardTitle>
           </div>
           <CardDescription className="text-left">
             Enter the admin password to view statistics
@@ -75,6 +75,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center">
+                <label htmlFor="admin-password" className="text-sm text-gray-600 mr-2 text-left">
+                  Password:
+                </label>
                 <div className="relative flex-1">
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -106,7 +109,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                 />
               </div>
               
-              <p className="text-xs text-muted-foreground text-center">
+              <p className="text-xs text-muted-foreground text-left">
                 This page is protected by reCAPTCHA to ensure you're not a robot.
               </p>
             </div>
