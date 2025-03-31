@@ -1,8 +1,10 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface RecaptchaKeySettingsProps {
   testKeyDisabled: boolean;
@@ -19,6 +21,9 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   productionSiteKey,
   testSiteKey
 }) => {
+  const [devMode, setDevMode] = useState(() => {
+    return localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
+  });
   
   useEffect(() => {
     // Don't save test key preference if it's disabled permanently
@@ -27,10 +32,23 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     }
   }, [useTestKey, testKeyDisabled]);
   
+  useEffect(() => {
+    localStorage.setItem('shelley_recaptcha_dev_mode', devMode.toString());
+  }, [devMode]);
+  
   const toggleReCaptchaMode = () => {
     if (!testKeyDisabled) {
       setUseTestKey(!useTestKey);
     }
+  };
+  
+  const toggleDevMode = () => {
+    setDevMode(!devMode);
+    toast.info(
+      !devMode 
+        ? "Development mode enabled - domain checking bypassed" 
+        : "Development mode disabled - normal domain verification"
+    );
   };
   
   const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +87,26 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             Enter your production reCAPTCHA v2 site key
           </p>
         </div>
+      )}
+      
+      <div className="flex items-center justify-between mt-3">
+        <div className="text-sm">
+          <span className="text-muted-foreground">Development mode</span>
+        </div>
+        <Switch 
+          checked={devMode} 
+          onCheckedChange={toggleDevMode} 
+          aria-label="Development mode"
+        />
+      </div>
+      
+      {devMode && (
+        <Alert variant="warning" className="mt-2 p-2">
+          <InfoIcon className="h-4 w-4 mr-2" />
+          <AlertDescription className="text-xs">
+            Development mode bypasses domain verification. Only use during development.
+          </AlertDescription>
+        </Alert>
       )}
       
       <p className="text-xs text-muted-foreground">
