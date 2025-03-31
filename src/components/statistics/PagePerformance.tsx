@@ -118,5 +118,5 @@ export const PagePerformance: React.FC = () => {
   );
 };
 
-// Adding default export that points to the same component
+// Explicitly add the default export
 export default PagePerformance;

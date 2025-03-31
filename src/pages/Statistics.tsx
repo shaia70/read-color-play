@@ -4,7 +4,7 @@ import SimpleAuth from "@/components/statistics/SimpleAuth";
 import AdminSettings from "@/components/statistics/AdminSettings";
 import { VisitorStats } from "@/components/statistics/VisitorStats";
 import { UserInteractions } from "@/components/statistics/UserInteractions";
-import { PagePerformance } from "@/components/statistics/PagePerformance";
+import PagePerformance from "@/components/statistics/PagePerformance";
 import { SeoAnalytics } from "@/components/statistics/SeoAnalytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
