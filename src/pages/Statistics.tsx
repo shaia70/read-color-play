@@ -11,10 +11,12 @@ import { SimpleAuth } from "@/components/statistics/SimpleAuth";
 import { PixelManagement } from "@/components/statistics/PixelManagement";
 import { PasswordManagement } from "@/components/statistics/PasswordManagement";
 import { format } from "date-fns";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Statistics = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Update the last refreshed time when the component mounts
@@ -26,7 +28,7 @@ const Statistics = () => {
   }
 
   return (
-    <div className="container px-4 py-8 mx-auto">
+    <div className="container px-4 py-4 md:py-8 mx-auto">
       <Helmet>
         <title>Admin Statistics - Shelley Books</title>
         <meta name="robots" content="noindex, nofollow" />
@@ -34,24 +36,34 @@ const Statistics = () => {
       
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <h1 className="text-3xl font-bold text-left">Shelley Books - Admin Statistics</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-left">Shelley Books - Admin Statistics</h1>
           <div className="text-sm text-muted-foreground text-left">
             Last refreshed: {format(lastRefreshed, 'dd/MM/yyyy HH:mm:ss')}
           </div>
         </div>
         
-        <p className="text-muted-foreground text-left">
+        <p className="text-muted-foreground text-left text-sm md:text-base">
           This page provides analytics and statistics about website performance, visitor behavior, and SEO metrics.
         </p>
         
         <Tabs defaultValue="visitors" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className={`grid w-full ${isMobile ? 'grid-cols-3 mb-2' : 'grid-cols-6'}`}>
             <TabsTrigger value="visitors">Visitors</TabsTrigger>
-            <TabsTrigger value="pages">Page Performance</TabsTrigger>
-            <TabsTrigger value="interactions">User Interactions</TabsTrigger>
-            <TabsTrigger value="seo">SEO Analytics</TabsTrigger>
-            <TabsTrigger value="pixels">Pixels Config</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="interactions">Users</TabsTrigger>
+            {isMobile ? (
+              <>
+                <TabsTrigger value="seo">SEO</TabsTrigger>
+                <TabsTrigger value="pixels">Pixels</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </>
+            ) : (
+              <>
+                <TabsTrigger value="seo">SEO Analytics</TabsTrigger>
+                <TabsTrigger value="pixels">Pixels Config</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </>
+            )}
           </TabsList>
           
           <TabsContent value="visitors" className="mt-4">

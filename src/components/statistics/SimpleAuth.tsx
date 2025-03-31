@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { AuthCard } from "./auth/AuthCard";
 import { AuthForm } from "./auth/AuthForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SimpleAuthProps {
   onAuthenticate: () => void;
@@ -16,6 +17,8 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
     return localStorage.getItem('shelley_use_test_recaptcha') === 'true';
   });
   
+  const isMobile = useIsMobile();
+  
   // Test key (Google's test key that always validates)
   const testSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
   // Production key (this would be the actual site key from reCAPTCHA)
@@ -28,8 +31,8 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const activeSiteKey = (!testKeyDisabled && useTestKey) ? testSiteKey : productionSiteKey;
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50">
-      <AuthCard>
+    <div className={`flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 ${isMobile ? 'p-4' : ''}`}>
+      <AuthCard className={isMobile ? "w-full max-w-full" : ""}>
         <AuthForm 
           onAuthenticate={onAuthenticate}
           activeSiteKey={activeSiteKey}

@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RecaptchaVerificationProps {
   siteKey: string;
@@ -16,6 +17,7 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   useTestKey
 }) => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Reset captcha when key changes
@@ -48,13 +50,16 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   }
   
   return (
-    <div className="flex justify-center py-2">
-      <ReCAPTCHA
-        ref={recaptchaRef}
-        sitekey={siteKey}
-        onChange={onVerify}
-        theme="light"
-      />
+    <div className="flex justify-center py-2 overflow-hidden">
+      <div className={isMobile ? "scale-[0.85] -ml-6" : ""}>
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={siteKey}
+          onChange={onVerify}
+          theme="light"
+          size={isMobile ? "compact" : "normal"}
+        />
+      </div>
     </div>
   );
 };
