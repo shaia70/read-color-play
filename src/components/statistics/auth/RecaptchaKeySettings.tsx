@@ -33,7 +33,12 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     productionSiteKey !== testSiteKey ? productionSiteKey : ''
   );
   
+  const [localEnterpriseKey, setLocalEnterpriseKey] = useState(
+    enterpriseSiteKey || ''
+  );
+  
   const [keyStatus, setKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
+  const [enterpriseKeyStatus, setEnterpriseKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
   
   useEffect(() => {
     // Don't save test key preference if it's disabled permanently
@@ -61,59 +66,115 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     );
   };
   
-  const validateRecaptchaKey = (key: string) => {
+  const validateRecaptchaKey = (key: string, isEnterprise: boolean = false) => {
     if (!key || key.length < 10) {
-      setKeyStatus('idle');
+      if (isEnterprise) {
+        setEnterpriseKeyStatus('idle');
+      } else {
+        setKeyStatus('idle');
+      }
       return;
     }
     
-    setKeyStatus('validating');
+    if (isEnterprise) {
+      setEnterpriseKeyStatus('validating');
+    } else {
+      setKeyStatus('validating');
+    }
     
     // Create a temporary script element
     const script = document.createElement('script');
-    script.src = `https://www.google.com/recaptcha/api.js?render=explicit&onload=validateRecaptchaCallback`;
+    script.src = isEnterprise 
+      ? `https://www.google.com/recaptcha/enterprise.js?render=${key}`
+      : `https://www.google.com/recaptcha/api.js?render=explicit&onload=validateRecaptchaCallback`;
     script.async = true;
     script.defer = true;
     
-    // Create a temporary container for the reCAPTCHA
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.visibility = 'hidden';
-    container.id = 'temp-recaptcha-container';
-    document.body.appendChild(container);
-    
-    // Set up a global callback function
-    window.validateRecaptchaCallback = () => {
-      try {
-        // Try to render the reCAPTCHA
-        const widgetId = window.grecaptcha.render('temp-recaptcha-container', {
-          sitekey: key,
-          size: 'invisible',
-          callback: () => {}
-        });
-        
-        // If it renders successfully, the key is valid
-        setKeyStatus('valid');
-        localStorage.setItem('shelley_production_key_working', 'true');
-        toast.success("reCAPTCHA site key validated successfully");
+    // For standard reCAPTCHA
+    if (!isEnterprise) {
+      // Create a temporary container for the reCAPTCHA
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.visibility = 'hidden';
+      container.id = 'temp-recaptcha-container';
+      document.body.appendChild(container);
+      
+      // Set up a global callback function
+      window.validateRecaptchaCallback = () => {
+        try {
+          // Try to render the reCAPTCHA
+          const widgetId = window.grecaptcha.render('temp-recaptcha-container', {
+            sitekey: key,
+            size: 'invisible',
+            callback: () => {}
+          });
+          
+          // If it renders successfully, the key is valid
+          setKeyStatus('valid');
+          localStorage.setItem('shelley_production_key_working', 'true');
+          toast.success("reCAPTCHA site key validated successfully");
+          
+          // Clean up
+          window.grecaptcha.reset(widgetId);
+        } catch (error) {
+          console.error("reCAPTCHA key validation failed:", error);
+          setKeyStatus('invalid');
+          localStorage.setItem('shelley_production_key_working', 'false');
+          toast.error("Invalid reCAPTCHA site key");
+        } finally {
+          // Clean up
+          document.body.removeChild(container);
+          document.body.removeChild(script);
+          delete window.validateRecaptchaCallback;
+        }
+      };
+      
+      // Add the script to the page
+      document.body.appendChild(script);
+    } 
+    // For Enterprise reCAPTCHA
+    else {
+      // Set up load and error handlers
+      script.onload = () => {
+        try {
+          // Check if the enterprise object is available
+          if (window.grecaptcha && window.grecaptcha.enterprise) {
+            window.grecaptcha.enterprise.ready(() => {
+              // If we get here, the key is likely valid
+              setEnterpriseKeyStatus('valid');
+              localStorage.setItem('shelley_enterprise_key', key);
+              localStorage.setItem('shelley_enterprise_key_working', 'true');
+              toast.success("reCAPTCHA Enterprise site key validated successfully");
+            });
+          } else {
+            setEnterpriseKeyStatus('invalid');
+            localStorage.setItem('shelley_enterprise_key_working', 'false');
+            toast.error("Invalid reCAPTCHA Enterprise site key");
+          }
+        } catch (error) {
+          console.error("reCAPTCHA Enterprise key validation failed:", error);
+          setEnterpriseKeyStatus('invalid');
+          localStorage.setItem('shelley_enterprise_key_working', 'false');
+          toast.error("Invalid reCAPTCHA Enterprise site key");
+        } finally {
+          // Clean up
+          document.body.removeChild(script);
+        }
+      };
+      
+      script.onerror = () => {
+        console.error("Failed to load reCAPTCHA Enterprise script");
+        setEnterpriseKeyStatus('invalid');
+        localStorage.setItem('shelley_enterprise_key_working', 'false');
+        toast.error("Invalid reCAPTCHA Enterprise site key");
         
         // Clean up
-        window.grecaptcha.reset(widgetId);
-      } catch (error) {
-        console.error("reCAPTCHA key validation failed:", error);
-        setKeyStatus('invalid');
-        localStorage.setItem('shelley_production_key_working', 'false');
-        toast.error("Invalid reCAPTCHA site key");
-      } finally {
-        // Clean up
-        document.body.removeChild(container);
         document.body.removeChild(script);
-        delete window.validateRecaptchaCallback;
-      }
-    };
-    
-    // Add the script to the page
-    document.body.appendChild(script);
+      };
+      
+      // Add the script to the page
+      document.body.appendChild(script);
+    }
   };
   
   const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +186,17 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       validateRecaptchaKey(key);
     } else {
       setKeyStatus('idle');
+    }
+  };
+  
+  const updateEnterpriseKey = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.value;
+    setLocalEnterpriseKey(key);
+    
+    if (key && key.length > 10) { // Simple validation to ensure it looks like a key
+      validateRecaptchaKey(key, true);
+    } else {
+      setEnterpriseKeyStatus('idle');
     }
   };
   
@@ -169,6 +241,36 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             Enter your production reCAPTCHA v2 site key
             {keyStatus === 'valid' && <span className="ml-1 text-green-500">(Key validated)</span>}
             {keyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
+          </p>
+        </div>
+      )}
+      
+      {isEnterpriseMode && (
+        <div className="mt-2">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Enter reCAPTCHA Enterprise site key"
+              value={localEnterpriseKey}
+              onChange={updateEnterpriseKey}
+              className="text-xs pr-8"
+            />
+            {enterpriseKeyStatus === 'validating' && (
+              <div className="absolute right-2 top-2">
+                <div className="h-4 w-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+              </div>
+            )}
+            {enterpriseKeyStatus === 'valid' && (
+              <CheckCircle className="absolute right-2 top-2 h-4 w-4 text-green-500" />
+            )}
+            {enterpriseKeyStatus === 'invalid' && (
+              <XCircle className="absolute right-2 top-2 h-4 w-4 text-red-500" />
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1 flex items-center">
+            Enter your reCAPTCHA Enterprise site key
+            {enterpriseKeyStatus === 'valid' && <span className="ml-1 text-green-500">(Key validated)</span>}
+            {enterpriseKeyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
           </p>
         </div>
       )}
