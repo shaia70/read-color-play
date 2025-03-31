@@ -18,6 +18,10 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [useTestKey, setUseTestKey] = useState(() => {
+    // Check if test key is permanently disabled
+    if (localStorage.getItem('shelley_disable_test_recaptcha') === 'true') {
+      return false;
+    }
     return localStorage.getItem('shelley_use_test_recaptcha') === 'true';
   });
   
@@ -28,17 +32,23 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   // Production key (this would be the actual site key from reCAPTCHA)
   const productionSiteKey = localStorage.getItem('shelley_recaptcha_key') || testSiteKey;
   
-  // The active site key based on the toggle
-  const activeSiteKey = useTestKey ? testSiteKey : productionSiteKey;
+  // Check if test key is permanently disabled
+  const testKeyDisabled = localStorage.getItem('shelley_disable_test_recaptcha') === 'true';
+  
+  // The active site key based on the toggle and disabled state
+  const activeSiteKey = (!testKeyDisabled && useTestKey) ? testSiteKey : productionSiteKey;
   
   useEffect(() => {
-    localStorage.setItem('shelley_use_test_recaptcha', useTestKey.toString());
+    // Don't save test key preference if it's disabled permanently
+    if (!testKeyDisabled) {
+      localStorage.setItem('shelley_use_test_recaptcha', useTestKey.toString());
+    }
     // Reset captcha when key changes
     setCaptchaToken(null);
     if (recaptchaRef.current) {
       recaptchaRef.current.reset();
     }
-  }, [useTestKey]);
+  }, [useTestKey, testKeyDisabled]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +65,11 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
       const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
       
       if (password === storedPassword) {
+        // If the user successfully logged in with production key, track this
+        if (!useTestKey && productionSiteKey !== testSiteKey) {
+          localStorage.setItem('shelley_production_key_working', 'true');
+        }
+        
         onAuthenticate();
         toast.success("Authentication successful");
       } else {
@@ -82,7 +97,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   };
   
   const toggleReCaptchaMode = () => {
-    setUseTestKey(!useTestKey);
+    if (!testKeyDisabled) {
+      setUseTestKey(!useTestKey);
+    }
   };
   
   const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,18 +160,20 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               </div>
               
               <div className="space-y-2 border-t pt-3">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Use test reCAPTCHA key</span>
+                {!testKeyDisabled && (
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">Use test reCAPTCHA key</span>
+                    </div>
+                    <Switch 
+                      checked={useTestKey} 
+                      onCheckedChange={toggleReCaptchaMode} 
+                      aria-label="Use test reCAPTCHA key"
+                    />
                   </div>
-                  <Switch 
-                    checked={useTestKey} 
-                    onCheckedChange={toggleReCaptchaMode} 
-                    aria-label="Use test reCAPTCHA key"
-                  />
-                </div>
+                )}
                 
-                {!useTestKey && (
+                {(!useTestKey || testKeyDisabled) && (
                   <div className="mt-2">
                     <Input
                       type="text"
@@ -170,9 +189,12 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                 )}
                 
                 <p className="text-xs text-muted-foreground">
-                  {useTestKey 
-                    ? "Using Google's test key - this will always pass verification" 
-                    : "Using production reCAPTCHA key"
+                  {testKeyDisabled 
+                    ? "Using production reCAPTCHA key only" 
+                    : (useTestKey 
+                      ? "Using Google's test key - this will always pass verification" 
+                      : "Using production reCAPTCHA key"
+                    )
                   }
                 </p>
               </div>
