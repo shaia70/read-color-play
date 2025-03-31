@@ -20,6 +20,7 @@ const chartConfig = {
   rate: { label: 'Bounce Rate (%)', theme: { light: '#f43f5e', dark: '#f43f5e' } }
 };
 
+// Using named export to match the import in Statistics.tsx
 export const PagePerformance: React.FC = () => {
   const [pageViewsData, setPageViewsData] = useState<PageViewData[]>([]);
   const [timeSpentData, setTimeSpentData] = useState<TimeSpentData[]>([]);
