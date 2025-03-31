@@ -1,15 +1,30 @@
 
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Smartphone, ArrowRight, Download } from "lucide-react";
+import { Smartphone, ArrowRight, Download, Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 
 const Technology = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const isHebrew = language === 'he';
+
+  // SEO translations
+  const pageTitle = isHebrew 
+    ? "טכנולוגיית מציאות רבודה | שלי ספרים" 
+    : "Augmented Reality Technology | Shelley Books";
+    
+  const pageDescription = isHebrew
+    ? "גלו את טכנולוגיית המציאות הרבודה (AR) המהפכנית של שלי ספרים. האיורים קופצים מהדף והופכים למשחקים אינטראקטיביים שמעשירים את חווית הקריאה של ילדכם"
+    : "Discover Shelley Books' revolutionary Augmented Reality (AR) technology. Illustrations jump off the page and become interactive games that enhance your child's reading experience";
+    
+  const keywords = isHebrew
+    ? "מציאות רבודה, AR לילדים, ספרים אינטראקטיביים, טכנולוגיית AR, אפליקציית מציאות רבודה, איורים אינטראקטיביים, שלי ספרים, AR בעברית"
+    : "augmented reality, AR for kids, interactive books, AR technology, augmented reality app, interactive illustrations, Shelley Books, Hebrew AR books";
 
   const navigateToDownload = () => {
     navigate('/download');
@@ -17,6 +32,43 @@ const Technology = () => {
 
   return (
     <motion.div>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={keywords} />
+        <link rel="canonical" href={isHebrew ? "https://shelley.co.il/technology" : "https://shelley.co.il/en/technology"} />
+        
+        {/* Schema.org structured data for Article */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": "${isHebrew ? 'טכנולוגיית מציאות רבודה' : 'Augmented Reality Technology'}",
+              "description": "${pageDescription}",
+              "image": "https://shelley.co.il/og-image.png",
+              "author": {
+                "@type": "Organization",
+                "name": "שלי ספרים",
+                "url": "https://shelley.co.il/"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "שלי ספרים",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://shelley.co.il/favicon.svg"
+                }
+              },
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://shelley.co.il/technology"
+              }
+            }
+          `}
+        </script>
+      </Helmet>
+      
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">

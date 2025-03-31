@@ -1,5 +1,7 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Apple, Download, Smartphone, Play, PaintBucket } from "lucide-react";
@@ -12,6 +14,20 @@ const DownloadPage = () => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const isHebrew = language === 'he';
+
+  // SEO translations
+  const pageTitle = isHebrew 
+    ? "הורד את האפליקציה | שלי ספרים - מציאות רבודה" 
+    : "Download Our App | Shelley Books - Augmented Reality";
+    
+  const pageDescription = isHebrew
+    ? "הורידו את אפליקציית מציאות רבודה של שלי ספרים וגלו חוויית קריאה חדשנית לילדים. האפליקציה מאפשרת לסרוק את האיורים מהספרים ולראות אותם קמים לחיים"
+    : "Download Shelley Books' augmented reality app and discover an innovative reading experience for children. The app allows you to scan illustrations from the books and see them come to life";
+    
+  const keywords = isHebrew
+    ? "הורדת אפליקציה, אפליקציית מציאות רבודה, שלי ספרים AR, אפליקציית AR לילדים, מציאות רבודה לספרים, אפליקציה לסמארטפון, אפליקציה לטאבלט, שלי ספרים"
+    : "app download, augmented reality app, Shelley Books AR, AR app for kids, augmented reality for books, smartphone app, tablet app, Shelley Books";
 
   const handleGooglePlayRedirect = () => {
     window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
@@ -94,6 +110,41 @@ const DownloadPage = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={keywords} />
+        <link rel="canonical" href={isHebrew ? "https://shelley.co.il/download" : "https://shelley.co.il/en/download"} />
+        
+        {/* Schema.org structured data for SoftwareApplication */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "שלי ספרים AR",
+              "applicationCategory": "EducationalApplication",
+              "operatingSystem": "Android, iOS",
+              "description": "${pageDescription}",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "ILS"
+              },
+              "author": {
+                "@type": "Organization",
+                "name": "שלי ספרים",
+                "url": "https://shelley.co.il/"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "שלי ספרים"
+              }
+            }
+          `}
+        </script>
+      </Helmet>
+      
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">

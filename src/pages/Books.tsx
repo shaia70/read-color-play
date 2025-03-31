@@ -1,6 +1,8 @@
+
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
@@ -13,6 +15,20 @@ const Books = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const isHebrew = language === 'he';
+
+  // SEO translations
+  const pageTitle = isHebrew 
+    ? "הספרים שלנו | שלי ספרים - ספרי ילדים אינטראקטיביים" 
+    : "Our Books | Shelley Books - Interactive Children's Books";
+    
+  const pageDescription = isHebrew
+    ? "גלו את ספרי הילדים האינטראקטיביים של שלי ספרים, המשלבים איורים מרהיבים וטכנולוגיית מציאות רבודה. ספרים מקוריים לילדים שהופכים את הקריאה לחוויה מרתקת"
+    : "Discover Shelley Books' interactive children's books, combining stunning illustrations and augmented reality technology. Original books for children that make reading a fascinating experience";
+    
+  const keywords = isHebrew
+    ? "ספרי ילדים, ספרים לילדים, ספרים אינטראקטיביים, דניאל הולך לגן, ספרי קריאה לילדים, ספרים עם מציאות רבודה, שלי ספרים, ספרי ילדים בעברית"
+    : "children's books, books for kids, interactive books, Daniel Goes to Kindergarten, reading books for children, books with augmented reality, Shelley Books, Hebrew children's books";
 
   const toggleZoom = () => {
     if (isMobile) return; // Prevent zooming on mobile
@@ -40,6 +56,51 @@ const Books = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={keywords} />
+        <link rel="canonical" href={isHebrew ? "https://shelley.co.il/books" : "https://shelley.co.il/en/books"} />
+        
+        {/* Schema.org structured data for Book */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "item": {
+                    "@type": "Book",
+                    "name": "${isHebrew ? 'דניאל הולך לגן' : 'Daniel Goes to Kindergarten'}",
+                    "author": {
+                      "@type": "Organization",
+                      "name": "שלי ספרים"
+                    },
+                    "bookFormat": "Hardcover",
+                    "numberOfPages": "24",
+                    "inLanguage": "he",
+                    "audience": {
+                      "@type": "Audience",
+                      "suggestedMinAge": "3",
+                      "suggestedMaxAge": "6"
+                    },
+                    "publisher": {
+                      "@type": "Organization",
+                      "name": "שלי ספרים"
+                    },
+                    "image": "https://shelley.co.il/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png",
+                    "description": "${isHebrew ? 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
+                  }
+                }
+              ]
+            }
+          `}
+        </script>
+      </Helmet>
+      
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">
