@@ -26,7 +26,7 @@ export const RecaptchaStatusIndicator: React.FC<RecaptchaStatusIndicatorProps> =
           }
         </p>
         <p className="text-xs text-muted-foreground text-left mt-1">
-          Using reCAPTCHA v2 Checkbox mode
+          Using reCAPTCHA v3 invisible mode
         </p>
       </div>
       

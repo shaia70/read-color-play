@@ -61,11 +61,11 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       clearTimeout(validationTimeouts['standard']);
     }
     
-    // Create a temporary script element
+    // Create a temporary script element for reCAPTCHA v3
     const script = document.createElement('script');
     const scriptId = `recaptcha-script-${Date.now()}`;
     script.id = scriptId;
-    script.src = `https://www.google.com/recaptcha/api.js?render=explicit&onload=validateRecaptchaCallback`;
+    script.src = `https://www.google.com/recaptcha/api.js?render=${key}`;
     script.async = true;
     script.defer = true;
     
@@ -78,12 +78,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       const scriptElement = document.getElementById(scriptId);
       if (scriptElement) {
         document.body.removeChild(scriptElement);
-      }
-      
-      // Remove the temporary container if it exists
-      const container = document.getElementById('temp-recaptcha-container');
-      if (container) {
-        document.body.removeChild(container);
       }
       
       toast.error("reCAPTCHA Validation Failed", {
@@ -105,63 +99,52 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       'standard': timeoutId
     }));
     
-    // Create a temporary container for the reCAPTCHA
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.visibility = 'hidden';
-    container.id = 'temp-recaptcha-container';
-    document.body.appendChild(container);
-    
-    // Set up a global callback function
-    window.validateRecaptchaCallback = () => {
-      try {
-        // Clear the timeout since we've received a callback
-        clearTimeout(timeoutId);
-        setValidationTimeouts(prev => {
-          const updated = {...prev};
-          delete updated['standard'];
-          return updated;
+    // Set up a handler for when the script loads
+    script.onload = () => {
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          try {
+            // Test execution to verify key is valid
+            window.grecaptcha
+              .execute(key, { action: 'validate_key' })
+              .then(() => {
+                clearTimeout(timeoutId);
+                setValidationTimeouts(prev => {
+                  const updated = {...prev};
+                  delete updated['standard'];
+                  return updated;
+                });
+                
+                // If it executes successfully, the key is valid
+                setKeyStatus('valid');
+                localStorage.setItem('shelley_recaptcha_key', key);
+                localStorage.setItem('shelley_production_key_working', 'true');
+                toast.success("reCAPTCHA Site Key Validated", {
+                  description: "Your site key has been validated and saved.",
+                  duration: 3000,
+                });
+              })
+              .catch((error: any) => {
+                console.error("reCAPTCHA validation failed:", error);
+                clearTimeout(timeoutId);
+                setKeyStatus('invalid');
+                localStorage.setItem('shelley_production_key_working', 'false');
+                toast.error("Invalid reCAPTCHA Site Key", {
+                  description: "The site key could not be validated. Please check it and try again.",
+                  duration: 5000,
+                });
+              });
+          } catch (error) {
+            console.error("reCAPTCHA initialization error:", error);
+            clearTimeout(timeoutId);
+            setKeyStatus('invalid');
+            localStorage.setItem('shelley_production_key_working', 'false');
+            toast.error("Invalid reCAPTCHA Site Key", {
+              description: "The site key could not be validated. Please check it and try again.",
+              duration: 5000,
+            });
+          }
         });
-        
-        // Try to render the reCAPTCHA
-        const widgetId = window.grecaptcha.render('temp-recaptcha-container', {
-          sitekey: key,
-          size: 'normal',
-          callback: () => {}
-        });
-        
-        // If it renders successfully without throwing an error, the key is valid
-        setKeyStatus('valid');
-        localStorage.setItem('shelley_recaptcha_key', key);
-        localStorage.setItem('shelley_production_key_working', 'true');
-        toast.success("reCAPTCHA Site Key Validated", {
-          description: "Your site key has been validated and saved.",
-          duration: 3000,
-        });
-        
-        // Clean up
-        window.grecaptcha.reset(widgetId);
-      } catch (error) {
-        console.error("reCAPTCHA key validation failed:", error);
-        setKeyStatus('invalid');
-        localStorage.setItem('shelley_production_key_working', 'false');
-        toast.error("Invalid reCAPTCHA Site Key", {
-          description: "The site key could not be validated. Please check it and try again.",
-          duration: 5000,
-        });
-      } finally {
-        // Clean up
-        const container = document.getElementById('temp-recaptcha-container');
-        if (container) {
-          document.body.removeChild(container);
-        }
-        
-        const scriptElement = document.getElementById(scriptId);
-        if (scriptElement) {
-          document.body.removeChild(scriptElement);
-        }
-        
-        delete window.validateRecaptchaCallback;
       }
     };
     
@@ -182,21 +165,16 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
         description: "Could not load the reCAPTCHA script. Please try again later.",
         duration: 5000,
       });
-      
-      // Clean up
-      const container = document.getElementById('temp-recaptcha-container');
-      if (container) {
-        document.body.removeChild(container);
-      }
-      
-      const scriptElement = document.getElementById(scriptId);
-      if (scriptElement) {
-        document.body.removeChild(scriptElement);
-      }
     };
     
     // Add the script to the page
     document.body.appendChild(script);
+    
+    return () => {
+      if (document.getElementById(scriptId)) {
+        document.body.removeChild(document.getElementById(scriptId)!);
+      }
+    };
   };
   
   const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,7 +226,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             )}
           </div>
           <p className="text-xs text-muted-foreground mt-1 flex items-center">
-            Enter your production reCAPTCHA v2 Checkbox site key
+            Enter your production reCAPTCHA v3 site key
             {keyStatus === 'valid' && <span className="ml-1 text-green-500">(Key validated)</span>}
             {keyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
           </p>
@@ -270,10 +248,10 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       
       <p className="text-xs text-muted-foreground">
         {testKeyDisabled 
-          ? "Using checkbox reCAPTCHA with production key only" 
+          ? "Using invisible reCAPTCHA v3 with production key only" 
           : (useTestKey 
               ? "Using Google's test key - this will always pass verification" 
-              : "Using checkbox reCAPTCHA with production key"
+              : "Using invisible reCAPTCHA v3 with production key"
             )
         }
       </p>
