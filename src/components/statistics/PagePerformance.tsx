@@ -117,3 +117,6 @@ export const PagePerformance: React.FC = () => {
     </div>
   );
 };
+
+// Adding default export that points to the same component
+export default PagePerformance;
