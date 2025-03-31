@@ -1,11 +1,12 @@
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Shield, Eye, EyeOff, KeyRound } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 interface SimpleAuthProps {
   onAuthenticate: () => void;
@@ -16,8 +17,28 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [useTestKey, setUseTestKey] = useState(() => {
+    return localStorage.getItem('shelley_use_test_recaptcha') === 'true';
+  });
   
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  
+  // Test key (Google's test key that always validates)
+  const testSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  // Production key (this would be the actual site key from reCAPTCHA)
+  const productionSiteKey = localStorage.getItem('shelley_recaptcha_key') || testSiteKey;
+  
+  // The active site key based on the toggle
+  const activeSiteKey = useTestKey ? testSiteKey : productionSiteKey;
+  
+  useEffect(() => {
+    localStorage.setItem('shelley_use_test_recaptcha', useTestKey.toString());
+    // Reset captcha when key changes
+    setCaptchaToken(null);
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+    }
+  }, [useTestKey]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +81,18 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
     setShowPassword(!showPassword);
   };
   
+  const toggleReCaptchaMode = () => {
+    setUseTestKey(!useTestKey);
+  };
+  
+  const updateProductionKey = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.value;
+    if (key && key.length > 10) { // Simple validation to ensure it looks like a key
+      localStorage.setItem('shelley_recaptcha_key', key);
+      toast.success("reCAPTCHA site key updated");
+    }
+  };
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50">
       <Card className="w-full max-w-md shadow-lg border-blue-100">
@@ -87,7 +120,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                   id="admin-password"
                   name="admin-password"
                   autoComplete="current-password"
-                  className="text-left dir-ltr pl-10 pr-10" // Added left padding for the key icon
+                  className="text-left dir-ltr pl-10 pr-10"
                 />
                 <button 
                   type="button"
@@ -103,17 +136,46 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               <div className="flex justify-center py-2">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                  sitekey={activeSiteKey}
                   onChange={handleCaptchaChange}
                   theme="light"
                 />
               </div>
               
-              <p className="text-xs text-muted-foreground text-center">
-                This page is protected by reCAPTCHA to ensure you're not a robot.
-                <br />
-                <span className="font-medium">Note: Using test keys in development mode</span>
-              </p>
+              <div className="space-y-2 border-t pt-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Use test reCAPTCHA key</span>
+                  </div>
+                  <Switch 
+                    checked={useTestKey} 
+                    onCheckedChange={toggleReCaptchaMode} 
+                    aria-label="Use test reCAPTCHA key"
+                  />
+                </div>
+                
+                {!useTestKey && (
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      placeholder="Enter production reCAPTCHA site key"
+                      defaultValue={productionSiteKey !== testSiteKey ? productionSiteKey : ''}
+                      onChange={updateProductionKey}
+                      className="text-xs"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter your production reCAPTCHA v2 site key
+                    </p>
+                  </div>
+                )}
+                
+                <p className="text-xs text-muted-foreground">
+                  {useTestKey 
+                    ? "Using Google's test key - this will always pass verification" 
+                    : "Using production reCAPTCHA key"
+                  }
+                </p>
+              </div>
             </div>
           </CardContent>
           <CardFooter>
