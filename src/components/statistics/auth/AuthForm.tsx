@@ -2,13 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { Lock, Info } from "lucide-react";
 import { toast } from "sonner";
 import PasswordInput from "./PasswordInput";
 import RecaptchaVerification from "./RecaptchaVerification";
 import RecaptchaKeySettings from "./RecaptchaKeySettings";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoCircle } from "lucide-react";
 
 interface AuthFormProps {
   onAuthenticate: () => void;
@@ -211,9 +210,9 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       </CardHeader>
       
       <CardContent>
-        {domainError && !useTestKey && !localStorage.getItem('shelley_recaptcha_dev_mode') === 'true' && (
+        {domainError && !useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && (
           <Alert variant="destructive" className="mb-4">
-            <InfoCircle className="h-4 w-4" />
+            <Info className="h-4 w-4" />
             <AlertDescription className="text-sm">
               <strong>Domain Validation Error:</strong> Your reCAPTCHA site key isn't authorized for this domain. 
               Either switch to the test key or add this domain in your Google reCAPTCHA console.
