@@ -6,15 +6,36 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import DownloadSEO from "@/components/download/DownloadSEO";
 import DownloadOptions from "@/components/download/DownloadOptions";
 import AppFeatures from "@/components/download/AppFeatures";
+import useAnalytics from "@/hooks/useAnalytics";
+import usePixelTracking from "@/hooks/usePixelTracking";
+import { PixelEvents } from "@/services/pixelService";
 
 const DownloadPage = () => {
   const { t, language } = useLanguage();
+  const { trackElementClick } = useAnalytics();
+  const { trackDownload } = usePixelTracking();
 
   const handleGooglePlayRedirect = () => {
+    // Track with both internal analytics and pixels
+    trackElementClick('google_play_download', { platform: 'android' });
+    trackDownload('google_play_app', { 
+      platform: 'android',
+      app_name: 'Shelley Books AR',
+      language: language
+    });
+    
     window.open('https://play.google.com/store/apps/details?id=com.ShelleyBooks.AR', '_blank');
   };
 
   const handleAppStoreRedirect = () => {
+    // Track with both internal analytics and pixels
+    trackElementClick('app_store_download', { platform: 'ios' });
+    trackDownload('app_store_app', { 
+      platform: 'ios',
+      app_name: 'Shelley Books AR',
+      language: language
+    });
+    
     window.open('https://apps.apple.com/us/app/ar-%D7%A9%D7%9C%D7%99-%D7%A1%D7%A4%D7%A8%D7%99%D7%9D/id6743387119', '_blank');
   };
 
