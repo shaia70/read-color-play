@@ -57,9 +57,9 @@ export const RecaptchaSection: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left">reCAPTCHA Settings</CardTitle>
+        <CardTitle className="text-left">reCAPTCHA v2 Settings</CardTitle>
         <CardDescription className="text-left">
-          Manage reCAPTCHA security settings
+          Manage reCAPTCHA v2 Checkbox security settings
         </CardDescription>
       </CardHeader>
       <CardContent>

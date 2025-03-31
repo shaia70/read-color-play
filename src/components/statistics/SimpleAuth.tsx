@@ -19,7 +19,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   
   const isMobile = useIsMobile();
   
-  // Test key 
+  // Test key (Google's official test key for reCAPTCHA v2 Checkbox)
   const testSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
   // Production key (fallback to default key if not set)
   const productionSiteKey = localStorage.getItem('shelley_recaptcha_key') || "";

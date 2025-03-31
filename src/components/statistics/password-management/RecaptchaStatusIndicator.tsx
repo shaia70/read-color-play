@@ -24,6 +24,9 @@ export const RecaptchaStatusIndicator: React.FC<RecaptchaStatusIndicatorProps> =
               : "Using production key"
           }
         </p>
+        <p className="text-xs text-muted-foreground text-left mt-1">
+          Using reCAPTCHA v2 Checkbox mode
+        </p>
       </div>
       
       <div className="flex items-center space-x-2">

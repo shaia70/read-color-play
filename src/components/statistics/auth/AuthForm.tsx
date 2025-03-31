@@ -32,11 +32,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [domainError, setDomainError] = useState(false);
+  const [keyTypeError, setKeyTypeError] = useState(false);
   
   // Reset recaptcha token when key changes
   useEffect(() => {
     setRecaptchaToken(null);
     setDomainError(false);
+    setKeyTypeError(false);
   }, [activeSiteKey, useTestKey]);
   
   // Listen for reCAPTCHA errors in window.console messages
@@ -46,10 +48,12 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       
       console.error = function(...args) {
         const errorMessage = args.join(' ');
-        if (errorMessage.includes('Invalid domain for site key') || 
-            errorMessage.includes('ERROR for site owner') ||
-            errorMessage.includes('reCAPTCHA')) {
+        if (errorMessage.includes('Invalid domain for site key')) {
           setDomainError(true);
+        }
+        if (errorMessage.includes('Invalid key type') || 
+            errorMessage.includes('ERROR for site owner')) {
+          setKeyTypeError(true);
         }
         originalConsoleError.apply(console, args);
       };
@@ -67,6 +71,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     // If we got a token, we know the domain is valid
     if (token) {
       setDomainError(false);
+      setKeyTypeError(false);
     }
   };
   
@@ -82,8 +87,10 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const isTestKeyActive = !testKeyDisabled && useTestKey;
     
     // Don't continue if there's a domain error and we're not in test mode
-    if (domainError && !isTestKeyActive) {
-      toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
+    if ((domainError || keyTypeError) && !isTestKeyActive) {
+      toast.error(keyTypeError 
+        ? "Invalid reCAPTCHA key type. Make sure you're using a reCAPTCHA v2 Checkbox key." 
+        : "reCAPTCHA domain validation error. Please check your site key configuration.", {
         duration: 8000,
       });
       return;
@@ -128,12 +135,21 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       </CardHeader>
       
       <CardContent>
-        {domainError && !useTestKey && (
+        {(domainError || keyTypeError) && !useTestKey && (
           <Alert variant="destructive" className="mb-4">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              <strong>Domain Validation Error:</strong> Your reCAPTCHA site key isn't authorized for this domain. 
-              Either switch to the test key or add this domain in your Google reCAPTCHA console.
+              {keyTypeError ? (
+                <>
+                  <strong>Invalid Key Type Error:</strong> You're using an incompatible reCAPTCHA key. 
+                  Please make sure you're using a <strong>reCAPTCHA v2 Checkbox</strong> site key, not v3 or invisible.
+                </>
+              ) : (
+                <>
+                  <strong>Domain Validation Error:</strong> Your reCAPTCHA site key isn't authorized for this domain. 
+                  Either switch to the test key or add this domain in your Google reCAPTCHA console.
+                </>
+              )}
             </AlertDescription>
           </Alert>
         )}
@@ -171,7 +187,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (domainError && !useTestKey) || (!useTestKey && !recaptchaToken)}
+          disabled={isAuthenticating || ((domainError || keyTypeError) && !useTestKey) || (!useTestKey && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>

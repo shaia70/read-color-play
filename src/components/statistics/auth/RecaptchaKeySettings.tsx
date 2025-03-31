@@ -250,7 +250,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             )}
           </div>
           <p className="text-xs text-muted-foreground mt-1 flex items-center">
-            Enter your production reCAPTCHA v2 site key
+            Enter your production reCAPTCHA v2 Checkbox site key
             {keyStatus === 'valid' && <span className="ml-1 text-green-500">(Key validated)</span>}
             {keyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
           </p>
