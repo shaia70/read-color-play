@@ -5,14 +5,12 @@ interface RecaptchaStatusIndicatorProps {
   hasCustomProductionKey: boolean;
   isUsingTestKey: boolean;
   testKeyDisabled: boolean;
-  isEnterpriseMode?: boolean;
 }
 
 export const RecaptchaStatusIndicator: React.FC<RecaptchaStatusIndicatorProps> = ({
   hasCustomProductionKey,
   isUsingTestKey,
-  testKeyDisabled,
-  isEnterpriseMode = false
+  testKeyDisabled
 }) => {
   return (
     <div className="flex items-center justify-between">
@@ -23,9 +21,7 @@ export const RecaptchaStatusIndicator: React.FC<RecaptchaStatusIndicatorProps> =
             ? "Test key is permanently disabled" 
             : isUsingTestKey 
               ? "Using test key (always passes verification)" 
-              : isEnterpriseMode
-                ? "Using reCAPTCHA Enterprise/v3 (invisible verification)"
-                : "Using reCAPTCHA v2 Checkbox"
+              : "Using production key"
           }
         </p>
       </div>

@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx'
 import './index.css'
-import { Toaster } from 'sonner'
 
 // Register service worker for PWA support
 if ('serviceWorker' in navigator) {
@@ -53,7 +52,6 @@ if (rootElement) {
     <React.StrictMode>
       <HelmetProvider>
         <App />
-        <Toaster position="top-right" />
       </HelmetProvider>
     </React.StrictMode>
   );

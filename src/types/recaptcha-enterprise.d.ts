@@ -6,8 +6,6 @@ declare interface Window {
       execute: (siteKey: string, options: { action: string }) => Promise<string>;
       render: (container: string | HTMLElement, options: object) => number;
     };
-    ready: (callback: () => void) => void;
-    execute: (siteKey: string, options: { action: string }) => Promise<string>;
     render: (container: string | HTMLElement, options: object) => number;
     reset: (widgetId: number) => void;
   };
