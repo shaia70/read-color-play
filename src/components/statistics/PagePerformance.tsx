@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -27,7 +26,6 @@ export const PagePerformance: React.FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   
   useEffect(() => {
-    // Load real analytics data
     const loadData = () => {
       const pageViews = getPageViewsData();
       const timeSpent = getTimeSpentData();
@@ -39,10 +37,8 @@ export const PagePerformance: React.FC = () => {
       setLastUpdated(new Date());
     };
     
-    // Load data immediately
     loadData();
     
-    // Then refresh data every 60 seconds
     const intervalId = setInterval(loadData, 60000);
     
     return () => clearInterval(intervalId);
@@ -52,7 +48,6 @@ export const PagePerformance: React.FC = () => {
     return format(date, 'dd/MM/yyyy HH:mm');
   };
   
-  // If no data is available yet, show sample data message
   const noDataAvailable = pageViewsData.length === 0;
   
   return (
