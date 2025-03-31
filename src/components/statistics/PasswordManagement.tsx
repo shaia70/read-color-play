@@ -73,13 +73,13 @@ export const PasswordManagement: React.FC = () => {
     <Card>
       <CardHeader>
         <CardTitle>Admin Password Management</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-left">
           Change your admin password for accessing statistics
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground text-left">
             Your admin password is used to access the statistics dashboard. 
             It is stored securely in your browser and not shared with any third parties.
           </p>
@@ -93,13 +93,13 @@ export const PasswordManagement: React.FC = () => {
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Change Admin Password</DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-left">
                 Update your password for accessing the statistics dashboard.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="current-password">Current Password</Label>
+                <Label htmlFor="current-password" className="text-left">Current Password</Label>
                 <div className="flex items-center">
                   <div className="flex-1">
                     <Input
@@ -123,7 +123,7 @@ export const PasswordManagement: React.FC = () => {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="new-password">New Password</Label>
+                <Label htmlFor="new-password" className="text-left">New Password</Label>
                 <div className="flex items-center">
                   <div className="flex-1">
                     <Input
@@ -147,7 +147,7 @@ export const PasswordManagement: React.FC = () => {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
+                <Label htmlFor="confirm-password" className="text-left">Confirm New Password</Label>
                 <div className="flex items-center">
                   <div className="flex-1">
                     <Input

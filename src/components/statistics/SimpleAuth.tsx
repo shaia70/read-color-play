@@ -67,7 +67,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
             <Shield className="h-6 w-6 text-primary" />
             <CardTitle>Admin Statistics</CardTitle>
           </div>
-          <CardDescription>
+          <CardDescription className="text-left">
             Enter the admin password to view statistics
           </CardDescription>
         </CardHeader>
