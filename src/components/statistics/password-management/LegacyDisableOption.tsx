@@ -2,18 +2,19 @@
 import React from "react";
 import { ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
 
 interface LegacyDisableOptionProps {
   testKeyDisabled: boolean;
   productionKeyWorking: boolean;
   hasCustomProductionKey: boolean;
+  onOpenDisableDialog: () => void;
 }
 
 export const LegacyDisableOption: React.FC<LegacyDisableOptionProps> = ({
   testKeyDisabled,
   productionKeyWorking,
-  hasCustomProductionKey
+  hasCustomProductionKey,
+  onOpenDisableDialog
 }) => {
   if (testKeyDisabled || !productionKeyWorking || !hasCustomProductionKey) {
     return null;
@@ -28,12 +29,14 @@ export const LegacyDisableOption: React.FC<LegacyDisableOptionProps> = ({
       </p>
       
       <div className="pt-2">
-        <DialogTrigger asChild>
-          <Button variant="outline" className="mt-2">
-            <ShieldAlert className="mr-2 h-4 w-4" />
-            Legacy: Disable Test Key
-          </Button>
-        </DialogTrigger>
+        <Button 
+          variant="outline" 
+          className="mt-2"
+          onClick={onOpenDisableDialog}
+        >
+          <ShieldAlert className="mr-2 h-4 w-4" />
+          Legacy: Disable Test Key
+        </Button>
       </div>
     </div>
   );

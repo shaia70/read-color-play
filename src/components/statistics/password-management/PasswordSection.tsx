@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import PasswordChangeDialog from "./PasswordChangeDialog";
 
 export const PasswordSection: React.FC = () => {
@@ -25,13 +25,15 @@ export const PasswordSection: React.FC = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <PasswordChangeDialog 
-          isOpen={isDialogOpen} 
-          onOpenChange={setIsDialogOpen} 
-        />
-        <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
-          <Button className="w-full">Change Password</Button>
-        </DialogTrigger>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <PasswordChangeDialog 
+            isOpen={isDialogOpen} 
+            onOpenChange={setIsDialogOpen} 
+          />
+          <Button className="w-full" onClick={() => setIsDialogOpen(true)}>
+            Change Password
+          </Button>
+        </Dialog>
       </CardFooter>
     </Card>
   );

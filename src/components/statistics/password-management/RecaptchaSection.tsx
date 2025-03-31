@@ -85,13 +85,14 @@ export const RecaptchaSection: React.FC = () => {
             <>
               <Separator className="my-4" />
               
+              <LegacyDisableOption 
+                testKeyDisabled={testKeyDisabled}
+                productionKeyWorking={productionKeyWorking}
+                hasCustomProductionKey={hasCustomProductionKey}
+                onOpenDisableDialog={() => setIsDisableTestKeyDialogOpen(true)}
+              />
+              
               <Dialog open={isDisableTestKeyDialogOpen} onOpenChange={setIsDisableTestKeyDialogOpen}>
-                <LegacyDisableOption 
-                  testKeyDisabled={testKeyDisabled}
-                  productionKeyWorking={productionKeyWorking}
-                  hasCustomProductionKey={hasCustomProductionKey}
-                />
-                
                 <TestKeyDisableDialog 
                   isOpen={isDisableTestKeyDialogOpen}
                   onOpenChange={setIsDisableTestKeyDialogOpen}
