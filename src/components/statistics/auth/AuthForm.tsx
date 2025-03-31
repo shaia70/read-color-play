@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import PasswordInput from "./PasswordInput";
 import RecaptchaVerification from "./RecaptchaVerification";
 import RecaptchaKeySettings from "./RecaptchaKeySettings";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoCircle } from "lucide-react";
 
 interface AuthFormProps {
   onAuthenticate: () => void;
@@ -34,10 +36,12 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [domainError, setDomainError] = useState(false);
   
   // Reset recaptcha token when key changes
   useEffect(() => {
     setRecaptchaToken(null);
+    setDomainError(false);
   }, [activeSiteKey, useTestKey]);
   
   // For enterprise reCAPTCHA, load the script when component mounts
@@ -50,6 +54,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         script.src = `https://www.google.com/recaptcha/enterprise.js?render=${enterpriseSiteKey}`;
         script.async = true;
         script.defer = true;
+        
+        // Add error handler to catch domain validation issues
+        script.onerror = () => {
+          console.error("Failed to load reCAPTCHA Enterprise script - possible domain validation issue");
+          setDomainError(true);
+        };
+        
         document.head.appendChild(script);
         
         // Clean up on unmount
@@ -62,9 +73,35 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     }
   }, [isEnterpriseMode, enterpriseSiteKey]);
   
+  // Listen for reCAPTCHA errors in window.console messages
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const originalConsoleError = console.error;
+      
+      console.error = function(...args) {
+        const errorMessage = args.join(' ');
+        if (errorMessage.includes('Invalid domain for site key') || 
+            errorMessage.includes('ERROR for site owner') ||
+            errorMessage.includes('reCAPTCHA')) {
+          setDomainError(true);
+        }
+        originalConsoleError.apply(console, args);
+      };
+      
+      // Clean up
+      return () => {
+        console.error = originalConsoleError;
+      };
+    }
+  }, []);
+  
   const handleVerify = (token: string | null) => {
     console.log("reCAPTCHA token received:", token);
     setRecaptchaToken(token);
+    // If we got a token, we know the domain is valid
+    if (token) {
+      setDomainError(false);
+    }
   };
   
   const executeEnterpriseRecaptcha = async () => {
@@ -82,12 +119,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             resolve(token);
           } catch (error) {
             console.error("Enterprise reCAPTCHA error:", error);
+            setDomainError(true);
             resolve(null);
           }
         });
       });
     } catch (error) {
       console.error("Enterprise reCAPTCHA error:", error);
+      setDomainError(true);
       return null;
     }
   };
@@ -104,6 +143,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     const isTestKeyActive = !testKeyDisabled && useTestKey;
     const isDevMode = localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
     
+    // Don't continue if there's a domain error and we're not in test mode or dev mode
+    if (domainError && !isTestKeyActive && !isDevMode) {
+      toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
+        duration: 8000,
+      });
+      return;
+    }
+    
     // For non-test, non-dev, non-enterprise modes, require a token
     if (!isTestKeyActive && !isDevMode && !isEnterpriseMode && !recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
@@ -119,7 +166,15 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       
       // In dev mode, we'll bypass the token check
       if (!enterpriseToken && !isDevMode) {
-        toast.error("reCAPTCHA verification failed. Please try again.");
+        // Check if this is due to a domain error
+        if (domainError) {
+          toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
+            duration: 8000,
+          });
+        } else {
+          toast.error("reCAPTCHA verification failed. Please try again.");
+        }
+        
         setIsAuthenticating(false);
         return;
       }
@@ -156,6 +211,16 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       </CardHeader>
       
       <CardContent>
+        {domainError && !useTestKey && !localStorage.getItem('shelley_recaptcha_dev_mode') === 'true' && (
+          <Alert variant="destructive" className="mb-4">
+            <InfoCircle className="h-4 w-4" />
+            <AlertDescription className="text-sm">
+              <strong>Domain Validation Error:</strong> Your reCAPTCHA site key isn't authorized for this domain. 
+              Either switch to the test key or add this domain in your Google reCAPTCHA console.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <form onSubmit={handleSubmit} id="auth-form">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -171,6 +236,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                 onVerify={handleVerify}
                 testKeyDisabled={testKeyDisabled}
                 useTestKey={useTestKey}
+                onError={() => setDomainError(true)}
               />
             )}
             
@@ -192,7 +258,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (!useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && !isEnterpriseMode && !recaptchaToken)}
+          disabled={isAuthenticating || (domainError && !useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true') || (!useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && !isEnterpriseMode && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>

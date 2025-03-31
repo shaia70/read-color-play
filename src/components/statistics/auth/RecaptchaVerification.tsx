@@ -8,13 +8,15 @@ interface RecaptchaVerificationProps {
   onVerify: (token: string | null) => void;
   testKeyDisabled: boolean;
   useTestKey: boolean;
+  onError?: () => void;
 }
 
 export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   siteKey,
   onVerify,
   testKeyDisabled,
-  useTestKey
+  useTestKey,
+  onError
 }) => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const isMobile = useIsMobile();
@@ -27,6 +29,24 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
       recaptchaRef.current.reset();
     }
   }, [siteKey, useTestKey, testKeyDisabled, onVerify]);
+  
+  // Listen for reCAPTCHA error messages
+  useEffect(() => {
+    const handleErrorMessages = (event: ErrorEvent) => {
+      if (event.message && 
+         (event.message.includes('Invalid domain for site key') || 
+          event.message.includes('ERROR for site owner'))) {
+        console.error("reCAPTCHA domain validation error detected:", event.message);
+        if (onError) onError();
+      }
+    };
+    
+    window.addEventListener('error', handleErrorMessages);
+    
+    return () => {
+      window.removeEventListener('error', handleErrorMessages);
+    };
+  }, [onError]);
   
   // For test key or dev mode, we'll simulate a successful verification
   useEffect(() => {
@@ -60,6 +80,10 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
           onChange={onVerify}
           theme="light"
           size={isMobile ? "compact" : "normal"}
+          onErrored={() => {
+            console.error("reCAPTCHA widget encountered an error");
+            if (onError) onError();
+          }}
         />
       </div>
     </div>
