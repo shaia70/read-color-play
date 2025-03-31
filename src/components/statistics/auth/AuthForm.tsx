@@ -17,8 +17,6 @@ interface AuthFormProps {
   setUseTestKey: (useTestKey: boolean) => void;
   productionSiteKey: string;
   testSiteKey: string;
-  isEnterpriseMode?: boolean;
-  enterpriseSiteKey?: string;
 }
 
 export const AuthForm: React.FC<AuthFormProps> = ({
@@ -28,9 +26,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   useTestKey,
   setUseTestKey,
   productionSiteKey,
-  testSiteKey,
-  isEnterpriseMode = false,
-  enterpriseSiteKey
+  testSiteKey
 }) => {
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -42,35 +38,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     setRecaptchaToken(null);
     setDomainError(false);
   }, [activeSiteKey, useTestKey]);
-  
-  // For enterprise reCAPTCHA, load the script when component mounts
-  useEffect(() => {
-    if (isEnterpriseMode && typeof window !== 'undefined') {
-      // Check if the script already exists
-      const existingScript = document.querySelector(`script[src*="recaptcha/enterprise.js"]`);
-      if (!existingScript && enterpriseSiteKey) {
-        const script = document.createElement('script');
-        script.src = `https://www.google.com/recaptcha/enterprise.js?render=${enterpriseSiteKey}`;
-        script.async = true;
-        script.defer = true;
-        
-        // Add error handler to catch domain validation issues
-        script.onerror = () => {
-          console.error("Failed to load reCAPTCHA Enterprise script - possible domain validation issue");
-          setDomainError(true);
-        };
-        
-        document.head.appendChild(script);
-        
-        // Clean up on unmount
-        return () => {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-        };
-      }
-    }
-  }, [isEnterpriseMode, enterpriseSiteKey]);
   
   // Listen for reCAPTCHA errors in window.console messages
   useEffect(() => {
@@ -103,33 +70,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     }
   };
   
-  const executeEnterpriseRecaptcha = async () => {
-    if (!isEnterpriseMode || !window.grecaptcha || !window.grecaptcha.enterprise || !enterpriseSiteKey) {
-      return null;
-    }
-    
-    try {
-      // Make sure the enterprise API is ready
-      return new Promise<string | null>((resolve) => {
-        window.grecaptcha.enterprise.ready(async () => {
-          try {
-            const token = await window.grecaptcha.enterprise.execute(enterpriseSiteKey, {action: 'login'});
-            console.log("Enterprise reCAPTCHA token:", token);
-            resolve(token);
-          } catch (error) {
-            console.error("Enterprise reCAPTCHA error:", error);
-            setDomainError(true);
-            resolve(null);
-          }
-        });
-      });
-    } catch (error) {
-      console.error("Enterprise reCAPTCHA error:", error);
-      setDomainError(true);
-      return null;
-    }
-  };
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -149,33 +89,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       return;
     }
     
-    // For non-test, non-enterprise modes, require a token
-    if (!isTestKeyActive && !isEnterpriseMode && !recaptchaToken) {
+    // For non-test modes, require a token
+    if (!isTestKeyActive && !recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
       return;
     }
     
     setIsAuthenticating(true);
-    
-    // If enterprise mode, execute the reCAPTCHA
-    let enterpriseToken = null;
-    if (isEnterpriseMode) {
-      enterpriseToken = await executeEnterpriseRecaptcha();
-      
-      if (!enterpriseToken) {
-        // Check if this is due to a domain error
-        if (domainError) {
-          toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
-            duration: 8000,
-          });
-        } else {
-          toast.error("reCAPTCHA verification failed. Please try again.");
-        }
-        
-        setIsAuthenticating(false);
-        return;
-      }
-    }
     
     // For demo purposes, check if the password is the test password
     // In a real app, this would make an API call to validate
@@ -227,15 +147,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               />
             </div>
             
-            {!isEnterpriseMode && (
-              <RecaptchaVerification
-                siteKey={activeSiteKey}
-                onVerify={handleVerify}
-                testKeyDisabled={testKeyDisabled}
-                useTestKey={useTestKey}
-                onError={() => setDomainError(true)}
-              />
-            )}
+            <RecaptchaVerification
+              siteKey={activeSiteKey}
+              onVerify={handleVerify}
+              testKeyDisabled={testKeyDisabled}
+              useTestKey={useTestKey}
+              onError={() => setDomainError(true)}
+            />
             
             <RecaptchaKeySettings
               testKeyDisabled={testKeyDisabled}
@@ -243,8 +161,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               setUseTestKey={setUseTestKey}
               productionSiteKey={productionSiteKey}
               testSiteKey={testSiteKey}
-              isEnterpriseMode={isEnterpriseMode}
-              enterpriseSiteKey={enterpriseSiteKey}
             />
           </div>
         </form>
@@ -255,7 +171,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (domainError && !useTestKey) || (!useTestKey && !isEnterpriseMode && !recaptchaToken)}
+          disabled={isAuthenticating || (domainError && !useTestKey) || (!useTestKey && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>
