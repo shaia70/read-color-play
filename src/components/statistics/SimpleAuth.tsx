@@ -103,7 +103,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               <div className="flex justify-center py-2">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+                  sitekey="6LeSSwUrAAAAAGyKh0S3aX4UWJljoUPMBlSi4I62"
                   onChange={handleCaptchaChange}
                   theme="light"
                 />
@@ -111,8 +111,6 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               
               <p className="text-xs text-muted-foreground text-center">
                 This page is protected by reCAPTCHA to ensure you're not a robot.
-                <br />
-                <span className="font-medium">Note: Using test keys in development mode</span>
               </p>
             </div>
           </CardContent>
