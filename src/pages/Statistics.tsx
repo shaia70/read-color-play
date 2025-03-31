@@ -34,7 +34,7 @@ const Statistics: React.FC = () => {
   // Mobile view with drawer navigation
   if (isMobile) {
     return (
-      <div className="container mx-auto p-4 space-y-6">
+      <div className="container mx-auto p-4 space-y-6 bg-background min-h-[100vh]">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <Button 
@@ -131,7 +131,7 @@ const Statistics: React.FC = () => {
   
   // Desktop view with tabs
   return (
-    <div className="container mx-auto py-6 px-4 md:px-6 space-y-6">
+    <div className="container mx-auto py-6 px-4 md:px-6 space-y-6 bg-background min-h-[100vh]">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <Button 
@@ -153,19 +153,19 @@ const Statistics: React.FC = () => {
           <TabsTrigger value="seo">SEO Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
-        <TabsContent value="visitors">
+        <TabsContent value="visitors" className="bg-background">
           <VisitorStats />
         </TabsContent>
-        <TabsContent value="interactions">
+        <TabsContent value="interactions" className="bg-background">
           <UserInteractions />
         </TabsContent>
-        <TabsContent value="performance">
+        <TabsContent value="performance" className="bg-background">
           <PagePerformance />
         </TabsContent>
-        <TabsContent value="seo">
+        <TabsContent value="seo" className="bg-background">
           <SeoAnalytics />
         </TabsContent>
-        <TabsContent value="settings">
+        <TabsContent value="settings" className="bg-background">
           <AdminSettings />
         </TabsContent>
       </Tabs>
