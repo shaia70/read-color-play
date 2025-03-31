@@ -12,7 +12,10 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
 const Statistics: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check if user is authenticated via session storage
+    return sessionStorage.getItem('shelley_admin_authenticated') === 'true';
+  });
   const [activeTab, setActiveTab] = useState("visitors");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -34,7 +37,10 @@ const Statistics: React.FC = () => {
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <Button 
             variant="outline" 
-            onClick={() => setIsAuthenticated(false)}
+            onClick={() => {
+              sessionStorage.removeItem('shelley_admin_authenticated');
+              setIsAuthenticated(false);
+            }}
             size="sm"
           >
             Logout
@@ -123,7 +129,10 @@ const Statistics: React.FC = () => {
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <Button 
           variant="outline" 
-          onClick={() => setIsAuthenticated(false)}
+          onClick={() => {
+            sessionStorage.removeItem('shelley_admin_authenticated');
+            setIsAuthenticated(false);
+          }}
         >
           Logout
         </Button>
