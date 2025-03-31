@@ -100,64 +100,70 @@ export const PasswordManagement: React.FC = () => {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="current-password">Current Password</Label>
-                <div className="relative">
-                  <Input
-                    id="current-password"
-                    type={showCurrentPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                  />
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <Input
+                      id="current-password"
+                      type={showCurrentPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                  </div>
                   <button 
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="ml-2 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                     tabIndex={-1}
                     aria-label={showCurrentPassword ? "Hide current password" : "Show current password"}
                   >
-                    {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="new-password"
-                    type={showNewPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <Input
+                      id="new-password"
+                      type={showNewPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
                   <button 
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="ml-2 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                     tabIndex={-1}
                     aria-label={showNewPassword ? "Hide new password" : "Show new password"}
                   >
-                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
                   <button 
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="ml-2 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     tabIndex={-1}
                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                   >
-                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
