@@ -50,7 +50,7 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
     }
     
     const pageView = () => {
-      (window as any).gtag('event', 'page_view', {
+      window.gtag && window.gtag('event', 'page_view', {
         page_title: document.title,
         page_location: window.location.href,
         page_path: location.pathname

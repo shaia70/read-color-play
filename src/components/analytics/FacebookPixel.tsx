@@ -56,7 +56,7 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
       return;
     }
     
-    (window as any).fbq('track', 'PageView', {
+    window.fbq && window.fbq('track', 'PageView', {
       page_title: document.title,
       page_location: window.location.href,
       page_path: location.pathname

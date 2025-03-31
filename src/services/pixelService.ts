@@ -8,9 +8,8 @@ export const trackGoogleEvent = (
   eventParams?: Record<string, any>
 ): void => {
   try {
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      const gtag = (window as any).gtag;
-      gtag('event', eventName, eventParams);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', eventName, eventParams);
       console.log('Google Analytics event tracked:', eventName, eventParams);
     }
   } catch (error) {
@@ -24,9 +23,8 @@ export const trackFacebookEvent = (
   eventParams?: Record<string, any>
 ): void => {
   try {
-    if (typeof window !== 'undefined' && 'fbq' in window) {
-      const fbq = (window as any).fbq;
-      fbq('track', eventName, eventParams);
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', eventName, eventParams);
       console.log('Facebook Pixel event tracked:', eventName, eventParams);
     }
   } catch (error) {
