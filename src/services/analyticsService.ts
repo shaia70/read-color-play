@@ -68,6 +68,14 @@ const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
 };
 
+// Helper function to ensure we have a valid Date object
+const ensureDate = (dateInput: Date | string | number): Date => {
+  if (dateInput instanceof Date) {
+    return dateInput;
+  }
+  return new Date(dateInput);
+};
+
 // Track a new analytics event
 export const trackEvent = (
   type: string,
@@ -138,7 +146,15 @@ export const trackClick = (element: string, page: string, metadata?: Record<stri
 export const getEvents = (): AnalyticsEvent[] => {
   try {
     const eventsJson = localStorage.getItem(EVENTS_STORAGE_KEY);
-    return eventsJson ? JSON.parse(eventsJson) : [];
+    if (!eventsJson) return [];
+    
+    const rawEvents = JSON.parse(eventsJson);
+    
+    // Ensure all timestamps are Date objects
+    return rawEvents.map((event: any) => ({
+      ...event,
+      timestamp: ensureDate(event.timestamp)
+    }));
   } catch (error) {
     console.error('Error retrieving analytics events:', error);
     return [];
@@ -160,11 +176,16 @@ export const getPageViewsData = (): PageViewData[] => {
     .filter(event => event.type === 'pageview')
     .forEach(event => {
       const page = event.page;
-      const current = pages.get(page) || { views: 0, lastUpdated: event.timestamp };
+      const current = pages.get(page) || { views: 0, lastUpdated: ensureDate(event.timestamp) };
       
       pages.set(page, {
         views: current.views + 1,
-        lastUpdated: new Date(Math.max(current.lastUpdated.getTime(), event.timestamp.getTime()))
+        lastUpdated: ensureDate(
+          Math.max(
+            ensureDate(current.lastUpdated).getTime(), 
+            ensureDate(event.timestamp).getTime()
+          )
+        )
       });
     });
 
@@ -176,7 +197,7 @@ export const getPageViewsData = (): PageViewData[] => {
   // Sort events by timestamp
   const sortedEvents = [...events]
     .filter(event => event.type === 'pageview')
-    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    .sort((a, b) => ensureDate(a.timestamp).getTime() - ensureDate(b.timestamp).getTime());
   
   // Calculate page entries and exits
   for (const event of sortedEvents) {
@@ -207,18 +228,18 @@ export const getPageViewsData = (): PageViewData[] => {
     .filter(event => event.type === 'pageview')
     .forEach(pageViewEvent => {
       const page = pageViewEvent.page;
-      const pageViewTime = new Date(pageViewEvent.timestamp).getTime();
+      const pageViewTime = ensureDate(pageViewEvent.timestamp).getTime();
       
       // Find the next pageview or click event after this pageview
       const nextEvents = [...events]
         .filter(e => 
           (e.type === 'pageview' || e.type === 'click') && 
-          new Date(e.timestamp).getTime() > pageViewTime
+          ensureDate(e.timestamp).getTime() > pageViewTime
         )
-        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        .sort((a, b) => ensureDate(a.timestamp).getTime() - ensureDate(b.timestamp).getTime());
       
       if (nextEvents.length > 0) {
-        const nextEventTime = new Date(nextEvents[0].timestamp).getTime();
+        const nextEventTime = ensureDate(nextEvents[0].timestamp).getTime();
         const timeSpent = (nextEventTime - pageViewTime) / 1000; // in seconds
         
         if (timeSpent > 0 && timeSpent < 3600) { // Ignore sessions longer than an hour (likely left open)
@@ -300,10 +321,15 @@ export const getNavigationFlowData = (): NavigationFlowData[] => {
         const to = event.metadata.to as string;
         const key = `${from}-${to}`;
         
-        const current = navigationFlows.get(key) || { count: 0, timestamp: event.timestamp };
+        const current = navigationFlows.get(key) || { count: 0, timestamp: ensureDate(event.timestamp) };
         navigationFlows.set(key, {
           count: current.count + 1,
-          timestamp: new Date(Math.max(current.timestamp.getTime(), event.timestamp.getTime()))
+          timestamp: ensureDate(
+            Math.max(
+              ensureDate(current.timestamp).getTime(), 
+              ensureDate(event.timestamp).getTime()
+            )
+          )
         });
       }
     });
@@ -329,11 +355,16 @@ export const getClickData = (): ClickData[] => {
     .forEach(event => {
       if (event.element) {
         const element = event.element;
-        const current = clicksMap.get(element) || { clicks: 0, timestamp: event.timestamp };
+        const current = clicksMap.get(element) || { clicks: 0, timestamp: ensureDate(event.timestamp) };
         
         clicksMap.set(element, {
           clicks: current.clicks + 1,
-          timestamp: new Date(Math.max(current.timestamp.getTime(), event.timestamp.getTime()))
+          timestamp: ensureDate(
+            Math.max(
+              ensureDate(current.timestamp).getTime(), 
+              ensureDate(event.timestamp).getTime()
+            )
+          )
         });
       }
     });

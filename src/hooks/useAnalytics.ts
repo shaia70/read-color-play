@@ -20,7 +20,8 @@ export const useAnalytics = () => {
   };
   
   return {
-    trackElementClick
+    trackElementClick,
+    currentPage
   };
 };
 
