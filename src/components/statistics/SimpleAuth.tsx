@@ -74,25 +74,20 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
         <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center">
-                <label htmlFor="admin-password" className="text-sm text-gray-600 mr-2 text-left">
-                  Password:
-                </label>
-                <div className="relative flex-1">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="admin-password"
-                    name="admin-password"
-                    autoComplete="current-password"
-                    className="text-left dir-ltr"
-                  />
-                </div>
+              <div className="relative flex items-center">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  id="admin-password"
+                  name="admin-password"
+                  autoComplete="current-password"
+                  className="text-left dir-ltr pr-10" // Added padding-right for the icon
+                />
                 <button 
                   type="button"
-                  className="ml-2 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="absolute right-2 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                   onClick={togglePasswordVisibility}
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide password" : "Show password"}
