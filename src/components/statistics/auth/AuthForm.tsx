@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
@@ -31,20 +31,29 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   
+  // Reset recaptcha token when key changes
+  useEffect(() => {
+    setRecaptchaToken(null);
+  }, [activeSiteKey, useTestKey]);
+  
   const handleVerify = (token: string | null) => {
+    console.log("reCAPTCHA token received:", token);
     setRecaptchaToken(token);
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!recaptchaToken) {
-      toast.error("Please complete the reCAPTCHA verification");
+    if (!password.trim()) {
+      toast.error("Please enter the admin password");
       return;
     }
     
-    if (!password.trim()) {
-      toast.error("Please enter the admin password");
+    // For test key, we'll accept the verification without requiring a token
+    const isTestKeyActive = !testKeyDisabled && useTestKey;
+    
+    if (!isTestKeyActive && !recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
       return;
     }
     
@@ -113,7 +122,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || !recaptchaToken}
+          disabled={isAuthenticating || (!useTestKey && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>
