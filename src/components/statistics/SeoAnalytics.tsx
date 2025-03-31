@@ -1,10 +1,11 @@
+
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Download, Language } from "lucide-react";
+import { ArrowUpRight, Download, Languages } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Sample data for demonstration - English keywords
@@ -74,11 +75,11 @@ export const SeoAnalytics: React.FC = () => {
           <Tabs defaultValue="hebrew" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
               <TabsTrigger value="hebrew" className="flex items-center gap-1">
-                <Language className="h-4 w-4" />
+                <Languages className="h-4 w-4" />
                 עברית
               </TabsTrigger>
               <TabsTrigger value="english" className="flex items-center gap-1">
-                <Language className="h-4 w-4" />
+                <Languages className="h-4 w-4" />
                 English
               </TabsTrigger>
             </TabsList>
