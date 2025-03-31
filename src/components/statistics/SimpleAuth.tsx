@@ -62,7 +62,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-full max-w-md">
-        <CardHeader>
+        <CardHeader className="text-left">
           <div className="flex items-center gap-2 justify-start">
             <Shield className="h-6 w-6 text-primary" />
             <CardTitle className="text-left">Admin Statistics</CardTitle>
@@ -87,7 +87,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                     id="admin-password"
                     name="admin-password"
                     autoComplete="current-password"
-                    className="text-right dir-ltr" 
+                    className="text-left"
                   />
                 </div>
                 <button 
