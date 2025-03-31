@@ -14,8 +14,8 @@ export const AdminSettings: React.FC = () => {
   // If on mobile, use simplified version without nested tabs
   if (isMobile) {
     return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center mb-2">
+      <div className="space-y-4 bg-background p-4 rounded-lg">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Settings</h2>
           <Settings className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -25,6 +25,7 @@ export const AdminSettings: React.FC = () => {
             variant={activeTab === "password" ? "default" : "outline"}
             onClick={() => setActiveTab("password")}
             className="flex-1"
+            size="sm"
           >
             Password
           </Button>
@@ -32,6 +33,7 @@ export const AdminSettings: React.FC = () => {
             variant={activeTab === "pixels" ? "default" : "outline"}
             onClick={() => setActiveTab("pixels")}
             className="flex-1"
+            size="sm"
           >
             Analytics
           </Button>

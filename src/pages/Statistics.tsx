@@ -118,7 +118,7 @@ const Statistics: React.FC = () => {
           </DrawerContent>
         </Drawer>
         
-        <div className="space-y-4">
+        <div className="space-y-4 bg-background">
           {activeTab === "visitors" && <VisitorStats />}
           {activeTab === "interactions" && <UserInteractions />}
           {activeTab === "performance" && <PagePerformance />}
