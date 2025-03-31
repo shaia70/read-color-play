@@ -32,9 +32,6 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   // The active site key based on the toggle and disabled state
   const activeSiteKey = (!testKeyDisabled && useTestKey) ? testSiteKey : productionSiteKey;
   
-  // Development mode for easier testing
-  const isDevMode = localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
-  
   // Flag to determine if we're using reCAPTCHA Enterprise
   const isEnterpriseMode = !useTestKey && activeSiteKey === enterpriseSiteKey;
   

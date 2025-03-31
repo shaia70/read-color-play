@@ -140,18 +140,17 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     
     // For test key, we'll accept the verification without requiring a token
     const isTestKeyActive = !testKeyDisabled && useTestKey;
-    const isDevMode = localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
     
-    // Don't continue if there's a domain error and we're not in test mode or dev mode
-    if (domainError && !isTestKeyActive && !isDevMode) {
+    // Don't continue if there's a domain error and we're not in test mode
+    if (domainError && !isTestKeyActive) {
       toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
         duration: 8000,
       });
       return;
     }
     
-    // For non-test, non-dev, non-enterprise modes, require a token
-    if (!isTestKeyActive && !isDevMode && !isEnterpriseMode && !recaptchaToken) {
+    // For non-test, non-enterprise modes, require a token
+    if (!isTestKeyActive && !isEnterpriseMode && !recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
       return;
     }
@@ -163,8 +162,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     if (isEnterpriseMode) {
       enterpriseToken = await executeEnterpriseRecaptcha();
       
-      // In dev mode, we'll bypass the token check
-      if (!enterpriseToken && !isDevMode) {
+      if (!enterpriseToken) {
         // Check if this is due to a domain error
         if (domainError) {
           toast.error("reCAPTCHA domain validation error. Please check your site key configuration.", {
@@ -210,7 +208,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       </CardHeader>
       
       <CardContent>
-        {domainError && !useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && (
+        {domainError && !useTestKey && (
           <Alert variant="destructive" className="mb-4">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-sm">
@@ -257,7 +255,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (domainError && !useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true') || (!useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && !isEnterpriseMode && !recaptchaToken)}
+          disabled={isAuthenticating || (domainError && !useTestKey) || (!useTestKey && !isEnterpriseMode && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>

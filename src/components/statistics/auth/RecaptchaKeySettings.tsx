@@ -25,10 +25,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   isEnterpriseMode = false,
   enterpriseSiteKey
 }) => {
-  const [devMode, setDevMode] = useState(() => {
-    return localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
-  });
-  
   const [localProductionKey, setLocalProductionKey] = useState(
     productionSiteKey !== testSiteKey ? productionSiteKey : ''
   );
@@ -48,10 +44,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     }
   }, [useTestKey, testKeyDisabled]);
   
-  useEffect(() => {
-    localStorage.setItem('shelley_recaptcha_dev_mode', devMode.toString());
-  }, [devMode]);
-  
   // Cleanup timeouts when component unmounts
   useEffect(() => {
     return () => {
@@ -63,17 +55,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     if (!testKeyDisabled) {
       setUseTestKey(!useTestKey);
     }
-  };
-  
-  const toggleDevMode = () => {
-    setDevMode(!devMode);
-    toast({
-      title: devMode ? "Development Mode Disabled" : "Development Mode Enabled",
-      description: !devMode 
-        ? "Domain checking bypassed for testing" 
-        : "Normal domain verification restored",
-      duration: 3000,
-    });
   };
   
   const validateRecaptchaKey = (key: string, isEnterprise: boolean = false) => {
@@ -502,26 +483,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             {enterpriseKeyStatus === 'invalid' && <span className="ml-1 text-red-500">(Invalid key)</span>}
           </p>
         </div>
-      )}
-      
-      <div className="flex items-center justify-between mt-3">
-        <div className="text-sm">
-          <span className="text-muted-foreground">Development mode</span>
-        </div>
-        <Switch 
-          checked={devMode} 
-          onCheckedChange={toggleDevMode} 
-          aria-label="Development mode"
-        />
-      </div>
-      
-      {devMode && (
-        <Alert variant="warning" className="mt-2 p-2">
-          <InfoIcon className="h-4 w-4 mr-2" />
-          <AlertDescription className="text-xs">
-            Development mode bypasses domain verification. Only use during development.
-          </AlertDescription>
-        </Alert>
       )}
       
       {isEnterpriseMode && (

@@ -20,7 +20,6 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
 }) => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const isMobile = useIsMobile();
-  const isDevMode = localStorage.getItem('shelley_recaptcha_dev_mode') === 'true';
   
   useEffect(() => {
     // Reset captcha when key changes
@@ -48,23 +47,22 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
     };
   }, [onError]);
   
-  // For test key or dev mode, we'll simulate a successful verification
+  // For test key, we'll simulate a successful verification
   useEffect(() => {
-    if ((!testKeyDisabled && useTestKey) || isDevMode) {
+    if (!testKeyDisabled && useTestKey) {
       // Automatically simulate verification
       const testToken = "test-captcha-token-123456789";
       onVerify(testToken);
     }
-  }, [testKeyDisabled, useTestKey, onVerify, isDevMode]);
+  }, [testKeyDisabled, useTestKey, onVerify]);
   
-  // Don't render the component if using test key or in dev mode
-  if ((!testKeyDisabled && useTestKey) || isDevMode) {
+  // Don't render the component if using test key
+  if (!testKeyDisabled && useTestKey) {
     return (
       <div className="flex flex-col items-center py-2">
         <div className="bg-amber-50 border border-amber-200 p-2 rounded-md w-full">
           <p className="text-sm text-amber-700 text-center">
-            {isDevMode ? "Development mode enabled. Verification is automatic." : 
-             "Using test reCAPTCHA key. Verification is automatic."}
+            Using test reCAPTCHA key. Verification is automatic.
           </p>
         </div>
       </div>
