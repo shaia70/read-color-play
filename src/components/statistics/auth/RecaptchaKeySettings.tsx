@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon, CheckCircle, XCircle } from "lucide-react";
 
@@ -39,6 +39,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   
   const [keyStatus, setKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
   const [enterpriseKeyStatus, setEnterpriseKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
+  const [validationTimeouts, setValidationTimeouts] = useState<{[key: string]: ReturnType<typeof setTimeout>}>({});
   
   useEffect(() => {
     // Don't save test key preference if it's disabled permanently
@@ -51,6 +52,13 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     localStorage.setItem('shelley_recaptcha_dev_mode', devMode.toString());
   }, [devMode]);
   
+  // Cleanup timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      Object.values(validationTimeouts).forEach(timeout => clearTimeout(timeout));
+    };
+  }, [validationTimeouts]);
+  
   const toggleReCaptchaMode = () => {
     if (!testKeyDisabled) {
       setUseTestKey(!useTestKey);
@@ -59,11 +67,13 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   
   const toggleDevMode = () => {
     setDevMode(!devMode);
-    toast.info(
-      !devMode 
-        ? "Development mode enabled - domain checking bypassed" 
-        : "Development mode disabled - normal domain verification"
-    );
+    toast({
+      title: devMode ? "Development Mode Disabled" : "Development Mode Enabled",
+      description: !devMode 
+        ? "Domain checking bypassed for testing" 
+        : "Normal domain verification restored",
+      duration: 3000,
+    });
   };
   
   const validateRecaptchaKey = (key: string, isEnterprise: boolean = false) => {
@@ -82,13 +92,63 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       setKeyStatus('validating');
     }
     
+    // Clear any existing timeout for this validation type
+    if (validationTimeouts[isEnterprise ? 'enterprise' : 'standard']) {
+      clearTimeout(validationTimeouts[isEnterprise ? 'enterprise' : 'standard']);
+    }
+    
     // Create a temporary script element
     const script = document.createElement('script');
+    const scriptId = `recaptcha-script-${Date.now()}`;
+    script.id = scriptId;
     script.src = isEnterprise 
       ? `https://www.google.com/recaptcha/enterprise.js?render=${key}`
       : `https://www.google.com/recaptcha/api.js?render=explicit&onload=validateRecaptchaCallback`;
     script.async = true;
     script.defer = true;
+    
+    // Set a timeout to handle the case where the script fails to load or execute properly
+    const timeoutId = setTimeout(() => {
+      if (isEnterprise) {
+        setEnterpriseKeyStatus('invalid');
+        localStorage.setItem('shelley_enterprise_key_working', 'false');
+      } else {
+        setKeyStatus('invalid');
+        localStorage.setItem('shelley_production_key_working', 'false');
+      }
+      
+      // Remove the script if it's still in the DOM
+      const scriptElement = document.getElementById(scriptId);
+      if (scriptElement) {
+        document.body.removeChild(scriptElement);
+      }
+      
+      // Remove the temporary container if it exists (for standard reCAPTCHA)
+      const container = document.getElementById('temp-recaptcha-container');
+      if (container) {
+        document.body.removeChild(container);
+      }
+      
+      toast({
+        variant: "destructive",
+        title: `${isEnterprise ? "Enterprise" : "Standard"} reCAPTCHA Validation Failed`,
+        description: "The site key could not be validated. Please check it and try again.",
+        duration: 5000,
+      });
+      
+      // Update the validation timeouts state
+      setValidationTimeouts(prev => {
+        const updated = {...prev};
+        delete updated[isEnterprise ? 'enterprise' : 'standard'];
+        return updated;
+      });
+    }, 10000); // 10 second timeout
+    
+    // Update the validation timeouts state
+    setValidationTimeouts(prev => ({
+      ...prev,
+      [isEnterprise ? 'enterprise' : 'standard']: timeoutId
+    }));
     
     // For standard reCAPTCHA
     if (!isEnterprise) {
@@ -102,6 +162,14 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
       // Set up a global callback function
       window.validateRecaptchaCallback = () => {
         try {
+          // Clear the timeout since we've received a callback
+          clearTimeout(timeoutId);
+          setValidationTimeouts(prev => {
+            const updated = {...prev};
+            delete updated['standard'];
+            return updated;
+          });
+          
           // Try to render the reCAPTCHA
           const widgetId = window.grecaptcha.render('temp-recaptcha-container', {
             sitekey: key,
@@ -109,10 +177,15 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
             callback: () => {}
           });
           
-          // If it renders successfully, the key is valid
+          // If it renders successfully without throwing an error, the key is valid
           setKeyStatus('valid');
+          localStorage.setItem('shelley_recaptcha_key', key);
           localStorage.setItem('shelley_production_key_working', 'true');
-          toast.success("reCAPTCHA site key validated successfully");
+          toast({
+            title: "reCAPTCHA Site Key Validated",
+            description: "Your site key has been validated and saved.",
+            duration: 3000,
+          });
           
           // Clean up
           window.grecaptcha.reset(widgetId);
@@ -120,12 +193,57 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
           console.error("reCAPTCHA key validation failed:", error);
           setKeyStatus('invalid');
           localStorage.setItem('shelley_production_key_working', 'false');
-          toast.error("Invalid reCAPTCHA site key");
+          toast({
+            variant: "destructive",
+            title: "Invalid reCAPTCHA Site Key",
+            description: "The site key could not be validated. Please check it and try again.",
+            duration: 5000,
+          });
         } finally {
           // Clean up
-          document.body.removeChild(container);
-          document.body.removeChild(script);
+          const container = document.getElementById('temp-recaptcha-container');
+          if (container) {
+            document.body.removeChild(container);
+          }
+          
+          const scriptElement = document.getElementById(scriptId);
+          if (scriptElement) {
+            document.body.removeChild(scriptElement);
+          }
+          
           delete window.validateRecaptchaCallback;
+        }
+      };
+      
+      // Handle script load errors
+      script.onerror = () => {
+        clearTimeout(timeoutId);
+        setValidationTimeouts(prev => {
+          const updated = {...prev};
+          delete updated['standard'];
+          return updated;
+        });
+        
+        console.error("Failed to load reCAPTCHA script");
+        setKeyStatus('invalid');
+        localStorage.setItem('shelley_production_key_working', 'false');
+        
+        toast({
+          variant: "destructive",
+          title: "reCAPTCHA Script Failed to Load",
+          description: "Could not load the reCAPTCHA script. Please try again later.",
+          duration: 5000,
+        });
+        
+        // Clean up
+        const container = document.getElementById('temp-recaptcha-container');
+        if (container) {
+          document.body.removeChild(container);
+        }
+        
+        const scriptElement = document.getElementById(scriptId);
+        if (scriptElement) {
+          document.body.removeChild(scriptElement);
         }
       };
       
@@ -135,41 +253,137 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     // For Enterprise reCAPTCHA
     else {
       // Set up load and error handlers
+      let enterpriseInitialized = false;
+      
       script.onload = () => {
         try {
+          // Clear the timeout since the script loaded
+          clearTimeout(timeoutId);
+          setValidationTimeouts(prev => {
+            const updated = {...prev};
+            delete updated['enterprise'];
+            return updated;
+          });
+          
           // Check if the enterprise object is available
           if (window.grecaptcha && window.grecaptcha.enterprise) {
-            window.grecaptcha.enterprise.ready(() => {
-              // If we get here, the key is likely valid
-              setEnterpriseKeyStatus('valid');
-              localStorage.setItem('shelley_enterprise_key', key);
-              localStorage.setItem('shelley_enterprise_key_working', 'true');
-              toast.success("reCAPTCHA Enterprise site key validated successfully");
-            });
+            // Set a small timeout to ensure enterprise is fully initialized
+            const initTimeout = setTimeout(() => {
+              if (!enterpriseInitialized) {
+                try {
+                  window.grecaptcha.enterprise.ready(() => {
+                    enterpriseInitialized = true;
+                    
+                    // Attempt to execute with the key to verify it
+                    window.grecaptcha.enterprise.execute(key, { action: 'validate' })
+                      .then(() => {
+                        // If execution succeeds, the key is valid
+                        setEnterpriseKeyStatus('valid');
+                        localStorage.setItem('shelley_enterprise_key', key);
+                        localStorage.setItem('shelley_enterprise_key_working', 'true');
+                        toast({
+                          title: "reCAPTCHA Enterprise Key Validated",
+                          description: "Your Enterprise site key has been validated and saved.",
+                          duration: 3000,
+                        });
+                      })
+                      .catch((error) => {
+                        console.error("reCAPTCHA Enterprise execution failed:", error);
+                        setEnterpriseKeyStatus('invalid');
+                        localStorage.setItem('shelley_enterprise_key_working', 'false');
+                        toast({
+                          variant: "destructive",
+                          title: "Invalid reCAPTCHA Enterprise Key",
+                          description: "The Enterprise site key could not be validated. Please check it and try again.",
+                          duration: 5000,
+                        });
+                      })
+                      .finally(() => {
+                        // Clean up
+                        const scriptElement = document.getElementById(scriptId);
+                        if (scriptElement) {
+                          document.body.removeChild(scriptElement);
+                        }
+                      });
+                  });
+                } catch (error) {
+                  console.error("reCAPTCHA Enterprise initialization failed:", error);
+                  setEnterpriseKeyStatus('invalid');
+                  localStorage.setItem('shelley_enterprise_key_working', 'false');
+                  toast({
+                    variant: "destructive",
+                    title: "Invalid reCAPTCHA Enterprise Key",
+                    description: "Could not initialize reCAPTCHA Enterprise with the provided key.",
+                    duration: 5000,
+                  });
+                  
+                  // Clean up
+                  const scriptElement = document.getElementById(scriptId);
+                  if (scriptElement) {
+                    document.body.removeChild(scriptElement);
+                  }
+                }
+              }
+            }, 1000);
           } else {
             setEnterpriseKeyStatus('invalid');
             localStorage.setItem('shelley_enterprise_key_working', 'false');
-            toast.error("Invalid reCAPTCHA Enterprise site key");
+            toast({
+              variant: "destructive",
+              title: "Invalid reCAPTCHA Enterprise Setup",
+              description: "The reCAPTCHA Enterprise object could not be found. Please check your key.",
+              duration: 5000,
+            });
+            
+            // Clean up
+            const scriptElement = document.getElementById(scriptId);
+            if (scriptElement) {
+              document.body.removeChild(scriptElement);
+            }
           }
         } catch (error) {
           console.error("reCAPTCHA Enterprise key validation failed:", error);
           setEnterpriseKeyStatus('invalid');
           localStorage.setItem('shelley_enterprise_key_working', 'false');
-          toast.error("Invalid reCAPTCHA Enterprise site key");
-        } finally {
+          toast({
+            variant: "destructive",
+            title: "reCAPTCHA Enterprise Validation Failed",
+            description: "An error occurred while validating your Enterprise site key.",
+            duration: 5000,
+          });
+          
           // Clean up
-          document.body.removeChild(script);
+          const scriptElement = document.getElementById(scriptId);
+          if (scriptElement) {
+            document.body.removeChild(scriptElement);
+          }
         }
       };
       
       script.onerror = () => {
+        clearTimeout(timeoutId);
+        setValidationTimeouts(prev => {
+          const updated = {...prev};
+          delete updated['enterprise'];
+          return updated;
+        });
+        
         console.error("Failed to load reCAPTCHA Enterprise script");
         setEnterpriseKeyStatus('invalid');
         localStorage.setItem('shelley_enterprise_key_working', 'false');
-        toast.error("Invalid reCAPTCHA Enterprise site key");
+        
+        toast({
+          variant: "destructive",
+          title: "reCAPTCHA Enterprise Script Failed",
+          description: "Could not load the reCAPTCHA Enterprise script. Please try again later.",
+          duration: 5000,
+        });
         
         // Clean up
-        document.body.removeChild(script);
+        const scriptElement = document.getElementById(scriptId);
+        if (scriptElement) {
+          document.body.removeChild(scriptElement);
+        }
       };
       
       // Add the script to the page
@@ -182,7 +396,6 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
     setLocalProductionKey(key);
     
     if (key && key.length > 10) { // Simple validation to ensure it looks like a key
-      localStorage.setItem('shelley_recaptcha_key', key);
       validateRecaptchaKey(key);
     } else {
       setKeyStatus('idle');
