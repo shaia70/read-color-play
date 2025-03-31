@@ -33,7 +33,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const activeSiteKey = (!testKeyDisabled && useTestKey) ? testSiteKey : productionSiteKey;
   
   // Flag to determine if we're using reCAPTCHA Enterprise
-  const isEnterpriseMode = !useTestKey && activeSiteKey === enterpriseSiteKey;
+  const isEnterpriseMode = !useTestKey && 
+    (productionSiteKey === enterpriseSiteKey || 
+    localStorage.getItem('shelley_use_enterprise') === 'true');
   
   return (
     <div className={`flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 ${isMobile ? 'p-4' : 'p-6'}`}>

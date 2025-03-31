@@ -21,9 +21,13 @@ export const RecaptchaSection: React.FC = () => {
   });
   
   const productionKey = localStorage.getItem('shelley_recaptcha_key') || "";
+  const enterpriseKey = localStorage.getItem('shelley_enterprise_key') || "";
   const isUsingTestKey = localStorage.getItem('shelley_use_test_recaptcha') === 'true';
+  const isEnterpriseMode = localStorage.getItem('shelley_use_enterprise') === 'true' || 
+    (productionKey === enterpriseKey && enterpriseKey !== "");
   const testKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-  const hasCustomProductionKey = productionKey && productionKey !== testKey;
+  const hasCustomProductionKey = (productionKey && productionKey !== testKey) || 
+    (isEnterpriseMode && enterpriseKey && enterpriseKey !== testKey);
   
   useEffect(() => {
     const workingKey = localStorage.getItem('shelley_production_key_working') === 'true';
@@ -68,6 +72,7 @@ export const RecaptchaSection: React.FC = () => {
             hasCustomProductionKey={hasCustomProductionKey}
             isUsingTestKey={isUsingTestKey}
             testKeyDisabled={testKeyDisabled}
+            isEnterpriseMode={isEnterpriseMode}
           />
           
           {productionKeyWorking && hasCustomProductionKey && (
