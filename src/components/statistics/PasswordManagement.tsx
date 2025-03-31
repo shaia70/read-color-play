@@ -72,7 +72,7 @@ export const PasswordManagement: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Admin Password Management</CardTitle>
+        <CardTitle className="text-left">Admin Password Management</CardTitle>
         <CardDescription className="text-left">
           Change your admin password for accessing statistics
         </CardDescription>
@@ -92,7 +92,7 @@ export const PasswordManagement: React.FC = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Change Admin Password</DialogTitle>
+              <DialogTitle className="text-left">Change Admin Password</DialogTitle>
               <DialogDescription className="text-left">
                 Update your password for accessing the statistics dashboard.
               </DialogDescription>
@@ -108,7 +108,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="current-password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="text-right dir-ltr"
+                      className="text-left dir-ltr"
                     />
                   </div>
                   <button 
@@ -132,7 +132,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="new-password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="text-right dir-ltr"
+                      className="text-left dir-ltr"
                     />
                   </div>
                   <button 
@@ -156,7 +156,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="new-password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="text-right dir-ltr"
+                      className="text-left dir-ltr"
                     />
                   </div>
                   <button 

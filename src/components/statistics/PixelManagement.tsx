@@ -93,37 +93,39 @@ export const PixelManagement: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Analytics Pixels Configuration</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-left">Analytics Pixels Configuration</CardTitle>
+        <CardDescription className="text-left">
           Configure your analytics tracking pixels for all site pages
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="googleAnalyticsId">Google Analytics Measurement ID</Label>
+            <Label htmlFor="googleAnalyticsId" className="text-left">Google Analytics Measurement ID</Label>
             <Input
               id="googleAnalyticsId"
               name="googleAnalyticsId"
               placeholder="G-XXXXXXXXXX"
               value={pixelConfig.googleAnalyticsId}
               onChange={handleInputChange}
+              className="dir-ltr"
             />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground text-left">
               Enter your Google Analytics 4 Measurement ID (starts with G-)
             </p>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="facebookPixelId">Facebook Pixel ID</Label>
+            <Label htmlFor="facebookPixelId" className="text-left">Facebook Pixel ID</Label>
             <Input
               id="facebookPixelId"
               name="facebookPixelId"
               placeholder="XXXXXXXXXX"
               value={pixelConfig.facebookPixelId}
               onChange={handleInputChange}
+              className="dir-ltr"
             />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground text-left">
               Enter your Facebook Pixel ID (numeric value)
             </p>
           </div>

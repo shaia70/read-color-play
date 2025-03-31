@@ -34,13 +34,13 @@ const Statistics = () => {
       
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <h1 className="text-3xl font-bold">Shelley Books - Admin Statistics</h1>
-          <div className="text-sm text-muted-foreground">
+          <h1 className="text-3xl font-bold text-left">Shelley Books - Admin Statistics</h1>
+          <div className="text-sm text-muted-foreground text-left">
             Last refreshed: {format(lastRefreshed, 'dd/MM/yyyy HH:mm:ss')}
           </div>
         </div>
         
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-left">
           This page provides analytics and statistics about website performance, visitor behavior, and SEO metrics.
         </p>
         
@@ -76,34 +76,34 @@ const Statistics = () => {
               
               <Card>
                 <CardHeader>
-                  <CardTitle>Pixel Usage Guide</CardTitle>
-                  <CardDescription>How analytics pixels are used on your site</CardDescription>
+                  <CardTitle className="text-left">Pixel Usage Guide</CardTitle>
+                  <CardDescription className="text-left">How analytics pixels are used on your site</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="font-medium mb-1">Page View Tracking</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-medium mb-1 text-left">Page View Tracking</h3>
+                      <p className="text-sm text-muted-foreground text-left">
                         Both Google Analytics and Facebook Pixel track page views automatically on all site pages.
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="font-medium mb-1">Download Tracking</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-medium mb-1 text-left">Download Tracking</h3>
+                      <p className="text-sm text-muted-foreground text-left">
                         The Download page uses both pixels to track when users click on app store or Google Play links.
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="font-medium mb-1">Custom Events</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-medium mb-1 text-left">Custom Events</h3>
+                      <p className="text-sm text-muted-foreground text-left">
                         Various user interactions are tracked as custom events across both analytics platforms.
                       </p>
                     </div>
                     
                     <div className="pt-2 border-t">
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground text-left">
                         Note: Analytics tracking is only active in production mode and when valid tracking IDs are provided.
                       </p>
                     </div>
