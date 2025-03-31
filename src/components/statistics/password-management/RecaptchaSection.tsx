@@ -23,7 +23,7 @@ export const RecaptchaSection: React.FC = () => {
   const productionKey = localStorage.getItem('shelley_recaptcha_key') || "";
   const isUsingTestKey = localStorage.getItem('shelley_use_test_recaptcha') === 'true';
   const testKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-  const hasCustomProductionKey = productionKey && productionKey !== testKey && productionKey !== "";
+  const hasCustomProductionKey = productionKey && productionKey !== testKey;
   
   useEffect(() => {
     const workingKey = localStorage.getItem('shelley_production_key_working') === 'true';
@@ -57,9 +57,9 @@ export const RecaptchaSection: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left">reCAPTCHA v3 Settings</CardTitle>
+        <CardTitle className="text-left">reCAPTCHA Settings</CardTitle>
         <CardDescription className="text-left">
-          Manage reCAPTCHA v3 invisible security settings
+          Manage reCAPTCHA security settings
         </CardDescription>
       </CardHeader>
       <CardContent>

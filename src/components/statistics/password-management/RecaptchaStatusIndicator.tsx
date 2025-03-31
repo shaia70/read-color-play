@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Shield } from "lucide-react";
 
 interface RecaptchaStatusIndicatorProps {
   hasCustomProductionKey: boolean;
@@ -24,9 +23,6 @@ export const RecaptchaStatusIndicator: React.FC<RecaptchaStatusIndicatorProps> =
               ? "Using test key (always passes verification)" 
               : "Using production key"
           }
-        </p>
-        <p className="text-xs text-muted-foreground text-left mt-1">
-          Using reCAPTCHA v3 invisible mode
         </p>
       </div>
       

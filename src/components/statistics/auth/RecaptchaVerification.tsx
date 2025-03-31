@@ -1,8 +1,7 @@
 
 import React, { useRef, useEffect } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
 
 interface RecaptchaVerificationProps {
   siteKey: string;
@@ -19,11 +18,15 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   useTestKey,
   onError
 }) => {
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const isMobile = useIsMobile();
   
-  // Reset verification when key changes
   useEffect(() => {
+    // Reset captcha when key changes
     onVerify(null);
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+    }
   }, [siteKey, useTestKey, testKeyDisabled, onVerify]);
   
   // Listen for reCAPTCHA error messages
@@ -32,7 +35,7 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
       if (event.message && 
          (event.message.includes('Invalid domain for site key') || 
           event.message.includes('ERROR for site owner'))) {
-        console.error("reCAPTCHA validation error detected:", event.message);
+        console.error("reCAPTCHA domain validation error detected:", event.message);
         if (onError) onError();
       }
     };
@@ -53,53 +56,6 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
     }
   }, [testKeyDisabled, useTestKey, onVerify]);
   
-  // Set up reCAPTCHA v3
-  useEffect(() => {
-    if (testKeyDisabled || !useTestKey) {
-      if (!siteKey) return;
-      
-      // Create a script element
-      const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-      
-      // Execute reCAPTCHA v3
-      script.onload = () => {
-        if (window.grecaptcha) {
-          window.grecaptcha.ready(() => {
-            try {
-              window.grecaptcha
-                .execute(siteKey, { action: 'login' })
-                .then((token: string) => {
-                  console.log("reCAPTCHA v3 token received");
-                  onVerify(token);
-                })
-                .catch((error: any) => {
-                  console.error("reCAPTCHA execution error:", error);
-                  if (onError) onError();
-                });
-            } catch (error) {
-              console.error("reCAPTCHA initialization error:", error);
-              if (onError) onError();
-            }
-          });
-        }
-      };
-      
-      script.onerror = () => {
-        console.error("Error loading reCAPTCHA script");
-        if (onError) onError();
-      };
-      
-      return () => {
-        // Clean up
-        document.body.removeChild(script);
-      };
-    }
-  }, [siteKey, onVerify, testKeyDisabled, useTestKey, onError]);
-  
   // Don't render the component if using test key
   if (!testKeyDisabled && useTestKey) {
     return (
@@ -113,24 +69,20 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
     );
   }
   
-  // If no production key is set, show a message
-  if (!siteKey) {
-    return (
-      <Alert variant="destructive" className="my-2">
-        <InfoIcon className="h-4 w-4" />
-        <AlertDescription>
-          No reCAPTCHA site key configured. Please add a site key in the settings.
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
   return (
-    <div className="flex justify-center py-2">
-      <div className="bg-blue-50 border border-blue-200 p-3 rounded-md w-full">
-        <p className="text-sm text-blue-700 text-center">
-          reCAPTCHA v3 protection is active. No user interaction required.
-        </p>
+    <div className="flex justify-center py-2 overflow-hidden">
+      <div className={isMobile ? "scale-[0.85] -ml-6" : ""}>
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={siteKey}
+          onChange={onVerify}
+          theme="light"
+          size={isMobile ? "compact" : "normal"}
+          onErrored={() => {
+            console.error("reCAPTCHA widget encountered an error");
+            if (onError) onError();
+          }}
+        />
       </div>
     </div>
   );
