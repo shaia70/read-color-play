@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Shield } from "lucide-react";
 
 interface SimpleAuthProps {
   onAuthenticate: () => void;
@@ -11,26 +13,61 @@ interface SimpleAuthProps {
 
 export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const [password, setPassword] = useState("");
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Get stored password or use default if not set
-    const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
-    
-    if (password === storedPassword) {
-      onAuthenticate();
-      toast.success("Authentication successful");
-    } else {
-      toast.error("Invalid password");
+    if (!captchaValue) {
+      toast.error("Please complete the CAPTCHA");
+      return;
     }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Get stored password or use default if not set
+      const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
+      
+      if (password === storedPassword) {
+        onAuthenticate();
+        toast.success("Authentication successful");
+      } else {
+        toast.error("Invalid password");
+        // Reset the CAPTCHA on failed login attempt
+        setCaptchaValue(null);
+        // @ts-ignore - We need to access the reset method which exists but TypeScript doesn't recognize it
+        if (window.recaptchaRef && window.recaptchaRef.reset) {
+          window.recaptchaRef.reset();
+        }
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("An error occurred during login");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handleCaptchaChange = (value: string | null) => {
+    setCaptchaValue(value);
+  };
+  
+  // Function to set the recaptcha reference
+  const setCaptchaRef = (ref: any) => {
+    // @ts-ignore - This is a safe workaround for storing the ref
+    window.recaptchaRef = ref;
   };
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Admin Statistics</CardTitle>
+          <div className="flex items-center gap-2">
+            <Shield className="h-6 w-6 text-primary" />
+            <CardTitle>Admin Statistics</CardTitle>
+          </div>
           <CardDescription>
             Enter the admin password to view statistics
           </CardDescription>
@@ -47,11 +84,27 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                 name="admin-password"
                 autoComplete="current-password"
               />
+              
+              <div className="flex justify-center py-2">
+                <ReCAPTCHA
+                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // This is Google's test key - replace with your actual key in production
+                  onChange={handleCaptchaChange}
+                  ref={setCaptchaRef}
+                />
+              </div>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                This page is protected by reCAPTCHA to ensure you're not a robot.
+              </p>
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
-              Access Statistics
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={isSubmitting || !captchaValue}
+            >
+              {isSubmitting ? "Verifying..." : "Access Statistics"}
             </Button>
           </CardFooter>
         </form>
