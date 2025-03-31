@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Shield } from "lucide-react";
 
 interface RecaptchaStatusIndicatorProps {
   hasCustomProductionKey: boolean;

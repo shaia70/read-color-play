@@ -36,8 +36,9 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
     const handleErrorMessages = (event: ErrorEvent) => {
       if (event.message && 
          (event.message.includes('Invalid domain for site key') || 
-          event.message.includes('ERROR for site owner'))) {
-        console.error("reCAPTCHA domain validation error detected:", event.message);
+          event.message.includes('ERROR for site owner') ||
+          event.message.includes('Invalid key type'))) {
+        console.error("reCAPTCHA validation error detected:", event.message);
         if (onError) onError();
       }
     };

@@ -168,7 +168,10 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               onVerify={handleVerify}
               testKeyDisabled={testKeyDisabled}
               useTestKey={useTestKey}
-              onError={() => setDomainError(true)}
+              onError={() => {
+                setDomainError(true);
+                setKeyTypeError(true);
+              }}
             />
             
             <RecaptchaKeySettings

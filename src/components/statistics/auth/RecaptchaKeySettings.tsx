@@ -86,9 +86,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
         document.body.removeChild(container);
       }
       
-      toast({
-        variant: "destructive",
-        title: "reCAPTCHA Validation Failed",
+      toast.error("reCAPTCHA Validation Failed", {
         description: "The site key could not be validated. Please check it and try again.",
         duration: 5000,
       });
