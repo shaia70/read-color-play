@@ -9,6 +9,7 @@ import { UserInteractions } from "@/components/statistics/UserInteractions";
 import { SeoAnalytics } from "@/components/statistics/SeoAnalytics";
 import { SimpleAuth } from "@/components/statistics/SimpleAuth";
 import { PixelManagement } from "@/components/statistics/PixelManagement";
+import { PasswordManagement } from "@/components/statistics/PasswordManagement";
 import { format } from "date-fns";
 
 const Statistics = () => {
@@ -44,12 +45,13 @@ const Statistics = () => {
         </p>
         
         <Tabs defaultValue="visitors" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="visitors">Visitors</TabsTrigger>
             <TabsTrigger value="pages">Page Performance</TabsTrigger>
             <TabsTrigger value="interactions">User Interactions</TabsTrigger>
             <TabsTrigger value="seo">SEO Analytics</TabsTrigger>
             <TabsTrigger value="pixels">Pixels Config</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           
           <TabsContent value="visitors" className="mt-4">
@@ -108,6 +110,12 @@ const Statistics = () => {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="settings" className="mt-4">
+            <div className="grid grid-cols-1 gap-6">
+              <PasswordManagement />
             </div>
           </TabsContent>
         </Tabs>

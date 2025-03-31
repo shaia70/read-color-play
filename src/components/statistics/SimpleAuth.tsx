@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,10 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple password verification - in a real app, use a more secure method
-    // This is just a basic protection to keep the stats page hidden
-    if (password === "ShelleyStats2024") {
+    // Get stored password or use default if not set
+    const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
+    
+    if (password === storedPassword) {
       onAuthenticate();
       toast.success("Authentication successful");
     } else {
@@ -41,6 +43,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                id="admin-password"
+                name="admin-password"
+                autoComplete="current-password"
               />
             </div>
           </CardContent>
