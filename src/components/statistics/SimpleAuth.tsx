@@ -65,7 +65,10 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
       const storedPassword = localStorage.getItem('shelley_admin_password') || "ShelleyStats2024";
       
       if (password === storedPassword) {
-        // If the user successfully logged in with production key, track this
+        // Only track successful production key login if:
+        // 1. Not using test key
+        // 2. Production key is different from test key
+        // 3. We're actually using the production key for verification
         if (!useTestKey && productionSiteKey !== testSiteKey) {
           localStorage.setItem('shelley_production_key_working', 'true');
         }
