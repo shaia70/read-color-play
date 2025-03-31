@@ -84,6 +84,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
                     id="admin-password"
                     name="admin-password"
                     autoComplete="current-password"
+                    className="text-right dir-ltr" 
                   />
                 </div>
                 <button 

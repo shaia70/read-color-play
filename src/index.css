@@ -95,4 +95,8 @@
   .font-heebo {
     font-family: 'Heebo', sans-serif;
   }
+  
+  .dir-ltr {
+    direction: ltr;
+  }
 }

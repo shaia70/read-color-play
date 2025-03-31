@@ -108,6 +108,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="current-password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="text-right dir-ltr"
                     />
                   </div>
                   <button 
@@ -131,6 +132,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="new-password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
+                      className="text-right dir-ltr"
                     />
                   </div>
                   <button 
@@ -154,6 +156,7 @@ export const PasswordManagement: React.FC = () => {
                       autoComplete="new-password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="text-right dir-ltr"
                     />
                   </div>
                   <button 
