@@ -21,8 +21,8 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   
   // Test key 
   const testSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-  // Production key (fallback to enterprise key if not set)
-  const productionSiteKey = localStorage.getItem('shelley_recaptcha_key') || "6LeSSwUrAAAAAGyKh0S3aX4UWJljoUPMBlSi4I62";
+  // Production key (fallback to default key if not set)
+  const productionSiteKey = localStorage.getItem('shelley_recaptcha_key') || "";
   
   // Check if test key is permanently disabled
   const testKeyDisabled = localStorage.getItem('shelley_disable_test_recaptcha') === 'true';

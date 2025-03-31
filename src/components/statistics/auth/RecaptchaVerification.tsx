@@ -2,6 +2,8 @@
 import React, { useRef, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface RecaptchaVerificationProps {
   siteKey: string;
@@ -69,6 +71,18 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
     );
   }
   
+  // If no production key is set, show a message
+  if (!siteKey) {
+    return (
+      <Alert variant="destructive" className="my-2">
+        <InfoIcon className="h-4 w-4" />
+        <AlertDescription>
+          No reCAPTCHA site key configured. Please add a site key in the settings.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <div className="flex justify-center py-2 overflow-hidden">
       <div className={isMobile ? "scale-[0.85] -ml-6" : ""}>
@@ -77,7 +91,7 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
           sitekey={siteKey}
           onChange={onVerify}
           theme="light"
-          size={isMobile ? "compact" : "normal"}
+          size="normal"
           onErrored={() => {
             console.error("reCAPTCHA widget encountered an error");
             if (onError) onError();
