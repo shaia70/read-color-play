@@ -180,7 +180,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           type="submit" 
           form="auth-form" 
           className="w-full" 
-          disabled={isAuthenticating || (!useTestKey && !localStorage.getItem('shelley_recaptcha_dev_mode') === 'true' && !isEnterpriseMode && !recaptchaToken)}
+          disabled={isAuthenticating || (!useTestKey && localStorage.getItem('shelley_recaptcha_dev_mode') !== 'true' && !isEnterpriseMode && !recaptchaToken)}
         >
           {isAuthenticating ? "Authenticating..." : "Authenticate"}
         </Button>
