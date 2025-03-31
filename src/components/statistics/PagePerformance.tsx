@@ -14,7 +14,7 @@ const pageViewsData = [
   { page: 'Download', views: 682, avgTime: '04:12', bounceRate: '22%', lastUpdated: new Date(2025, 2, 27, 18, 45) },
   { page: 'Concept', views: 521, avgTime: '01:58', bounceRate: '41%', lastUpdated: new Date(2025, 2, 27, 16, 20) },
   { page: 'Gallery', views: 489, avgTime: '03:25', bounceRate: '30%', lastUpdated: new Date(2025, 2, 27, 12, 10) },
-  { page: 'Contact', views: 387, avgTime: '01:45', bounceRate: '45%', lastUpdated: new Date(2025, 2, 26, 22, 05) },
+  { page: 'Contact', views: 387, avgTime: '01:45', bounceRate: '45%', lastUpdated: new Date(2025, 2, 26, 22, 5) },
 ];
 
 const timeSpentData = [
@@ -24,7 +24,7 @@ const timeSpentData = [
   { page: 'Download', time: 252, timestamp: new Date(2025, 2, 27, 18, 45) },
   { page: 'Concept', time: 118, timestamp: new Date(2025, 2, 27, 16, 20) },
   { page: 'Gallery', time: 205, timestamp: new Date(2025, 2, 27, 12, 10) },
-  { page: 'Contact', time: 105, timestamp: new Date(2025, 2, 26, 22, 05) },
+  { page: 'Contact', time: 105, timestamp: new Date(2025, 2, 26, 22, 5) },
 ];
 
 const bounceRateData = [
@@ -34,7 +34,7 @@ const bounceRateData = [
   { page: 'Download', rate: 22, timestamp: new Date(2025, 2, 27, 18, 45) },
   { page: 'Concept', rate: 41, timestamp: new Date(2025, 2, 27, 16, 20) },
   { page: 'Gallery', rate: 30, timestamp: new Date(2025, 2, 27, 12, 10) },
-  { page: 'Contact', rate: 45, timestamp: new Date(2025, 2, 26, 22, 05) },
+  { page: 'Contact', rate: 45, timestamp: new Date(2025, 2, 26, 22, 5) },
 ];
 
 const chartConfig = {
@@ -178,3 +178,4 @@ export const PagePerformance: React.FC = () => {
     </div>
   );
 };
+
