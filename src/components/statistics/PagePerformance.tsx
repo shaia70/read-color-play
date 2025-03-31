@@ -1,9 +1,7 @@
+
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, LineChart, Line } from "recharts";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   getPageViewsData, 
   getTimeSpentData, 
@@ -12,6 +10,9 @@ import {
   TimeSpentData,
   BounceRateData
 } from "@/services/analyticsService";
+import { PerformanceTable } from "./page-performance/PerformanceTable";
+import { TimeSpentChart } from "./page-performance/TimeSpentChart";
+import { BounceRateChart } from "./page-performance/BounceRateChart";
 
 const chartConfig = {
   views: { label: 'Page Views', theme: { light: '#0ea5e9', dark: '#0ea5e9' } },
@@ -63,34 +64,11 @@ export const PagePerformance: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {noDataAvailable ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No analytics data available yet. Start browsing the site to generate data.</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Page</TableHead>
-                  <TableHead>Views</TableHead>
-                  <TableHead>Avg. Time Spent</TableHead>
-                  <TableHead>Bounce Rate</TableHead>
-                  <TableHead>Last Updated</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pageViewsData.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.page}</TableCell>
-                    <TableCell>{item.views}</TableCell>
-                    <TableCell>{item.avgTime}</TableCell>
-                    <TableCell>{item.bounceRate}</TableCell>
-                    <TableCell>{formatDateTime(item.lastUpdated)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+          <PerformanceTable 
+            pageViewsData={pageViewsData}
+            formatDateTime={formatDateTime}
+            noDataAvailable={noDataAvailable}
+          />
         </CardContent>
       </Card>
 
@@ -106,38 +84,12 @@ export const PagePerformance: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {noDataAvailable ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No time spent data available yet.</p>
-              </div>
-            ) : (
-              <ChartContainer config={chartConfig} className="aspect-[4/3]">
-                <BarChart data={timeSpentData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="page" />
-                  <YAxis />
-                  <Tooltip content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="font-medium">{data.page}</div>
-                            <div className="font-medium text-right">{data.time}s</div>
-                            <div className="text-xs text-muted-foreground">Updated</div>
-                            <div className="text-xs text-right text-muted-foreground">
-                              {formatDateTime(data.timestamp)}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }} />
-                  <Bar dataKey="time" name="time" fill="var(--color-time)" />
-                </BarChart>
-              </ChartContainer>
-            )}
+            <TimeSpentChart 
+              timeSpentData={timeSpentData}
+              chartConfig={chartConfig}
+              formatDateTime={formatDateTime}
+              noDataAvailable={noDataAvailable}
+            />
           </CardContent>
         </Card>
 
@@ -152,44 +104,12 @@ export const PagePerformance: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {noDataAvailable ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No bounce rate data available yet.</p>
-              </div>
-            ) : (
-              <ChartContainer config={chartConfig} className="aspect-[4/3]">
-                <LineChart data={bounceRateData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="page" />
-                  <YAxis />
-                  <Tooltip content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="font-medium">{data.page}</div>
-                            <div className="font-medium text-right">{data.rate}%</div>
-                            <div className="text-xs text-muted-foreground">Updated</div>
-                            <div className="text-xs text-right text-muted-foreground">
-                              {formatDateTime(data.timestamp)}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }} />
-                  <Line 
-                    type="monotone" 
-                    dataKey="rate" 
-                    name="rate" 
-                    stroke="var(--color-rate)" 
-                    strokeWidth={2} 
-                  />
-                </LineChart>
-              </ChartContainer>
-            )}
+            <BounceRateChart 
+              bounceRateData={bounceRateData}
+              chartConfig={chartConfig}
+              formatDateTime={formatDateTime}
+              noDataAvailable={noDataAvailable}
+            />
           </CardContent>
         </Card>
       </div>
