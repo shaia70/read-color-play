@@ -68,9 +68,9 @@ const DownloadSEO = () => {
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       <meta name="googlebot" content="index, follow" />
       <link rel="canonical" href={currentUrl} />
-      <link rel="alternate" href="https://shelley.co.il/download" hreflang="he" />
-      <link rel="alternate" href="https://shelley.co.il/en/download" hreflang="en" />
-      <link rel="alternate" href="https://shelley.co.il/download" hreflang="x-default" />
+      <link rel="alternate" href="https://shelley.co.il/download" hrefLang="he" />
+      <link rel="alternate" href="https://shelley.co.il/en/download" hrefLang="en" />
+      <link rel="alternate" href="https://shelley.co.il/download" hrefLang="x-default" />
       
       {/* Schema.org structured data for SoftwareApplication with enhanced data */}
       <script type="application/ld+json">
