@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Turnstile } from "turnstile-react";
 import { Shield, Eye, EyeOff } from "lucide-react";
 
 interface SimpleAuthProps {
@@ -13,16 +13,15 @@ interface SimpleAuthProps {
 
 export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
   const [password, setPassword] = useState("");
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!captchaValue) {
-      toast.error("Please complete the CAPTCHA");
+    if (!turnstileToken) {
+      toast.error("Please complete the Turnstile verification");
       return;
     }
     
@@ -37,11 +36,9 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
         toast.success("Authentication successful");
       } else {
         toast.error("Invalid password");
-        // Reset the CAPTCHA on failed login attempt
-        setCaptchaValue(null);
-        if (recaptchaRef.current) {
-          recaptchaRef.current.reset();
-        }
+        // Reset the Turnstile on failed login attempt
+        setTurnstileToken(null);
+        // The Turnstile widget automatically resets after verification
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -51,8 +48,18 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
     }
   };
   
-  const handleCaptchaChange = (value: string | null) => {
-    setCaptchaValue(value);
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+  };
+  
+  const handleTurnstileError = () => {
+    toast.error("Turnstile verification failed. Please try again.");
+    setTurnstileToken(null);
+  };
+  
+  const handleTurnstileExpire = () => {
+    toast.warning("Verification expired. Please verify again.");
+    setTurnstileToken(null);
   };
   
   const togglePasswordVisibility = () => {
@@ -97,15 +104,17 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
               </div>
               
               <div className="flex justify-center py-2">
-                <ReCAPTCHA
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // This is Google's test key - replace with your actual key in production
-                  onChange={handleCaptchaChange}
-                  ref={recaptchaRef}
+                <Turnstile
+                  siteKey="1x00000000000000000000AA" // This is Cloudflare's test key - replace with your actual key in production
+                  onVerify={handleTurnstileVerify}
+                  onError={handleTurnstileError}
+                  onExpire={handleTurnstileExpire}
+                  theme="light"
                 />
               </div>
               
               <p className="text-xs text-muted-foreground text-center">
-                This page is protected by reCAPTCHA to ensure you're not a robot.
+                This page is protected by Cloudflare Turnstile to ensure you're not a robot.
               </p>
             </div>
           </CardContent>
@@ -113,7 +122,7 @@ export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
             <Button 
               type="submit" 
               className="w-full"
-              disabled={isSubmitting || !captchaValue}
+              disabled={isSubmitting || !turnstileToken}
             >
               {isSubmitting ? "Verifying..." : "Access Statistics"}
             </Button>
