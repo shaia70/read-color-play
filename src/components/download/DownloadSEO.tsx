@@ -72,6 +72,13 @@ const DownloadSEO = () => {
       <link rel="alternate" href="https://shelley.co.il/en/download" hrefLang="en" />
       <link rel="alternate" href="https://shelley.co.il/download" hrefLang="x-default" />
       
+      {/* עדכון עבור מהירות אינדקס גבוהה יותר */}
+      <meta name="revisit-after" content="1 days" />
+      <meta name="distribution" content="global" />
+      <meta name="rating" content="general" />
+      <meta name="geo.region" content="IL" />
+      <meta name="geo.placename" content="Israel" />
+      
       {/* Schema.org structured data for SoftwareApplication with enhanced data */}
       <script type="application/ld+json">
         {`

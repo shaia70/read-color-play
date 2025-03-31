@@ -13,3 +13,12 @@ https://www.shelley.co.il/*  https://shelley.co.il/:splat 301!
 # Language redirects
 /en  /en/  301!
 /he  /  301!
+
+# Redirect alternate language versions
+/download  /download  200  Language=he
+/download  /en/download  302  Language=en
+/en/download  /en/download  200  Language=en
+/en/download  /download  302  Language=he
+
+# Redirect for mobile app deep linking
+/app/* /download 302
