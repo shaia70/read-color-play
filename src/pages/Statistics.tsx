@@ -8,9 +8,16 @@ import { PagePerformance } from "@/components/statistics/PagePerformance";
 import { UserInteractions } from "@/components/statistics/UserInteractions";
 import { SeoAnalytics } from "@/components/statistics/SeoAnalytics";
 import { SimpleAuth } from "@/components/statistics/SimpleAuth";
+import { format } from "date-fns";
 
 const Statistics = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState(new Date());
+  
+  useEffect(() => {
+    // Update the last refreshed time when the component mounts
+    setLastRefreshed(new Date());
+  }, []);
   
   if (!isAuthenticated) {
     return <SimpleAuth onAuthenticate={() => setIsAuthenticated(true)} />;
@@ -24,7 +31,13 @@ const Statistics = () => {
       </Helmet>
       
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold">Shelley Books - Admin Statistics</h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <h1 className="text-3xl font-bold">Shelley Books - Admin Statistics</h1>
+          <div className="text-sm text-muted-foreground">
+            Last refreshed: {format(lastRefreshed, 'dd/MM/yyyy HH:mm:ss')}
+          </div>
+        </div>
+        
         <p className="text-muted-foreground">
           This page provides analytics and statistics about website performance, visitor behavior, and SEO metrics.
         </p>
