@@ -56,8 +56,9 @@ export default function Footer() {
   const socialLinks = [
     { 
       icon: Instagram, 
-      url: "https://www.instagram.com/p/DH519AfNe5Q/", 
-      ariaLabel: language === 'he' ? 'עקוב אחרינו באינסטגרם' : 'Follow us on Instagram'
+      url: "", // Empty URL to prevent navigation
+      ariaLabel: language === 'he' ? 'אינסטגרם' : 'Instagram',
+      isDisabled: true // New property to indicate this link shouldn't navigate
     },
     { 
       icon: Facebook, 
@@ -87,7 +88,15 @@ export default function Footer() {
             </p>
             <div className="flex justify-center space-x-4 space-x-reverse">
               {socialLinks.map((link) => (
-                link.isInternal ? (
+                link.isDisabled ? (
+                  <span 
+                    key={link.ariaLabel}
+                    className="text-shelley-blue hover:text-shelley-purple transition-colors cursor-pointer"
+                    aria-label={link.ariaLabel}
+                  >
+                    <link.icon className="w-5 h-5" />
+                  </span>
+                ) : link.isInternal ? (
                   <Link 
                     key={link.ariaLabel}
                     to={link.url}
