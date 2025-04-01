@@ -60,8 +60,9 @@ export default function Footer() {
     },
     { 
       icon: Mail, 
-      url: "mailto:contact@shelley.co.il", 
-      ariaLabel: language === 'he' ? 'שלח לנו אימייל' : 'Send us an email'
+      url: "/contact", 
+      ariaLabel: language === 'he' ? 'צור קשר' : 'Contact Us',
+      isInternal: true
     },
   ];
 
@@ -80,16 +81,28 @@ export default function Footer() {
             </p>
             <div className="flex justify-center space-x-4 space-x-reverse">
               {socialLinks.map((link) => (
-                <a 
-                  key={link.ariaLabel}
-                  href={link.url}
-                  className="text-shelley-blue hover:text-shelley-purple transition-colors"
-                  aria-label={link.ariaLabel}
-                  target={link.icon === Mail ? "_self" : "_blank"}
-                  rel={link.icon === Mail ? "" : "noopener noreferrer"}
-                >
-                  <link.icon className="w-5 h-5" />
-                </a>
+                link.isInternal ? (
+                  <Link 
+                    key={link.ariaLabel}
+                    to={link.url}
+                    className="text-shelley-blue hover:text-shelley-purple transition-colors"
+                    aria-label={link.ariaLabel}
+                    onClick={(e) => handleNavLinkClick(e, link.url)}
+                  >
+                    <link.icon className="w-5 h-5" />
+                  </Link>
+                ) : (
+                  <a 
+                    key={link.ariaLabel}
+                    href={link.url}
+                    className="text-shelley-blue hover:text-shelley-purple transition-colors"
+                    aria-label={link.ariaLabel}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <link.icon className="w-5 h-5" />
+                  </a>
+                )
               ))}
             </div>
           </div>
@@ -120,9 +133,13 @@ export default function Footer() {
             <h3 className="text-xl font-bold text-shelley-blue mb-3">{t('footer.contact')}</h3>
             <div className="flex items-center justify-center mb-2">
               <Mail className="w-5 h-5 text-shelley-orange mr-2" />
-              <a href="mailto:contact@shelley.co.il" className="text-gray-600 hover:text-shelley-blue transition-colors">
+              <Link 
+                to="/contact" 
+                onClick={(e) => handleNavLinkClick(e, "/contact")}
+                className="text-gray-600 hover:text-shelley-blue transition-colors"
+              >
                 contact@shelley.co.il
-              </a>
+              </Link>
             </div>
           </div>
         </div>
