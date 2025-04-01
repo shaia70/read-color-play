@@ -46,6 +46,25 @@ export default function Footer() {
     { name: language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy', href: "/privacy-policy" },
   ];
 
+  // Social media links
+  const socialLinks = [
+    { 
+      icon: Instagram, 
+      url: "https://www.instagram.com/shelley.books", 
+      ariaLabel: language === 'he' ? 'עקוב אחרינו באינסטגרם' : 'Follow us on Instagram'
+    },
+    { 
+      icon: Facebook, 
+      url: "https://www.facebook.com/shelley.books", 
+      ariaLabel: language === 'he' ? 'עקוב אחרינו בפייסבוק' : 'Follow us on Facebook'  
+    },
+    { 
+      icon: Mail, 
+      url: "mailto:contact@shelley.co.il", 
+      ariaLabel: language === 'he' ? 'שלח לנו אימייל' : 'Send us an email'
+    },
+  ];
+
   return (
     <footer className="bg-gradient-to-b from-white to-blue-50 py-8 md:py-12">
       <div className="container mx-auto px-4">
@@ -60,15 +79,18 @@ export default function Footer() {
                 : 'Original children\'s books with augmented reality technology'}
             </p>
             <div className="flex justify-center space-x-4 space-x-reverse">
-              <a href="#" className="text-shelley-blue hover:text-shelley-purple transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-shelley-blue hover:text-shelley-purple transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-shelley-blue hover:text-shelley-purple transition-colors">
-                <Mail className="w-5 h-5" />
-              </a>
+              {socialLinks.map((link) => (
+                <a 
+                  key={link.ariaLabel}
+                  href={link.url}
+                  className="text-shelley-blue hover:text-shelley-purple transition-colors"
+                  aria-label={link.ariaLabel}
+                  target={link.icon === Mail ? "_self" : "_blank"}
+                  rel={link.icon === Mail ? "" : "noopener noreferrer"}
+                >
+                  <link.icon className="w-5 h-5" />
+                </a>
+              ))}
             </div>
           </div>
           
