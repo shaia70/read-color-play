@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const { t, language } = useLanguage();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   // Enhanced scrollToTop function to ensure it always works
   const scrollToTop = () => {
@@ -46,6 +48,10 @@ export default function Footer() {
     { name: language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy', href: "/privacy-policy" },
   ];
 
+  // Facebook URL handling with mobile detection
+  const facebookPageUrl = "https://www.facebook.com/people/%D7%A9%D7%9C%D7%99-%D7%A1%D7%A4%D7%A8%D7%99%D7%9D/61574882281304/";
+  const facebookMobileUrl = `fb://facewebmodal/f?href=${encodeURIComponent(facebookPageUrl)}`;
+
   // Social media links
   const socialLinks = [
     { 
@@ -55,7 +61,7 @@ export default function Footer() {
     },
     { 
       icon: Facebook, 
-      url: "https://www.facebook.com/people/%D7%A9%D7%9C%D7%99-%D7%A1%D7%A4%D7%A8%D7%99%D7%9D/61574882281304/", 
+      url: isMobile ? facebookMobileUrl : facebookPageUrl, 
       ariaLabel: language === 'he' ? 'עקוב אחרינו בפייסבוק' : 'Follow us on Facebook'  
     },
     { 
