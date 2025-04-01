@@ -55,7 +55,7 @@ export default function Footer() {
     },
     { 
       icon: Facebook, 
-      url: "https://www.facebook.com", 
+      url: "https://www.facebook.com/people/%D7%A9%D7%9C%D7%99-%D7%A1%D7%A4%D7%A8%D7%99%D7%9D/61574882281304/", 
       ariaLabel: language === 'he' ? 'עקוב אחרינו בפייסבוק' : 'Follow us on Facebook'  
     },
     { 
