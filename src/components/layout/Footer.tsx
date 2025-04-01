@@ -55,7 +55,7 @@ export default function Footer() {
     },
     { 
       icon: Facebook, 
-      url: "https://www.facebook.com/shelley.books", 
+      url: "https://www.facebook.com/shelley.books.il", 
       ariaLabel: language === 'he' ? 'עקוב אחרינו בפייסבוק' : 'Follow us on Facebook'  
     },
     { 
