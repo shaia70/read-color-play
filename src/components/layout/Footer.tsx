@@ -58,7 +58,7 @@ export default function Footer() {
       icon: Instagram, 
       url: "", // Empty URL to prevent navigation
       ariaLabel: language === 'he' ? 'אינסטגרם' : 'Instagram',
-      isDisabled: true // New property to indicate this link shouldn't navigate
+      isDisabled: true // This property indicates this link shouldn't navigate
     },
     { 
       icon: Facebook, 
