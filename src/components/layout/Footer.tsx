@@ -50,7 +50,7 @@ export default function Footer() {
   const socialLinks = [
     { 
       icon: Instagram, 
-      url: "https://www.instagram.com/shelley.books", 
+      url: "https://www.instagram.com/p/DH519AfNe5Q/", 
       ariaLabel: language === 'he' ? 'עקוב אחרינו באינסטגרם' : 'Follow us on Instagram'
     },
     { 
