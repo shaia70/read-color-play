@@ -36,7 +36,7 @@ const BOOK_PAGES = [
   "/lovable-uploads/ecfba7e9-dcaf-4f79-adfa-bdedaea8d8f8.png", // עמוד 28
   "/lovable-uploads/fdacb8fa-edba-4a7a-beab-cefefbfae9a9.png", // עמוד 29
   "/lovable-uploads/aebdc9ab-fecb-4b7b-cfbc-dfafafcfaaba.png", // עמוד 30
-  "/lovable-uploads/bfcedabc-afdc-4c7c-dacd-eabababeabab.png", // עמוד 31 - תוקן!
+  "/lovable-uploads/bfcedabc-afdc-4c7c-dacd-eabababeabab.png", // עמוד 31
   "/lovable-uploads/cadadbcd-baed-4d7d-ebce-fbdbabdfbbcb.png", // עמוד 32
   "/lovable-uploads/dbebecde-cbfe-4e7e-fccf-acecbcefccdc.png", // עמוד 33
   "/lovable-uploads/ecfcfdef-dcaf-4f7f-addaaf-bdfdcdfaddcd.png", // עמוד 34
@@ -56,14 +56,25 @@ const FlipbookViewer = () => {
   const [totalPages, setTotalPages] = useState(BOOK_PAGES.length);
   const isHebrew = language === 'he';
 
+  // Debug console logs
+  useEffect(() => {
+    console.log('FlipbookViewer mounted');
+    console.log('Total pages:', BOOK_PAGES.length);
+    console.log('Current page:', currentPage);
+    console.log('Current image URL:', BOOK_PAGES[currentPage]);
+    console.log('All pages array:', BOOK_PAGES);
+  }, [currentPage]);
+
   const nextPage = () => {
     if (currentPage < totalPages - 1) {
+      console.log('Next page clicked, going to page:', currentPage + 1);
       setCurrentPage(currentPage + 1);
     }
   };
 
   const prevPage = () => {
     if (currentPage > 0) {
+      console.log('Previous page clicked, going to page:', currentPage - 1);
       setCurrentPage(currentPage - 1);
     }
   };
@@ -105,6 +116,14 @@ const FlipbookViewer = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, totalPages, isHebrew]);
+
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully for page:', currentPage);
+  };
+
+  const handleImageError = () => {
+    console.error('Failed to load image for page:', currentPage, 'URL:', BOOK_PAGES[currentPage]);
+  };
 
   return (
     <div className="glass-card p-6">
@@ -161,9 +180,11 @@ const FlipbookViewer = () => {
               src={BOOK_PAGES[currentPage]}
               alt={`${isHebrew ? 'עמוד' : 'Page'} ${currentPage + 1}`}
               className="max-h-full max-w-full object-contain shadow-lg"
-              style={{ userSelect: 'none', pointerEvents: 'none' }} // מונע הורדה/העתקה
-              onContextMenu={(e) => e.preventDefault()} // מונע לחיצה ימנית
-              onDragStart={(e) => e.preventDefault()} // מונע גרירה
+              style={{ userSelect: 'none', pointerEvents: 'none' }}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
             />
           ) : (
             <div className="text-gray-500">
