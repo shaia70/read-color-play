@@ -27,7 +27,30 @@ const BOOK_PAGES = [
   "/lovable-uploads/5f4ac748-e6d2-4bc8-a17f-00c023a1c099.png", // עמוד 17
   "/lovable-uploads/f82fb4a3-48cd-465f-b4c0-8a1b1818ef6f.png", // עמוד 18
   "/lovable-uploads/974c69e6-8336-4aa5-bc5e-9864d752f5b3.png", // עמוד 19
-  // עמודים 20-39 יתווספו בהעלאה הבאה
+  // עמודים 20-39
+  "/lovable-uploads/a61e9e23-25cc-4baa-839c-0309f03b3005.png", // עמוד 20
+  "/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png", // עמוד 21
+  "/lovable-uploads/542f3054-cc78-470d-bb62-0bf6fcb4ab14.png", // עמוד 22
+  "/lovable-uploads/21efd8ff-cb6f-4d6a-958c-894ef6dfb937.png", // עמוד 23
+  "/lovable-uploads/e9c19c63-97db-4749-b35b-43f65856d60b.png", // עמוד 24
+  "/lovable-uploads/762db1b9-3d0f-4529-b23a-2039126cb1b9.png", // עמוד 25
+  "/lovable-uploads/77f69899-7ba3-4b3f-80d6-58302d62c1c5.png", // עמוד 26
+  "/lovable-uploads/29f90605-e230-4b8d-beff-addce4c02454.png", // עמוד 27
+  "/lovable-uploads/e3c4bb18-82d8-4ea6-8959-2e3ea5fa4ce6.png", // עמוד 28
+  "/lovable-uploads/5ae34d55-2ba5-4339-a071-73250a9774b9.png", // עמוד 29
+  "/lovable-uploads/866a6645-a102-48e0-aaee-8fb2ddde04da.png", // עמוד 30
+  "/lovable-uploads/44a963fb-7541-454e-aca5-f9aeb4020eaa.png", // עמוד 31
+  "/lovable-uploads/c3ef4fdc-e152-44c2-b262-f3c0469d39a6.png", // עמוד 32
+  "/lovable-uploads/4dc1315a-9678-472e-be48-5d0c1168713e.png", // עמוד 33
+  "/lovable-uploads/e7e2ce0e-2d59-4f03-9283-cc5c51459b57.png", // עמוד 34
+  "/lovable-uploads/8b20e77a-cfa9-41e0-b431-330db7caa929.png", // עמוד 35
+  "/lovable-uploads/ed811d33-55df-40c6-b05f-c9d04f9aafba.png", // עמוד 36
+  "/lovable-uploads/be086f7a-22cd-40b2-9c38-fcfe17cfb323.png", // עמוד 37
+  "/lovable-uploads/c5acd3e6-bd35-4e96-b689-d3c027df82df.png", // עמוד 38
+  "/lovable-uploads/f7bd361e-d36d-42d5-b20b-839ea4d69b7e.png", // עמוד 39
+  // עמודים 40-41
+  "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
+  "/lovable-uploads/db4b97d6-5279-4828-99e5-3a42e6e972f3.png", // עמוד 41
 ];
 
 const FlipbookViewer = () => {
