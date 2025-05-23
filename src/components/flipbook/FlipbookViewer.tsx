@@ -6,26 +6,28 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 // מערך של תמונות לפליפבוק - מסודר לפי סדר העמודים
 const BOOK_PAGES = [
-  "/lovable-uploads/e89c9bd7-393a-451a-b958-7240e55c752f.png", // עמוד 0
-  "/lovable-uploads/381073d2-cc28-4cc9-baa4-3ceccd91fef8.png", // עמוד 1
-  "/lovable-uploads/3516d542-5438-48f3-8cdc-87c9a5922c74.png", // עמוד 2
-  "/lovable-uploads/cd0b9a36-7557-4622-8951-4fb4c8aaa0c1.png", // עמוד 3
-  "/lovable-uploads/f6de210b-d110-41be-8730-28d4ba327574.png", // עמוד 4
-  "/lovable-uploads/ddb5d4db-a0eb-4b37-b070-1c5ea9d981ef.png", // עמוד 5
-  "/lovable-uploads/a9433a7e-9edf-4ea0-80e9-2a3d19251e1b.png", // עמוד 6
-  "/lovable-uploads/2579f535-3bd5-4fa1-a627-5b9fbde0e5d5.png", // עמוד 7
-  "/lovable-uploads/e7e2ce0e-2d59-4f03-9283-cc5c51459b57.png", // עמוד 8
-  "/lovable-uploads/81fe36ef-02a1-49ff-a666-26f8dd17676a.png", // עמוד 9
-  "/lovable-uploads/e74d741a-81bc-46bf-b692-6599810f951a.png", // עמוד 10
-  "/lovable-uploads/dc5e6324-bae3-47f9-bf59-6757f4e7b6a2.png", // עמוד 11
-  "/lovable-uploads/fb1a4e00-b0b0-4513-a23a-2b019f30e085.png", // עמוד 12
-  "/lovable-uploads/8b20e77a-cfa9-41e0-b431-330db7caa929.png", // עמוד 13
-  "/lovable-uploads/66c711a7-ea38-414e-aa39-76fa04ca908e.png", // עמוד 14
-  "/lovable-uploads/542f3054-cc78-470d-bb62-0bf6fcb4ab14.png", // עמוד 15
-  "/lovable-uploads/a61e9e23-25cc-4baa-839c-0309f03b3005.png", // עמוד 16
-  "/lovable-uploads/cae724d7-3612-47c3-8e16-bbabe9186464.png", // עמוד 17
-  "/lovable-uploads/6074ce7a-d654-47ed-9071-8ed85fdddca7.png", // עמוד 18
-  "/lovable-uploads/8d47e9aa-012d-4f28-91c4-6c52ea88f427.png", // עמוד 19
+  // עמודים 0-19
+  "/lovable-uploads/53dcc77b-f824-4621-81a5-e715adf178ef.png", // עמוד 0
+  "/lovable-uploads/56eb4bdb-5724-47f7-8696-ef162c9a14d8.png", // עמוד 1
+  "/lovable-uploads/d0cc02c7-7e1a-4998-a688-7dcbfec41055.png", // עמוד 2
+  "/lovable-uploads/956662d7-3a40-4712-8f1e-35121cb29727.png", // עמוד 3
+  "/lovable-uploads/b55e2062-23b9-4460-9db3-c0f8ac3b27cb.png", // עמוד 4
+  "/lovable-uploads/f0fb83e9-793e-4792-b4cd-9e4454b9c46f.png", // עמוד 5
+  "/lovable-uploads/0e1e04ca-8341-4057-b16b-abf40c5c9c28.png", // עמוד 6
+  "/lovable-uploads/5045437c-ab06-4bde-9508-8a6005420bba.png", // עמוד 7
+  "/lovable-uploads/4809ada0-873d-4dc2-bd79-f98ee3bd3a33.png", // עמוד 8
+  "/lovable-uploads/e075b942-7655-4a7b-96ce-ee53c82bc2f2.png", // עמוד 9
+  "/lovable-uploads/8d8dd7c8-4feb-4338-bf08-f63bcc305121.png", // עמוד 10
+  "/lovable-uploads/6fa76c09-f60a-4f23-8ffa-2720c05ce58b.png", // עמוד 11
+  "/lovable-uploads/a543f7e0-bd0e-4c8c-a89f-0769208ee5ae.png", // עמוד 12
+  "/lovable-uploads/c20d6c37-11e1-440e-93e0-294023faffdf.png", // עמוד 13
+  "/lovable-uploads/13b3ca42-04f6-4e27-832d-b84911cc54e8.png", // עמוד 14
+  "/lovable-uploads/b30dca7d-8eb7-4a62-a184-d438c3a7cbd3.png", // עמוד 15
+  "/lovable-uploads/80acc27d-abc1-4d24-8c4f-c5212318e786.png", // עמוד 16
+  "/lovable-uploads/5f4ac748-e6d2-4bc8-a17f-00c023a1c099.png", // עמוד 17
+  "/lovable-uploads/f82fb4a3-48cd-465f-b4c0-8a1b1818ef6f.png", // עמוד 18
+  "/lovable-uploads/974c69e6-8336-4aa5-bc5e-9864d752f5b3.png", // עמוד 19
+  // עמודים 20-39 יתווספו בהעלאה הבאה
 ];
 
 const FlipbookViewer = () => {
