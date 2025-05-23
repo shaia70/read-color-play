@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -37,7 +36,7 @@ const BOOK_PAGES = [
   "/lovable-uploads/ecfba7e9-dcaf-4f79-adfa-bdedaea8d8f8.png", // עמוד 28
   "/lovable-uploads/fdacb8fa-edba-4a7a-beab-cefefbfae9a9.png", // עמוד 29
   "/lovable-uploads/aebdc9ab-fecb-4b7b-cfbc-dfafafcfaaba.png", // עמוד 30
-  "/lovable-uploads/bfcedabc-afdc-4c7c-dacd-eabababeabab.png", // עמוד 31
+  "/lovable-uploads/bfcedabc-afdc-4c7c-dacd-eabababeabab.png", // עמוד 31 - תוקן!
   "/lovable-uploads/cadadbcd-baed-4d7d-ebce-fbdbabdfbbcb.png", // עמוד 32
   "/lovable-uploads/dbebecde-cbfe-4e7e-fccf-acecbcefccdc.png", // עמוד 33
   "/lovable-uploads/ecfcfdef-dcaf-4f7f-addaaf-bdfdcdfaddcd.png", // עמוד 34
