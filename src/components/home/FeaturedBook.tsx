@@ -75,7 +75,7 @@ export default function FeaturedBook() {
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>
                 <img 
-                  src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
+                  src="/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png" 
                   alt={t('book.daniel.title')} 
                   className="w-full h-full object-cover"
                 />

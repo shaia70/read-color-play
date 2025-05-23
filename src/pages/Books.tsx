@@ -80,7 +80,7 @@ const Books = () => {
                       "name": "שלי ספרים"
                     },
                     "bookFormat": "Hardcover",
-                    "numberOfPages": "24",
+                    "numberOfPages": "40",
                     "inLanguage": "he",
                     "audience": {
                       "@type": "Audience",
@@ -91,7 +91,7 @@ const Books = () => {
                       "@type": "Organization",
                       "name": "שלי ספרים"
                     },
-                    "image": "https://shelley.co.il/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png",
+                    "image": "https://shelley.co.il/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png",
                     "description": "${isHebrew ? 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
                   }
                 }
@@ -120,7 +120,7 @@ const Books = () => {
                     onClick={toggleZoom}
                   >
                     <img 
-                      src="/lovable-uploads/9947f510-a46b-4788-8edb-4a6fab9adfa2.png" 
+                      src="/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png" 
                       alt={t('book.daniel.title')} 
                       className="w-full h-full object-cover"
                     />
@@ -159,7 +159,7 @@ const Books = () => {
                   </div>
                   <div className="bg-shelley-purple/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-purple">{t('books.pages')}</p>
-                    <p>24</p>
+                    <p>40</p>
                   </div>
                   <div className="bg-shelley-orange/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-orange">{t('books.cover')}</p>
