@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -19,6 +18,7 @@ import Statistics from "./pages/Statistics";
 import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
+import Flipbook from "./pages/Flipbook";
 
 // Scroll restoration and analytics tracking component
 const ScrollToTop = () => {
@@ -53,6 +53,7 @@ const App = () => {
                   <Route path="/concept" element={<Concept />} />
                   <Route path="/download" element={<Download />} />
                   <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/flipbook" element={<Flipbook />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/admin-statistics" element={<Statistics />} />
                   <Route path="*" element={<NotFound />} />

@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Instagram, Facebook, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -43,6 +42,7 @@ export default function Footer() {
     { name: t('footer.books'), href: "/books" },
     { name: t('footer.technology'), href: "/technology" },
     { name: language === 'he' ? 'גלריה' : 'Gallery', href: "/gallery" },
+    { name: language === 'he' ? 'פליפבוק' : 'Flipbook', href: "/flipbook" },
     { name: t('footer.contactUs'), href: "/contact" },
     { name: language === 'he' ? 'הורד אפליקציה' : 'Download App', href: "/download" },
     { name: language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy', href: "/privacy-policy" },
