@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -27,7 +27,6 @@ const BOOK_PAGES = [
   "/lovable-uploads/5f4ac748-e6d2-4bc8-a17f-00c023a1c099.png", // עמוד 17
   "/lovable-uploads/f82fb4a3-48cd-465f-b4c0-8a1b1818ef6f.png", // עמוד 18
   "/lovable-uploads/974c69e6-8336-4aa5-bc5e-9864d752f5b3.png", // עמוד 19
-  // עמודים 20-39
   "/lovable-uploads/a61e9e23-25cc-4baa-839c-0309f03b3005.png", // עמוד 20
   "/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png", // עמוד 21
   "/lovable-uploads/542f3054-cc78-470d-bb62-0bf6fcb4ab14.png", // עמוד 22
@@ -48,49 +47,93 @@ const BOOK_PAGES = [
   "/lovable-uploads/be086f7a-22cd-40b2-9c38-fcfe17cfb323.png", // עמוד 37
   "/lovable-uploads/c5acd3e6-bd35-4e96-b689-d3c027df82df.png", // עמוד 38
   "/lovable-uploads/f7bd361e-d36d-42d5-b20b-839ea4d69b7e.png", // עמוד 39
-  // עמודים 40-41
   "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
   "/lovable-uploads/db4b97d6-5279-4828-99e5-3a42e6e972f3.png", // עמוד 41
 ];
 
+declare global {
+  interface Window {
+    $: any;
+  }
+}
+
 const FlipbookViewer = () => {
   const { language } = useLanguage();
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [zoom, setZoom] = useState(1);
-  const [isFlipping, setIsFlipping] = useState(false);
+  const [turnInitialized, setTurnInitialized] = useState(false);
+  const flipbookRef = useRef<HTMLDivElement>(null);
   const isHebrew = language === 'he';
 
   console.log('FlipbookViewer rendered successfully');
   console.log('Total pages:', BOOK_PAGES.length);
   console.log('Current page:', currentPage);
 
+  useEffect(() => {
+    // Load jQuery and turn.js
+    const loadTurnJS = async () => {
+      if (window.$ && !turnInitialized) {
+        const $ = window.$;
+        
+        if (flipbookRef.current) {
+          $(flipbookRef.current).turn({
+            width: 800,
+            height: 600,
+            autoCenter: true,
+            duration: 600,
+            gradients: false,
+            acceleration: false,
+          });
+
+          $(flipbookRef.current).bind('turned', function(event: any, page: number) {
+            setCurrentPage(page);
+          });
+
+          setTurnInitialized(true);
+        }
+      }
+    };
+
+    if (!window.$) {
+      // Load jQuery first
+      const jqueryScript = document.createElement('script');
+      jqueryScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+      jqueryScript.onload = () => {
+        // Then load turn.js
+        const turnScript = document.createElement('script');
+        turnScript.src = 'https://cdn.jsdelivr.net/npm/turn.js@4.1.0/turn.min.js';
+        turnScript.onload = () => {
+          loadTurnJS();
+        };
+        document.head.appendChild(turnScript);
+      };
+      document.head.appendChild(jqueryScript);
+    } else {
+      loadTurnJS();
+    }
+
+    return () => {
+      if (flipbookRef.current && window.$ && turnInitialized) {
+        window.$(flipbookRef.current).turn('destroy');
+      }
+    };
+  }, [turnInitialized]);
+
   const nextPage = () => {
-    if (currentPage < BOOK_PAGES.length - 1 && !isFlipping) {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setCurrentPage(currentPage + 1);
-        setIsFlipping(false);
-      }, 300);
+    if (flipbookRef.current && window.$ && turnInitialized) {
+      window.$(flipbookRef.current).turn('next');
     }
   };
 
   const prevPage = () => {
-    if (currentPage > 0 && !isFlipping) {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setCurrentPage(currentPage - 1);
-        setIsFlipping(false);
-      }, 300);
+    if (flipbookRef.current && window.$ && turnInitialized) {
+      window.$(flipbookRef.current).turn('previous');
     }
   };
 
   const goToPage = (pageNumber: number) => {
-    if (pageNumber >= 0 && pageNumber < BOOK_PAGES.length && !isFlipping) {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setCurrentPage(pageNumber);
-        setIsFlipping(false);
-      }, 300);
+    if (flipbookRef.current && window.$ && turnInitialized) {
+      window.$(flipbookRef.current).turn('page', pageNumber);
     }
   };
 
@@ -110,7 +153,6 @@ const FlipbookViewer = () => {
     setZoom(1);
   };
 
-  // מאזין ללחיצות מקלדת לניווט בין עמודים
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight') {
@@ -130,7 +172,7 @@ const FlipbookViewer = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isHebrew, currentPage, isFlipping]);
+  }, [isHebrew, turnInitialized]);
 
   return (
     <div className="glass-card p-6">
@@ -172,26 +214,23 @@ const FlipbookViewer = () => {
         </div>
         
         <div className="text-sm text-gray-600">
-          {isHebrew ? `עמוד ${currentPage + 1} מתוך ${BOOK_PAGES.length}` : `Page ${currentPage + 1} of ${BOOK_PAGES.length}`}
+          {isHebrew ? `עמוד ${currentPage} מתוך ${BOOK_PAGES.length}` : `Page ${currentPage} of ${BOOK_PAGES.length}`}
         </div>
       </div>
 
       {/* אזור הפליפבוק */}
-      <div 
-        className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" 
-        style={{ height: '600px' }}
-      >
-        <div 
-          className={`transition-all duration-300 ${isFlipping ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}
-          style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
-        >
-          <div className="bg-white rounded-lg shadow-xl overflow-hidden" style={{ width: '400px', height: '500px' }}>
-            <img
-              src={BOOK_PAGES[currentPage]}
-              alt={`Page ${currentPage + 1}`}
-              className="w-full h-full object-contain"
-              style={{ maxWidth: '100%', maxHeight: '100%' }}
-            />
+      <div className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" style={{ height: '700px' }}>
+        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}>
+          <div ref={flipbookRef} className="flipbook" style={{ width: '800px', height: '600px' }}>
+            {BOOK_PAGES.map((page, index) => (
+              <div key={index} className="page bg-white">
+                <img
+                  src={page}
+                  alt={`Page ${index + 1}`}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            ))}
           </div>
         </div>
         
@@ -201,7 +240,7 @@ const FlipbookViewer = () => {
             variant="blue"
             size="icon"
             onClick={prevPage}
-            disabled={currentPage === 0 || isFlipping}
+            disabled={currentPage === 1}
             className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg disabled:opacity-50"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -213,7 +252,7 @@ const FlipbookViewer = () => {
             variant="blue"
             size="icon"
             onClick={nextPage}
-            disabled={currentPage === BOOK_PAGES.length - 1 || isFlipping}
+            disabled={currentPage === BOOK_PAGES.length}
             className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg disabled:opacity-50"
           >
             <ChevronRight className="w-6 h-6" />
@@ -225,12 +264,12 @@ const FlipbookViewer = () => {
       <div className="mt-6">
         <input
           type="range"
-          min="0"
-          max={BOOK_PAGES.length - 1}
+          min="1"
+          max={BOOK_PAGES.length}
           value={currentPage}
           onChange={(e) => goToPage(parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          disabled={isFlipping}
+          disabled={!turnInitialized}
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>1</span>
