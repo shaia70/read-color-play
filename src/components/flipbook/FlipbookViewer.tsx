@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// מערך של תמונות לפליפבוק - עמוד 32, עמוד 33, עמוד 34, עמוד 35, עמוד 36, עמוד 37, עמוד 38, עמוד 39, עמוד 40 ועמוד 41
+// מערך של תמונות לפליפבוק - עמוד 32-33 (כפול), עמוד 34, עמוד 35, עמוד 36, עמוד 37, עמוד 38, עמוד 39, עמוד 40 ועמוד 41
 const BOOK_PAGES = [
   "/lovable-uploads/6fc2cc3b-4db8-464f-880d-90939429f955.png", // עמוד 32
-  "/lovable-uploads/561280c9-6bce-4561-9eb1-c0921af9e5b7.png", // עמוד 33
   "/lovable-uploads/f665f928-df09-46af-8503-9a658ef41957.png", // עמוד 34
   "/lovable-uploads/77d92669-1178-4c91-9977-ac9e5455dcfd.png", // עמוד 35
   "/lovable-uploads/d3fb3508-7d33-4974-bc6c-da1e7b3f0170.png", // עמוד 36
@@ -17,6 +15,9 @@ const BOOK_PAGES = [
   "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
   "/lovable-uploads/9cbc460b-06fb-4dcc-b1ac-7f545f6ed4ea.png", // עמוד 41
 ];
+
+// תמונת עמוד 33 נפרדת לתצוגה הכפולה
+const PAGE_33_URL = "/lovable-uploads/561280c9-6bce-4561-9eb1-c0921af9e5b7.png";
 
 const FlipbookViewer: React.FC = () => {
   const { language } = useLanguage();
@@ -37,14 +38,14 @@ const FlipbookViewer: React.FC = () => {
   const nextPage = () => {
     if (isDoublePage()) {
       // אם אנחנו בעמודים 32-33, קפוץ לעמוד 34
-      setCurrentPage(2);
+      setCurrentPage(1);
     } else if (currentPage < BOOK_PAGES.length - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
 
   const prevPage = () => {
-    if (currentPage === 2) {
+    if (currentPage === 1) {
       // אם אנחנו בעמוד 34, חזור לעמודים 32-33
       setCurrentPage(0);
     } else if (currentPage > 0) {
@@ -99,7 +100,8 @@ const FlipbookViewer: React.FC = () => {
     if (isDoublePage()) {
       return isHebrew ? "עמודים 32-33" : "Pages 32-33";
     }
-    const pageNum = currentPage + 32;
+    // התאמת חישוב מספר העמוד - עמוד 34 הוא באינדקס 1
+    const pageNum = currentPage + 33;
     return isHebrew ? `עמוד ${pageNum}` : `Page ${pageNum}`;
   };
 
@@ -160,7 +162,7 @@ const FlipbookViewer: React.FC = () => {
               {/* עמוד 33 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[1]} // עמוד 33
+                  src={PAGE_33_URL}
                   alt="Page 33"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -181,7 +183,7 @@ const FlipbookViewer: React.FC = () => {
             <div className="relative w-96 h-full flex items-center justify-center">
               <img 
                 src={BOOK_PAGES[currentPage]} 
-                alt={`Page ${currentPage + 32}`}
+                alt={`Page ${currentPage + 33}`}
                 className="max-w-full max-h-full object-contain rounded shadow-lg"
                 style={{ maxHeight: '600px' }}
               />
