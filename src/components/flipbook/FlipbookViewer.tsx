@@ -1,10 +1,12 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// מערך של תמונות לפליפבוק - מתחיל עם עמודים 22-23 (כפול), עמודים 24-25 (כפול), עמודים 26-27 (כפול), עמודים 28-29 (כפול), עמודים 30-31 (כפול), עמודים 32-33 (כפול), ואז עמודים בודדים
+// מערך של תמונות לפליפבוק - מתחיל עם עמודים 20-21 (כפול), 22-23 (כפול), עמודים 24-25 (כפול), עמודים 26-27 (כפול), עמודים 28-29 (כפול), עמודים 30-31 (כפול), עמודים 32-33 (כפול), ואז עמודים בודדים
 const BOOK_PAGES = [
+  "/lovable-uploads/f274593e-0b39-4037-b92d-65c82bc6b2f8.png", // עמוד 20
   "/lovable-uploads/7d24f700-8905-44af-8976-7b9ab537e302.png", // עמוד 22
   "/lovable-uploads/ac950728-39db-4260-9abb-d147d990acf0.png", // עמוד 24
   "/lovable-uploads/7014a748-a36c-4378-8215-64b2a9363212.png", // עמוד 26
@@ -22,6 +24,7 @@ const BOOK_PAGES = [
 ];
 
 // תמונות נפרדות לעמודים הכפולים
+const PAGE_21_URL = "/lovable-uploads/3a7b57d8-694f-43f2-a920-9b1e5dbfb8fd.png"; // עמוד 21
 const PAGE_23_URL = "/lovable-uploads/49050bae-5ee5-451d-957b-b77716b34d34.png"; // עמוד 23
 const PAGE_25_URL = "/lovable-uploads/f2b2e023-869e-49da-b3be-6c33b2f1f788.png"; // עמוד 25
 const PAGE_27_URL = "/lovable-uploads/a615e9d5-fddf-4b50-ac80-59471d8c7e47.png"; // עמוד 27
@@ -42,7 +45,7 @@ const FlipbookViewer: React.FC = () => {
 
   // פונקציה לבדיקה אם העמוד הנוכחי הוא עמודים כפולים
   const isDoublePage = () => {
-    return currentPage >= 0 && currentPage <= 5; // עמודים 22-23, 24-25, 26-27, 28-29, 30-31, 32-33
+    return currentPage >= 0 && currentPage <= 6; // עמודים 20-21, 22-23, 24-25, 26-27, 28-29, 30-31, 32-33
   };
 
   const nextPage = () => {
@@ -102,20 +105,22 @@ const FlipbookViewer: React.FC = () => {
 
   const getCurrentPageDisplay = () => {
     if (currentPage === 0) {
-      return isHebrew ? "עמודים 22-23" : "Pages 22-23";
+      return isHebrew ? "עמודים 20-21" : "Pages 20-21";
     } else if (currentPage === 1) {
-      return isHebrew ? "עמודים 24-25" : "Pages 24-25";
+      return isHebrew ? "עמודים 22-23" : "Pages 22-23";
     } else if (currentPage === 2) {
-      return isHebrew ? "עמודים 26-27" : "Pages 26-27";
+      return isHebrew ? "עמודים 24-25" : "Pages 24-25";
     } else if (currentPage === 3) {
-      return isHebrew ? "עמודים 28-29" : "Pages 28-29";
+      return isHebrew ? "עמודים 26-27" : "Pages 26-27";
     } else if (currentPage === 4) {
-      return isHebrew ? "עמודים 30-31" : "Pages 30-31";
+      return isHebrew ? "עמודים 28-29" : "Pages 28-29";
     } else if (currentPage === 5) {
+      return isHebrew ? "עמודים 30-31" : "Pages 30-31";
+    } else if (currentPage === 6) {
       return isHebrew ? "עמודים 32-33" : "Pages 32-33";
     }
-    // התאמת חישוב מספר העמוד - עמוד 34 הוא באינדקס 6
-    const pageNum = currentPage + 28;
+    // התאמת חישוב מספר העמוד - עמוד 34 הוא באינדקס 7
+    const pageNum = currentPage + 27;
     return isHebrew ? `עמוד ${pageNum}` : `Page ${pageNum}`;
   };
 
@@ -171,6 +176,28 @@ const FlipbookViewer: React.FC = () => {
           style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
         >
           {currentPage === 0 ? (
+            // תצוגת עמודים 20-21
+            <div className="relative flex items-center justify-center gap-2">
+              {/* עמוד 20 משמאל */}
+              <div className="relative">
+                <img 
+                  src={BOOK_PAGES[0]} // עמוד 20
+                  alt="Page 20"
+                  className="max-w-full max-h-full object-contain rounded shadow-lg"
+                  style={{ maxHeight: '600px', maxWidth: '300px' }}
+                />
+              </div>
+              {/* עמוד 21 מימין */}
+              <div className="relative">
+                <img 
+                  src={PAGE_21_URL}
+                  alt="Page 21"
+                  className="max-w-full max-h-full object-contain rounded shadow-lg"
+                  style={{ maxHeight: '600px', maxWidth: '300px' }}
+                />
+              </div>
+            </div>
+          ) : currentPage === 1 ? (
             // תצוגת עמודים 22-23
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 23 משמאל */}
@@ -185,20 +212,20 @@ const FlipbookViewer: React.FC = () => {
               {/* עמוד 22 מימין */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[0]} // עמוד 22
+                  src={BOOK_PAGES[1]} // עמוד 22
                   alt="Page 22"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
                 />
               </div>
             </div>
-          ) : currentPage === 1 ? (
+          ) : currentPage === 2 ? (
             // תצוגת עמודים 24-25
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 24 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[1]} // עמוד 24
+                  src={BOOK_PAGES[2]} // עמוד 24
                   alt="Page 24"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -214,13 +241,13 @@ const FlipbookViewer: React.FC = () => {
                 />
               </div>
             </div>
-          ) : currentPage === 2 ? (
+          ) : currentPage === 3 ? (
             // תצוגת עמודים 26-27
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 26 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[2]} // עמוד 26
+                  src={BOOK_PAGES[3]} // עמוד 26
                   alt="Page 26"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -236,13 +263,13 @@ const FlipbookViewer: React.FC = () => {
                 />
               </div>
             </div>
-          ) : currentPage === 3 ? (
+          ) : currentPage === 4 ? (
             // תצוגת עמודים 28-29
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 28 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[3]} // עמוד 28
+                  src={BOOK_PAGES[4]} // עמוד 28
                   alt="Page 28"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -258,13 +285,13 @@ const FlipbookViewer: React.FC = () => {
                 />
               </div>
             </div>
-          ) : currentPage === 4 ? (
+          ) : currentPage === 5 ? (
             // תצוגת עמודים 30-31
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 30 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[4]} // עמוד 30
+                  src={BOOK_PAGES[5]} // עמוד 30
                   alt="Page 30"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -280,13 +307,13 @@ const FlipbookViewer: React.FC = () => {
                 />
               </div>
             </div>
-          ) : currentPage === 5 ? (
+          ) : currentPage === 6 ? (
             // תצוגת עמודים 32-33
             <div className="relative flex items-center justify-center gap-2">
               {/* עמוד 32 משמאל */}
               <div className="relative">
                 <img 
-                  src={BOOK_PAGES[5]} // עמוד 32
+                  src={BOOK_PAGES[6]} // עמוד 32
                   alt="Page 32"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
@@ -307,7 +334,7 @@ const FlipbookViewer: React.FC = () => {
             <div className="relative w-96 h-full flex items-center justify-center">
               <img 
                 src={BOOK_PAGES[currentPage]} 
-                alt={`Page ${currentPage + 28}`}
+                alt={`Page ${currentPage + 27}`}
                 className="max-w-full max-h-full object-contain rounded shadow-lg"
                 style={{ maxHeight: '600px' }}
               />
@@ -352,8 +379,8 @@ const FlipbookViewer: React.FC = () => {
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>22-23</span>
-          <span>{22 + BOOK_PAGES.length + 1}</span>
+          <span>20-21</span>
+          <span>{20 + BOOK_PAGES.length + 1}</span>
         </div>
       </div>
 
