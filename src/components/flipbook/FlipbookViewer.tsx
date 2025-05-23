@@ -4,8 +4,9 @@ import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-re
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// מערך של תמונות לפליפבוק - עמוד 39, עמוד 40 ועמוד 41
+// מערך של תמונות לפליפבוק - עמוד 38, עמוד 39, עמוד 40 ועמוד 41
 const BOOK_PAGES = [
+  "/lovable-uploads/22c5ae78-f94a-4d0d-9025-2c409419f407.png", // עמוד 38
   "/lovable-uploads/3f1d784c-06ab-465a-96ba-24054872418e.png", // עמוד 39
   "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
   "/lovable-uploads/9cbc460b-06fb-4dcc-b1ac-7f545f6ed4ea.png", // עמוד 41
