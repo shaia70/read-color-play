@@ -159,20 +159,20 @@ const FlipbookViewer: React.FC = () => {
           {isDoublePage() ? (
             // תצוגת עמוד כפול עבור 32-33
             <div className="relative flex items-center justify-center gap-2">
-              {/* עמוד 33 משמאל */}
-              <div className="relative">
-                <img 
-                  src={PAGE_33_URL}
-                  alt="Page 33"
-                  className="max-w-full max-h-full object-contain rounded shadow-lg"
-                  style={{ maxHeight: '600px', maxWidth: '300px' }}
-                />
-              </div>
-              {/* עמוד 32 מימין */}
+              {/* עמוד 32 משמאל */}
               <div className="relative">
                 <img 
                   src={BOOK_PAGES[0]} // עמוד 32
                   alt="Page 32"
+                  className="max-w-full max-h-full object-contain rounded shadow-lg"
+                  style={{ maxHeight: '600px', maxWidth: '300px' }}
+                />
+              </div>
+              {/* עמוד 33 מימין */}
+              <div className="relative">
+                <img 
+                  src={PAGE_33_URL}
+                  alt="Page 33"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
                 />
