@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+
+import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
-import HTMLFlipBook from "react-pageflip";
 
 // מערך של תמונות לפליפבוק - מסודר לפי סדר העמודים
 const BOOK_PAGES = [
@@ -57,31 +57,40 @@ const FlipbookViewer = () => {
   const { language } = useLanguage();
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const flipBookRef = useRef<any>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
   const isHebrew = language === 'he';
 
-  // Debug console logs
-  useEffect(() => {
-    console.log('FlipbookViewer mounted successfully');
-    console.log('Total pages:', BOOK_PAGES.length);
-    console.log('Current page:', currentPage);
-  }, [currentPage]);
+  console.log('FlipbookViewer rendered successfully');
+  console.log('Total pages:', BOOK_PAGES.length);
+  console.log('Current page:', currentPage);
 
   const nextPage = () => {
-    if (flipBookRef.current) {
-      flipBookRef.current.pageFlip().flipNext();
+    if (currentPage < BOOK_PAGES.length - 1 && !isFlipping) {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(currentPage + 1);
+        setIsFlipping(false);
+      }, 300);
     }
   };
 
   const prevPage = () => {
-    if (flipBookRef.current) {
-      flipBookRef.current.pageFlip().flipPrev();
+    if (currentPage > 0 && !isFlipping) {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(currentPage - 1);
+        setIsFlipping(false);
+      }, 300);
     }
   };
 
   const goToPage = (pageNumber: number) => {
-    if (flipBookRef.current && pageNumber >= 0 && pageNumber < BOOK_PAGES.length) {
-      flipBookRef.current.pageFlip().flip(pageNumber);
+    if (pageNumber >= 0 && pageNumber < BOOK_PAGES.length && !isFlipping) {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(pageNumber);
+        setIsFlipping(false);
+      }, 300);
     }
   };
 
@@ -99,10 +108,6 @@ const FlipbookViewer = () => {
 
   const resetZoom = () => {
     setZoom(1);
-  };
-
-  const onFlip = (e: any) => {
-    setCurrentPage(e.data);
   };
 
   // מאזין ללחיצות מקלדת לניווט בין עמודים
@@ -125,7 +130,7 @@ const FlipbookViewer = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isHebrew]);
+  }, [isHebrew, currentPage, isFlipping]);
 
   return (
     <div className="glass-card p-6">
@@ -174,48 +179,21 @@ const FlipbookViewer = () => {
       {/* אזור הפליפבוק */}
       <div 
         className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" 
-        style={{ height: '600px', transform: `scale(${zoom})`, transformOrigin: 'center' }}
+        style={{ height: '600px' }}
       >
-        <HTMLFlipBook
-          ref={flipBookRef}
-          width={400}
-          height={500}
-          size="stretch"
-          minWidth={300}
-          maxWidth={800}
-          minHeight={400}
-          maxHeight={600}
-          maxShadowOpacity={0.5}
-          showCover={true}
-          mobileScrollSupport={false}
-          onFlip={onFlip}
-          className="demo-book"
-          style={{}}
-          startPage={0}
-          drawShadow={true}
-          flippingTime={1000}
-          usePortrait={true}
-          startZIndex={0}
-          autoSize={true}
-          clickEventForward={true}
-          useMouseEvents={true}
-          swipeDistance={30}
-          showPageCorners={true}
-          disableFlipByClick={false}
+        <div 
+          className={`transition-all duration-300 ${isFlipping ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
         >
-          {BOOK_PAGES.map((page, index) => (
-            <div key={index} className="page">
-              <div className="page-content">
-                <img
-                  src={page}
-                  alt={`Page ${index + 1}`}
-                  className="w-full h-full object-contain"
-                  style={{ maxWidth: '100%', maxHeight: '100%' }}
-                />
-              </div>
-            </div>
-          ))}
-        </HTMLFlipBook>
+          <div className="bg-white rounded-lg shadow-xl overflow-hidden" style={{ width: '400px', height: '500px' }}>
+            <img
+              src={BOOK_PAGES[currentPage]}
+              alt={`Page ${currentPage + 1}`}
+              className="w-full h-full object-contain"
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
+            />
+          </div>
+        </div>
         
         {/* כפתורי ניווט */}
         <div className="absolute inset-y-0 left-4 flex items-center">
@@ -223,7 +201,7 @@ const FlipbookViewer = () => {
             variant="blue"
             size="icon"
             onClick={prevPage}
-            disabled={currentPage === 0}
+            disabled={currentPage === 0 || isFlipping}
             className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg disabled:opacity-50"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -235,7 +213,7 @@ const FlipbookViewer = () => {
             variant="blue"
             size="icon"
             onClick={nextPage}
-            disabled={currentPage === BOOK_PAGES.length - 1}
+            disabled={currentPage === BOOK_PAGES.length - 1 || isFlipping}
             className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg disabled:opacity-50"
           >
             <ChevronRight className="w-6 h-6" />
@@ -252,6 +230,7 @@ const FlipbookViewer = () => {
           value={currentPage}
           onChange={(e) => goToPage(parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          disabled={isFlipping}
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>1</span>
@@ -268,35 +247,6 @@ const FlipbookViewer = () => {
           }
         </p>
       </div>
-
-      {/* סטיילים נוספים לדפים */}
-      <style>{`
-        .demo-book {
-          margin: 0 auto;
-        }
-        
-        .page {
-          background-color: white;
-          border: 1px solid #e5e7eb;
-          overflow: hidden;
-        }
-        
-        .page-content {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px;
-          box-sizing: border-box;
-        }
-        
-        .page img {
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-        }
-      `}</style>
     </div>
   );
 };
