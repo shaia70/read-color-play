@@ -3,11 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { PageFlip } from 'page-flip';
 
 // מערך של תמונות לפליפבוק - מסודר לפי סדר העמודים
 const BOOK_PAGES = [
-  // עמודים 0-19
   "/lovable-uploads/53dcc77b-f824-4621-81a5-e715adf178ef.png", // עמוד 0
   "/lovable-uploads/56eb4bdb-5724-47f7-8696-ef162c9a14d8.png", // עמוד 1
   "/lovable-uploads/d0cc02c7-7e1a-4998-a688-7dcbfec41055.png", // עמוד 2
@@ -52,11 +50,10 @@ const BOOK_PAGES = [
   "/lovable-uploads/db4b97d6-5279-4828-99e5-3a42e6e972f3.png", // עמוד 41
 ];
 
-const FlipbookViewer = () => {
+const FlipbookViewer: React.FC = () => {
   const { language } = useLanguage();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const [pageFlip, setPageFlip] = useState<PageFlip | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [zoom, setZoom] = useState<number>(1);
   const flipbookRef = useRef<HTMLDivElement>(null);
   const isHebrew = language === 'he';
 
@@ -64,63 +61,21 @@ const FlipbookViewer = () => {
   console.log('Total pages:', BOOK_PAGES.length);
   console.log('Current page:', currentPage);
 
-  useEffect(() => {
-    if (flipbookRef.current && !pageFlip) {
-      const flipInstance = new PageFlip(flipbookRef.current, {
-        width: 400,
-        height: 600,
-        size: "stretch",
-        minWidth: 315,
-        maxWidth: 1000,
-        minHeight: 420,
-        maxHeight: 1350,
-        maxShadowOpacity: 0.5,
-        showCover: true,
-        mobileScrollSupport: false,
-        swipeDistance: 30,
-        clickEventForward: true,
-        usePortrait: true,
-        startZIndex: 0,
-        autoSize: true,
-        showPageCorners: true,
-        disableFlipByClick: false
-      });
-
-      flipInstance.loadFromImages(BOOK_PAGES);
-
-      flipInstance.on('flip', (e) => {
-        setCurrentPage(e.data);
-      });
-
-      flipInstance.on('changeOrientation', (e) => {
-        flipInstance.updateState();
-      });
-
-      setPageFlip(flipInstance);
-    }
-
-    return () => {
-      if (pageFlip) {
-        pageFlip.destroy();
-      }
-    };
-  }, []);
-
   const nextPage = () => {
-    if (pageFlip) {
-      pageFlip.flipNext();
+    if (currentPage < BOOK_PAGES.length - 1) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
   const prevPage = () => {
-    if (pageFlip) {
-      pageFlip.flipPrev();
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const goToPage = (pageNumber: number) => {
-    if (pageFlip) {
-      pageFlip.flip(pageNumber);
+    if (pageNumber >= 0 && pageNumber < BOOK_PAGES.length) {
+      setCurrentPage(pageNumber);
     }
   };
 
@@ -159,7 +114,7 @@ const FlipbookViewer = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isHebrew, pageFlip]);
+  }, [isHebrew, currentPage]);
 
   return (
     <div className="glass-card p-6">
@@ -207,8 +162,19 @@ const FlipbookViewer = () => {
 
       {/* אזור הפליפבוק */}
       <div className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" style={{ height: '700px' }}>
-        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}>
-          <div ref={flipbookRef} className="flipbook-container"></div>
+        <div 
+          ref={flipbookRef} 
+          className="flipbook-container"
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+        >
+          <div className="relative w-96 h-full flex items-center justify-center">
+            <img 
+              src={BOOK_PAGES[currentPage]} 
+              alt={`Page ${currentPage + 1}`}
+              className="max-w-full max-h-full object-contain rounded shadow-lg"
+              style={{ maxHeight: '600px' }}
+            />
+          </div>
         </div>
         
         {/* כפתורי ניווט */}
@@ -246,7 +212,6 @@ const FlipbookViewer = () => {
           value={currentPage}
           onChange={(e) => goToPage(parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          disabled={!pageFlip}
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>1</span>
