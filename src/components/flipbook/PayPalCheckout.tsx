@@ -18,7 +18,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
   const paypalClientId = "YOUR_PAYPAL_CLIENT_ID"; // זה צריך להיות מוחלף במפתח האמיתי
 
   const initialOptions = {
-    "client-id": paypalClientId,
+    clientId: paypalClientId, // שינוי מ- "client-id" ל- clientId
     currency: "USD",
     intent: "capture",
   };
@@ -41,6 +41,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
           }}
           createOrder={(data, actions) => {
             return actions.order.create({
+              intent: "CAPTURE", // הוספת שדה intent הנדרש
               purchase_units: [
                 {
                   amount: {
