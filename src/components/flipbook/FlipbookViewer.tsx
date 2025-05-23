@@ -3,9 +3,10 @@ import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-re
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// מערך של תמונות לפליפבוק - רק עמוד 40
+// מערך של תמונות לפליפבוק - עמוד 40 ועמוד 41
 const BOOK_PAGES = [
   "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
+  "/lovable-uploads/9cbc460b-06fb-4dcc-b1ac-7f545f6ed4ea.png", // עמוד 41
 ];
 
 const FlipbookViewer: React.FC = () => {
