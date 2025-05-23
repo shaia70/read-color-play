@@ -70,7 +70,7 @@ export default function FeaturedBook() {
               className="p-8 flex items-center justify-center"
             >
               <div 
-                className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transform ${isZoomed ? 'rotate-0' : 'rotate-3 hover:rotate-0'} transition-all duration-500 relative ${isMobile ? '' : 'cursor-pointer'}`}
+                className={`${isZoomed ? 'w-128 h-128 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-64'} rounded-lg shadow-xl overflow-hidden transform ${isZoomed ? 'rotate-0' : 'rotate-3 hover:rotate-0'} transition-all duration-500 relative ${isMobile ? '' : 'cursor-pointer'}`}
                 onClick={toggleZoom}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-shelley-blue/20 to-transparent"></div>

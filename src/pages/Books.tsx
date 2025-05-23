@@ -116,7 +116,7 @@ const Books = () => {
               <div className="flex justify-center">
                 <div className="book-cover relative">
                   <div 
-                    className={`${isZoomed ? 'w-128 h-160 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-80'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 ${isMobile ? '' : 'cursor-pointer'}`}
+                    className={`${isZoomed ? 'w-128 h-128 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-64'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 ${isMobile ? '' : 'cursor-pointer'}`}
                     onClick={toggleZoom}
                   >
                     <img 
