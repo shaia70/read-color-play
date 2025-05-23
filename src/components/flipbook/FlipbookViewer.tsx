@@ -1,8 +1,11 @@
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+// Dynamic import for 3d-flip-book
+const FlipBook = React.lazy(() => import('3d-flip-book'));
 
 // מערך של תמונות לפליפבוק - מסודר לפי סדר העמודים
 const BOOK_PAGES = [
@@ -57,28 +60,26 @@ const FlipbookViewer = () => {
   const { language } = useLanguage();
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const [totalPages, setTotalPages] = useState(BOOK_PAGES.length);
+  const flipBookRef = useRef(null);
   const isHebrew = language === 'he';
 
   // Debug console logs
   useEffect(() => {
-    console.log('FlipbookViewer mounted');
+    console.log('3D FlipbookViewer mounted');
     console.log('Total pages:', BOOK_PAGES.length);
     console.log('Current page:', currentPage);
-    console.log('Current image URL:', BOOK_PAGES[currentPage]);
-    console.log('All pages array:', BOOK_PAGES);
   }, [currentPage]);
 
   const nextPage = () => {
-    if (currentPage < totalPages - 1) {
-      console.log('Next page clicked, going to page:', currentPage + 1);
+    if (flipBookRef.current && currentPage < BOOK_PAGES.length - 1) {
+      flipBookRef.current.next();
       setCurrentPage(currentPage + 1);
     }
   };
 
   const prevPage = () => {
-    if (currentPage > 0) {
-      console.log('Previous page clicked, going to page:', currentPage - 1);
+    if (flipBookRef.current && currentPage > 0) {
+      flipBookRef.current.prev();
       setCurrentPage(currentPage - 1);
     }
   };
@@ -119,14 +120,17 @@ const FlipbookViewer = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPage, totalPages, isHebrew]);
+  }, [currentPage, isHebrew]);
 
-  const handleImageLoad = () => {
-    console.log('Image loaded successfully for page:', currentPage);
-  };
-
-  const handleImageError = () => {
-    console.error('Failed to load image for page:', currentPage, 'URL:', BOOK_PAGES[currentPage]);
+  const flipBookOptions = {
+    width: 800,
+    height: 600,
+    maxTextureSize: 2048,
+    showCover: true,
+    mobileScrollSupport: true,
+    swipeDistance: 30,
+    hardPages: true,
+    startPage: 0,
   };
 
   return (
@@ -169,7 +173,7 @@ const FlipbookViewer = () => {
         </div>
         
         <div className="text-sm text-gray-600">
-          {isHebrew ? `עמוד ${currentPage + 1} מתוך ${totalPages}` : `Page ${currentPage + 1} of ${totalPages}`}
+          {isHebrew ? `עמוד ${currentPage + 1} מתוך ${BOOK_PAGES.length}` : `Page ${currentPage + 1} of ${BOOK_PAGES.length}`}
         </div>
       </div>
 
@@ -179,71 +183,70 @@ const FlipbookViewer = () => {
           className="flex justify-center items-center h-full"
           style={{ transform: `scale(${zoom})`, transition: 'transform 0.3s ease' }}
         >
-          {totalPages > 0 ? (
-            <img
-              src={BOOK_PAGES[currentPage]}
-              alt={`${isHebrew ? 'עמוד' : 'Page'} ${currentPage + 1}`}
-              className="max-h-full max-w-full object-contain shadow-lg"
-              style={{ userSelect: 'none', pointerEvents: 'none' }}
-              onContextMenu={(e) => e.preventDefault()}
-              onDragStart={(e) => e.preventDefault()}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-            />
-          ) : (
-            <div className="text-gray-500">
-              {isHebrew ? "אין עמודים להצגה" : "No pages to display"}
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center h-full">
+              <div className="text-gray-500">
+                {isHebrew ? "טוען פליפבוק..." : "Loading flipbook..."}
+              </div>
             </div>
-          )}
+          }>
+            <FlipBook
+              ref={flipBookRef}
+              pages={BOOK_PAGES}
+              options={flipBookOptions}
+              onPageChange={(page: number) => setCurrentPage(page)}
+              className="shadow-lg"
+            />
+          </React.Suspense>
         </div>
         
         {/* כפתורי ניווט */}
-        {totalPages > 1 && (
-          <>
-            <div className="absolute inset-y-0 left-4 flex items-center">
-              <CustomButton
-                variant="blue"
-                size="icon"
-                onClick={prevPage}
-                disabled={currentPage === 0}
-                className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </CustomButton>
-            </div>
-            
-            <div className="absolute inset-y-0 right-4 flex items-center">
-              <CustomButton
-                variant="blue"
-                size="icon"
-                onClick={nextPage}
-                disabled={currentPage === totalPages - 1}
-                className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </CustomButton>
-            </div>
-          </>
-        )}
+        <div className="absolute inset-y-0 left-4 flex items-center">
+          <CustomButton
+            variant="blue"
+            size="icon"
+            onClick={prevPage}
+            disabled={currentPage === 0}
+            className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </CustomButton>
+        </div>
+        
+        <div className="absolute inset-y-0 right-4 flex items-center">
+          <CustomButton
+            variant="blue"
+            size="icon"
+            onClick={nextPage}
+            disabled={currentPage === BOOK_PAGES.length - 1}
+            className="bg-white/90 text-shelley-blue hover:bg-white shadow-lg"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </CustomButton>
+        </div>
       </div>
 
       {/* סרגל עמודים */}
-      {totalPages > 1 && (
-        <div className="mt-6">
-          <input
-            type="range"
-            min="0"
-            max={totalPages - 1}
-            value={currentPage}
-            onChange={(e) => setCurrentPage(parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>1</span>
-            <span>{totalPages}</span>
-          </div>
+      <div className="mt-6">
+        <input
+          type="range"
+          min="0"
+          max={BOOK_PAGES.length - 1}
+          value={currentPage}
+          onChange={(e) => {
+            const page = parseInt(e.target.value);
+            setCurrentPage(page);
+            if (flipBookRef.current) {
+              flipBookRef.current.goToPage(page);
+            }
+          }}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        />
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>1</span>
+          <span>{BOOK_PAGES.length}</span>
         </div>
-      )}
+      </div>
 
       {/* הזהרה */}
       <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
