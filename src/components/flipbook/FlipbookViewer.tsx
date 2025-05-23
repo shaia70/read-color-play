@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -36,7 +37,7 @@ const BOOK_PAGES = [
   "/lovable-uploads/ecfba7e9-dcaf-4f79-adfa-bdedaea8d8f8.png", // עמוד 28
   "/lovable-uploads/fdacb8fa-edba-4a7a-beab-cefefbfae9a9.png", // עמוד 29
   "/lovable-uploads/aebdc9ab-fecb-4b7b-cfbc-dfafafcfaaba.png", // עמוד 30
-  "/lovable-uploads/bfcedabc-afdc-4c7c-dac.png", // עמוד 31
+  "/lovable-uploads/bfcedabc-afdc-4c7c-dacd-eabababeabab.png", // עמוד 31
   "/lovable-uploads/cadadbcd-baed-4d7d-ebce-fbdbabdfbbcb.png", // עמוד 32
   "/lovable-uploads/dbebecde-cbfe-4e7e-fccf-acecbcefccdc.png", // עמוד 33
   "/lovable-uploads/ecfcfdef-dcaf-4f7f-addaaf-bdfdcdfaddcd.png", // עמוד 34
@@ -45,7 +46,7 @@ const BOOK_PAGES = [
   "/lovable-uploads/bfcfcfac-afdc-4c8c-daad-eacadafacaca.png", // עמוד 37
   "/lovable-uploads/cadadadb-baed-4d8d-ebbb-fbdbdbabdbdb.png", // עמוד 38
   "/lovable-uploads/dbebeece-cbfe-4e8e-fccc-acecccceccec.png", // עמוד 39
-  "/lovable-uploads/636ca7ad-b110-4957-929a-b520ba904a44.png", // עמוד 40 - עודכן!
+  "/lovable-uploads/636ca7ad-b110-4957-929a-b520ba904a44.png", // עמוד 40
   "/lovable-uploads/adf97056-3f45-47b3-b94d-77c4d9b7a4b1.png", // עמוד 41
 ];
 
