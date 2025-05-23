@@ -14,15 +14,19 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
   const { language } = useLanguage();
   const isHebrew = language === 'he';
 
-  // לינק PayPal הישיר
-  const paypalLink = "https://www.paypal.com/ncp/payment/A56X3XMDJAEEC";
+  // יצירת return URL שמחזיר לעמוד הפליפבוק
+  const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
+  const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
+  
+  // לינק PayPal עם return URLs
+  const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
 
   const handlePayPalClick = () => {
     // פתיחת לינק PayPal בחלון חדש
     window.open(paypalLink, '_blank');
     
     // הצגת הודעה למשתמש
-    console.log("Opening PayPal payment link");
+    console.log("Opening PayPal payment link with return URL");
   };
 
   const handlePaymentConfirmation = () => {
@@ -63,8 +67,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
           <div className="border-t pt-4">
             <p className="text-sm text-gray-600 mb-3 text-center">
               {isHebrew 
-                ? "לאחר השלמת התשלום, לחץ על הכפתור למטה:"
-                : "After completing payment, click the button below:"
+                ? "או לחץ כאן אם כבר השלמת את התשלום:"
+                : "Or click here if you've already completed payment:"
               }
             </p>
             
@@ -90,8 +94,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
             {isHebrew 
-              ? "💡 התשלום מתבצע באתר PayPal הרשמי. לאחר השלמת התשלום חזור לכאן ולחץ על 'אישור השלמת התשלום'"
-              : "💡 Payment is processed on the official PayPal website. After completing payment, return here and click 'Confirm Payment Completed'"
+              ? "💡 לאחר התשלום תועבר אוטומטית חזרה לעמוד זה. אם זה לא קורה, לחץ על 'אישור השלמת התשלום'"
+              : "💡 After payment you'll be automatically redirected back to this page. If not, click 'Confirm Payment Completed'"
             }
           </p>
         </div>

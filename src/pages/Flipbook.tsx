@@ -1,6 +1,5 @@
-
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -15,6 +14,23 @@ const Flipbook = () => {
   const [hasPaid, setHasPaid] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const isHebrew = language === 'he';
+
+  // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      setHasPaid(true);
+      setShowPayment(false);
+      // ניקוי הURL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (paymentStatus === 'cancel') {
+      setShowPayment(false);
+      // ניקוי הURL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   const pageTitle = isHebrew 
     ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" 
