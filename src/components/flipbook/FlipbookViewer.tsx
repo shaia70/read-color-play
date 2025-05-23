@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -284,20 +283,20 @@ const FlipbookViewer: React.FC = () => {
           ) : currentPage === 5 ? (
             // תצוגת עמודים 32-33
             <div className="relative flex items-center justify-center gap-2">
-              {/* עמוד 33 מימין */}
-              <div className="relative">
-                <img 
-                  src={PAGE_33_URL}
-                  alt="Page 33"
-                  className="max-w-full max-h-full object-contain rounded shadow-lg"
-                  style={{ maxHeight: '600px', maxWidth: '300px' }}
-                />
-              </div>
               {/* עמוד 32 משמאל */}
               <div className="relative">
                 <img 
                   src={BOOK_PAGES[5]} // עמוד 32
                   alt="Page 32"
+                  className="max-w-full max-h-full object-contain rounded shadow-lg"
+                  style={{ maxHeight: '600px', maxWidth: '300px' }}
+                />
+              </div>
+              {/* עמוד 33 מימין */}
+              <div className="relative">
+                <img 
+                  src={PAGE_33_URL}
+                  alt="Page 33"
                   className="max-w-full max-h-full object-contain rounded shadow-lg"
                   style={{ maxHeight: '600px', maxWidth: '300px' }}
                 />
