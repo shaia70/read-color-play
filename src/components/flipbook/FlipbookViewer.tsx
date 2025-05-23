@@ -46,7 +46,6 @@ const BOOK_PAGES = [
   "/lovable-uploads/dc5e6324-bae3-47f9-bf59-6757f4e7b6a2.png", // עמוד 38
   "/lovable-uploads/db4b97d6-5279-4828-99e5-3a42e6e972f3.png", // עמוד 39
   "/lovable-uploads/bdd3d13e-0d6a-49ab-9213-beeeaddeb00c.png", // עמוד 40
-  "/lovable-uploads/db4b97d6-5279-4828-99e5-3a42e6e972f3.png", // עמוד 41
 ];
 
 const FlipbookViewer: React.FC = () => {
