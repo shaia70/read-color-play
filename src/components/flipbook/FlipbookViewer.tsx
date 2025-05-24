@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -243,6 +244,7 @@ const FlipbookViewer: React.FC = () => {
             { maxHeight: '600px' }
           )}
         </div>
+      );
     } else if (currentPage === 1) {
       return (
         <div className="relative w-96 h-full flex items-center justify-center">
