@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PaymentRecord {
@@ -18,43 +18,44 @@ export const usePaymentVerification = () => {
   const { language } = useLanguage();
 
   const checkPaymentStatus = async (userId: string) => {
-    console.log('Starting payment check for user:', userId);
+    console.log('Starting payment verification check for user:', userId);
     
     try {
       setIsLoading(true);
       setError(null);
       
-      console.log('Checking payment status for user:', userId);
+      console.log('Checking localStorage for payment record...');
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add small delay to simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Check localStorage for payment record
-      const paymentRecord = localStorage.getItem(`payment_${userId}`);
-      console.log('Payment record from localStorage:', paymentRecord);
+      const storedPayment = localStorage.getItem(`payment_${userId}`);
+      console.log('Retrieved payment data from localStorage:', storedPayment);
       
-      if (paymentRecord) {
-        const payment = JSON.parse(paymentRecord);
-        setHasValidPayment(payment.status === 'completed');
-        console.log('Payment found:', payment);
+      if (storedPayment) {
+        const paymentData = JSON.parse(storedPayment);
+        const isValid = paymentData.status === 'completed';
+        setHasValidPayment(isValid);
+        console.log('Payment validation result:', isValid, paymentData);
       } else {
         setHasValidPayment(false);
         console.log('No payment record found for user:', userId);
       }
     } catch (err) {
-      console.error('Error checking payment:', err);
-      setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
+      console.error('Payment verification error:', err);
+      setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Payment verification failed');
       setHasValidPayment(false);
     } finally {
       setIsLoading(false);
-      console.log('Payment check completed');
+      console.log('Payment verification completed');
     }
   };
 
   const recordPayment = (userId: string, sessionId: string, amount: number) => {
-    console.log('Recording payment for user:', userId, 'Amount:', amount);
+    console.log('Recording new payment:', { userId, sessionId, amount });
     
-    const paymentRecord: PaymentRecord = {
+    const newPayment: PaymentRecord = {
       id: `payment_${Date.now()}`,
       user_id: userId,
       stripe_session_id: sessionId,
@@ -63,9 +64,9 @@ export const usePaymentVerification = () => {
       created_at: new Date().toISOString()
     };
     
-    localStorage.setItem(`payment_${userId}`, JSON.stringify(paymentRecord));
+    localStorage.setItem(`payment_${userId}`, JSON.stringify(newPayment));
     setHasValidPayment(true);
-    console.log('Payment recorded successfully:', paymentRecord);
+    console.log('Payment recorded successfully:', newPayment);
   };
 
   return {
