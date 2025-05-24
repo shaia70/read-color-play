@@ -5,39 +5,33 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx'
 import './index.css'
 
-// Register service worker for PWA support
+// Clear all browser caches on startup
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Force a hard refresh of browser caches
+    // Force clear all caches
     caches.keys().then(keyList => {
       return Promise.all(
         keyList.map(key => {
+          console.log('Clearing cache:', key);
           return caches.delete(key);
         })
       );
     }).then(() => {
-      console.log('All caches cleared');
+      console.log('All caches cleared successfully');
     });
 
-    // Unregister any existing service workers first
+    // Unregister any existing service workers
     navigator.serviceWorker.getRegistrations().then(registrations => {
       for(let registration of registrations) {
         registration.unregister();
-        console.log('Unregistered old service worker');
+        console.log('Unregistered service worker');
       }
       
-      // Register the new service worker with updated version
-      navigator.serviceWorker.register('/sw.js?v=15', { 
+      // Register fresh service worker
+      navigator.serviceWorker.register('/sw.js?v=16', { 
         scope: '/' 
       }).then(registration => {
-        console.log('Service worker registered successfully:', registration);
-        
-        // Check for updates every hour
-        setInterval(() => {
-          registration.update();
-          console.log('Checking for service worker updates');
-        }, 60 * 60 * 1000);
-        
+        console.log('New service worker registered:', registration);
       }).catch(err => {
         console.error('Service worker registration failed:', err);
       });
@@ -45,7 +39,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Ensure React is loaded correctly and the DOM is fully loaded before rendering
 const rootElement = document.getElementById("root");
 if (rootElement) {
   createRoot(rootElement).render(
