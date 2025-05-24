@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +19,7 @@ import Statistics from "./pages/Statistics";
 import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
+import { AuthProvider } from "./components/auth/AuthProvider";
 import Flipbook from "./pages/Flipbook";
 
 // Scroll restoration and analytics tracking component
@@ -38,30 +40,32 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AnalyticsProvider>
-              <ScrollToTop />
-              <AnimatePresence mode="wait">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/books" element={<Books />} />
-                  <Route path="/technology" element={<Technology />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/concept" element={<Concept />} />
-                  <Route path="/download" element={<Download />} />
-                  <Route path="/gallery" element={<Gallery />} />
-                  <Route path="/flipbook" element={<Flipbook />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/admin-statistics" element={<Statistics />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AnimatePresence>
-            </AnalyticsProvider>
-          </BrowserRouter>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AnalyticsProvider>
+                <ScrollToTop />
+                <AnimatePresence mode="wait">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/books" element={<Books />} />
+                    <Route path="/technology" element={<Technology />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/concept" element={<Concept />} />
+                    <Route path="/download" element={<Download />} />
+                    <Route path="/gallery" element={<Gallery />} />
+                    <Route path="/flipbook" element={<Flipbook />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/admin-statistics" element={<Statistics />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </AnimatePresence>
+              </AnalyticsProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

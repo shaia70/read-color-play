@@ -1,18 +1,21 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Lock, Eye, CreditCard } from "lucide-react";
+import { Lock, Eye, CreditCard, LogOut } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { useAuth } from "@/hooks/useAuth";
+import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 const Flipbook = () => {
   const { t, language } = useLanguage();
-  const [hasPaid, setHasPaid] = useState(false);
+  const { user, logout } = useAuth();
+  const { hasValidPayment, isLoading: paymentLoading, checkPaymentStatus, recordPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
   const isHebrew = language === 'he';
 
@@ -21,8 +24,9 @@ const Flipbook = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     
-    if (paymentStatus === 'success') {
-      setHasPaid(true);
+    if (paymentStatus === 'success' && user) {
+      // רישום התשלום במערכת
+      recordPayment(user.id, 'paypal_session_' + Date.now(), 70);
       setShowPayment(false);
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -31,7 +35,14 @@ const Flipbook = () => {
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [user, recordPayment]);
+
+  // בדיקת סטטוס התשלום כאשר המשתמש מתחבר
+  useEffect(() => {
+    if (user) {
+      checkPaymentStatus(user.id);
+    }
+  }, [user, checkPaymentStatus]);
 
   const pageTitle = isHebrew 
     ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" 
@@ -41,13 +52,52 @@ const Flipbook = () => {
     ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום"
     : "Experience our children's books in an interactive digital flipbook format. Instant access after payment";
 
-  const bookPrice = 70; // מחיר בשקלים
+  const bookPrice = "70 ₪";
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   const handlePaymentSuccess = () => {
-    setHasPaid(true);
-    setShowPayment(false);
+    if (user) {
+      recordPayment(user.id, 'manual_confirmation_' + Date.now(), 70);
+      setShowPayment(false);
+    }
   };
+
+  // אם המשתמש לא מחובר, הצג טופס התחברות
+  if (!user) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Helmet>
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
+          <link rel="canonical" href={isHebrew ? "https://shelley.co.il/flipbook" : "https://shelley.co.il/en/flipbook"} />
+        </Helmet>
+        
+        <Header />
+        <main className="pt-28 pb-20">
+          <div className="page-container">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold mb-6">
+                {isHebrew ? "פליפבוק דיגיטלי" : "Digital Flipbook"}
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                {isHebrew 
+                  ? "נדרשת התחברות כדי לגשת לתוכן המוגן"
+                  : "Login required to access protected content"
+                }
+              </p>
+            </div>
+            <LoginForm />
+          </div>
+        </main>
+        <Footer />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -65,13 +115,35 @@ const Flipbook = () => {
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">
-          {!hasPaid ? (
+          {/* כפתור יציאה */}
+          <div className="flex justify-end mb-4">
+            <CustomButton
+              variant="outline"
+              size="sm"
+              icon={<LogOut className="w-4 h-4" />}
+              onClick={logout}
+            >
+              {isHebrew ? 'יציאה' : 'Logout'}
+            </CustomButton>
+          </div>
+
+          {!hasValidPayment ? (
             <div className="text-center mb-16">
               <h1 className="text-4xl font-bold mb-6">
                 {isHebrew ? "פליפבוק דיגיטלי" : "Digital Flipbook"}
               </h1>
               
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800">
+                  {isHebrew 
+                    ? `שלום ${user.name || user.email}, לצפייה בספר נדרש תשלום חד-פעמי`
+                    : `Hello ${user.name || user.email}, a one-time payment is required to view the book`
+                  }
+                </p>
+              </div>
+              
               <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">
+                
                 <div className="flex justify-center mb-6">
                   <div className="w-48 h-48 rounded-lg shadow-xl overflow-hidden relative">
                     <img 
@@ -106,7 +178,7 @@ const Flipbook = () => {
                 </div>
                 
                 <div className="text-3xl font-bold text-shelley-green mb-6">
-                  {isHebrew ? `₪${bookPrice}` : `₪${bookPrice}`}
+                  {bookPrice}
                 </div>
                 
                 {!showPayment ? (
@@ -122,7 +194,7 @@ const Flipbook = () => {
                 ) : (
                   <div className="mt-6">
                     <PayPalCheckout 
-                      amount={bookPrice}
+                      amount={70}
                       onSuccess={handlePaymentSuccess}
                       onCancel={() => setShowPayment(false)}
                     />
@@ -137,8 +209,8 @@ const Flipbook = () => {
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 {isHebrew 
-                  ? "כעת תוכלו ליהנות מהפליפבוק המלא"
-                  : "You can now enjoy the full flipbook"
+                  ? `שלום ${user.name || user.email}, כעת תוכלו ליהנות מהפליפבוק המלא`
+                  : `Hello ${user.name || user.email}, you can now enjoy the full flipbook`
                 }
               </p>
               <FlipbookViewer />

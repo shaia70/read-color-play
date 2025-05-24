@@ -43,7 +43,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
         
         <div className="text-center mb-6">
           <div className="text-3xl font-bold text-shelley-green mb-2">
-            {isHebrew ? `₪${amount}` : `₪${amount}`}
+            {amount} ₪
           </div>
           <p className="text-gray-600">
             {isHebrew 
