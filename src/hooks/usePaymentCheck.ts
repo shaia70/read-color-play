@@ -19,10 +19,12 @@ export const usePaymentCheck = () => {
 
   console.log('=== usePaymentCheck hook initialized ===');
   console.log('Using localStorage only - no Supabase dependency');
+  console.log('This is the CORRECT payment hook');
 
   const verifyPayment = async (userId: string) => {
     console.log('=== PAYMENT VERIFICATION START ===');
-    console.log('Checking payment for user:', userId);
+    console.log('Verifying payment for user ID:', userId);
+    console.log('Current timestamp:', new Date().toISOString());
     
     try {
       setIsLoading(true);
@@ -34,19 +36,20 @@ export const usePaymentCheck = () => {
       const storageKey = `user_payment_${userId}`;
       const paymentData = localStorage.getItem(storageKey);
       
-      console.log('Storage key:', storageKey);
-      console.log('Payment data found:', paymentData);
+      console.log('Storage key used:', storageKey);
+      console.log('Raw payment data from localStorage:', paymentData);
       
       if (paymentData) {
         const parsed = JSON.parse(paymentData);
         const isValid = parsed.status === 'completed';
         
-        console.log('Parsed data:', parsed);
-        console.log('Payment is valid:', isValid);
+        console.log('Parsed payment data:', parsed);
+        console.log('Payment status:', parsed.status);
+        console.log('Is payment valid:', isValid);
         
         setHasValidPayment(isValid);
       } else {
-        console.log('No payment data found');
+        console.log('No payment data found in localStorage');
         setHasValidPayment(false);
       }
     } catch (err) {
@@ -65,6 +68,7 @@ export const usePaymentCheck = () => {
     console.log('User ID:', userId);
     console.log('Session ID:', sessionId);
     console.log('Amount:', amount);
+    console.log('Timestamp:', new Date().toISOString());
     
     const paymentData: PaymentData = {
       id: `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -81,10 +85,12 @@ export const usePaymentCheck = () => {
       localStorage.setItem(storageKey, JSON.stringify(paymentData));
       setHasValidPayment(true);
       
-      console.log('Payment saved successfully:', paymentData);
+      console.log('Payment saved successfully to localStorage');
+      console.log('Payment data saved:', paymentData);
       console.log('Storage key used:', storageKey);
+      console.log('localStorage now contains:', localStorage.getItem(storageKey));
     } catch (saveError) {
-      console.error('Failed to save payment:', saveError);
+      console.error('Failed to save payment to localStorage:', saveError);
     }
   };
 

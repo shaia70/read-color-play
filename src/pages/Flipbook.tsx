@@ -20,11 +20,15 @@ const Flipbook = () => {
   const isHebrew = language === 'he';
 
   console.log('=== FLIPBOOK COMPONENT RENDER ===');
-  console.log('User:', user);
+  console.log('Component loaded at:', new Date().toISOString());
+  console.log('User object:', user);
   console.log('Has valid payment:', hasValidPayment);
-  console.log('Payment loading:', paymentLoading);
-  console.log('=== CONFIRMING CORRECT IMPORT ===');
-  console.log('usePaymentCheck hook imported correctly');
+  console.log('Payment loading state:', paymentLoading);
+  console.log('Show payment form:', showPayment);
+  console.log('Current language:', language);
+  console.log('=== IMPORT VERIFICATION ===');
+  console.log('usePaymentCheck imported from:', '@/hooks/usePaymentCheck');
+  console.log('This should NOT reference usePaymentVerification');
 
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
   useEffect(() => {
