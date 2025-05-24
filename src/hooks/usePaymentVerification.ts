@@ -58,8 +58,14 @@ if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
   // Only import and use createClient if we have valid credentials
   import('@supabase/supabase-js').then(({ createClient }) => {
     try {
-      supabase = createClient(supabaseUrl, supabaseAnonKey);
-      console.log('Supabase client initialized successfully');
+      // Double-check values are still valid before calling createClient
+      if (supabaseUrl && supabaseAnonKey && supabaseUrl.length > 0 && supabaseAnonKey.length > 0) {
+        supabase = createClient(supabaseUrl, supabaseAnonKey);
+        console.log('Supabase client initialized successfully');
+      } else {
+        console.warn('Environment variables became invalid during initialization');
+        supabase = null;
+      }
     } catch (error) {
       console.warn('Failed to initialize Supabase client:', error);
       supabase = null;
@@ -70,6 +76,7 @@ if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
   });
 } else {
   console.log('Supabase environment variables not properly configured, using localStorage fallback');
+  console.log('To fix this: Click the green Supabase button in Lovable and connect to your project');
   supabase = null;
 }
 
