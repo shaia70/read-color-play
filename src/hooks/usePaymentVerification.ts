@@ -12,11 +12,14 @@ interface PaymentRecord {
   created_at: string;
 }
 
-// Initialize Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+// Check if Supabase environment variables are available
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Initialize Supabase client only if environment variables are available
+const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -28,6 +31,14 @@ export const usePaymentVerification = () => {
     try {
       setIsLoading(true);
       setError(null);
+      
+      // If Supabase is not configured, fall back to localStorage
+      if (!supabase) {
+        console.log('Supabase not configured, checking localStorage for user:', userId);
+        const localPayment = localStorage.getItem(`payment_${userId}`);
+        setHasValidPayment(!!localPayment);
+        return;
+      }
       
       console.log('Checking payment status for user:', userId);
       
@@ -58,6 +69,18 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
+      // If Supabase is not configured, fall back to localStorage
+      if (!supabase) {
+        console.log('Supabase not configured, saving to localStorage for user:', userId);
+        localStorage.setItem(`payment_${userId}`, JSON.stringify({
+          sessionId,
+          amount,
+          timestamp: new Date().toISOString()
+        }));
+        setHasValidPayment(true);
+        return;
+      }
+      
       const paymentRecord: Omit<PaymentRecord, 'id' | 'created_at'> = {
         user_id: userId,
         stripe_session_id: sessionId,
