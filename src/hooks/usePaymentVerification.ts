@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createClient } from '@supabase/supabase-js';
@@ -18,15 +17,30 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Initialize Supabase client only if environment variables are valid and not empty
 let supabase = null;
-if (supabaseUrl && supabaseAnonKey && 
-    typeof supabaseUrl === 'string' && typeof supabaseAnonKey === 'string' &&
-    supabaseUrl.trim().length > 0 && supabaseAnonKey.trim().length > 0) {
+
+// More robust validation - ensure the variables are not undefined, null, or empty
+const isValidUrl = supabaseUrl && 
+  typeof supabaseUrl === 'string' && 
+  supabaseUrl.trim().length > 0 && 
+  supabaseUrl !== 'undefined' && 
+  supabaseUrl !== 'null';
+
+const isValidKey = supabaseAnonKey && 
+  typeof supabaseAnonKey === 'string' && 
+  supabaseAnonKey.trim().length > 0 && 
+  supabaseAnonKey !== 'undefined' && 
+  supabaseAnonKey !== 'null';
+
+if (isValidUrl && isValidKey) {
   try {
     supabase = createClient(supabaseUrl, supabaseAnonKey);
+    console.log('Supabase client initialized successfully');
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error);
     supabase = null;
   }
+} else {
+  console.log('Supabase environment variables not configured, using localStorage fallback');
 }
 
 export const usePaymentVerification = () => {
