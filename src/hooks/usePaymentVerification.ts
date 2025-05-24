@@ -32,8 +32,10 @@ export const usePaymentVerification = () => {
       if (paymentRecord) {
         const payment = JSON.parse(paymentRecord);
         setHasValidPayment(payment.status === 'completed');
+        console.log('Payment found:', payment);
       } else {
         setHasValidPayment(false);
+        console.log('No payment record found for user:', userId);
       }
     } catch (err) {
       console.error('Error checking payment:', err);
