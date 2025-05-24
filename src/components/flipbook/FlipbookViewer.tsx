@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -119,19 +120,40 @@ const FlipbookViewer: React.FC = () => {
         return false;
       }
 
-      // ניווט בספר
-      if (e.key === 'ArrowRight') {
-        if (!isHebrew) {
-          nextPage();
-        } else {
-          prevPage();
+      // ניווט בספר - רק על keydown כדי למנוע דילוג כפול
+      if (e.type === 'keydown') {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          if (!isHebrew) {
+            nextPage();
+          } else {
+            prevPage();
+          }
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (!isHebrew) {
+            prevPage();
+          } else {
+            nextPage();
+          }
         }
-      } else if (e.key === 'ArrowLeft') {
-        if (!isHebrew) {
-          prevPage();
-        } else {
-          nextPage();
-        }
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // רק מניעת מקשים מוגנים ב-keyup, ללא ניווט
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.key === 'u') ||
+        (e.ctrlKey && e.key === 's') ||
+        e.key === 'PrintScreen' ||
+        e.keyCode === 44 ||
+        e.which === 44
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
       }
     };
 
@@ -151,12 +173,12 @@ const FlipbookViewer: React.FC = () => {
     // בדיקה מתמשכת לזיהוי כלי מפתחים
     const devToolsCheck = setInterval(detectDevTools, 1000);
 
-    document.addEventListener('keydown', handleKeyDown, true); // Added capture phase
-    document.addEventListener('keyup', handleKeyDown, true);   // Also prevent on keyup
+    document.addEventListener('keydown', handleKeyDown, true);
+    document.addEventListener('keyup', handleKeyUp, true);
     
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
-      document.removeEventListener('keyup', handleKeyDown, true);
+      document.removeEventListener('keyup', handleKeyUp, true);
       clearInterval(devToolsCheck);
     };
   }, [isHebrew, currentPage]);
@@ -729,3 +751,4 @@ const FlipbookViewer: React.FC = () => {
 };
 
 export default FlipbookViewer;
+
