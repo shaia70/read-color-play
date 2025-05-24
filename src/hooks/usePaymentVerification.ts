@@ -17,56 +17,81 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
+  console.log('usePaymentVerification hook initialized - no Supabase here!');
+
   const checkPaymentStatus = async (userId: string) => {
-    console.log('Starting payment verification check for user:', userId);
+    console.log('=== PAYMENT CHECK START ===');
+    console.log('User ID:', userId);
     
     try {
       setIsLoading(true);
       setError(null);
       
-      console.log('Checking localStorage for payment record...');
+      console.log('Looking for payment in localStorage...');
       
-      // Add small delay to simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Small delay to simulate loading
+      await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Check localStorage for payment record
-      const storedPayment = localStorage.getItem(`payment_${userId}`);
-      console.log('Retrieved payment data from localStorage:', storedPayment);
+      // Get payment from localStorage only
+      const paymentKey = `payment_${userId}`;
+      const storedPaymentData = localStorage.getItem(paymentKey);
       
-      if (storedPayment) {
-        const paymentData = JSON.parse(storedPayment);
-        const isValid = paymentData.status === 'completed';
-        setHasValidPayment(isValid);
-        console.log('Payment validation result:', isValid, paymentData);
+      console.log('Payment key:', paymentKey);
+      console.log('Stored payment data:', storedPaymentData);
+      
+      if (storedPaymentData) {
+        try {
+          const paymentInfo = JSON.parse(storedPaymentData);
+          const isPaymentValid = paymentInfo.status === 'completed';
+          
+          console.log('Parsed payment info:', paymentInfo);
+          console.log('Is payment valid:', isPaymentValid);
+          
+          setHasValidPayment(isPaymentValid);
+        } catch (parseError) {
+          console.error('Error parsing payment data:', parseError);
+          setHasValidPayment(false);
+        }
       } else {
+        console.log('No payment found for this user');
         setHasValidPayment(false);
-        console.log('No payment record found for user:', userId);
       }
     } catch (err) {
-      console.error('Payment verification error:', err);
-      setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Payment verification failed');
+      console.error('Payment verification failed:', err);
+      const errorMsg = language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Payment verification failed';
+      setError(errorMsg);
       setHasValidPayment(false);
     } finally {
       setIsLoading(false);
-      console.log('Payment verification completed');
+      console.log('=== PAYMENT CHECK END ===');
     }
   };
 
   const recordPayment = (userId: string, sessionId: string, amount: number) => {
-    console.log('Recording new payment:', { userId, sessionId, amount });
+    console.log('=== RECORDING PAYMENT ===');
+    console.log('User:', userId, 'Session:', sessionId, 'Amount:', amount);
     
-    const newPayment: PaymentRecord = {
-      id: `payment_${Date.now()}`,
+    const paymentRecord: PaymentRecord = {
+      id: `payment_${Date.now()}_${Math.random()}`,
       user_id: userId,
       stripe_session_id: sessionId,
-      amount,
+      amount: amount,
       status: 'completed',
       created_at: new Date().toISOString()
     };
     
-    localStorage.setItem(`payment_${userId}`, JSON.stringify(newPayment));
-    setHasValidPayment(true);
-    console.log('Payment recorded successfully:', newPayment);
+    try {
+      const paymentKey = `payment_${userId}`;
+      const paymentJson = JSON.stringify(paymentRecord);
+      
+      localStorage.setItem(paymentKey, paymentJson);
+      setHasValidPayment(true);
+      
+      console.log('Payment recorded successfully:', paymentRecord);
+      console.log('Stored in localStorage with key:', paymentKey);
+    } catch (storageError) {
+      console.error('Failed to store payment:', storageError);
+    }
   };
 
   return {
