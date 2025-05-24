@@ -1,17 +1,19 @@
+
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-console.log('=== BEFORE SUPABASE IMPORT ===');
+console.log('=== usePaymentVerification: Starting module load ===');
+
+// Import supabase with error handling
+let supabase;
 try {
-  console.log('About to import supabase client...');
+  console.log('=== usePaymentVerification: About to import supabase ===');
+  const supabaseModule = await import('@/integrations/supabase/client');
+  supabase = supabaseModule.supabase;
+  console.log('=== usePaymentVerification: Supabase imported successfully ===');
 } catch (error) {
-  console.error('Error before supabase import:', error);
+  console.error('=== usePaymentVerification: Error importing supabase ===', error);
 }
-
-import { supabase } from '@/integrations/supabase/client';
-
-console.log('=== AFTER SUPABASE IMPORT ===');
-console.log('Supabase client imported:', !!supabase);
 
 interface PaymentRecord {
   id: string;
@@ -34,6 +36,13 @@ export const usePaymentVerification = () => {
       setError(null);
       
       console.log('Checking payment status for user:', userId);
+      
+      if (!supabase) {
+        console.error('Supabase client not available');
+        const localPayment = localStorage.getItem(`payment_${userId}`);
+        setHasValidPayment(!!localPayment);
+        return;
+      }
       
       // Query Supabase for payment records
       const { data: payments, error: dbError } = await supabase
@@ -77,6 +86,17 @@ export const usePaymentVerification = () => {
       };
       
       console.log('Recording payment:', paymentRecord);
+      
+      if (!supabase) {
+        console.error('Supabase client not available, using localStorage fallback');
+        localStorage.setItem(`payment_${userId}`, JSON.stringify({
+          sessionId,
+          amount,
+          timestamp: new Date().toISOString()
+        }));
+        setHasValidPayment(true);
+        return;
+      }
       
       const { data, error } = await supabase
         .from('payments')

@@ -3,28 +3,54 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+console.log('=== SUPABASE CLIENT MODULE LOADING ===');
+
 // Hardcoded values - these should always be available
 const supabaseUrl = "https://pahqikhckqjujbhvqnyb.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8";
 
-console.log('=== SUPABASE CLIENT SETUP ===');
-console.log('URL:', supabaseUrl);
-console.log('Key present:', !!supabaseKey);
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key present:', !!supabaseKey);
 console.log('URL type:', typeof supabaseUrl);
 console.log('Key type:', typeof supabaseKey);
+console.log('URL length:', supabaseUrl.length);
+console.log('Key length:', supabaseKey.length);
 
 // Validate before creating client
-if (!supabaseUrl || typeof supabaseUrl !== 'string') {
-  throw new Error(`Invalid supabaseUrl: ${supabaseUrl}`);
+if (!supabaseUrl) {
+  console.error('ERROR: supabaseUrl is falsy:', supabaseUrl);
+  throw new Error(`supabaseUrl is required but got: ${supabaseUrl}`);
 }
 
-if (!supabaseKey || typeof supabaseKey !== 'string') {
-  throw new Error(`Invalid supabaseKey: ${!!supabaseKey}`);
+if (typeof supabaseUrl !== 'string') {
+  console.error('ERROR: supabaseUrl is not a string:', typeof supabaseUrl);
+  throw new Error(`supabaseUrl must be a string but got: ${typeof supabaseUrl}`);
 }
 
-console.log('Creating client...');
+if (!supabaseKey) {
+  console.error('ERROR: supabaseKey is falsy:', !!supabaseKey);
+  throw new Error(`supabaseKey is required but got: ${!!supabaseKey}`);
+}
 
-// Create the client
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+if (typeof supabaseKey !== 'string') {
+  console.error('ERROR: supabaseKey is not a string:', typeof supabaseKey);
+  throw new Error(`supabaseKey must be a string but got: ${typeof supabaseKey}`);
+}
 
-console.log('Client created successfully:', !!supabase);
+console.log('About to call createClient with validated parameters...');
+console.log('Final URL check:', JSON.stringify(supabaseUrl));
+console.log('Final Key check (first 20 chars):', supabaseKey.substring(0, 20) + '...');
+
+// Create the client with explicit logging
+let supabaseClient;
+try {
+  supabaseClient = createClient<Database>(supabaseUrl, supabaseKey);
+  console.log('✅ Supabase client created successfully');
+} catch (error) {
+  console.error('❌ Error creating supabase client:', error);
+  throw error;
+}
+
+export const supabase = supabaseClient;
+
+console.log('=== SUPABASE CLIENT MODULE LOADED ===');
