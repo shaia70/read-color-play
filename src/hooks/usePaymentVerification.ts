@@ -18,6 +18,8 @@ export const usePaymentVerification = () => {
   const { language } = useLanguage();
 
   const checkPaymentStatus = async (userId: string) => {
+    console.log('Starting payment check for user:', userId);
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -29,6 +31,8 @@ export const usePaymentVerification = () => {
       
       // Check localStorage for payment record
       const paymentRecord = localStorage.getItem(`payment_${userId}`);
+      console.log('Payment record from localStorage:', paymentRecord);
+      
       if (paymentRecord) {
         const payment = JSON.parse(paymentRecord);
         setHasValidPayment(payment.status === 'completed');
@@ -43,10 +47,13 @@ export const usePaymentVerification = () => {
       setHasValidPayment(false);
     } finally {
       setIsLoading(false);
+      console.log('Payment check completed');
     }
   };
 
   const recordPayment = (userId: string, sessionId: string, amount: number) => {
+    console.log('Recording payment for user:', userId, 'Amount:', amount);
+    
     const paymentRecord: PaymentRecord = {
       id: `payment_${Date.now()}`,
       user_id: userId,
