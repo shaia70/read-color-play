@@ -11,18 +11,23 @@ console.log('=== SUPABASE CLIENT INITIALIZATION ===');
 console.log('SUPABASE_URL:', SUPABASE_URL);
 console.log('SUPABASE_PUBLISHABLE_KEY length:', SUPABASE_PUBLISHABLE_KEY?.length);
 
-// Validate configuration
-if (!SUPABASE_URL) {
-  throw new Error('SUPABASE_URL is not defined');
+// Validate configuration before creating client
+if (!SUPABASE_URL || typeof SUPABASE_URL !== 'string' || SUPABASE_URL.trim() === '') {
+  console.error('Invalid SUPABASE_URL:', SUPABASE_URL);
+  throw new Error('SUPABASE_URL is not defined or invalid');
 }
 
-if (!SUPABASE_PUBLISHABLE_KEY) {
-  throw new Error('SUPABASE_PUBLISHABLE_KEY is not defined');
+if (!SUPABASE_PUBLISHABLE_KEY || typeof SUPABASE_PUBLISHABLE_KEY !== 'string' || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
+  console.error('Invalid SUPABASE_PUBLISHABLE_KEY');
+  throw new Error('SUPABASE_PUBLISHABLE_KEY is not defined or invalid');
 }
 
-console.log('Creating Supabase client...');
+console.log('Creating Supabase client with validated parameters...');
 
-// Create and export the client directly
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Create the client with explicit string values
+export const supabase = createClient<Database>(
+  SUPABASE_URL.trim(),
+  SUPABASE_PUBLISHABLE_KEY.trim()
+);
 
 console.log('Supabase client created successfully');
