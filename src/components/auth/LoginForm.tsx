@@ -32,8 +32,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         await register(email, password, name);
       }
       onSuccess?.();
-    } catch (err) {
-      setError(isHebrew ? 'שגיאה באימות' : 'Authentication error');
+    } catch (err: any) {
+      console.error('Authentication error:', err);
+      
+      // Handle specific error cases
+      if (err.message?.includes('Invalid login credentials')) {
+        setError(isHebrew ? 'שם משתמש או סיסמה שגויים' : 'Invalid email or password');
+      } else if (err.message?.includes('User already registered')) {
+        setError(isHebrew ? 'המשתמש כבר רשום במערכת. נסה להתחבר במקום' : 'User already registered. Try logging in instead');
+        setIsLoginMode(true);
+      } else if (err.message?.includes('Email not confirmed')) {
+        setError(isHebrew ? 'נדרש אימות מייל. בדוק את תיבת המייל שלך או פנה למנהל המערכת' : 'Email confirmation required. Check your email or contact support');
+      } else if (err.message?.includes('signup is disabled')) {
+        setError(isHebrew ? 'הרשמה חדשה מושבתת כרגע' : 'New signups are currently disabled');
+      } else {
+        setError(isHebrew ? 'שגיאה באימות. נסה שוב' : 'Authentication error. Please try again');
+      }
     }
   };
 
@@ -98,7 +112,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         </div>
         
         {error && (
-          <div className="text-red-600 text-sm text-center">
+          <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg border border-red-200">
             {error}
           </div>
         )}
