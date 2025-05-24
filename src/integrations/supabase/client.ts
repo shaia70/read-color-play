@@ -25,18 +25,37 @@ if (!supabaseKey || supabaseKey.trim() === '') {
 
 console.log('Creating Supabase client with validated credentials...');
 
-// Create the client with validated credentials
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
+// Create the client lazily - only when accessed
+let _supabase: ReturnType<typeof createClient<Database>> | null = null;
+
+export const supabase = new Proxy({} as ReturnType<typeof createClient<Database>>, {
+  get(target, prop) {
+    if (!_supabase) {
+      console.log('=== Creating Supabase client on first access ===');
+      _supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        }
+      });
+    }
+    return _supabase[prop as keyof typeof _supabase];
   }
 });
 
 // Also export a function version for compatibility
 export const getSupabaseClient = () => {
   console.log('=== Getting Supabase client ===');
-  return supabase;
+  if (!_supabase) {
+    console.log('=== Creating Supabase client via function ===');
+    _supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    });
+  }
+  return _supabase;
 };
 
 console.log('=== SUPABASE CLIENT MODULE LOADED ===');
