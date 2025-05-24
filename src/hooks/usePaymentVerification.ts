@@ -23,7 +23,8 @@ const isValidUrl = supabaseUrl &&
   typeof supabaseUrl === 'string' && 
   supabaseUrl.trim().length > 0 && 
   supabaseUrl !== 'undefined' && 
-  supabaseUrl !== 'null';
+  supabaseUrl !== 'null' &&
+  supabaseUrl.startsWith('http');
 
 const isValidKey = supabaseAnonKey && 
   typeof supabaseAnonKey === 'string' && 
@@ -33,7 +34,7 @@ const isValidKey = supabaseAnonKey &&
 
 if (isValidUrl && isValidKey) {
   try {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
+    supabase = createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
     console.log('Supabase client initialized successfully');
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error);
@@ -41,6 +42,9 @@ if (isValidUrl && isValidKey) {
   }
 } else {
   console.log('Supabase environment variables not configured, using localStorage fallback');
+  console.log('URL valid:', isValidUrl, 'Key valid:', isValidKey);
+  console.log('URL value:', supabaseUrl);
+  console.log('Key value:', supabaseAnonKey ? '[REDACTED]' : 'undefined/null');
 }
 
 export const usePaymentVerification = () => {
