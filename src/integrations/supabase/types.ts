@@ -12,26 +12,32 @@ export type Database = {
       payments: {
         Row: {
           amount: number
+          created_at: string | null
           currency: string
           id: string
           paypal_transaction_id: string | null
           status: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
           amount: number
+          created_at?: string | null
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
           status?: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
           amount?: number
+          created_at?: string | null
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
           status?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -49,16 +55,22 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          name: string | null
+          updated_at: string | null
         }
         Insert: {
           created_at?: string
           email?: string
           id?: string
+          name?: string | null
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
+          name?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
