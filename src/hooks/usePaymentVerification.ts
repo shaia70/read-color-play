@@ -4,18 +4,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 console.log('=== usePaymentVerification: Starting module load ===');
 
-// Import supabase with error handling
-let supabase;
-try {
-  console.log('=== usePaymentVerification: About to import supabase ===');
-  const supabaseModule = require('@/integrations/supabase/client');
-  supabase = supabaseModule.supabase;
-  console.log('=== usePaymentVerification: Supabase imported successfully ===', !!supabase);
-} catch (error) {
-  console.error('=== usePaymentVerification: Error importing supabase ===', error);
-  supabase = null;
-}
-
 interface PaymentRecord {
   id: string;
   user_id: string;
@@ -31,12 +19,27 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
+  // Function to get supabase client safely
+  const getSupabaseClient = () => {
+    try {
+      console.log('=== usePaymentVerification: Getting supabase client ===');
+      const { supabase } = require('@/integrations/supabase/client');
+      console.log('=== usePaymentVerification: Supabase client retrieved ===', !!supabase);
+      return supabase;
+    } catch (error) {
+      console.error('=== usePaymentVerification: Error getting supabase client ===', error);
+      return null;
+    }
+  };
+
   const checkPaymentStatus = async (userId: string) => {
     try {
       setIsLoading(true);
       setError(null);
       
       console.log('Checking payment status for user:', userId);
+      
+      const supabase = getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available');
@@ -87,6 +90,8 @@ export const usePaymentVerification = () => {
       };
       
       console.log('Recording payment:', paymentRecord);
+      
+      const supabase = getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available, using localStorage fallback');
