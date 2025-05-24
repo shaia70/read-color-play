@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -121,21 +119,19 @@ const FlipbookViewer: React.FC = () => {
       }
 
       // ניווט בספר - רק על keydown כדי למנוע דילוג כפול
-      if (e.type === 'keydown') {
-        if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          if (!isHebrew) {
-            nextPage();
-          } else {
-            prevPage();
-          }
-        } else if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          if (!isHebrew) {
-            prevPage();
-          } else {
-            nextPage();
-          }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (!isHebrew) {
+          nextPage();
+        } else {
+          prevPage();
+        }
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (!isHebrew) {
+          prevPage();
+        } else {
+          nextPage();
         }
       }
     };
@@ -181,7 +177,7 @@ const FlipbookViewer: React.FC = () => {
       document.removeEventListener('keyup', handleKeyUp, true);
       clearInterval(devToolsCheck);
     };
-  }, [isHebrew, currentPage]);
+  }, [isHebrew]);
 
   const getCurrentPageDisplay = () => {
     if (currentPage === 0) {
@@ -751,4 +747,3 @@ const FlipbookViewer: React.FC = () => {
 };
 
 export default FlipbookViewer;
-
