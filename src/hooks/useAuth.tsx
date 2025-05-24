@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
@@ -136,13 +135,6 @@ export const useAuthProvider = (): AuthContextType => {
       setUser(null);
       setSession(null);
       
-      // Clear any payment records from localStorage
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('payment_')) {
-          localStorage.removeItem(key);
-        }
-      });
-
       await supabase.auth.signOut();
     } catch (error) {
       console.error('Logout error:', error);

@@ -1,10 +1,11 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Lock, Eye, CreditCard, LogOut, RefreshCw, CheckCircle } from "lucide-react";
+import { Lock, Eye, CreditCard, LogOut, RefreshCw } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
@@ -54,22 +55,6 @@ const Flipbook = () => {
     } finally {
       setIsRefreshing(false);
     }
-  };
-
-  // Temporary function for testing - simulate payment completion
-  const handleTestPayment = () => {
-    if (!user) return;
-    
-    console.log('Simulating payment for testing');
-    localStorage.setItem(`payment_${user.id}`, JSON.stringify({
-      user_id: user.id,
-      amount: 70,
-      status: 'completed',
-      created_at: new Date().toISOString()
-    }));
-    
-    // Force refresh the payment status
-    checkPaymentStatus(user.id);
   };
 
   const pageTitle = isHebrew 
@@ -155,17 +140,6 @@ const Flipbook = () => {
               >
                 {isHebrew ? 'רענון סטטוס תשלום' : 'Refresh Payment Status'}
               </CustomButton>
-              
-              {/* Temporary test button - remove in production */}
-              <CustomButton
-                variant="outline"
-                size="sm"
-                icon={<CheckCircle className="w-4 h-4" />}
-                onClick={handleTestPayment}
-                className="bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
-              >
-                {isHebrew ? 'סימולציה תשלום (בדיקה)' : 'Simulate Payment (Test)'}
-              </CustomButton>
             </div>
             
             <CustomButton
@@ -198,6 +172,12 @@ const Flipbook = () => {
                   <p className="text-yellow-800">
                     {isHebrew ? 'בודק סטטוס תשלום...' : 'Checking payment status...'}
                   </p>
+                </div>
+              )}
+
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-800">{error}</p>
                 </div>
               )}
               
