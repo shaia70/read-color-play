@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -109,9 +110,12 @@ const FlipbookViewer: React.FC = () => {
         (e.ctrlKey && e.shiftKey && e.key === 'I') ||
         (e.ctrlKey && e.key === 'u') ||
         (e.ctrlKey && e.key === 's') ||
-        e.key === 'PrintScreen'
+        e.key === 'PrintScreen' ||
+        e.keyCode === 44 || // Print Screen key code
+        e.which === 44      // Additional check for Print Screen
       ) {
         e.preventDefault();
+        e.stopPropagation();
         return false;
       }
 
@@ -147,10 +151,12 @@ const FlipbookViewer: React.FC = () => {
     // בדיקה מתמשכת לזיהוי כלי מפתחים
     const devToolsCheck = setInterval(detectDevTools, 1000);
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown, true); // Added capture phase
+    document.addEventListener('keyup', handleKeyDown, true);   // Also prevent on keyup
     
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown, true);
+      document.removeEventListener('keyup', handleKeyDown, true);
       clearInterval(devToolsCheck);
     };
   }, [isHebrew, currentPage]);
@@ -215,7 +221,7 @@ const FlipbookViewer: React.FC = () => {
         MozUserSelect: 'none',
         msUserSelect: 'none',
         WebkitTouchCallout: 'none',
-        WebkitUserDrag: 'none',
+        WebkitUserDrag: 'none' as any,
         KhtmlUserSelect: 'none'
       } as React.CSSProperties}
     />
