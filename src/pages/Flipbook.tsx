@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -40,7 +41,7 @@ const Flipbook = () => {
     ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום"
     : "Experience our children's books in an interactive digital flipbook format. Instant access after payment";
 
-  const bookPrice = 19.99; // מחיר בדולרים
+  const bookPrice = 20; // מחיר בדולרים
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   const handlePaymentSuccess = () => {
