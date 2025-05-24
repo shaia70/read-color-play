@@ -3,11 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { FlipbookControls } from "./FlipbookControls";
-import { FlipbookPageDisplay } from "./FlipbookPageDisplay";
-import { FlipbookNavigation } from "./FlipbookNavigation";
-import { FlipbookPageSlider } from "./FlipbookPageSlider";
-import { FlipbookWarning } from "./FlipbookWarning";
 
 // מערך של תמונות לפליפבוק - מתחיל עם עמודים 6-7 (כפול), 8-9 (כפול), 10-11 (כפול), 12-13 (כפול), 14-15 (כפול), 16-17 (כפול), 18-19 (כפול), 20-21 (כפול), 22-23 (כפול), עמודים 24-25 (כפול), עמודים 26-27 (כפול), עמודים 28-29 (כפול), עמודים 30-31 (כפול), עמודים 32-33 (כפול), ואז עמודים בודדים
 const BOOK_PAGES = [
@@ -511,15 +506,52 @@ const FlipbookViewer: React.FC = () => {
 
   return (
     <div className="glass-card p-6">
-      <FlipbookControls
-        zoom={zoom}
-        onZoomIn={zoomIn}
-        onZoomOut={zoomOut}
-        onResetZoom={resetZoom}
-        currentPageDisplay={getCurrentPageDisplay()}
-        totalPages={BOOK_PAGES.length}
-        isHebrew={isHebrew}
-      />
+      {/* FlipbookControls */}
+      <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center gap-2">
+          <CustomButton
+            variant="outline"
+            size="sm"
+            onClick={zoomOut}
+            disabled={zoom <= 0.5}
+            icon={<ZoomOut className="w-4 h-4" />}
+          >
+            {isHebrew ? "הקטן" : "Zoom Out"}
+          </CustomButton>
+          
+          <span className="mx-2 text-sm font-medium">
+            {Math.round(zoom * 100)}%
+          </span>
+          
+          <CustomButton
+            variant="outline"
+            size="sm"
+            onClick={zoomIn}
+            disabled={zoom >= 2}
+            icon={<ZoomIn className="w-4 h-4" />}
+          >
+            {isHebrew ? "הגדל" : "Zoom In"}
+          </CustomButton>
+          
+          <CustomButton
+            variant="outline"
+            size="sm"
+            onClick={resetZoom}
+            icon={<RotateCcw className="w-4 h-4" />}
+          >
+            {isHebrew ? "איפוס" : "Reset"}
+          </CustomButton>
+        </div>
+        
+        <div className="text-center">
+          <span className="text-lg font-semibold">
+            {getCurrentPageDisplay()}
+          </span>
+          <span className="text-sm text-gray-500 block">
+            {isHebrew ? `מתוך ${BOOK_PAGES.length}` : `of ${BOOK_PAGES.length}`}
+          </span>
+        </div>
+      </div>
 
       {/* אזור הפליפבוק */}
       <div className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" style={{ height: '700px' }}>
@@ -531,21 +563,58 @@ const FlipbookViewer: React.FC = () => {
           {getPageContent()}
         </div>
         
-        <FlipbookNavigation
-          onPrevPage={prevPage}
-          onNextPage={nextPage}
-          canGoPrev={currentPage > 0}
-          canGoNext={currentPage < BOOK_PAGES.length - 1}
+        {/* FlipbookNavigation */}
+        <CustomButton
+          variant="ghost"
+          size="lg"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg"
+          onClick={isHebrew ? nextPage : prevPage}
+          disabled={isHebrew ? currentPage >= BOOK_PAGES.length - 1 : currentPage <= 0}
+          icon={<ChevronLeft className="w-6 h-6" />}
+        />
+        
+        <CustomButton
+          variant="ghost"
+          size="lg"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg"
+          onClick={isHebrew ? prevPage : nextPage}
+          disabled={isHebrew ? currentPage <= 0 : currentPage >= BOOK_PAGES.length - 1}
+          icon={<ChevronRight className="w-6 h-6" />}
         />
       </div>
 
-      <FlipbookPageSlider
-        currentPage={currentPage}
-        totalPages={BOOK_PAGES.length}
-        onPageChange={goToPage}
-      />
+      {/* FlipbookPageSlider */}
+      <div className="mt-4 px-4">
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-medium min-w-0">
+            {isHebrew ? "עמוד:" : "Page:"}
+          </span>
+          <input
+            type="range"
+            min="0"
+            max={BOOK_PAGES.length - 1}
+            value={currentPage}
+            onChange={(e) => goToPage(parseInt(e.target.value))}
+            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            style={{
+              background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${(currentPage / (BOOK_PAGES.length - 1)) * 100}%, #E5E7EB ${(currentPage / (BOOK_PAGES.length - 1)) * 100}%, #E5E7EB 100%)`
+            }}
+          />
+          <span className="text-sm text-gray-500 min-w-0">
+            {currentPage + 1} / {BOOK_PAGES.length}
+          </span>
+        </div>
+      </div>
 
-      <FlipbookWarning isHebrew={isHebrew} />
+      {/* FlipbookWarning */}
+      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p className="text-sm text-yellow-800">
+          {isHebrew 
+            ? "השתמש בחצים או בכפתורי הניווט לדפדוף בין העמודים"
+            : "Use arrow keys or navigation buttons to flip through pages"
+          }
+        </p>
+      </div>
     </div>
   );
 };
