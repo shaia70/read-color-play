@@ -1,18 +1,15 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PaymentRecord {
   id: string;
   user_id: string;
-  paypal_transaction_id: string | null;
+  stripe_session_id: string;
   amount: number;
   status: 'pending' | 'completed' | 'failed';
-  currency: string;
-  timestamp: number;
+  created_at: string;
 }
-
-const PAYMENT_STORAGE_KEY = 'shelley_payments';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -20,50 +17,27 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  const getStoredPayments = (): PaymentRecord[] => {
-    try {
-      const stored = localStorage.getItem(PAYMENT_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (err) {
-      console.error('Error reading payments from localStorage:', err);
-      return [];
-    }
-  };
-
-  const savePayment = (payment: PaymentRecord): void => {
-    try {
-      const existingPayments = getStoredPayments();
-      const updatedPayments = [...existingPayments, payment];
-      localStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(updatedPayments));
-      console.log('Payment saved to localStorage:', payment);
-    } catch (err) {
-      console.error('Error saving payment to localStorage:', err);
-    }
-  };
-
   const checkPaymentStatus = async (userId: string) => {
     try {
       setIsLoading(true);
       setError(null);
       
+      // TODO: This will need to be implemented with Supabase
+      // For now, we'll simulate the check
       console.log('Checking payment status for user:', userId);
       
-      // Get payments from localStorage
-      const payments = getStoredPayments();
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Find completed payments for this user
-      const userCompletedPayments = payments.filter(
-        payment => payment.user_id === userId && payment.status === 'completed'
-      );
-      
-      const hasPayment = userCompletedPayments.length > 0;
-      console.log('Payment found in localStorage:', hasPayment);
-      console.log('User completed payments:', userCompletedPayments);
-      
-      setHasValidPayment(hasPayment);
-      
+      // For demonstration, we'll check localStorage as a temporary solution
+      const paymentRecord = localStorage.getItem(`payment_${userId}`);
+      if (paymentRecord) {
+        const payment = JSON.parse(paymentRecord);
+        setHasValidPayment(payment.status === 'completed');
+      } else {
+        setHasValidPayment(false);
+      }
     } catch (err) {
-      console.error('Error checking payment:', err);
       setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
       setHasValidPayment(false);
     } finally {
@@ -71,30 +45,18 @@ export const usePaymentVerification = () => {
     }
   };
 
-  const recordPayment = async (userId: string, sessionId: string, amount: number) => {
-    try {
-      const paymentRecord: PaymentRecord = {
-        id: `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        user_id: userId,
-        paypal_transaction_id: sessionId,
-        amount,
-        status: 'completed' as const,
-        currency: 'ILS',
-        timestamp: Date.now()
-      };
-      
-      console.log('Recording payment:', paymentRecord);
-      
-      // Save to localStorage
-      savePayment(paymentRecord);
-      
-      console.log('Payment recorded successfully:', paymentRecord);
-      setHasValidPayment(true);
-      
-    } catch (err) {
-      console.error('Error recording payment:', err);
-      setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
-    }
+  const recordPayment = (userId: string, sessionId: string, amount: number) => {
+    const paymentRecord: PaymentRecord = {
+      id: `payment_${Date.now()}`,
+      user_id: userId,
+      stripe_session_id: sessionId,
+      amount,
+      status: 'completed',
+      created_at: new Date().toISOString()
+    };
+    
+    localStorage.setItem(`payment_${userId}`, JSON.stringify(paymentRecord));
+    setHasValidPayment(true);
   };
 
   return {

@@ -25,51 +25,15 @@ export const useAuth = () => {
   return context;
 };
 
-const AUTH_STORAGE_KEY = 'shelley_auth_user';
-const USERS_STORAGE_KEY = 'shelley_users';
-
 export const useAuthProvider = (): AuthContextType => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getStoredUsers = (): User[] => {
-    try {
-      const stored = localStorage.getItem(USERS_STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (err) {
-      console.error('Error reading users from localStorage:', err);
-      return [];
-    }
-  };
-
-  const saveUser = (newUser: User): void => {
-    try {
-      const existingUsers = getStoredUsers();
-      const userIndex = existingUsers.findIndex(u => u.email === newUser.email);
-      
-      if (userIndex >= 0) {
-        existingUsers[userIndex] = newUser;
-      } else {
-        existingUsers.push(newUser);
-      }
-      
-      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(existingUsers));
-      console.log('User saved to localStorage:', newUser);
-    } catch (err) {
-      console.error('Error saving user to localStorage:', err);
-    }
-  };
-
   useEffect(() => {
     // Check for existing session on app start
-    const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
+    const savedUser = localStorage.getItem('auth_user');
     if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (err) {
-        console.error('Error parsing saved user:', err);
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-      }
+      setUser(JSON.parse(savedUser));
     }
     setIsLoading(false);
   }, []);
@@ -77,27 +41,18 @@ export const useAuthProvider = (): AuthContextType => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate login delay
+      // TODO: Replace with actual authentication
+      // For now, simulate login
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Check if user exists
-      const users = getStoredUsers();
-      let existingUser = users.find(u => u.email === email);
+      const userData: User = {
+        id: `user_${Date.now()}`,
+        email,
+        name: email.split('@')[0]
+      };
       
-      if (!existingUser) {
-        // Create new user if doesn't exist
-        existingUser = {
-          id: `user_${Date.now()}`,
-          email,
-          name: email.split('@')[0]
-        };
-        saveUser(existingUser);
-      }
-      
-      setUser(existingUser);
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(existingUser));
-      
-      console.log('User logged in successfully:', existingUser);
+      setUser(userData);
+      localStorage.setItem('auth_user', JSON.stringify(userData));
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +61,7 @@ export const useAuthProvider = (): AuthContextType => {
   const register = async (email: string, password: string, name?: string) => {
     setIsLoading(true);
     try {
-      // Simulate registration delay
+      // TODO: Replace with actual registration
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const userData: User = {
@@ -115,11 +70,8 @@ export const useAuthProvider = (): AuthContextType => {
         name: name || email.split('@')[0]
       };
       
-      saveUser(userData);
       setUser(userData);
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
-      
-      console.log('User registered successfully:', userData);
+      localStorage.setItem('auth_user', JSON.stringify(userData));
     } finally {
       setIsLoading(false);
     }
@@ -127,9 +79,8 @@ export const useAuthProvider = (): AuthContextType => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    // Note: Not removing user data or payments, just the auth session
-    console.log('User logged out');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem(`payment_${user?.id}`);
   };
 
   return {
