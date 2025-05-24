@@ -39,7 +39,6 @@ export const getSupabaseClient = () => {
   return _supabase;
 };
 
-// Export the same function as supabase for backwards compatibility
-export const supabase = getSupabaseClient();
-
+// DO NOT export the client directly - only export the getter function
+// This prevents immediate initialization
 console.log('=== SUPABASE CLIENT MODULE LOADED ===');

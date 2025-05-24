@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getSupabaseClient } from '@/integrations/supabase/client';
 
 console.log('=== usePaymentVerification: Starting module load ===');
 
@@ -27,6 +26,8 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
+      // Dynamically import the client getter to avoid immediate initialization
+      const { getSupabaseClient } = await import('@/integrations/supabase/client');
       const supabase = getSupabaseClient();
       
       // Query Supabase for payment records
@@ -70,6 +71,8 @@ export const usePaymentVerification = () => {
       
       console.log('Recording payment:', paymentRecord);
       
+      // Dynamically import the client getter to avoid immediate initialization
+      const { getSupabaseClient } = await import('@/integrations/supabase/client');
       const supabase = getSupabaseClient();
       
       const { data, error } = await supabase
