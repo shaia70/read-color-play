@@ -13,28 +13,18 @@ console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Key present:', !!supabaseKey);
 console.log('URL type:', typeof supabaseUrl);
 console.log('Key type:', typeof supabaseKey);
-console.log('URL length:', supabaseUrl.length);
-console.log('Key length:', supabaseKey.length);
+console.log('URL length:', supabaseUrl?.length);
+console.log('Key length:', supabaseKey?.length);
 
 // Validate before creating client
-if (!supabaseUrl) {
-  console.error('ERROR: supabaseUrl is falsy:', supabaseUrl);
+if (!supabaseUrl || typeof supabaseUrl !== 'string' || supabaseUrl.trim() === '') {
+  console.error('ERROR: supabaseUrl is invalid:', supabaseUrl);
   throw new Error(`supabaseUrl is required but got: ${supabaseUrl}`);
 }
 
-if (typeof supabaseUrl !== 'string') {
-  console.error('ERROR: supabaseUrl is not a string:', typeof supabaseUrl);
-  throw new Error(`supabaseUrl must be a string but got: ${typeof supabaseUrl}`);
-}
-
-if (!supabaseKey) {
-  console.error('ERROR: supabaseKey is falsy:', !!supabaseKey);
+if (!supabaseKey || typeof supabaseKey !== 'string' || supabaseKey.trim() === '') {
+  console.error('ERROR: supabaseKey is invalid:', !!supabaseKey);
   throw new Error(`supabaseKey is required but got: ${!!supabaseKey}`);
-}
-
-if (typeof supabaseKey !== 'string') {
-  console.error('ERROR: supabaseKey is not a string:', typeof supabaseKey);
-  throw new Error(`supabaseKey must be a string but got: ${typeof supabaseKey}`);
 }
 
 console.log('About to call createClient with validated parameters...');

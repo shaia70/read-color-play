@@ -23,9 +23,19 @@ export const usePaymentVerification = () => {
   const getSupabaseClient = async () => {
     try {
       console.log('=== usePaymentVerification: Getting supabase client ===');
+      
+      // Add a small delay to ensure module is fully loaded
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const supabaseModule = await import('@/integrations/supabase/client');
       const supabase = supabaseModule.supabase;
-      console.log('=== usePaymentVerification: Supabase client retrieved ===', !!supabase);
+      
+      if (!supabase) {
+        console.error('=== usePaymentVerification: Supabase client is null/undefined ===');
+        return null;
+      }
+      
+      console.log('=== usePaymentVerification: Supabase client retrieved successfully ===');
       return supabase;
     } catch (error) {
       console.error('=== usePaymentVerification: Error getting supabase client ===', error);
