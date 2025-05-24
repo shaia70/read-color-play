@@ -8,43 +8,21 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 // Debug logging
 console.log('=== SUPABASE CLIENT INITIALIZATION ===');
-console.log('SUPABASE_URL type:', typeof SUPABASE_URL);
-console.log('SUPABASE_URL value:', SUPABASE_URL);
-console.log('SUPABASE_URL length:', SUPABASE_URL?.length);
-console.log('SUPABASE_PUBLISHABLE_KEY type:', typeof SUPABASE_PUBLISHABLE_KEY);
+console.log('SUPABASE_URL:', SUPABASE_URL);
 console.log('SUPABASE_PUBLISHABLE_KEY length:', SUPABASE_PUBLISHABLE_KEY?.length);
 
-// Validate that we have the required configuration
-if (!SUPABASE_URL || SUPABASE_URL.trim() === '') {
-  console.error('SUPABASE_URL validation failed:', {
-    value: SUPABASE_URL,
-    type: typeof SUPABASE_URL,
-    length: SUPABASE_URL?.length,
-    trimmed: SUPABASE_URL?.trim()
-  });
-  throw new Error('Missing SUPABASE_URL');
+// Validate configuration
+if (!SUPABASE_URL) {
+  throw new Error('SUPABASE_URL is not defined');
 }
 
-if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
-  console.error('SUPABASE_PUBLISHABLE_KEY validation failed:', {
-    type: typeof SUPABASE_PUBLISHABLE_KEY,
-    length: SUPABASE_PUBLISHABLE_KEY?.length
-  });
-  throw new Error('Missing SUPABASE_PUBLISHABLE_KEY');
+if (!SUPABASE_PUBLISHABLE_KEY) {
+  throw new Error('SUPABASE_PUBLISHABLE_KEY is not defined');
 }
 
-console.log('Creating Supabase client with URL:', SUPABASE_URL);
+console.log('Creating Supabase client...');
 
-// Create the Supabase client
-let supabase: ReturnType<typeof createClient<Database>>;
+// Create and export the client directly
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-try {
-  supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-  console.log('Supabase client created successfully');
-} catch (error) {
-  console.error('Failed to create Supabase client:', error);
-  throw error;
-}
-
-// Export the client
-export { supabase };
+console.log('Supabase client created successfully');
