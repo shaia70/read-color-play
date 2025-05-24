@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -16,7 +15,7 @@ import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 const Flipbook = () => {
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
-  const { hasValidPayment, isLoading: paymentLoading, checkPaymentStatus, recordPayment } = usePaymentVerification();
+  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, recordPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isHebrew = language === 'he';
