@@ -16,10 +16,13 @@ interface PaymentRecord {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Initialize Supabase client only if environment variables are available and not empty
-const supabase = (supabaseUrl && supabaseAnonKey && supabaseUrl.trim() !== '' && supabaseAnonKey.trim() !== '') 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+// Initialize Supabase client only if environment variables are valid strings
+const supabase = (
+  typeof supabaseUrl === 'string' && 
+  typeof supabaseAnonKey === 'string' && 
+  supabaseUrl.length > 0 && 
+  supabaseAnonKey.length > 0
+) ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
