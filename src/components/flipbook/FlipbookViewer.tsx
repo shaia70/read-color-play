@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -55,7 +56,7 @@ const PAGE_33_URL = "/lovable-uploads/561280c9-6bce-4561-9eb1-c0921af9e5b7.png";
 const FlipbookViewer: React.FC = () => {
   const { language } = useLanguage();
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [zoom, setZoom] = useState<number>(1);
+  const [zoom, setZoom] = useState<number>(2); // Changed from 1 to 2 for 200% default zoom
   const flipbookRef = useRef<HTMLDivElement>(null);
   const isHebrew = language === 'he';
 
@@ -712,3 +713,4 @@ const FlipbookViewer: React.FC = () => {
 };
 
 export default FlipbookViewer;
+
