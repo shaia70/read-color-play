@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getSupabaseClient } from '@/integrations/supabase/client';
 
 console.log('=== usePaymentVerification: Starting module load ===');
 
@@ -19,25 +20,6 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  const getSupabaseClient = async () => {
-    try {
-      console.log('=== usePaymentVerification: Attempting to import supabase client ===');
-      
-      // Import the getSupabaseClient function instead of the proxy
-      const supabaseModule = await import('@/integrations/supabase/client');
-      console.log('=== usePaymentVerification: Supabase module imported successfully ===');
-      
-      // Use the function version which handles the creation internally
-      const client = supabaseModule.getSupabaseClient();
-      console.log('=== usePaymentVerification: Supabase client obtained successfully ===');
-      
-      return client;
-    } catch (error) {
-      console.error('=== usePaymentVerification: Error getting supabase client ===', error);
-      return null;
-    }
-  };
-
   const checkPaymentStatus = async (userId: string) => {
     try {
       setIsLoading(true);
@@ -45,13 +27,7 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
-      const supabase = await getSupabaseClient();
-      if (!supabase) {
-        console.error('Supabase client not available');
-        const localPayment = localStorage.getItem(`payment_${userId}`);
-        setHasValidPayment(!!localPayment);
-        return;
-      }
+      const supabase = getSupabaseClient();
       
       // Query Supabase for payment records
       const { data: payments, error: dbError } = await supabase
@@ -64,21 +40,19 @@ export const usePaymentVerification = () => {
       
       if (dbError) {
         console.error('Supabase error:', dbError);
-        // Fall back to localStorage if database query fails
-        const localPayment = localStorage.getItem(`payment_${userId}`);
-        setHasValidPayment(!!localPayment);
+        setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
+        setHasValidPayment(false);
         return;
       }
       
-      setHasValidPayment(payments && payments.length > 0);
+      const hasPayment = payments && payments.length > 0;
+      console.log('Payment found:', hasPayment);
+      setHasValidPayment(hasPayment);
       
     } catch (err) {
       console.error('Error checking payment:', err);
       setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
-      
-      // Fall back to localStorage
-      const localPayment = localStorage.getItem(`payment_${userId}`);
-      setHasValidPayment(!!localPayment);
+      setHasValidPayment(false);
     } finally {
       setIsLoading(false);
     }
@@ -96,17 +70,7 @@ export const usePaymentVerification = () => {
       
       console.log('Recording payment:', paymentRecord);
       
-      const supabase = await getSupabaseClient();
-      if (!supabase) {
-        console.error('Supabase client not available, using localStorage fallback');
-        localStorage.setItem(`payment_${userId}`, JSON.stringify({
-          sessionId,
-          amount,
-          timestamp: new Date().toISOString()
-        }));
-        setHasValidPayment(true);
-        return;
-      }
+      const supabase = getSupabaseClient();
       
       const { data, error } = await supabase
         .from('payments')
@@ -116,29 +80,16 @@ export const usePaymentVerification = () => {
       
       if (error) {
         console.error('Error recording payment:', error);
-        // Fall back to localStorage
-        localStorage.setItem(`payment_${userId}`, JSON.stringify({
-          sessionId,
-          amount,
-          timestamp: new Date().toISOString()
-        }));
-      } else {
-        console.log('Payment recorded successfully:', data);
+        setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
+        return;
       }
       
+      console.log('Payment recorded successfully:', data);
       setHasValidPayment(true);
       
     } catch (err) {
       console.error('Error recording payment:', err);
       setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
-      
-      // Fall back to localStorage
-      localStorage.setItem(`payment_${userId}`, JSON.stringify({
-        sessionId,
-        amount,
-        timestamp: new Date().toISOString()
-      }));
-      setHasValidPayment(true);
     }
   };
 
