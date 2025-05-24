@@ -207,7 +207,6 @@ const FlipbookViewer: React.FC = () => {
       className={className}
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
-      onSelectStart={(e) => e.preventDefault()}
       draggable={false}
       style={{
         ...style,
