@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { createClient } from '@supabase/supabase-js';
 
 interface PaymentRecord {
   id: string;
@@ -11,12 +10,6 @@ interface PaymentRecord {
   status: 'pending' | 'completed' | 'failed';
   created_at: string;
 }
-
-// Initialize Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -31,21 +24,16 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
-      // Query Supabase for payment records
-      const { data: payments, error: dbError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Check localStorage for payment record
+      const paymentKey = `payment_${userId}`;
+      const savedPayment = localStorage.getItem(paymentKey);
       
-      if (dbError) {
-        console.error('Supabase error:', dbError);
-        throw new Error('Database error');
+      if (savedPayment) {
+        const paymentData = JSON.parse(savedPayment);
+        setHasValidPayment(paymentData.status === 'completed');
+      } else {
+        setHasValidPayment(false);
       }
-      
-      setHasValidPayment(payments && payments.length > 0);
       
     } catch (err) {
       console.error('Error checking payment:', err);
@@ -58,27 +46,22 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      const paymentRecord: Omit<PaymentRecord, 'id' | 'created_at'> = {
+      const paymentRecord: PaymentRecord = {
+        id: `payment_${Date.now()}`,
         user_id: userId,
         stripe_session_id: sessionId,
         amount,
-        status: 'completed'
+        status: 'completed',
+        created_at: new Date().toISOString()
       };
       
       console.log('Recording payment:', paymentRecord);
       
-      const { data, error } = await supabase
-        .from('payments')
-        .insert([paymentRecord])
-        .select()
-        .single();
+      // Save to localStorage
+      const paymentKey = `payment_${userId}`;
+      localStorage.setItem(paymentKey, JSON.stringify(paymentRecord));
       
-      if (error) {
-        console.error('Error recording payment:', error);
-        throw error;
-      }
-      
-      console.log('Payment recorded successfully:', data);
+      console.log('Payment recorded successfully:', paymentRecord);
       setHasValidPayment(true);
       
     } catch (err) {
