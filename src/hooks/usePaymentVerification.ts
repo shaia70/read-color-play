@@ -16,8 +16,8 @@ interface PaymentRecord {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Initialize Supabase client only if environment variables are available
-const supabase = supabaseUrl && supabaseAnonKey 
+// Initialize Supabase client only if environment variables are available and not empty
+const supabase = (supabaseUrl && supabaseAnonKey && supabaseUrl.trim() !== '' && supabaseAnonKey.trim() !== '') 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
