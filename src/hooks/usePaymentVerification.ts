@@ -51,26 +51,26 @@ console.log('Environment validation:', {
   keyValid: isValidSupabaseKey(supabaseAnonKey)
 });
 
-// Only attempt to initialize if BOTH values pass strict validation
-const initializeSupabase = async () => {
-  if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
+// NEVER call createClient unless we have valid credentials
+// This prevents the "supabaseUrl is required" error completely
+if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
+  console.log('Valid Supabase credentials detected, initializing client...');
+  // Only import and use createClient if we have valid credentials
+  import('@supabase/supabase-js').then(({ createClient }) => {
     try {
-      const { createClient } = await import('@supabase/supabase-js');
       supabase = createClient(supabaseUrl, supabaseAnonKey);
       console.log('Supabase client initialized successfully');
     } catch (error) {
       console.warn('Failed to initialize Supabase client:', error);
       supabase = null;
     }
-  } else {
-    console.log('Supabase environment variables not properly configured, using localStorage fallback');
+  }).catch(error => {
+    console.warn('Failed to import Supabase:', error);
     supabase = null;
-  }
-};
-
-// Initialize Supabase only if we have valid credentials
-if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
-  initializeSupabase();
+  });
+} else {
+  console.log('Supabase environment variables not properly configured, using localStorage fallback');
+  supabase = null;
 }
 
 export const usePaymentVerification = () => {
@@ -144,6 +144,7 @@ export const usePaymentVerification = () => {
       
       const { data, error } = await supabase
         .from('payments')
+        .insert([paymentRecord])
         .select()
         .single();
       
