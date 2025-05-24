@@ -20,10 +20,11 @@ export const usePaymentVerification = () => {
   const { language } = useLanguage();
 
   // Function to get supabase client safely
-  const getSupabaseClient = () => {
+  const getSupabaseClient = async () => {
     try {
       console.log('=== usePaymentVerification: Getting supabase client ===');
-      const { supabase } = require('@/integrations/supabase/client');
+      const supabaseModule = await import('@/integrations/supabase/client');
+      const supabase = supabaseModule.supabase;
       console.log('=== usePaymentVerification: Supabase client retrieved ===', !!supabase);
       return supabase;
     } catch (error) {
@@ -39,7 +40,7 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
-      const supabase = getSupabaseClient();
+      const supabase = await getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available');
@@ -91,7 +92,7 @@ export const usePaymentVerification = () => {
       
       console.log('Recording payment:', paymentRecord);
       
-      const supabase = getSupabaseClient();
+      const supabase = await getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available, using localStorage fallback');
