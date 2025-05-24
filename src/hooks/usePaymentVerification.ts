@@ -51,24 +51,26 @@ console.log('Environment validation:', {
   keyValid: isValidSupabaseKey(supabaseAnonKey)
 });
 
-// Only initialize if BOTH values pass strict validation
-if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
-  try {
-    // Dynamic import to avoid calling createClient at module level with invalid params
-    import('@supabase/supabase-js').then(({ createClient }) => {
+// Only attempt to initialize if BOTH values pass strict validation
+const initializeSupabase = async () => {
+  if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
       supabase = createClient(supabaseUrl, supabaseAnonKey);
       console.log('Supabase client initialized successfully');
-    }).catch(error => {
+    } catch (error) {
       console.warn('Failed to initialize Supabase client:', error);
       supabase = null;
-    });
-  } catch (error) {
-    console.warn('Failed to initialize Supabase client:', error);
+    }
+  } else {
+    console.log('Supabase environment variables not properly configured, using localStorage fallback');
     supabase = null;
   }
-} else {
-  console.log('Supabase environment variables not properly configured, using localStorage fallback');
-  supabase = null;
+};
+
+// Initialize Supabase only if we have valid credentials
+if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
+  initializeSupabase();
 }
 
 export const usePaymentVerification = () => {
@@ -142,7 +144,6 @@ export const usePaymentVerification = () => {
       
       const { data, error } = await supabase
         .from('payments')
-        .insert([paymentRecord])
         .select()
         .single();
       
