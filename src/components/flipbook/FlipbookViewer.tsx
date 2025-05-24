@@ -103,41 +103,9 @@ const FlipbookViewer: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // מניעת F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S, Print Screen
-      if (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-        (e.ctrlKey && e.key === 'u') ||
-        (e.ctrlKey && e.key === 's') ||
-        e.key === 'PrintScreen' ||
-        e.keyCode === 44 || // Print Screen key code
-        e.which === 44      // Additional check for Print Screen
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-
-      // ניווט בספר - רק בkeydown
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        if (!isHebrew) {
-          nextPage();
-        } else {
-          prevPage();
-        }
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (!isHebrew) {
-          prevPage();
-        } else {
-          nextPage();
-        }
-      }
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      // רק מניעת מקשים מוגנים ב-keyup, ללא ניווט
+      console.log('Key pressed:', e.key, 'Current page:', currentPage);
+      
+      // מניעת מקשים מוגנים
       if (
         e.key === 'F12' ||
         (e.ctrlKey && e.shiftKey && e.key === 'I') ||
@@ -150,6 +118,27 @@ const FlipbookViewer: React.FC = () => {
         e.preventDefault();
         e.stopPropagation();
         return false;
+      }
+
+      // ניווט בספר
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (!isHebrew) {
+          console.log('Moving to next page (English)');
+          nextPage();
+        } else {
+          console.log('Moving to previous page (Hebrew)');
+          prevPage();
+        }
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (!isHebrew) {
+          console.log('Moving to previous page (English)');
+          prevPage();
+        } else {
+          console.log('Moving to next page (Hebrew)');
+          nextPage();
+        }
       }
     };
 
@@ -169,15 +158,13 @@ const FlipbookViewer: React.FC = () => {
     // בדיקה מתמשכת לזיהוי כלי מפתחים
     const devToolsCheck = setInterval(detectDevTools, 1000);
 
-    document.addEventListener('keydown', handleKeyDown, true);
-    document.addEventListener('keyup', handleKeyUp, true);
+    document.addEventListener('keydown', handleKeyDown);
     
     return () => {
-      document.removeEventListener('keydown', handleKeyDown, true);
-      document.removeEventListener('keyup', handleKeyUp, true);
+      document.removeEventListener('keydown', handleKeyDown);
       clearInterval(devToolsCheck);
     };
-  }, [isHebrew]);
+  }, [currentPage, isHebrew]); // הוספנו את התלויות בחזרה כדי שהפונקציות יתעדכנו
 
   const getCurrentPageDisplay = () => {
     if (currentPage === 0) {
@@ -256,7 +243,6 @@ const FlipbookViewer: React.FC = () => {
             { maxHeight: '600px' }
           )}
         </div>
-      );
     } else if (currentPage === 1) {
       return (
         <div className="relative w-96 h-full flex items-center justify-center">
