@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -104,14 +102,27 @@ const FlipbookViewer: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // מניעת F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S, Print Screen
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.key === 'u') ||
+        (e.ctrlKey && e.key === 's') ||
+        e.key === 'PrintScreen'
+      ) {
+        e.preventDefault();
+        return false;
+      }
+
+      // ניווט בספר
+      if (e.key === 'ArrowRight') {
         if (!isHebrew) {
           nextPage();
         } else {
           prevPage();
         }
-      } else if (event.key === 'ArrowLeft') {
+      } else if (e.key === 'ArrowLeft') {
         if (!isHebrew) {
           prevPage();
         } else {
@@ -120,8 +131,28 @@ const FlipbookViewer: React.FC = () => {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    // זיהוי פתיחת כלי מפתחים
+    const detectDevTools = () => {
+      const threshold = 160;
+      if (
+        window.outerHeight - window.innerHeight > threshold ||
+        window.outerWidth - window.innerWidth > threshold
+      ) {
+        console.clear();
+        console.log('%cStop!', 'color: red; font-size: 50px; font-weight: bold;');
+        console.log('%cThis is a browser feature intended for developers. Content is protected.', 'color: red; font-size: 16px;');
+      }
+    };
+
+    // בדיקה מתמשכת לזיהוי כלי מפתחים
+    const devToolsCheck = setInterval(detectDevTools, 1000);
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      clearInterval(devToolsCheck);
+    };
   }, [isHebrew, currentPage]);
 
   const getCurrentPageDisplay = () => {
@@ -164,437 +195,419 @@ const FlipbookViewer: React.FC = () => {
     } else if (currentPage === BOOK_PAGES.length - 1) {
       return isHebrew ? "כריכה אחורית" : "Back Cover";
     }
-    // התאמת חישוב מספר העמוד - עמוד 34 הוא באינדקס 18
     const pageNum = currentPage + 16;
     return isHebrew ? `עמוד ${pageNum}` : `Page ${pageNum}`;
   };
 
+  // פונקציה ליצירת תמונה מוגנת
+  const createProtectedImage = (src: string, alt: string, className: string, style?: React.CSSProperties) => (
+    <img 
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
+      onSelectStart={(e) => e.preventDefault()}
+      draggable={false}
+      style={{
+        ...style,
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitUserDrag: 'none',
+        KhtmlUserSelect: 'none'
+      }}
+    />
+  );
+
   const getPageContent = () => {
     if (currentPage === 0) {
-      // תצוגת כריכה קידמית
       return (
         <div className="relative w-96 h-full flex items-center justify-center">
-          <img 
-            src={BOOK_PAGES[0]} 
-            alt="Front Cover"
-            className="max-w-full max-h-full object-contain rounded shadow-lg"
-            style={{ maxHeight: '600px' }}
-          />
+          {createProtectedImage(
+            BOOK_PAGES[0],
+            "Front Cover",
+            "max-w-full max-h-full object-contain rounded shadow-lg",
+            { maxHeight: '600px' }
+          )}
         </div>
       );
     } else if (currentPage === 1) {
-      // תצוגת עמוד 1 (עמוד השער)
       return (
         <div className="relative w-96 h-full flex items-center justify-center">
-          <img 
-            src={BOOK_PAGES[1]} 
-            alt="Page 1"
-            className="max-w-full max-h-full object-contain rounded shadow-lg"
-            style={{ maxHeight: '600px' }}
-          />
+          {createProtectedImage(
+            BOOK_PAGES[1],
+            "Page 1",
+            "max-w-full max-h-full object-contain rounded shadow-lg",
+            { maxHeight: '600px' }
+          )}
         </div>
       );
     } else if (currentPage === 2) {
-      // תצוגת עמודים 2-3 (2 משמאל, 3 מימין)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 2 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[2]} // עמוד 2
-              alt="Page 2"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[2],
+              "Page 2",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 3 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_3_URL}
-              alt="Page 3"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_3_URL,
+              "Page 3",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 3) {
-      // תצוגת עמודים 4-5 (4 משמאל, 5 מימין)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 4 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[3]} // עמוד 4
-              alt="Page 4"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[3],
+              "Page 4",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 5 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_5_URL}
-              alt="Page 5"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_5_URL,
+              "Page 5",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 4) {
-      // תצוגת עמודים 6-7 (6 משמאל, 7 מימין)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 6 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[4]} // עמוד 6
-              alt="Page 6"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[4],
+              "Page 6",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 7 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_7_URL}
-              alt="Page 7"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_7_URL,
+              "Page 7",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 5) {
-      // תצוגת עמודים 8-9 (8 משמאל, 9 מימין)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 8 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[5]} // עמוד 8
-              alt="Page 8"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[5],
+              "Page 8",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 9 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_9_URL}
-              alt="Page 9"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_9_URL,
+              "Page 9",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 6) {
-      // תצוגת עמודים 10-11 (11 מימין, 10 משמאל)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 11 משמאל */}
           <div className="relative">
-            <img 
-              src={PAGE_11_URL}
-              alt="Page 11"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_11_URL,
+              "Page 11",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 10 מימין */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[6]} // עמוד 10
-              alt="Page 10"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[6],
+              "Page 10",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 7) {
-      // תצוגת עמודים 12-13
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 12 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[7]} // עמוד 12
-              alt="Page 12"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[7],
+              "Page 12",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 13 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_13_URL}
-              alt="Page 13"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_13_URL,
+              "Page 13",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 8) {
-      // תצוגת עמודים 14-15
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 14 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[8]} // עמוד 14
-              alt="Page 14"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[8],
+              "Page 14",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 15 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_15_URL}
-              alt="Page 15"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_15_URL,
+              "Page 15",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 9) {
-      // תצוגת עמודים 16-17
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 16 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[9]} // עמוד 16
-              alt="Page 16"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[9],
+              "Page 16",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 17 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_17_URL}
-              alt="Page 17"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_17_URL,
+              "Page 17",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 10) {
-      // תצוגת עמודים 18-19
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 18 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[10]} // עמוד 18
-              alt="Page 18"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[10],
+              "Page 18",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 19 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_19_URL}
-              alt="Page 19"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_19_URL,
+              "Page 19",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 11) {
-      // תצוגת עמודים 20-21
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 20 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[11]} // עמוד 20
-              alt="Page 20"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[11],
+              "Page 20",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 21 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_21_URL}
-              alt="Page 21"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_21_URL,
+              "Page 21",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 12) {
-      // תצוגת עמודים 22-23 (22 מימין, 23 משמאל)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 23 משמאל */}
           <div className="relative">
-            <img 
-              src={PAGE_23_URL}
-              alt="Page 23"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_23_URL,
+              "Page 23",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 22 מימין */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[12]} // עמוד 22
-              alt="Page 22"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[12],
+              "Page 22",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 13) {
-      // תצוגת עמודים 24-25
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 24 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[13]} // עמוד 24
-              alt="Page 24"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[13],
+              "Page 24",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 25 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_25_URL}
-              alt="Page 25"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_25_URL,
+              "Page 25",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 14) {
-      // תצוגת עמודים 26-27
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 26 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[14]} // עמוד 26
-              alt="Page 26"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[14],
+              "Page 26",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 27 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_27_URL}
-              alt="Page 27"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_27_URL,
+              "Page 27",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 15) {
-      // תצוגת עמודים 28-29
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 28 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[15]} // עמוד 28
-              alt="Page 28"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[15],
+              "Page 28",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 29 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_29_URL}
-              alt="Page 29"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_29_URL,
+              "Page 29",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 16) {
-      // תצוגת עמודים 30-31
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 30 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[16]} // עמוד 30
-              alt="Page 30"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[16],
+              "Page 30",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 31 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_31_URL}
-              alt="Page 31"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_31_URL,
+              "Page 31",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else if (currentPage === 17) {
-      // תצוגת עמודים 32-33
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 32 משמאל */}
           <div className="relative">
-            <img 
-              src={BOOK_PAGES[17]} // עמוד 32
-              alt="Page 32"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              BOOK_PAGES[17],
+              "Page 32",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
-          {/* עמוד 33 מימין */}
           <div className="relative">
-            <img 
-              src={PAGE_33_URL}
-              alt="Page 33"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
+            {createProtectedImage(
+              PAGE_33_URL,
+              "Page 33",
+              "max-w-full max-h-full object-contain rounded shadow-lg",
+              { maxHeight: '600px', maxWidth: '300px' }
+            )}
           </div>
         </div>
       );
     } else {
-      // תצוגת עמוד יחיד עבור שאר העמודים
       return (
         <div className="relative w-96 h-full flex items-center justify-center">
-          <img 
-            src={BOOK_PAGES[currentPage]} 
-            alt={`Page ${currentPage + 16}`}
-            className="max-w-full max-h-full object-contain rounded shadow-lg"
-            style={{ maxHeight: '600px' }}
-          />
+          {createProtectedImage(
+            BOOK_PAGES[currentPage],
+            `Page ${currentPage + 16}`,
+            "max-w-full max-h-full object-contain rounded shadow-lg",
+            { maxHeight: '600px' }
+          )}
         </div>
       );
     }
   };
 
   return (
-    <div className="glass-card p-6">
+    <div 
+      className="glass-card p-6"
+      onContextMenu={(e) => e.preventDefault()}
+      onSelectStart={(e) => e.preventDefault()}
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none'
+      }}
+    >
       {/* FlipbookControls */}
       <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
         <div className="flex items-center gap-2">
@@ -713,4 +726,3 @@ const FlipbookViewer: React.FC = () => {
 };
 
 export default FlipbookViewer;
-
