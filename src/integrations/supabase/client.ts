@@ -35,12 +35,16 @@ if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
 
 console.log('Creating Supabase client with URL:', SUPABASE_URL);
 
+// Create the Supabase client
+let supabase: ReturnType<typeof createClient<Database>>;
+
 try {
-  // Import the supabase client like this:
-  // import { supabase } from "@/integrations/supabase/client";
-  export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
   console.log('Supabase client created successfully');
 } catch (error) {
   console.error('Failed to create Supabase client:', error);
   throw error;
 }
+
+// Export the client
+export { supabase };
