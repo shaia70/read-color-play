@@ -3,40 +3,28 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://pahqikhckqjujbhvqnyb.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8";
+// Hardcoded values - these should always be available
+const supabaseUrl = "https://pahqikhckqjujbhvqnyb.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8";
 
-// Debug logging
-console.log('=== SUPABASE CLIENT INITIALIZATION ===');
-console.log('SUPABASE_URL:', SUPABASE_URL);
-console.log('SUPABASE_URL type:', typeof SUPABASE_URL);
-console.log('SUPABASE_URL length:', SUPABASE_URL?.length);
-console.log('SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY ? 'PRESENT' : 'MISSING');
-console.log('SUPABASE_PUBLISHABLE_KEY type:', typeof SUPABASE_PUBLISHABLE_KEY);
-console.log('SUPABASE_PUBLISHABLE_KEY length:', SUPABASE_PUBLISHABLE_KEY?.length);
+console.log('=== SUPABASE CLIENT SETUP ===');
+console.log('URL:', supabaseUrl);
+console.log('Key present:', !!supabaseKey);
+console.log('URL type:', typeof supabaseUrl);
+console.log('Key type:', typeof supabaseKey);
 
-// Validate configuration before creating client
-if (!SUPABASE_URL || typeof SUPABASE_URL !== 'string' || SUPABASE_URL.trim() === '') {
-  console.error('Invalid SUPABASE_URL:', SUPABASE_URL);
-  throw new Error('SUPABASE_URL is not defined or invalid');
+// Validate before creating client
+if (!supabaseUrl || typeof supabaseUrl !== 'string') {
+  throw new Error(`Invalid supabaseUrl: ${supabaseUrl}`);
 }
 
-if (!SUPABASE_PUBLISHABLE_KEY || typeof SUPABASE_PUBLISHABLE_KEY !== 'string' || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
-  console.error('Invalid SUPABASE_PUBLISHABLE_KEY');
-  throw new Error('SUPABASE_PUBLISHABLE_KEY is not defined or invalid');
+if (!supabaseKey || typeof supabaseKey !== 'string') {
+  throw new Error(`Invalid supabaseKey: ${!!supabaseKey}`);
 }
 
-// Prepare trimmed values
-const trimmedUrl = SUPABASE_URL.trim();
-const trimmedKey = SUPABASE_PUBLISHABLE_KEY.trim();
+console.log('Creating client...');
 
-console.log('About to create client with:');
-console.log('- URL:', trimmedUrl);
-console.log('- Key length:', trimmedKey.length);
-console.log('- Key first 10 chars:', trimmedKey.substring(0, 10));
+// Create the client
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
-// Create the client with explicit string values
-export const supabase = createClient<Database>(trimmedUrl, trimmedKey);
-
-console.log('Supabase client created successfully');
-console.log('Client object:', supabase ? 'EXISTS' : 'NULL');
+console.log('Client created successfully:', !!supabase);
