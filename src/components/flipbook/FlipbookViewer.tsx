@@ -205,7 +205,6 @@ const FlipbookViewer: React.FC = () => {
       src={src}
       alt={alt}
       className={className}
-      style={style}
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
       onSelectStart={(e) => e.preventDefault()}
@@ -219,7 +218,7 @@ const FlipbookViewer: React.FC = () => {
         WebkitTouchCallout: 'none',
         WebkitUserDrag: 'none',
         KhtmlUserSelect: 'none'
-      }}
+      } as React.CSSProperties}
     />
   );
 
@@ -600,13 +599,12 @@ const FlipbookViewer: React.FC = () => {
     <div 
       className="glass-card p-6"
       onContextMenu={(e) => e.preventDefault()}
-      onSelectStart={(e) => e.preventDefault()}
       style={{
         userSelect: 'none',
         WebkitUserSelect: 'none',
         MozUserSelect: 'none',
         msUserSelect: 'none'
-      }}
+      } as React.CSSProperties}
     >
       {/* FlipbookControls */}
       <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
