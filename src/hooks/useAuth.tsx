@@ -44,7 +44,7 @@ export const useAuthProvider = (): AuthContextType => {
           // Defer user profile fetching to prevent deadlocks
           setTimeout(async () => {
             try {
-              // Fetch or create user profile
+              // Fetch user profile from our users table
               const { data: profile, error } = await supabase
                 .from('users')
                 .select('*')
@@ -121,19 +121,6 @@ export const useAuthProvider = (): AuthContextType => {
       if (error) throw error;
 
       if (data.user) {
-        // Create user profile
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email || email,
-            name: name || email.split('@')[0]
-          });
-
-        if (profileError) {
-          console.error('Error creating user profile:', profileError);
-        }
-
         console.log('Registration successful:', data.user.id);
       }
     } catch (error) {
