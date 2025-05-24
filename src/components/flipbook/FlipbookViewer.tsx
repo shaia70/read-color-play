@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -159,6 +160,8 @@ const FlipbookViewer: React.FC = () => {
       return isHebrew ? "עמודים 30-31" : "Pages 30-31";
     } else if (currentPage === 17) {
       return isHebrew ? "עמודים 32-33" : "Pages 32-33";
+    } else if (currentPage === BOOK_PAGES.length - 1) {
+      return isHebrew ? "כריכה אחורית" : "Back Cover";
     }
     // התאמת חישוב מספר העמוד - עמוד 34 הוא באינדקס 18
     const pageNum = currentPage + 16;
