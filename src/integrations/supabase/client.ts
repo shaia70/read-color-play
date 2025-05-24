@@ -12,7 +12,20 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Key present:', !!supabaseKey);
 
-// Create the client immediately with proper error handling
+// Validate the values before creating client
+if (!supabaseUrl || supabaseUrl.trim() === '') {
+  console.error('ERROR: supabaseUrl is missing or empty');
+  throw new Error('supabaseUrl is required but not provided');
+}
+
+if (!supabaseKey || supabaseKey.trim() === '') {
+  console.error('ERROR: supabaseKey is missing or empty');
+  throw new Error('supabaseKey is required but not provided');
+}
+
+console.log('Creating Supabase client with validated credentials...');
+
+// Create the client with validated credentials
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,

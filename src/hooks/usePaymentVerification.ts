@@ -1,9 +1,18 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 
 console.log('=== usePaymentVerification: Starting module load ===');
+
+// Import supabase client with error handling
+let supabase: any = null;
+try {
+  const supabaseModule = await import('@/integrations/supabase/client');
+  supabase = supabaseModule.supabase;
+  console.log('=== usePaymentVerification: Supabase client imported successfully ===');
+} catch (error) {
+  console.error('=== usePaymentVerification: Error importing supabase client ===', error);
+}
 
 interface PaymentRecord {
   id: string;
