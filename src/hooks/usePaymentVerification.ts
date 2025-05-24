@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { createClient } from '@supabase/supabase-js';
 
 interface PaymentRecord {
   id: string;
@@ -55,8 +54,14 @@ console.log('Environment validation:', {
 // Only initialize if BOTH values pass strict validation
 if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
   try {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
-    console.log('Supabase client initialized successfully');
+    // Dynamic import to avoid calling createClient at module level with invalid params
+    import('@supabase/supabase-js').then(({ createClient }) => {
+      supabase = createClient(supabaseUrl, supabaseAnonKey);
+      console.log('Supabase client initialized successfully');
+    }).catch(error => {
+      console.warn('Failed to initialize Supabase client:', error);
+      supabase = null;
+    });
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error);
     supabase = null;
