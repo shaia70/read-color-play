@@ -21,11 +21,19 @@ export const usePaymentVerification = () => {
 
   const getSupabaseClient = async () => {
     try {
+      console.log('=== usePaymentVerification: Attempting to import supabase client ===');
+      
+      // Import the getSupabaseClient function instead of the proxy
       const supabaseModule = await import('@/integrations/supabase/client');
-      console.log('=== usePaymentVerification: Supabase client imported successfully ===');
-      return supabaseModule.supabase;
+      console.log('=== usePaymentVerification: Supabase module imported successfully ===');
+      
+      // Use the function version which handles the creation internally
+      const client = supabaseModule.getSupabaseClient();
+      console.log('=== usePaymentVerification: Supabase client obtained successfully ===');
+      
+      return client;
     } catch (error) {
-      console.error('=== usePaymentVerification: Error importing supabase client ===', error);
+      console.error('=== usePaymentVerification: Error getting supabase client ===', error);
       return null;
     }
   };
