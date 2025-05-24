@@ -6,13 +6,18 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://pahqikhckqjujbhvqnyb.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8";
 
-if (!SUPABASE_URL) {
+// Validate that we have the required configuration
+if (!SUPABASE_URL || SUPABASE_URL.trim() === '') {
+  console.error('SUPABASE_URL is missing or empty:', SUPABASE_URL);
   throw new Error('Missing SUPABASE_URL');
 }
 
-if (!SUPABASE_PUBLISHABLE_KEY) {
+if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
+  console.error('SUPABASE_PUBLISHABLE_KEY is missing or empty');
   throw new Error('Missing SUPABASE_PUBLISHABLE_KEY');
 }
+
+console.log('Creating Supabase client with URL:', SUPABASE_URL);
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
