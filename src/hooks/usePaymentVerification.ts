@@ -8,11 +8,12 @@ console.log('=== usePaymentVerification: Starting module load ===');
 let supabase;
 try {
   console.log('=== usePaymentVerification: About to import supabase ===');
-  const supabaseModule = await import('@/integrations/supabase/client');
+  const supabaseModule = require('@/integrations/supabase/client');
   supabase = supabaseModule.supabase;
-  console.log('=== usePaymentVerification: Supabase imported successfully ===');
+  console.log('=== usePaymentVerification: Supabase imported successfully ===', !!supabase);
 } catch (error) {
   console.error('=== usePaymentVerification: Error importing supabase ===', error);
+  supabase = null;
 }
 
 interface PaymentRecord {
