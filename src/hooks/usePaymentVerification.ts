@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createClient } from '@supabase/supabase-js';
@@ -32,6 +33,16 @@ const isValidKey = supabaseAnonKey &&
   supabaseAnonKey !== 'undefined' && 
   supabaseAnonKey !== 'null';
 
+console.log('Environment check:', {
+  urlDefined: !!supabaseUrl,
+  keyDefined: !!supabaseAnonKey,
+  urlValid: isValidUrl,
+  keyValid: isValidKey,
+  urlValue: supabaseUrl || 'undefined',
+  keyValue: supabaseAnonKey ? '[PRESENT]' : 'undefined'
+});
+
+// Only initialize if BOTH values are completely valid
 if (isValidUrl && isValidKey) {
   try {
     supabase = createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
@@ -41,10 +52,8 @@ if (isValidUrl && isValidKey) {
     supabase = null;
   }
 } else {
-  console.log('Supabase environment variables not configured, using localStorage fallback');
-  console.log('URL valid:', isValidUrl, 'Key valid:', isValidKey);
-  console.log('URL value:', supabaseUrl);
-  console.log('Key value:', supabaseAnonKey ? '[REDACTED]' : 'undefined/null');
+  console.log('Supabase environment variables not properly configured, using localStorage fallback');
+  supabase = null;
 }
 
 export const usePaymentVerification = () => {
