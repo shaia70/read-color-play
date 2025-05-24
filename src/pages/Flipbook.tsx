@@ -1,10 +1,11 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Lock, Eye, CreditCard, LogOut } from "lucide-react";
+import { Lock, Eye, CreditCard, LogOut, RefreshCw } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
@@ -17,6 +18,7 @@ const Flipbook = () => {
   const { user, logout } = useAuth();
   const { hasValidPayment, isLoading: paymentLoading, checkPaymentStatus, recordPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const isHebrew = language === 'he';
 
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
@@ -43,6 +45,17 @@ const Flipbook = () => {
       checkPaymentStatus(user.id);
     }
   }, [user, checkPaymentStatus]);
+
+  const handleRefreshPayment = async () => {
+    if (!user) return;
+    
+    setIsRefreshing(true);
+    try {
+      await checkPaymentStatus(user.id);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const pageTitle = isHebrew 
     ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" 
@@ -115,8 +128,18 @@ const Flipbook = () => {
       <Header />
       <main className="pt-28 pb-20">
         <div className="page-container">
-          {/* כפתור יציאה */}
-          <div className="flex justify-end mb-4">
+          {/* כפתורי פעולה */}
+          <div className="flex justify-between items-center mb-4">
+            <CustomButton
+              variant="outline"
+              size="sm"
+              icon={<RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />}
+              onClick={handleRefreshPayment}
+              disabled={isRefreshing || paymentLoading}
+            >
+              {isHebrew ? 'רענון סטטוס תשלום' : 'Refresh Payment Status'}
+            </CustomButton>
+            
             <CustomButton
               variant="outline"
               size="sm"
@@ -141,6 +164,14 @@ const Flipbook = () => {
                   }
                 </p>
               </div>
+
+              {paymentLoading && (
+                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-800">
+                    {isHebrew ? 'בודק סטטוס תשלום...' : 'Checking payment status...'}
+                  </p>
+                </div>
+              )}
               
               <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">
                 
