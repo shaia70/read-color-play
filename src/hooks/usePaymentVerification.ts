@@ -1,7 +1,17 @@
-
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+console.log('=== BEFORE SUPABASE IMPORT ===');
+try {
+  console.log('About to import supabase client...');
+} catch (error) {
+  console.error('Error before supabase import:', error);
+}
+
 import { supabase } from '@/integrations/supabase/client';
+
+console.log('=== AFTER SUPABASE IMPORT ===');
+console.log('Supabase client imported:', !!supabase);
 
 interface PaymentRecord {
   id: string;

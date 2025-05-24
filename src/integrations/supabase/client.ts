@@ -6,20 +6,41 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://pahqikhckqjujbhvqnyb.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8";
 
+// Debug logging
+console.log('=== SUPABASE CLIENT INITIALIZATION ===');
+console.log('SUPABASE_URL type:', typeof SUPABASE_URL);
+console.log('SUPABASE_URL value:', SUPABASE_URL);
+console.log('SUPABASE_URL length:', SUPABASE_URL?.length);
+console.log('SUPABASE_PUBLISHABLE_KEY type:', typeof SUPABASE_PUBLISHABLE_KEY);
+console.log('SUPABASE_PUBLISHABLE_KEY length:', SUPABASE_PUBLISHABLE_KEY?.length);
+
 // Validate that we have the required configuration
 if (!SUPABASE_URL || SUPABASE_URL.trim() === '') {
-  console.error('SUPABASE_URL is missing or empty:', SUPABASE_URL);
+  console.error('SUPABASE_URL validation failed:', {
+    value: SUPABASE_URL,
+    type: typeof SUPABASE_URL,
+    length: SUPABASE_URL?.length,
+    trimmed: SUPABASE_URL?.trim()
+  });
   throw new Error('Missing SUPABASE_URL');
 }
 
 if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.trim() === '') {
-  console.error('SUPABASE_PUBLISHABLE_KEY is missing or empty');
+  console.error('SUPABASE_PUBLISHABLE_KEY validation failed:', {
+    type: typeof SUPABASE_PUBLISHABLE_KEY,
+    length: SUPABASE_PUBLISHABLE_KEY?.length
+  });
   throw new Error('Missing SUPABASE_PUBLISHABLE_KEY');
 }
 
 console.log('Creating Supabase client with URL:', SUPABASE_URL);
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
-
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+try {
+  // Import the supabase client like this:
+  // import { supabase } from "@/integrations/supabase/client";
+  export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  console.log('Supabase client created successfully');
+} catch (error) {
+  console.error('Failed to create Supabase client:', error);
+  throw error;
+}
