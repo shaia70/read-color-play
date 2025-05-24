@@ -11,13 +11,37 @@ interface PaymentRecord {
   amount: number;
   status: 'pending' | 'completed' | 'failed';
   currency: string;
+  timestamp: number;
 }
+
+const PAYMENT_STORAGE_KEY = 'shelley_payments';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
+
+  const getStoredPayments = (): PaymentRecord[] => {
+    try {
+      const stored = localStorage.getItem(PAYMENT_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch (err) {
+      console.error('Error reading payments from localStorage:', err);
+      return [];
+    }
+  };
+
+  const savePayment = (payment: PaymentRecord): void => {
+    try {
+      const existingPayments = getStoredPayments();
+      const updatedPayments = [...existingPayments, payment];
+      localStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(updatedPayments));
+      console.log('Payment saved to localStorage:', payment);
+    } catch (err) {
+      console.error('Error saving payment to localStorage:', err);
+    }
+  };
 
   const checkPaymentStatus = async (userId: string) => {
     try {
@@ -26,31 +50,18 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
-      // Dynamically import the client getter to avoid immediate initialization
-      const { getSupabaseClient } = await import('@/integrations/supabase/client');
-      console.log('Imported getSupabaseClient, creating client...');
+      // Get payments from localStorage
+      const payments = getStoredPayments();
       
-      const supabase = getSupabaseClient();
-      console.log('Supabase client created, querying payments...');
+      // Find completed payments for this user
+      const userCompletedPayments = payments.filter(
+        payment => payment.user_id === userId && payment.status === 'completed'
+      );
       
-      // Query Supabase for payment records
-      const { data: payments, error: dbError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('id', { ascending: false })
-        .limit(1);
+      const hasPayment = userCompletedPayments.length > 0;
+      console.log('Payment found in localStorage:', hasPayment);
+      console.log('User completed payments:', userCompletedPayments);
       
-      if (dbError) {
-        console.error('Supabase error:', dbError);
-        setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
-        setHasValidPayment(false);
-        return;
-      }
-      
-      const hasPayment = payments && payments.length > 0;
-      console.log('Payment found:', hasPayment);
       setHasValidPayment(hasPayment);
       
     } catch (err) {
@@ -64,36 +75,22 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      const paymentRecord = {
+      const paymentRecord: PaymentRecord = {
+        id: `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         user_id: userId,
         paypal_transaction_id: sessionId,
         amount,
         status: 'completed' as const,
-        currency: 'ILS'
+        currency: 'ILS',
+        timestamp: Date.now()
       };
       
       console.log('Recording payment:', paymentRecord);
       
-      // Dynamically import the client getter to avoid immediate initialization
-      const { getSupabaseClient } = await import('@/integrations/supabase/client');
-      console.log('Imported getSupabaseClient for recording payment...');
+      // Save to localStorage
+      savePayment(paymentRecord);
       
-      const supabase = getSupabaseClient();
-      console.log('Supabase client created for recording, inserting payment...');
-      
-      const { data, error } = await supabase
-        .from('payments')
-        .insert([paymentRecord])
-        .select()
-        .single();
-      
-      if (error) {
-        console.error('Error recording payment:', error);
-        setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
-        return;
-      }
-      
-      console.log('Payment recorded successfully:', data);
+      console.log('Payment recorded successfully:', paymentRecord);
       setHasValidPayment(true);
       
     } catch (err) {
