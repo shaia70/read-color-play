@@ -28,7 +28,9 @@ export const usePaymentVerification = () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const supabaseModule = await import('@/integrations/supabase/client');
-      const supabase = supabaseModule.supabase;
+      
+      // Use the function instead of the proxy
+      const supabase = supabaseModule.getSupabaseClient();
       
       if (!supabase) {
         console.error('=== usePaymentVerification: Supabase client is null/undefined ===');
