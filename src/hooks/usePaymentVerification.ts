@@ -19,33 +19,43 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Initialize Supabase client only if environment variables are valid and not empty
 let supabase = null;
 
-// More robust validation - ensure the variables are not undefined, null, or empty
-const isValidUrl = supabaseUrl && 
-  typeof supabaseUrl === 'string' && 
-  supabaseUrl.trim().length > 0 && 
-  supabaseUrl !== 'undefined' && 
-  supabaseUrl !== 'null' &&
-  supabaseUrl.startsWith('http');
+// Very strict validation to prevent any invalid createClient calls
+const isValidSupabaseUrl = (url: any): url is string => {
+  return (
+    typeof url === 'string' &&
+    url.length > 0 &&
+    url !== 'undefined' &&
+    url !== 'null' &&
+    url !== '' &&
+    (url.startsWith('https://') || url.startsWith('http://')) &&
+    url.includes('.supabase.co')
+  );
+};
 
-const isValidKey = supabaseAnonKey && 
-  typeof supabaseAnonKey === 'string' && 
-  supabaseAnonKey.trim().length > 0 && 
-  supabaseAnonKey !== 'undefined' && 
-  supabaseAnonKey !== 'null';
+const isValidSupabaseKey = (key: any): key is string => {
+  return (
+    typeof key === 'string' &&
+    key.length > 0 &&
+    key !== 'undefined' &&
+    key !== 'null' &&
+    key !== '' &&
+    key.length > 20 // Supabase keys are typically longer than 20 characters
+  );
+};
 
-console.log('Environment check:', {
-  urlDefined: !!supabaseUrl,
-  keyDefined: !!supabaseAnonKey,
-  urlValid: isValidUrl,
-  keyValid: isValidKey,
-  urlValue: supabaseUrl || 'undefined',
-  keyValue: supabaseAnonKey ? '[PRESENT]' : 'undefined'
+console.log('Environment validation:', {
+  urlType: typeof supabaseUrl,
+  keyType: typeof supabaseAnonKey,
+  urlValue: supabaseUrl || 'NOT_SET',
+  keyPresent: !!supabaseAnonKey,
+  urlValid: isValidSupabaseUrl(supabaseUrl),
+  keyValid: isValidSupabaseKey(supabaseAnonKey)
 });
 
-// Only initialize if BOTH values are completely valid
-if (isValidUrl && isValidKey) {
+// Only initialize if BOTH values pass strict validation
+if (isValidSupabaseUrl(supabaseUrl) && isValidSupabaseKey(supabaseAnonKey)) {
   try {
-    supabase = createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
     console.log('Supabase client initialized successfully');
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error);
