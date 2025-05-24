@@ -2,8 +2,6 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-console.log('=== usePaymentVerification: Starting module load ===');
-
 interface PaymentRecord {
   id: string;
   user_id: string;
