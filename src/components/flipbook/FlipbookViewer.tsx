@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -118,7 +119,7 @@ const FlipbookViewer: React.FC = () => {
         return false;
       }
 
-      // ניווט בספר - רק על keydown כדי למנוע דילוג כפול
+      // ניווט בספר - רק בkeydown
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         if (!isHebrew) {
