@@ -431,7 +431,7 @@ const FlipbookViewer: React.FC = () => {
         </div>
       );
     } else if (currentPage === 12) {
-      // תצוגת עמודים 22-23
+      // תצוגת עמודים 22-23 (23 מימין, 22 משמאל)
       return (
         <div className="relative flex items-center justify-center gap-2">
           {/* עמוד 22 משמאל */}
