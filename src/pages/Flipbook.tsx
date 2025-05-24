@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -10,12 +11,12 @@ import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
-import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import { usePaymentCheck } from "@/hooks/usePaymentCheck";
 
 const Flipbook = () => {
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
-  const { hasValidPayment, isLoading: paymentLoading, checkPaymentStatus, recordPayment } = usePaymentVerification();
+  const { hasValidPayment, isLoading: paymentLoading, verifyPayment, savePayment } = usePaymentCheck();
   const [showPayment, setShowPayment] = useState(false);
   const isHebrew = language === 'he';
 
@@ -26,7 +27,7 @@ const Flipbook = () => {
     
     if (paymentStatus === 'success' && user) {
       // רישום התשלום במערכת
-      recordPayment(user.id, 'paypal_session_' + Date.now(), 70);
+      savePayment(user.id, 'paypal_session_' + Date.now(), 70);
       setShowPayment(false);
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -35,14 +36,14 @@ const Flipbook = () => {
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [user, recordPayment]);
+  }, [user, savePayment]);
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר
   useEffect(() => {
     if (user) {
-      checkPaymentStatus(user.id);
+      verifyPayment(user.id);
     }
-  }, [user, checkPaymentStatus]);
+  }, [user, verifyPayment]);
 
   const pageTitle = isHebrew 
     ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" 
@@ -57,7 +58,7 @@ const Flipbook = () => {
 
   const handlePaymentSuccess = () => {
     if (user) {
-      recordPayment(user.id, 'manual_confirmation_' + Date.now(), 70);
+      savePayment(user.id, 'manual_confirmation_' + Date.now(), 70);
       setShowPayment(false);
     }
   };
@@ -136,8 +137,8 @@ const Flipbook = () => {
               <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-blue-800">
                   {isHebrew 
-                    ? `שלום ${user.name || user.email}, לצפייה בספר נדרש תשלום חד-פעמי`
-                    : `Hello ${user.name || user.email}, a one-time payment is required to view the book`
+                    ? `שלום ${user?.name || user?.email}, לצפייה בספר נדרש תשלום חד-פעמי`
+                    : `Hello ${user?.name || user?.email}, a one-time payment is required to view the book`
                   }
                 </p>
               </div>
@@ -209,8 +210,8 @@ const Flipbook = () => {
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 {isHebrew 
-                  ? `שלום ${user.name || user.email}, כעת תוכלו ליהנות מהפליפבוק המלא`
-                  : `Hello ${user.name || user.email}, you can now enjoy the full flipbook`
+                  ? `שלום ${user?.name || user?.email}, כעת תוכלו ליהנות מהפליפבוק המלא`
+                  : `Hello ${user?.name || user?.email}, you can now enjoy the full flipbook`
                 }
               </p>
               <FlipbookViewer />
