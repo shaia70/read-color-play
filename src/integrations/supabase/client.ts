@@ -12,52 +12,18 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Key present:', !!supabaseKey);
 
-// Store client instance
-let supabaseClient: any = null;
-
-// Function to get or create the client
-export const getSupabaseClient = () => {
-  console.log('=== Getting Supabase client ===');
-  
-  if (supabaseClient) {
-    console.log('=== Returning existing Supabase client ===');
-    return supabaseClient;
-  }
-
-  console.log('=== Creating new Supabase client ===');
-  
-  // Validate before creating client
-  if (!supabaseUrl || typeof supabaseUrl !== 'string' || supabaseUrl.trim() === '') {
-    console.error('ERROR: supabaseUrl is invalid:', supabaseUrl);
-    throw new Error(`supabaseUrl is required but got: ${supabaseUrl}`);
-  }
-
-  if (!supabaseKey || typeof supabaseKey !== 'string' || supabaseKey.trim() === '') {
-    console.error('ERROR: supabaseKey is invalid:', !!supabaseKey);
-    throw new Error(`supabaseKey is required but got: ${!!supabaseKey}`);
-  }
-
-  console.log('About to call createClient with validated parameters...');
-  console.log('Final URL check:', JSON.stringify(supabaseUrl));
-  console.log('Final Key check (first 20 chars):', supabaseKey.substring(0, 20) + '...');
-
-  // Create the client with explicit logging
-  try {
-    supabaseClient = createClient<Database>(supabaseUrl, supabaseKey);
-    console.log('✅ Supabase client created successfully');
-    return supabaseClient;
-  } catch (error) {
-    console.error('❌ Error creating supabase client:', error);
-    throw error;
-  }
-};
-
-// For backward compatibility, create a getter that calls the function
-export const supabase = new Proxy({} as any, {
-  get(target, prop) {
-    const client = getSupabaseClient();
-    return client[prop];
+// Create the client immediately with proper error handling
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
   }
 });
+
+// Also export a function version for compatibility
+export const getSupabaseClient = () => {
+  console.log('=== Getting Supabase client ===');
+  return supabase;
+};
 
 console.log('=== SUPABASE CLIENT MODULE LOADED ===');

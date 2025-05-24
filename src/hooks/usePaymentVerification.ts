@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 console.log('=== usePaymentVerification: Starting module load ===');
 
@@ -19,40 +20,12 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  // Function to get supabase client safely
-  const getSupabaseClient = async () => {
-    try {
-      console.log('=== usePaymentVerification: Getting supabase client ===');
-      
-      // Add a small delay to ensure module is fully loaded
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const supabaseModule = await import('@/integrations/supabase/client');
-      
-      // Use the function instead of the proxy
-      const supabase = supabaseModule.getSupabaseClient();
-      
-      if (!supabase) {
-        console.error('=== usePaymentVerification: Supabase client is null/undefined ===');
-        return null;
-      }
-      
-      console.log('=== usePaymentVerification: Supabase client retrieved successfully ===');
-      return supabase;
-    } catch (error) {
-      console.error('=== usePaymentVerification: Error getting supabase client ===', error);
-      return null;
-    }
-  };
-
   const checkPaymentStatus = async (userId: string) => {
     try {
       setIsLoading(true);
       setError(null);
       
       console.log('Checking payment status for user:', userId);
-      
-      const supabase = await getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available');
@@ -67,7 +40,7 @@ export const usePaymentVerification = () => {
         .select('*')
         .eq('user_id', userId)
         .eq('status', 'completed')
-        .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
         .limit(1);
       
       if (dbError) {
@@ -103,8 +76,6 @@ export const usePaymentVerification = () => {
       };
       
       console.log('Recording payment:', paymentRecord);
-      
-      const supabase = await getSupabaseClient();
       
       if (!supabase) {
         console.error('Supabase client not available, using localStorage fallback');
