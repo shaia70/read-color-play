@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -20,18 +19,28 @@ const Flipbook = () => {
   const [showPayment, setShowPayment] = useState(false);
   const isHebrew = language === 'he';
 
+  console.log('=== FLIPBOOK COMPONENT RENDER ===');
+  console.log('User:', user);
+  console.log('Has valid payment:', hasValidPayment);
+  console.log('Payment loading:', paymentLoading);
+
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     
+    console.log('=== URL PARAMS CHECK ===');
+    console.log('Payment status from URL:', paymentStatus);
+    
     if (paymentStatus === 'success' && user) {
+      console.log('Payment success detected, saving payment for user:', user.id);
       // רישום התשלום במערכת
       savePayment(user.id, 'paypal_session_' + Date.now(), 70);
       setShowPayment(false);
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (paymentStatus === 'cancel') {
+      console.log('Payment cancelled');
       setShowPayment(false);
       // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -41,6 +50,7 @@ const Flipbook = () => {
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר
   useEffect(() => {
     if (user) {
+      console.log('User logged in, verifying payment for:', user.id);
       verifyPayment(user.id);
     }
   }, [user, verifyPayment]);
@@ -58,6 +68,7 @@ const Flipbook = () => {
 
   const handlePaymentSuccess = () => {
     if (user) {
+      console.log('Manual payment confirmation for user:', user.id);
       savePayment(user.id, 'manual_confirmation_' + Date.now(), 70);
       setShowPayment(false);
     }
