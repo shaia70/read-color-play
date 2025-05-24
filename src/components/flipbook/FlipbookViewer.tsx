@@ -431,23 +431,23 @@ const FlipbookViewer: React.FC = () => {
         </div>
       );
     } else if (currentPage === 12) {
-      // תצוגת עמודים 22-23 (23 מימין, 22 משמאל)
+      // תצוגת עמודים 22-23 (22 מימין, 23 משמאל)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 22 משמאל */}
-          <div className="relative">
-            <img 
-              src={BOOK_PAGES[12]} // עמוד 22
-              alt="Page 22"
-              className="max-w-full max-h-full object-contain rounded shadow-lg"
-              style={{ maxHeight: '600px', maxWidth: '300px' }}
-            />
-          </div>
-          {/* עמוד 23 מימין */}
+          {/* עמוד 23 משמאל */}
           <div className="relative">
             <img 
               src={PAGE_23_URL}
               alt="Page 23"
+              className="max-w-full max-h-full object-contain rounded shadow-lg"
+              style={{ maxHeight: '600px', maxWidth: '300px' }}
+            />
+          </div>
+          {/* עמוד 22 מימין */}
+          <div className="relative">
+            <img 
+              src={BOOK_PAGES[12]} // עמוד 22
+              alt="Page 22"
               className="max-w-full max-h-full object-contain rounded shadow-lg"
               style={{ maxHeight: '600px', maxWidth: '300px' }}
             />
