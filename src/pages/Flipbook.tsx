@@ -40,7 +40,7 @@ const Flipbook = () => {
     ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום"
     : "Experience our children's books in an interactive digital flipbook format. Instant access after payment";
 
-  const bookPrice = 19.99; // מחיר בדולרים
+  const bookPrice = "70 ₪"; // Changed from 19.99 to 70 shekels
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   const handlePaymentSuccess = () => {
@@ -105,7 +105,7 @@ const Flipbook = () => {
                 </div>
                 
                 <div className="text-3xl font-bold text-shelley-green mb-6">
-                  ${bookPrice}
+                  {bookPrice}
                 </div>
                 
                 {!showPayment ? (
@@ -121,7 +121,7 @@ const Flipbook = () => {
                 ) : (
                   <div className="mt-6">
                     <PayPalCheckout 
-                      amount={bookPrice}
+                      amount={70}
                       onSuccess={handlePaymentSuccess}
                       onCancel={() => setShowPayment(false)}
                     />
