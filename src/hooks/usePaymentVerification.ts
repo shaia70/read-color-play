@@ -28,7 +28,10 @@ export const usePaymentVerification = () => {
       
       // Dynamically import the client getter to avoid immediate initialization
       const { getSupabaseClient } = await import('@/integrations/supabase/client');
+      console.log('Imported getSupabaseClient, creating client...');
+      
       const supabase = getSupabaseClient();
+      console.log('Supabase client created, querying payments...');
       
       // Query Supabase for payment records
       const { data: payments, error: dbError } = await supabase
@@ -73,7 +76,10 @@ export const usePaymentVerification = () => {
       
       // Dynamically import the client getter to avoid immediate initialization
       const { getSupabaseClient } = await import('@/integrations/supabase/client');
+      console.log('Imported getSupabaseClient for recording payment...');
+      
       const supabase = getSupabaseClient();
+      console.log('Supabase client created for recording, inserting payment...');
       
       const { data, error } = await supabase
         .from('payments')

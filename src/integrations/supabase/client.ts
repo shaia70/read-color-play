@@ -18,27 +18,40 @@ let _supabase: ReturnType<typeof createClient<Database>> | null = null;
 // Function to get or create the client
 export const getSupabaseClient = () => {
   console.log('=== Getting Supabase client ===');
+  
   if (!_supabase) {
     console.log('=== Creating Supabase client ===');
+    console.log('URL check:', supabaseUrl, 'length:', supabaseUrl?.length);
+    console.log('Key check:', !!supabaseKey, 'length:', supabaseKey?.length);
     
     if (!supabaseUrl || supabaseUrl.trim() === '') {
+      console.error('supabaseUrl is missing or empty:', supabaseUrl);
       throw new Error('supabaseUrl is required but not provided');
     }
 
     if (!supabaseKey || supabaseKey.trim() === '') {
+      console.error('supabaseKey is missing or empty:', !!supabaseKey);
       throw new Error('supabaseKey is required but not provided');
     }
 
-    _supabase = createClient<Database>(supabaseUrl, supabaseKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      }
-    });
+    try {
+      _supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        }
+      });
+      console.log('=== Supabase client created successfully ===');
+    } catch (error) {
+      console.error('Error creating Supabase client:', error);
+      throw error;
+    }
   }
+  
   return _supabase;
 };
 
-// DO NOT export the client directly - only export the getter function
-// This prevents immediate initialization
+// For backwards compatibility - export a function that returns the client
+export const supabase = getSupabaseClient;
+
 console.log('=== SUPABASE CLIENT MODULE LOADED ===');
