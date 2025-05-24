@@ -17,7 +17,8 @@ export const usePaymentCheck = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  console.log('usePaymentCheck hook initialized - localStorage only!');
+  console.log('=== usePaymentCheck hook initialized ===');
+  console.log('Using localStorage only - no Supabase dependency');
 
   const verifyPayment = async (userId: string) => {
     console.log('=== PAYMENT VERIFICATION START ===');

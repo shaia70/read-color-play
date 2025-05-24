@@ -23,6 +23,8 @@ const Flipbook = () => {
   console.log('User:', user);
   console.log('Has valid payment:', hasValidPayment);
   console.log('Payment loading:', paymentLoading);
+  console.log('=== CONFIRMING CORRECT IMPORT ===');
+  console.log('usePaymentCheck hook imported correctly');
 
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
   useEffect(() => {
