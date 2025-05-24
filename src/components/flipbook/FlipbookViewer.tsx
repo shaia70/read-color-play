@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
@@ -288,10 +287,10 @@ const FlipbookViewer: React.FC = () => {
         </div>
       );
     } else if (currentPage === 6) {
-      // תצוגת עמודים 10-11 (10 משמאל, 11 מימין)
+      // תצוגת עמודים 10-11 (10 מימין, 11 משמאל)
       return (
         <div className="relative flex items-center justify-center gap-2">
-          {/* עמוד 10 משמאל */}
+          {/* עמוד 10 מימין */}
           <div className="relative">
             <img 
               src={BOOK_PAGES[6]} // עמוד 10
@@ -300,7 +299,7 @@ const FlipbookViewer: React.FC = () => {
               style={{ maxHeight: '600px', maxWidth: '300px' }}
             />
           </div>
-          {/* עמוד 11 מימין */}
+          {/* עמוד 11 משמאל */}
           <div className="relative">
             <img 
               src={PAGE_11_URL}
