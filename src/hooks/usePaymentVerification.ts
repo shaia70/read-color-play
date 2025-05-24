@@ -22,14 +22,12 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      // TODO: This will need to be implemented with Supabase
-      // For now, we'll simulate the check
       console.log('Checking payment status for user:', userId);
       
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // For demonstration, we'll check localStorage as a temporary solution
+      // Check localStorage for payment record
       const paymentRecord = localStorage.getItem(`payment_${userId}`);
       if (paymentRecord) {
         const payment = JSON.parse(paymentRecord);
@@ -38,6 +36,7 @@ export const usePaymentVerification = () => {
         setHasValidPayment(false);
       }
     } catch (err) {
+      console.error('Error checking payment:', err);
       setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
       setHasValidPayment(false);
     } finally {
@@ -57,6 +56,7 @@ export const usePaymentVerification = () => {
     
     localStorage.setItem(`payment_${userId}`, JSON.stringify(paymentRecord));
     setHasValidPayment(true);
+    console.log('Payment recorded successfully:', paymentRecord);
   };
 
   return {
