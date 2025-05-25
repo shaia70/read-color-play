@@ -28,21 +28,32 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
+      console.log('=== PAYMENT CHECK START ===');
       console.log('Checking payment status for user:', userId);
       
       // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
-      const { data: payments, error: paymentError } = await supabase
+      console.log('About to query payments table...');
+      
+      const { data: payments, error: paymentError, count } = await supabase
         .from('payments')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('user_id', userId)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
-        .limit(1);
+        .limit(10);
+
+      console.log('Query completed. Error:', paymentError);
+      console.log('Raw payments data:', payments);
+      console.log('Payment count:', count);
 
       if (paymentError) {
         console.error('Error fetching payments:', paymentError);
+        console.error('Error code:', paymentError.code);
+        console.error('Error message:', paymentError.message);
+        console.error('Error details:', paymentError.details);
+        console.error('Error hint:', paymentError.hint);
         setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
         setHasValidPayment(false);
         return;
@@ -51,10 +62,19 @@ export const usePaymentVerification = () => {
       const hasPayment = payments && payments.length > 0;
       setHasValidPayment(hasPayment);
       
-      console.log('Payment status check completed:', hasPayment ? 'found' : 'not found', payments);
+      console.log('=== PAYMENT CHECK RESULT ===');
+      console.log('Has payment:', hasPayment);
+      console.log('Number of payments found:', payments?.length || 0);
+      if (payments && payments.length > 0) {
+        console.log('Most recent payment:', payments[0]);
+      }
+      console.log('=== PAYMENT CHECK END ===');
       
     } catch (err) {
-      console.error('Error checking payment:', err);
+      console.error('=== PAYMENT CHECK ERROR ===');
+      console.error('Unexpected error during payment check:', err);
+      console.error('Error type:', typeof err);
+      console.error('Error constructor:', err?.constructor?.name);
       setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
       setHasValidPayment(false);
     } finally {
@@ -64,7 +84,10 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
+      console.log('=== RECORDING PAYMENT ===');
       console.log('Recording payment for user:', userId);
+      console.log('Session ID:', sessionId);
+      console.log('Amount:', amount);
       
       // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
@@ -77,6 +100,8 @@ export const usePaymentVerification = () => {
         currency: 'ILS'
       };
       
+      console.log('Payment data to insert:', paymentData);
+      
       const { data, error: recordError } = await supabase
         .from('payments')
         .insert(paymentData)
@@ -85,6 +110,8 @@ export const usePaymentVerification = () => {
       
       if (recordError) {
         console.error('Error recording payment:', recordError);
+        console.error('Record error code:', recordError.code);
+        console.error('Record error message:', recordError.message);
         setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
         return;
       }
@@ -93,7 +120,7 @@ export const usePaymentVerification = () => {
       setHasValidPayment(true);
       
     } catch (err) {
-      console.error('Error recording payment:', err);
+      console.error('Unexpected error recording payment:', err);
       setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
     }
   };

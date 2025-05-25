@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
@@ -23,20 +24,25 @@ const Flipbook = () => {
 
   // Debug logging
   useEffect(() => {
-    console.log('Flipbook component state:', {
-      user: user?.id,
-      hasValidPayment,
-      paymentLoading,
-      error,
-      isRefreshing,
-      hasCheckedPayment: hasCheckedPayment.current
-    });
-  }, [user, hasValidPayment, paymentLoading, error, isRefreshing]);
+    console.log('=== FLIPBOOK COMPONENT STATE ===');
+    console.log('User ID:', user?.id);
+    console.log('User email:', user?.email);
+    console.log('Has valid payment:', hasValidPayment);
+    console.log('Payment loading:', paymentLoading);
+    console.log('Payment error:', error);
+    console.log('Is refreshing:', isRefreshing);
+    console.log('Has checked payment:', hasCheckedPayment.current);
+    console.log('Show payment form:', showPayment);
+    console.log('=== END STATE ===');
+  }, [user, hasValidPayment, paymentLoading, error, isRefreshing, showPayment]);
 
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
+    
+    console.log('=== URL PAYMENT STATUS CHECK ===');
+    console.log('Payment status from URL:', paymentStatus);
     
     if (paymentStatus === 'success' && user) {
       console.log('Payment success detected, recording payment...');
@@ -52,6 +58,9 @@ const Flipbook = () => {
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
   useEffect(() => {
+    console.log('=== PAYMENT CHECK EFFECT ===');
+    console.log('Should check payment?', user?.id && !hasCheckedPayment.current && !paymentLoading);
+    
     if (user?.id && !hasCheckedPayment.current && !paymentLoading) {
       console.log('User logged in, checking payment status for:', user.id);
       hasCheckedPayment.current = true;
@@ -62,6 +71,7 @@ const Flipbook = () => {
   // Reset check flag when user changes
   useEffect(() => {
     if (!user) {
+      console.log('User logged out, resetting payment check flag');
       hasCheckedPayment.current = false;
     }
   }, [user]);
@@ -72,6 +82,7 @@ const Flipbook = () => {
       return;
     }
     
+    console.log('=== MANUAL REFRESH ===');
     console.log('Manual refresh payment status for user:', user.id);
     setIsRefreshing(true);
     try {
@@ -93,7 +104,9 @@ const Flipbook = () => {
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   const handlePaymentSuccess = () => {
+    console.log('=== PAYMENT SUCCESS HANDLER ===');
     if (user) {
+      console.log('Recording manual payment confirmation for user:', user.id);
       recordPayment(user.id, 'manual_confirmation_' + Date.now(), 70);
       setShowPayment(false);
     }
@@ -109,8 +122,8 @@ const Flipbook = () => {
         transition={{ duration: 0.5 }}
       >
         <Helmet>
-          <title>{pageTitle}</title>
-          <meta name="description" content={pageDescription} />
+          <title>{isHebrew ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" : "Digital Flipbook | Shelley Books - Interactive Reading Experience"}</title>
+          <meta name="description" content={isHebrew ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום" : "Experience our children's books in an interactive digital flipbook format. Instant access after payment"} />
           <link rel="canonical" href={isHebrew ? "https://shelley.co.il/flipbook" : "https://shelley.co.il/en/flipbook"} />
         </Helmet>
         
@@ -144,8 +157,8 @@ const Flipbook = () => {
       transition={{ duration: 0.5 }}
     >
       <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
+        <title>{isHebrew ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" : "Digital Flipbook | Shelley Books - Interactive Reading Experience"}</title>
+        <meta name="description" content={isHebrew ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום" : "Experience our children's books in an interactive digital flipbook format. Instant access after payment"} />
         <link rel="canonical" href={isHebrew ? "https://shelley.co.il/flipbook" : "https://shelley.co.il/en/flipbook"} />
       </Helmet>
       
@@ -220,7 +233,7 @@ const Flipbook = () => {
                   <div className="w-48 h-48 rounded-lg shadow-xl overflow-hidden relative">
                     <img 
                       src="/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png" 
-                      alt={bookTitle} 
+                      alt="דניאל הולך לגן" 
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
@@ -229,7 +242,7 @@ const Flipbook = () => {
                   </div>
                 </div>
                 
-                <h2 className="text-2xl font-bold mb-4">{bookTitle}</h2>
+                <h2 className="text-2xl font-bold mb-4">{isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten"}</h2>
                 <p className="text-gray-600 mb-6">
                   {isHebrew 
                     ? "חוו את הספר באופן אינטראקטיבי עם פליפבוק דיגיטלי מתקדם"
@@ -250,7 +263,7 @@ const Flipbook = () => {
                 </div>
                 
                 <div className="text-3xl font-bold text-shelley-green mb-6">
-                  {bookPrice}
+                  70 ₪
                 </div>
                 
                 {!showPayment ? (
