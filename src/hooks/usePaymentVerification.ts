@@ -42,6 +42,17 @@ export const usePaymentVerification = () => {
     }
   };
 
+  // Helper function to clear payment from localStorage
+  const clearLocalPayment = (userId: string): void => {
+    try {
+      const paymentKey = `payment_completed_${userId}`;
+      localStorage.removeItem(paymentKey);
+      localStorage.removeItem(`payment_date_${userId}`);
+    } catch (err) {
+      console.error('Error clearing localStorage:', err);
+    }
+  };
+
   const checkPaymentStatus = useCallback(async (userId: string) => {
     if (isLoading) {
       console.log('Payment check already in progress, skipping...');
@@ -75,7 +86,7 @@ export const usePaymentVerification = () => {
       }
 
       // Check database first - this is the authoritative source
-      console.log('Checking database for payments...');
+      console.log('Checking database for payments for user:', userId);
       const { data: payments, error: dbError } = await supabase
         .from('payments')
         .select('*')
@@ -87,58 +98,10 @@ export const usePaymentVerification = () => {
       if (dbError) {
         console.error('Database query error:', dbError);
         
-        // Fallback to localStorage only if DB fails
-        const hasLocalPayment = checkLocalPayment(userId);
-        console.log('Database failed, using localStorage fallback:', hasLocalPayment);
-        setHasValidPayment(hasLocalPayment);
+        // Clear any potentially stale localStorage
+        clearLocalPayment(userId);
+        setHasValidPayment(false);
         
-        if (!hasLocalPayment) {
-          const errorMsg = language === 'he' 
-            ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
-            : 'Cannot check payment status at the moment';
-          
-          setError(errorMsg);
-          
-          toast({
-            variant: "destructive",
-            title: language === 'he' ? 'שגיאה' : 'Error',
-            description: errorMsg
-          });
-        }
-      } else {
-        console.log('Database query result:', payments);
-        const hasDbPayment = payments && payments.length > 0;
-        
-        // The database is the authoritative source
-        setHasValidPayment(hasDbPayment);
-        
-        if (hasDbPayment) {
-          // Sync with localStorage for faster future checks
-          saveLocalPayment(userId);
-          
-          toast({
-            title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
-            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-          });
-        } else {
-          // No payment in database - clear any stale localStorage
-          const paymentKey = `payment_completed_${userId}`;
-          localStorage.removeItem(paymentKey);
-          localStorage.removeItem(`payment_date_${userId}`);
-          
-          console.log('No payment found in database for this user');
-        }
-      }
-      
-    } catch (err) {
-      console.error('=== PAYMENT CHECK ERROR ===');
-      console.error('Error details:', err);
-      
-      // Only use localStorage as absolute last resort
-      const hasLocalPayment = checkLocalPayment(userId);
-      setHasValidPayment(hasLocalPayment);
-      
-      if (!hasLocalPayment) {
         const errorMsg = language === 'he' 
           ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
           : 'Cannot check payment status at the moment';
@@ -150,7 +113,49 @@ export const usePaymentVerification = () => {
           title: language === 'he' ? 'שגיאה' : 'Error',
           description: errorMsg
         });
+      } else {
+        console.log('Database query result:', payments);
+        const hasDbPayment = payments && payments.length > 0;
+        
+        console.log('Has payment for this user:', hasDbPayment);
+        
+        if (hasDbPayment) {
+          // User has valid payment - sync with localStorage and grant access
+          saveLocalPayment(userId);
+          setHasValidPayment(true);
+          
+          toast({
+            title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
+            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+          });
+        } else {
+          // No payment found for this user - clear localStorage and deny access
+          clearLocalPayment(userId);
+          setHasValidPayment(false);
+          
+          console.log('No payment found in database for user:', userId);
+        }
       }
+      
+    } catch (err) {
+      console.error('=== PAYMENT CHECK ERROR ===');
+      console.error('Error details:', err);
+      
+      // Clear any potentially stale localStorage and deny access
+      clearLocalPayment(userId);
+      setHasValidPayment(false);
+      
+      const errorMsg = language === 'he' 
+        ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
+        : 'Cannot check payment status at the moment';
+      
+      setError(errorMsg);
+      
+      toast({
+        variant: "destructive",
+        title: language === 'he' ? 'שגיאה' : 'Error',
+        description: errorMsg
+      });
     } finally {
       setIsLoading(false);
     }
