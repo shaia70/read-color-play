@@ -1,7 +1,7 @@
-
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PaymentRecord {
   id: string;
@@ -84,24 +84,18 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Use Edge Function to check payment status
+      // Use Edge Function to check payment status via supabase client
       console.log('Checking payment via Edge Function for user:', userId);
       
-      const response = await fetch('https://pahqikhckqjujbhvqnyb.supabase.co/functions/v1/check-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8`
-        },
-        body: JSON.stringify({ user_id: userId })
+      const { data, error: functionError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
       });
 
-      if (!response.ok) {
-        console.error('Edge Function response not ok:', response.status, response.statusText);
-        throw new Error(`Edge Function error: ${response.status}`);
+      if (functionError) {
+        console.error('Edge Function error:', functionError);
+        throw new Error(`Edge Function error: ${functionError.message}`);
       }
 
-      const data = await response.json();
       console.log('Edge Function response:', data);
 
       if (data.error) {
@@ -160,26 +154,20 @@ export const usePaymentVerification = () => {
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Use Edge Function to record payment
-      const response = await fetch('https://pahqikhckqjujbhvqnyb.supabase.co/functions/v1/record-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8`
-        },
-        body: JSON.stringify({
+      // Use Edge Function to record payment via supabase client
+      const { data, error: functionError } = await supabase.functions.invoke('record-payment', {
+        body: {
           user_id: userId,
           transaction_id: sessionId,
           amount: amount
-        })
+        }
       });
 
-      if (!response.ok) {
-        console.error('Edge Function response not ok:', response.status, response.statusText);
-        throw new Error(`Edge Function error: ${response.status}`);
+      if (functionError) {
+        console.error('Edge Function error:', functionError);
+        throw new Error(`Edge Function error: ${functionError.message}`);
       }
 
-      const data = await response.json();
       console.log('Payment recorded via Edge Function:', data);
 
       if (data.error) {
