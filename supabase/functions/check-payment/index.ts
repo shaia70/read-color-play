@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Fixed Schema Access) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Direct Table Access) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -55,16 +55,20 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Use RPC function to get user payments
-    console.log('Calling get_user_payments RPC function...')
+    // Direct table access using service role
+    console.log('Querying payments table directly...')
     
     const { data: payments, error } = await supabase
-      .rpc('get_user_payments', { p_user_id: user_id })
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
     
-    console.log('RPC result:', { payments, error })
+    console.log('Direct query result:', { payments, error })
 
     if (error) {
-      console.error('RPC Error:', error)
+      console.error('Database Error:', error)
       
       return new Response(
         JSON.stringify({ 
@@ -83,13 +87,15 @@ serve(async (req) => {
 
     console.log('Payment check result:', { 
       hasPayment, 
-      paymentCount: payments?.length || 0 
+      paymentCount: payments?.length || 0,
+      payments: payments 
     })
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: payments?.length || 0
+        paymentCount: payments?.length || 0,
+        payments: payments
       }),
       { 
         status: 200,

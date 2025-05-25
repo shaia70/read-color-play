@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Fixed Schema Access) ===')
+    console.log('=== RECORDING PAYMENT (Direct Table Access) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -55,20 +55,25 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Use RPC function to create payment
-    console.log('Calling create_payment RPC function...')
+    // Direct table insert using service role
+    console.log('Inserting payment into table directly...')
     
     const { data: payment, error } = await supabase
-      .rpc('create_payment', { 
-        p_user_id: user_id,
-        p_transaction_id: transaction_id,
-        p_amount: parseFloat(amount)
+      .from('payments')
+      .insert({
+        user_id: user_id,
+        paypal_transaction_id: transaction_id,
+        amount: parseFloat(amount),
+        currency: 'ILS',
+        status: 'success'
       })
+      .select()
+      .single()
     
-    console.log('RPC result:', { payment, error })
+    console.log('Direct insert result:', { payment, error })
 
     if (error) {
-      console.error('RPC Error:', error)
+      console.error('Database Error:', error)
       
       return new Response(
         JSON.stringify({ 
