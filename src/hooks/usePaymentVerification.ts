@@ -98,26 +98,35 @@ export const usePaymentVerification = () => {
       if (dbError) {
         console.error('Database query error:', dbError);
         
-        // Clear any potentially stale localStorage
-        clearLocalPayment(userId);
-        setHasValidPayment(false);
+        // Fall back to localStorage check
+        const hasLocalPayment = checkLocalPayment(userId);
+        console.log('Database failed, using localStorage fallback:', hasLocalPayment);
         
-        const errorMsg = language === 'he' 
-          ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
-          : 'Cannot check payment status at the moment';
-        
-        setError(errorMsg);
-        
-        toast({
-          variant: "destructive",
-          title: language === 'he' ? 'שגיאה' : 'Error',
-          description: errorMsg
-        });
+        if (hasLocalPayment) {
+          setHasValidPayment(true);
+          toast({
+            title: language === 'he' ? 'תשלום נמצא במטמון' : 'Payment found in cache',
+            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+          });
+        } else {
+          setHasValidPayment(false);
+          const errorMsg = language === 'he' 
+            ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
+            : 'Cannot check payment status at the moment';
+          
+          setError(errorMsg);
+          
+          toast({
+            variant: "destructive",
+            title: language === 'he' ? 'שגיאה' : 'Error',
+            description: errorMsg
+          });
+        }
       } else {
         console.log('Database query result:', payments);
         const hasDbPayment = payments && payments.length > 0;
         
-        console.log('Has payment for this user:', hasDbPayment);
+        console.log('Has payment for this user in database:', hasDbPayment);
         
         if (hasDbPayment) {
           // User has valid payment - sync with localStorage and grant access
@@ -141,21 +150,30 @@ export const usePaymentVerification = () => {
       console.error('=== PAYMENT CHECK ERROR ===');
       console.error('Error details:', err);
       
-      // Clear any potentially stale localStorage and deny access
-      clearLocalPayment(userId);
-      setHasValidPayment(false);
+      // Fall back to localStorage check
+      const hasLocalPayment = checkLocalPayment(userId);
+      console.log('Error occurred, using localStorage fallback:', hasLocalPayment);
       
-      const errorMsg = language === 'he' 
-        ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
-        : 'Cannot check payment status at the moment';
-      
-      setError(errorMsg);
-      
-      toast({
-        variant: "destructive",
-        title: language === 'he' ? 'שגיאה' : 'Error',
-        description: errorMsg
-      });
+      if (hasLocalPayment) {
+        setHasValidPayment(true);
+        toast({
+          title: language === 'he' ? 'תשלום נמצא במטמון' : 'Payment found in cache',
+          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+        });
+      } else {
+        setHasValidPayment(false);
+        const errorMsg = language === 'he' 
+          ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
+          : 'Cannot check payment status at the moment';
+        
+        setError(errorMsg);
+        
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'שגיאה' : 'Error',
+          description: errorMsg
+        });
+      }
     } finally {
       setIsLoading(false);
     }
