@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
@@ -35,26 +34,6 @@ const Flipbook = () => {
     console.log('Show payment form:', showPayment);
     console.log('=== END STATE ===');
   }, [user, hasValidPayment, paymentLoading, error, isRefreshing, showPayment]);
-
-  // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentStatus = urlParams.get('payment');
-    
-    console.log('=== URL PAYMENT STATUS CHECK ===');
-    console.log('Payment status from URL:', paymentStatus);
-    
-    if (paymentStatus === 'success' && user) {
-      console.log('Payment success detected, recording payment...');
-      recordPayment(user.id, 'paypal_session_' + Date.now(), 70);
-      setShowPayment(false);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (paymentStatus === 'cancel') {
-      console.log('Payment cancelled');
-      setShowPayment(false);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [user, recordPayment]);
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
   useEffect(() => {
@@ -122,8 +101,8 @@ const Flipbook = () => {
         transition={{ duration: 0.5 }}
       >
         <Helmet>
-          <title>{isHebrew ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" : "Digital Flipbook | Shelley Books - Interactive Reading Experience"}</title>
-          <meta name="description" content={isHebrew ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום" : "Experience our children's books in an interactive digital flipbook format. Instant access after payment"} />
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
           <link rel="canonical" href={isHebrew ? "https://shelley.co.il/flipbook" : "https://shelley.co.il/en/flipbook"} />
         </Helmet>
         
@@ -157,8 +136,8 @@ const Flipbook = () => {
       transition={{ duration: 0.5 }}
     >
       <Helmet>
-        <title>{isHebrew ? "פליפבוק דיגיטלי | שלי ספרים - חווית קריאה אינטראקטיבית" : "Digital Flipbook | Shelley Books - Interactive Reading Experience"}</title>
-        <meta name="description" content={isHebrew ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום" : "Experience our children's books in an interactive digital flipbook format. Instant access after payment"} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
         <link rel="canonical" href={isHebrew ? "https://shelley.co.il/flipbook" : "https://shelley.co.il/en/flipbook"} />
       </Helmet>
       

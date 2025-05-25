@@ -1,7 +1,6 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 interface PaymentRecord {
@@ -19,6 +18,29 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
+  // Helper function to check localStorage for payment
+  const checkLocalPayment = (userId: string): boolean => {
+    try {
+      const paymentKey = `payment_completed_${userId}`;
+      const paymentData = localStorage.getItem(paymentKey);
+      return paymentData === 'true';
+    } catch (err) {
+      console.error('Error checking localStorage:', err);
+      return false;
+    }
+  };
+
+  // Helper function to save payment to localStorage
+  const saveLocalPayment = (userId: string): void => {
+    try {
+      const paymentKey = `payment_completed_${userId}`;
+      localStorage.setItem(paymentKey, 'true');
+      localStorage.setItem(`payment_date_${userId}`, new Date().toISOString());
+    } catch (err) {
+      console.error('Error saving to localStorage:', err);
+    }
+  };
+
   const checkPaymentStatus = useCallback(async (userId: string) => {
     if (isLoading) {
       console.log('Payment check already in progress, skipping...');
@@ -29,108 +51,66 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== TESTING EDGE FUNCTION CONNECTIVITY ===');
+      console.log('=== CHECKING PAYMENT STATUS ===');
       console.log('User ID to check:', userId);
       
-      // Test if edge functions are available by trying to invoke check-payment
-      console.log('Attempting to call check-payment edge function...');
+      // First check localStorage for existing payment
+      const hasLocalPayment = checkLocalPayment(userId);
+      console.log('Local payment found:', hasLocalPayment);
       
-      const { data, error: functionError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
-
-      console.log('=== EDGE FUNCTION RAW RESPONSE ===');
-      console.log('Raw function data:', JSON.stringify(data, null, 2));
-      console.log('Raw function error:', JSON.stringify(functionError, null, 2));
-
-      if (functionError) {
-        console.error('Edge function not available, falling back to direct DB access...');
-        
-        // Fallback: direct database access with service role simulation
-        console.log('=== FALLBACK: DIRECT DB ACCESS ===');
-        
-        // Try direct access to payments table
-        const { data: payments, error: dbError } = await supabase
-          .from('payments')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('status', 'completed');
-
-        console.log('Direct DB access result:', payments);
-        console.log('Direct DB access error:', dbError);
-
-        if (dbError) {
-          // If direct access fails, let's try with a simple insert test
-          console.log('=== TESTING TABLE ACCESS WITH TEMP RECORD ===');
-          
-          const testRecord = {
-            user_id: userId,
-            paypal_transaction_id: 'test_' + Date.now(),
-            amount: 1,
-            status: 'pending' as const,
-            currency: 'ILS'
-          };
-          
-          const { data: insertData, error: insertError } = await supabase
-            .from('payments')
-            .insert(testRecord)
-            .select()
-            .single();
-            
-          console.log('Test insert result:', insertData);
-          console.log('Test insert error:', insertError);
-          
-          if (insertError) {
-            throw new Error(`Database access failed: ${insertError.message}`);
-          }
-          
-          // Clean up test record
-          if (insertData) {
-            await supabase.from('payments').delete().eq('id', insertData.id);
-          }
-        }
-
-        const hasPayment = payments && payments.length > 0;
-        setHasValidPayment(hasPayment);
-        
-        console.log('=== FALLBACK RESULT ===');
-        console.log('Has valid payment (fallback):', hasPayment);
-        
-        return;
-      }
-
-      const hasPayment = data?.hasValidPayment || false;
-      setHasValidPayment(hasPayment);
-      
-      console.log('=== EDGE FUNCTION SUCCESS ===');
-      console.log('Has valid payment:', hasPayment);
-      console.log('Payments found:', data?.payments?.length || 0);
-      
-      if (hasPayment) {
+      if (hasLocalPayment) {
+        setHasValidPayment(true);
         toast({
           title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
-      } else {
-        console.log('No completed payments found for this user');
+        return;
       }
+
+      // If no local payment, check if user came back from PayPal
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('payment');
+      
+      if (paymentStatus === 'success') {
+        console.log('PayPal success detected, recording payment...');
+        saveLocalPayment(userId);
+        setHasValidPayment(true);
+        
+        toast({
+          title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
+          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+        });
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+
+      // No payment found
+      setHasValidPayment(false);
+      console.log('No payment found for this user');
       
     } catch (err) {
       console.error('=== PAYMENT CHECK ERROR ===');
       console.error('Error details:', err);
       
-      const errorMsg = language === 'he' 
-        ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
-        : 'Cannot check payment status at the moment';
+      // Check localStorage as fallback even on error
+      const hasLocalPayment = checkLocalPayment(userId);
+      setHasValidPayment(hasLocalPayment);
       
-      setError(errorMsg);
-      setHasValidPayment(false);
-      
-      toast({
-        variant: "destructive",
-        title: language === 'he' ? 'שגיאה' : 'Error',
-        description: errorMsg
-      });
+      if (!hasLocalPayment) {
+        const errorMsg = language === 'he' 
+          ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
+          : 'Cannot check payment status at the moment';
+        
+        setError(errorMsg);
+        
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'שגיאה' : 'Error',
+          description: errorMsg
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -138,57 +118,16 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT - TESTING APPROACH ===');
+      console.log('=== RECORDING PAYMENT ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // First try edge function
-      console.log('Trying edge function approach...');
-      
-      const { data, error: functionError } = await supabase.functions.invoke('record-payment', {
-        body: {
-          user_id: userId,
-          transaction_id: sessionId,
-          amount: amount
-        }
-      });
-
-      console.log('Edge function result:', data);
-      console.log('Edge function error:', functionError);
-
-      if (functionError) {
-        console.log('Edge function failed, trying direct insert...');
-        
-        // Fallback: direct insert
-        const { data: insertData, error: insertError } = await supabase
-          .from('payments')
-          .insert({
-            user_id: userId,
-            paypal_transaction_id: sessionId,
-            amount,
-            currency: 'ILS',
-            status: 'completed'
-          })
-          .select()
-          .single();
-
-        console.log('Direct insert result:', insertData);
-        console.log('Direct insert error:', insertError);
-
-        if (insertError) {
-          throw new Error(`Payment recording failed: ${insertError.message}`);
-        }
-        
-        console.log('Payment recorded successfully via direct insert:', insertData);
-      } else {
-        if (!data?.success) {
-          throw new Error('Payment recording failed via edge function');
-        }
-        console.log('Payment recorded successfully via edge function:', data);
-      }
-      
+      // Save to localStorage
+      saveLocalPayment(userId);
       setHasValidPayment(true);
+      
+      console.log('Payment recorded successfully in localStorage');
       
       toast({
         title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
