@@ -20,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (Direct Client) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Edge Function) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -30,46 +30,21 @@ export const usePaymentVerification = () => {
       if (paymentStatus === 'success') {
         console.log('PayPal success detected, recording payment...');
         
-        // Get current user session to verify auth
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        console.log('Current authenticated user:', user?.id);
-        console.log('User ID parameter:', userId);
-        
-        if (authError) {
-          console.error('Auth error:', authError);
-          throw authError;
-        }
-        
-        if (!user || user.id !== userId) {
-          console.error('User mismatch or not authenticated');
-          throw new Error('Authentication mismatch');
-        }
-        
-        // Record payment directly using client
-        console.log('Attempting to insert payment record...');
-        const paymentData = {
-          user_id: userId,
-          paypal_transaction_id: 'paypal_success_' + Date.now(),
-          amount: 70,
-          currency: 'ILS',
-          status: 'success'
-        };
-        console.log('Payment data to insert:', paymentData);
-        
-        const { data: recordResult, error: recordError } = await supabase
-          .from('payments')
-          .insert(paymentData)
-          .select();
+        // Record payment using Edge Function
+        const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
+          body: {
+            user_id: userId,
+            transaction_id: 'paypal_success_' + Date.now(),
+            amount: 70
+          }
+        });
 
         if (recordError) {
-          console.error('Database insert error details:', recordError);
-          console.error('Error code:', recordError.code);
-          console.error('Error message:', recordError.message);
-          console.error('Error details:', recordError.details);
+          console.error('Error recording payment via Edge Function:', recordError);
           throw recordError;
         }
 
-        console.log('Payment recorded successfully:', recordResult);
+        console.log('Payment recorded successfully via Edge Function:', recordResult);
         setHasValidPayment(true);
         
         toast({
@@ -82,23 +57,20 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check payment status directly using client
-      const { data: payments, error: checkError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'success')
-        .order('created_at', { ascending: false });
+      // Check payment status using Edge Function
+      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
       if (checkError) {
-        console.error('Error checking payment:', checkError);
+        console.error('Error checking payment via Edge Function:', checkError);
         throw checkError;
       }
 
-      console.log('Payment check result from direct client:', payments);
+      console.log('Payment check result from Edge Function:', checkResult);
       
-      if (payments && payments.length > 0) {
-        console.log('Valid payment found via direct client');
+      if (checkResult?.hasValidPayment) {
+        console.log('Valid payment found via Edge Function');
         setHasValidPayment(true);
         toast({
           title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
@@ -132,51 +104,26 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (Direct Client) ===');
+      console.log('=== RECORDING PAYMENT (Edge Function) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Get current user session to verify auth
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      console.log('Current authenticated user:', user?.id);
-      console.log('User ID parameter:', userId);
-      
-      if (authError) {
-        console.error('Auth error during payment recording:', authError);
-        throw authError;
-      }
-      
-      if (!user || user.id !== userId) {
-        console.error('User mismatch or not authenticated during payment recording');
-        throw new Error('Authentication mismatch during payment recording');
-      }
-      
-      // Record payment directly using client
-      console.log('Attempting to insert payment record...');
-      const paymentData = {
-        user_id: userId,
-        paypal_transaction_id: sessionId,
-        amount: amount,
-        currency: 'ILS',
-        status: 'success'
-      };
-      console.log('Payment data to insert:', paymentData);
-      
-      const { data: result, error: insertError } = await supabase
-        .from('payments')
-        .insert(paymentData)
-        .select();
+      // Record payment using Edge Function
+      const { data: result, error: insertError } = await supabase.functions.invoke('record-payment', {
+        body: {
+          user_id: userId,
+          transaction_id: sessionId,
+          amount: amount
+        }
+      });
 
       if (insertError) {
-        console.error('Database insert error details:', insertError);
-        console.error('Error code:', insertError.code);
-        console.error('Error message:', insertError.message);
-        console.error('Error details:', insertError.details);
+        console.error('Error recording payment via Edge Function:', insertError);
         throw insertError;
       }
 
-      console.log('Payment recorded successfully via direct client:', result);
+      console.log('Payment recorded successfully via Edge Function:', result);
       setHasValidPayment(true);
       
       toast({
