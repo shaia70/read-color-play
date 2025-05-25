@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -66,14 +66,14 @@ export const usePaymentVerification = () => {
         currency: 'ILS'
       };
       
-      const { data, error } = await supabase
+      const { data, error: recordError } = await supabase
         .from('payments')
         .insert(paymentData)
         .select()
         .single();
       
-      if (error) {
-        console.error('Error recording payment:', error);
+      if (recordError) {
+        console.error('Error recording payment:', recordError);
         setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
         return;
       }
