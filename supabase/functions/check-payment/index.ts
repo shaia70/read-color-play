@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Service Role) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Fixed Client) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,16 +33,8 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key for database access
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { 
-        persistSession: false,
-        autoRefreshToken: false
-      },
-      db: {
-        schema: 'public'
-      }
-    })
+    // Create simple Supabase client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { user_id } = await req.json()
 
@@ -58,7 +50,7 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Use service role to access payments table directly
+    // Query payments table
     const { data: payments, error } = await supabase
       .from('payments')
       .select('*')

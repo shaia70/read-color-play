@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Service Role) ===')
+    console.log('=== RECORDING PAYMENT (Fixed Client) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,16 +33,8 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key for database access
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { 
-        persistSession: false,
-        autoRefreshToken: false
-      },
-      db: {
-        schema: 'public'
-      }
-    })
+    // Create simple Supabase client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { user_id, transaction_id, amount } = await req.json()
 
@@ -58,7 +50,7 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Use service role to insert payment record
+    // Insert payment record
     const paymentData = {
       user_id,
       paypal_transaction_id: transaction_id,
