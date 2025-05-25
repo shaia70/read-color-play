@@ -20,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (Edge Function) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Edge Function Only) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -28,7 +28,7 @@ export const usePaymentVerification = () => {
       const paymentStatus = urlParams.get('payment');
       
       if (paymentStatus === 'success') {
-        console.log('PayPal success detected, recording payment...');
+        console.log('PayPal success detected, recording payment via Edge Function...');
         
         // Record payment using Edge Function
         const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
@@ -38,6 +38,8 @@ export const usePaymentVerification = () => {
             amount: 70
           }
         });
+
+        console.log('Record payment result:', { recordResult, recordError });
 
         if (recordError) {
           console.error('Error recording payment via Edge Function:', recordError);
@@ -57,10 +59,13 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check payment status using Edge Function
+      // Check payment status using Edge Function ONLY
+      console.log('Calling check-payment Edge Function...');
       const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
         body: { user_id: userId }
       });
+
+      console.log('Check payment Edge Function result:', { checkResult, checkError });
 
       if (checkError) {
         console.error('Error checking payment via Edge Function:', checkError);
@@ -104,12 +109,12 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (Edge Function) ===');
+      console.log('=== RECORDING PAYMENT (Edge Function Only) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Record payment using Edge Function
+      // Record payment using Edge Function ONLY
       const { data: result, error: insertError } = await supabase.functions.invoke('record-payment', {
         body: {
           user_id: userId,
@@ -117,6 +122,8 @@ export const usePaymentVerification = () => {
           amount: amount
         }
       });
+
+      console.log('Record payment Edge Function result:', { result, insertError });
 
       if (insertError) {
         console.error('Error recording payment via Edge Function:', insertError);
