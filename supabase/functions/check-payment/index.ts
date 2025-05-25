@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Supabase Client) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Service Role) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,9 +33,15 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key
+    // Create Supabase client with service role key for database access
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { persistSession: false }
+      auth: { 
+        persistSession: false,
+        autoRefreshToken: false
+      },
+      db: {
+        schema: 'public'
+      }
     })
 
     const { user_id } = await req.json()
@@ -52,7 +58,7 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Use Supabase client instead of direct API call
+    // Use service role to access payments table directly
     const { data: payments, error } = await supabase
       .from('payments')
       .select('*')
@@ -60,10 +66,10 @@ serve(async (req) => {
       .eq('status', 'success')
       .order('created_at', { ascending: false })
 
-    console.log('Supabase query result:', { payments, error })
+    console.log('Database query result:', { payments, error })
 
     if (error) {
-      console.error('Supabase Error:', error)
+      console.error('Database Error:', error)
       return new Response(
         JSON.stringify({ 
           error: 'Database query failed', 
@@ -80,13 +86,13 @@ serve(async (req) => {
 
     console.log('Payment check result:', { 
       hasPayment, 
-      paymentCount: payments.length 
+      paymentCount: payments?.length || 0 
     })
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: payments.length
+        paymentCount: payments?.length || 0
       }),
       { 
         status: 200,
