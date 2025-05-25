@@ -33,23 +33,6 @@ export const usePaymentVerification = () => {
       // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // First check if payments table exists and is accessible
-      const { data: testData, error: testError } = await supabase
-        .from('payments')
-        .select('count')
-        .limit(1);
-      
-      if (testError) {
-        console.error('Error testing payments table access:', testError);
-        // If table doesn't exist or isn't accessible, assume no payment
-        setError(null);
-        setHasValidPayment(false);
-        console.log('Payments table not accessible, assuming no payment');
-        return;
-      }
-      
-      console.log('Payments table is accessible, checking for user payments...');
-      
       const { data: payments, error: paymentError } = await supabase
         .from('payments')
         .select('*')
@@ -72,8 +55,7 @@ export const usePaymentVerification = () => {
       
     } catch (err) {
       console.error('Error checking payment:', err);
-      // Don't show error to user if it's just a table access issue
-      setError(null);
+      setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
       setHasValidPayment(false);
     } finally {
       setIsLoading(false);
