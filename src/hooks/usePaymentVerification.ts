@@ -25,6 +25,14 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
+      // Check if supabase client is properly initialized
+      if (!supabase) {
+        console.error('Supabase client is not initialized');
+        setError(language === 'he' ? 'שגיאה בחיבור למערכת' : 'System connection error');
+        setHasValidPayment(false);
+        return;
+      }
+      
       const { data: payments, error: paymentError } = await supabase
         .from('payments')
         .select('*')
@@ -57,6 +65,13 @@ export const usePaymentVerification = () => {
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
       console.log('Recording payment for user:', userId);
+      
+      // Check if supabase client is properly initialized
+      if (!supabase) {
+        console.error('Supabase client is not initialized');
+        setError(language === 'he' ? 'שגיאה בחיבור למערכת' : 'System connection error');
+        return;
+      }
       
       const paymentData = {
         user_id: userId,
