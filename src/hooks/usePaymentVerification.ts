@@ -2,7 +2,6 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -20,7 +19,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (Supabase) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Edge Function) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -30,29 +29,30 @@ export const usePaymentVerification = () => {
       if (paymentStatus === 'success') {
         console.log('PayPal success detected, recording payment...');
         
-        // Record payment in Supabase
-        const { data, error: insertError } = await supabase
-          .from('payments')
-          .insert({
+        // Record payment using edge function
+        const recordResponse = await fetch('/functions/v1/record-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             user_id: userId,
-            paypal_transaction_id: 'paypal_' + Date.now(),
-            amount: 70,
-            currency: 'ILS',
-            status: 'completed'
+            transaction_id: 'paypal_' + Date.now(),
+            amount: 70
           })
-          .select()
-          .single();
+        });
 
-        if (insertError) {
-          console.error('Error recording payment:', insertError);
-        } else {
-          console.log('Payment recorded in Supabase:', data);
+        if (recordResponse.ok) {
+          const recordData = await recordResponse.json();
+          console.log('Payment recorded via edge function:', recordData);
           setHasValidPayment(true);
           
           toast({
             title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
             description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
           });
+        } else {
+          console.error('Error recording payment via edge function');
         }
         
         // Clean URL
@@ -60,29 +60,36 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check Supabase for existing payments
-      console.log('Checking Supabase for payments for user:', userId);
-      const { data: payments, error: fetchError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Check for existing payments using edge function
+      console.log('Checking payments via edge function for user:', userId);
+      const checkResponse = await fetch('/functions/v1/check-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId
+        })
+      });
 
-      if (fetchError) {
-        console.error('Error fetching payments:', fetchError);
-        setError(language === 'he' ? 'בעיה בבדיקת התשלום' : 'Payment check issue');
-        setHasValidPayment(false);
-      } else if (payments && payments.length > 0) {
-        console.log('Found payment in Supabase:', payments[0]);
-        setHasValidPayment(true);
-        toast({
-          title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
-          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-        });
+      if (checkResponse.ok) {
+        const checkData = await checkResponse.json();
+        console.log('Payment check response:', checkData);
+        
+        if (checkData.hasValidPayment) {
+          console.log('Found valid payment for user:', userId);
+          setHasValidPayment(true);
+          toast({
+            title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
+            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+          });
+        } else {
+          console.log('No payment found for user:', userId);
+          setHasValidPayment(false);
+        }
       } else {
-        console.log('No payment found for user:', userId);
+        console.error('Error checking payment via edge function');
+        setError(language === 'he' ? 'בעיה בבדיקת התשלום' : 'Payment check issue');
         setHasValidPayment(false);
       }
       
@@ -109,40 +116,41 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (Supabase) ===');
+      console.log('=== RECORDING PAYMENT (Edge Function) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Record payment in Supabase
-      const { data, error } = await supabase
-        .from('payments')
-        .insert({
+      // Record payment using edge function
+      const response = await fetch('/functions/v1/record-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          currency: 'ILS',
-          status: 'completed'
+          transaction_id: sessionId,
+          amount: amount
         })
-        .select()
-        .single();
+      });
 
-      if (error) {
-        console.error('Error recording payment:', error);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Payment recorded via edge function:', data);
+        setHasValidPayment(true);
+        
+        toast({
+          title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
+          description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
+        });
+      } else {
+        console.error('Error recording payment via edge function');
         setError(language === 'he' ? 'בעיה ברישום התשלום' : 'Payment recording issue');
         
         toast({
           variant: "destructive",
           title: language === 'he' ? 'שגיאה' : 'Error',
           description: language === 'he' ? 'בעיה ברישום התשלום' : 'Payment recording issue'
-        });
-      } else {
-        console.log('Payment recorded in Supabase:', data);
-        setHasValidPayment(true);
-        
-        toast({
-          title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
-          description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
         });
       }
       
