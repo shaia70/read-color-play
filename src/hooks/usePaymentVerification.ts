@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -19,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (Edge Function) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Supabase Function) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -29,22 +30,17 @@ export const usePaymentVerification = () => {
       if (paymentStatus === 'success') {
         console.log('PayPal success detected, recording payment...');
         
-        // Record payment using edge function
-        const recordResponse = await fetch('/functions/v1/record-payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        // Record payment using Supabase function
+        const { data: recordData, error: recordError } = await supabase.functions.invoke('record-payment', {
+          body: {
             user_id: userId,
             transaction_id: 'paypal_' + Date.now(),
             amount: 70
-          })
+          }
         });
 
-        if (recordResponse.ok) {
-          const recordData = await recordResponse.json();
-          console.log('Payment recorded via edge function:', recordData);
+        if (!recordError && recordData) {
+          console.log('Payment recorded via Supabase function:', recordData);
           setHasValidPayment(true);
           
           toast({
@@ -52,7 +48,7 @@ export const usePaymentVerification = () => {
             description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
           });
         } else {
-          console.error('Error recording payment via edge function');
+          console.error('Error recording payment via Supabase function:', recordError);
         }
         
         // Clean URL
@@ -60,20 +56,15 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check for existing payments using edge function
-      console.log('Checking payments via edge function for user:', userId);
-      const checkResponse = await fetch('/functions/v1/check-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Check for existing payments using Supabase function
+      console.log('Checking payments via Supabase function for user:', userId);
+      const { data: checkData, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: {
           user_id: userId
-        })
+        }
       });
 
-      if (checkResponse.ok) {
-        const checkData = await checkResponse.json();
+      if (!checkError && checkData) {
         console.log('Payment check response:', checkData);
         
         if (checkData.hasValidPayment) {
@@ -88,7 +79,7 @@ export const usePaymentVerification = () => {
           setHasValidPayment(false);
         }
       } else {
-        console.error('Error checking payment via edge function');
+        console.error('Error checking payment via Supabase function:', checkError);
         setError(language === 'he' ? 'בעיה בבדיקת התשלום' : 'Payment check issue');
         setHasValidPayment(false);
       }
@@ -116,27 +107,22 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (Edge Function) ===');
+      console.log('=== RECORDING PAYMENT (Supabase Function) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Record payment using edge function
-      const response = await fetch('/functions/v1/record-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Record payment using Supabase function
+      const { data, error } = await supabase.functions.invoke('record-payment', {
+        body: {
           user_id: userId,
           transaction_id: sessionId,
           amount: amount
-        })
+        }
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Payment recorded via edge function:', data);
+      if (!error && data) {
+        console.log('Payment recorded via Supabase function:', data);
         setHasValidPayment(true);
         
         toast({
@@ -144,7 +130,7 @@ export const usePaymentVerification = () => {
           description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
         });
       } else {
-        console.error('Error recording payment via edge function');
+        console.error('Error recording payment via Supabase function:', error);
         setError(language === 'he' ? 'בעיה ברישום התשלום' : 'Payment recording issue');
         
         toast({
