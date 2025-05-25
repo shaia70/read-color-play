@@ -20,34 +20,49 @@ const Flipbook = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isHebrew = language === 'he';
 
+  // Debug logging
+  useEffect(() => {
+    console.log('Flipbook component state:', {
+      user: user?.id,
+      hasValidPayment,
+      paymentLoading,
+      error,
+      isRefreshing
+    });
+  }, [user, hasValidPayment, paymentLoading, error, isRefreshing]);
+
   // בדיקה אם המשתמש חזר מPayPal עם תשלום מוצלח
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     
     if (paymentStatus === 'success' && user) {
-      // רישום התשלום במערכת
+      console.log('Payment success detected, recording payment...');
       recordPayment(user.id, 'paypal_session_' + Date.now(), 70);
       setShowPayment(false);
-      // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (paymentStatus === 'cancel') {
+      console.log('Payment cancelled');
       setShowPayment(false);
-      // ניקוי הURL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [user, recordPayment]);
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
+      console.log('User logged in, checking payment status for:', user.id);
       checkPaymentStatus(user.id);
     }
-  }, [user, checkPaymentStatus]);
+  }, [user?.id, checkPaymentStatus]);
 
   const handleRefreshPayment = async () => {
-    if (!user) return;
+    if (!user?.id) {
+      console.log('No user ID available for refresh');
+      return;
+    }
     
+    console.log('Manual refresh payment status for user:', user.id);
     setIsRefreshing(true);
     try {
       await checkPaymentStatus(user.id);
@@ -149,6 +164,14 @@ const Flipbook = () => {
             >
               {isHebrew ? 'יציאה' : 'Logout'}
             </CustomButton>
+          </div>
+
+          {/* Debug info - remove in production */}
+          <div className="mb-4 p-4 bg-gray-100 border rounded text-sm">
+            <p>Debug: User ID: {user?.id}</p>
+            <p>Has Payment: {hasValidPayment.toString()}</p>
+            <p>Loading: {paymentLoading.toString()}</p>
+            <p>Error: {error || 'none'}</p>
           </div>
 
           {!hasValidPayment ? (

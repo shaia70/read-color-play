@@ -13,7 +13,7 @@ interface PaymentRecord {
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
@@ -24,7 +24,7 @@ export const usePaymentVerification = () => {
       
       console.log('Checking payment status for user:', userId);
       
-      // Dynamically import supabase client to avoid initialization issues
+      // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
       const { data: payments, error: paymentError } = await supabase
@@ -60,7 +60,7 @@ export const usePaymentVerification = () => {
     try {
       console.log('Recording payment for user:', userId);
       
-      // Dynamically import supabase client to avoid initialization issues
+      // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
       const paymentData = {
