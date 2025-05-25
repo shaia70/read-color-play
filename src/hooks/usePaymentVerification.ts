@@ -30,20 +30,42 @@ export const usePaymentVerification = () => {
       if (paymentStatus === 'success') {
         console.log('PayPal success detected, recording payment...');
         
+        // Get current user session to verify auth
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        console.log('Current authenticated user:', user?.id);
+        console.log('User ID parameter:', userId);
+        
+        if (authError) {
+          console.error('Auth error:', authError);
+          throw authError;
+        }
+        
+        if (!user || user.id !== userId) {
+          console.error('User mismatch or not authenticated');
+          throw new Error('Authentication mismatch');
+        }
+        
         // Record payment directly using client
+        console.log('Attempting to insert payment record...');
+        const paymentData = {
+          user_id: userId,
+          paypal_transaction_id: 'paypal_success_' + Date.now(),
+          amount: 70,
+          currency: 'ILS',
+          status: 'success'
+        };
+        console.log('Payment data to insert:', paymentData);
+        
         const { data: recordResult, error: recordError } = await supabase
           .from('payments')
-          .insert({
-            user_id: userId,
-            paypal_transaction_id: 'paypal_success_' + Date.now(),
-            amount: 70,
-            currency: 'ILS',
-            status: 'success'
-          })
+          .insert(paymentData)
           .select();
 
         if (recordError) {
-          console.error('Error recording payment:', recordError);
+          console.error('Database insert error details:', recordError);
+          console.error('Error code:', recordError.code);
+          console.error('Error message:', recordError.message);
+          console.error('Error details:', recordError.details);
           throw recordError;
         }
 
@@ -115,20 +137,42 @@ export const usePaymentVerification = () => {
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
+      // Get current user session to verify auth
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log('Current authenticated user:', user?.id);
+      console.log('User ID parameter:', userId);
+      
+      if (authError) {
+        console.error('Auth error during payment recording:', authError);
+        throw authError;
+      }
+      
+      if (!user || user.id !== userId) {
+        console.error('User mismatch or not authenticated during payment recording');
+        throw new Error('Authentication mismatch during payment recording');
+      }
+      
       // Record payment directly using client
+      console.log('Attempting to insert payment record...');
+      const paymentData = {
+        user_id: userId,
+        paypal_transaction_id: sessionId,
+        amount: amount,
+        currency: 'ILS',
+        status: 'success'
+      };
+      console.log('Payment data to insert:', paymentData);
+      
       const { data: result, error: insertError } = await supabase
         .from('payments')
-        .insert({
-          user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          currency: 'ILS',
-          status: 'success'
-        })
+        .insert(paymentData)
         .select();
 
       if (insertError) {
-        console.error('Error recording payment via direct client:', insertError);
+        console.error('Database insert error details:', insertError);
+        console.error('Error code:', insertError.code);
+        console.error('Error message:', insertError.message);
+        console.error('Error details:', insertError.details);
         throw insertError;
       }
 
