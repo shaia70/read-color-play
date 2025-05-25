@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Simple Client) ===')
+    console.log('=== RECORDING PAYMENT (Updated with RLS) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,8 +33,13 @@ serve(async (req) => {
       )
     }
 
-    // Create simple Supabase client
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    // Create Supabase client with service role key for RLS bypass
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
 
     const { user_id, transaction_id, amount } = await req.json()
 
@@ -61,9 +66,10 @@ serve(async (req) => {
       })
     
     if (rpcError) {
-      console.log('RPC failed, trying direct table insert...')
+      console.log('RPC failed:', rpcError.message)
+      console.log('Trying direct table insert with service role...')
       
-      // Fallback to direct table insert
+      // Fallback to direct table insert with service role
       const paymentData = {
         user_id,
         paypal_transaction_id: transaction_id,
@@ -82,22 +88,13 @@ serve(async (req) => {
       if (error) {
         console.error('Database Error:', error)
         
-        // Mock success for testing if table access fails
-        console.log('Creating mock payment success for testing...')
         return new Response(
           JSON.stringify({ 
-            success: true, 
-            payment: {
-              id: 'mock-' + Date.now(),
-              user_id,
-              transaction_id,
-              amount: parseFloat(amount),
-              status: 'success'
-            },
-            note: 'Mock payment record - table access failed'
+            success: false,
+            error: 'Payment recording failed'
           }),
           { 
-            status: 200,
+            status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           }
         )
@@ -136,8 +133,8 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: 'Internal server error', 
-        details: error.message 
+        success: false,
+        error: 'Internal server error'
       }),
       { 
         status: 500,

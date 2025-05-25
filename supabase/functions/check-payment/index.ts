@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Simple Client) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Updated with RLS) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,8 +33,13 @@ serve(async (req) => {
       )
     }
 
-    // Create simple Supabase client
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    // Create Supabase client with service role key for RLS bypass
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
 
     const { user_id } = await req.json()
 
@@ -50,16 +55,17 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Try direct SQL query first using RPC
+    // Use RPC function first
     console.log('Attempting RPC call to check payments...')
     
     const { data: rpcResult, error: rpcError } = await supabase
       .rpc('get_user_payments', { p_user_id: user_id })
     
     if (rpcError) {
-      console.log('RPC failed, trying direct table access...')
+      console.log('RPC failed:', rpcError.message)
+      console.log('Trying direct table access with service role...')
       
-      // Fallback to direct table access
+      // Fallback to direct table access with service role
       const { data: payments, error } = await supabase
         .from('payments')
         .select('*')
@@ -72,13 +78,12 @@ serve(async (req) => {
       if (error) {
         console.error('Database Error:', error)
         
-        // If table doesn't exist or can't be accessed, create mock success for testing
-        console.log('Creating mock payment record for testing...')
+        // Return false instead of mock success
         return new Response(
           JSON.stringify({ 
-            hasValidPayment: true,
-            paymentCount: 1,
-            note: 'Mock payment for testing - table access failed'
+            hasValidPayment: false,
+            paymentCount: 0,
+            error: 'Payment check failed'
           }),
           { 
             status: 200,
@@ -129,8 +134,9 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: 'Internal server error', 
-        details: error.message 
+        hasValidPayment: false,
+        paymentCount: 0,
+        error: 'Internal server error' 
       }),
       { 
         status: 500,
