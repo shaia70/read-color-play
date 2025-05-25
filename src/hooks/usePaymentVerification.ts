@@ -2,7 +2,6 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PaymentRecord {
   id: string;
@@ -85,56 +84,49 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check database first - this is the authoritative source
-      console.log('Checking database for payments for user:', userId);
-      const { data: payments, error: dbError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Use Edge Function to check payment status
+      console.log('Checking payment via Edge Function for user:', userId);
+      
+      const response = await fetch('https://pahqikhckqjujbhvqnyb.supabase.co/functions/v1/check-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8`
+        },
+        body: JSON.stringify({ user_id: userId })
+      });
 
-      if (dbError) {
-        console.error('Database query error:', dbError);
+      if (!response.ok) {
+        console.error('Edge Function response not ok:', response.status, response.statusText);
+        throw new Error(`Edge Function error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Edge Function response:', data);
+
+      if (data.error) {
+        console.error('Edge Function returned error:', data.error);
+        throw new Error(data.error);
+      }
+
+      const hasDbPayment = data.hasValidPayment;
+      console.log('Has payment for this user via Edge Function:', hasDbPayment);
+      
+      if (hasDbPayment) {
+        // User has valid payment - sync with localStorage and grant access
+        saveLocalPayment(userId);
+        setHasValidPayment(true);
         
-        // When database fails, DENY access and clear localStorage
+        toast({
+          title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
+          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+        });
+      } else {
+        // No payment found for this user - clear localStorage and deny access
         clearLocalPayment(userId);
         setHasValidPayment(false);
         
-        const errorMsg = language === 'he' 
-          ? 'לא ניתן לבדוק את סטטוס התשלום כרגע. אנא נסה שוב מאוחר יותר' 
-          : 'Cannot check payment status at the moment. Please try again later';
-        
-        setError(errorMsg);
-        
-        toast({
-          variant: "destructive",
-          title: language === 'he' ? 'שגיאה במסד הנתונים' : 'Database Error',
-          description: errorMsg
-        });
-      } else {
-        console.log('Database query result:', payments);
-        const hasDbPayment = payments && payments.length > 0;
-        
-        console.log('Has payment for this user in database:', hasDbPayment);
-        
-        if (hasDbPayment) {
-          // User has valid payment - sync with localStorage and grant access
-          saveLocalPayment(userId);
-          setHasValidPayment(true);
-          
-          toast({
-            title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
-            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-          });
-        } else {
-          // No payment found for this user - clear localStorage and deny access
-          clearLocalPayment(userId);
-          setHasValidPayment(false);
-          
-          console.log('No payment found in database for user:', userId);
-        }
+        console.log('No payment found via Edge Function for user:', userId);
       }
       
     } catch (err) {
@@ -168,25 +160,32 @@ export const usePaymentVerification = () => {
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Save to database first
-      const { data, error } = await supabase
-        .from('payments')
-        .insert({
+      // Use Edge Function to record payment
+      const response = await fetch('https://pahqikhckqjujbhvqnyb.supabase.co/functions/v1/record-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaHFpa2hja3FqdWpiaHZxbnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwODkzNzMsImV4cCI6MjA2MzY2NTM3M30.zVNZAEFgwaVRPFHFYA-XN1kqcUeXl-24kj6fnsLQDH8`
+        },
+        body: JSON.stringify({
           user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          currency: 'ILS',
-          status: 'completed'
+          transaction_id: sessionId,
+          amount: amount
         })
-        .select()
-        .single();
+      });
 
-      if (error) {
-        console.error('Database insert error:', error);
-        throw error;
+      if (!response.ok) {
+        console.error('Edge Function response not ok:', response.status, response.statusText);
+        throw new Error(`Edge Function error: ${response.status}`);
       }
-      
-      console.log('Payment saved to database:', data);
+
+      const data = await response.json();
+      console.log('Payment recorded via Edge Function:', data);
+
+      if (data.error) {
+        console.error('Edge Function returned error:', data.error);
+        throw new Error(data.error);
+      }
       
       // Save to localStorage for faster access
       saveLocalPayment(userId);
