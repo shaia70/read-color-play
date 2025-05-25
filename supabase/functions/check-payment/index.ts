@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== DETAILED PAYMENT CHECK DEBUG ===')
+    console.log('=== PAYMENT CHECK WITH DATABASE FUNCTION ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -64,8 +64,8 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with detailed logging
-    console.log('Creating Supabase client...')
+    // Create Supabase client with service role
+    console.log('Creating Supabase client with service role...')
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
@@ -74,24 +74,18 @@ serve(async (req) => {
     })
     console.log('Supabase client created successfully')
 
-    // Try to query payments table with extensive logging
-    console.log('Executing database query...')
-    console.log('Query parameters:')
-    console.log('- Table: payments')
-    console.log('- Filter: user_id =', user_id)
-    console.log('- Filter: status = success')
+    // Use the database function instead of direct table access
+    console.log('Calling get_user_payments function...')
+    console.log('Function parameters:')
+    console.log('- p_user_id:', user_id)
     
-    const { data: payments, error, count } = await supabase
-      .from('payments')
-      .select('*', { count: 'exact' })
-      .eq('user_id', user_id)
-      .eq('status', 'success')
-      .order('created_at', { ascending: false })
+    const { data: payments, error } = await supabase.rpc('get_user_payments', {
+      p_user_id: user_id
+    })
     
-    console.log('=== QUERY RESULTS ===')
+    console.log('=== FUNCTION CALL RESULTS ===')
     console.log('Error:', error)
     console.log('Data:', payments)
-    console.log('Count:', count)
     console.log('Payments array length:', payments ? payments.length : 'null/undefined')
     
     if (payments && payments.length > 0) {
@@ -108,7 +102,7 @@ serve(async (req) => {
     }
 
     if (error) {
-      console.error('=== DATABASE ERROR DETAILS ===')
+      console.error('=== DATABASE FUNCTION ERROR ===')
       console.error('Error code:', error.code)
       console.error('Error message:', error.message)
       console.error('Error details:', error.details)
@@ -146,7 +140,7 @@ serve(async (req) => {
         paymentCount: paymentCount,
         payments: payments,
         debugInfo: {
-          queryExecuted: true,
+          functionUsed: 'get_user_payments',
           userIdReceived: user_id,
           totalRecordsFound: paymentCount
         }
