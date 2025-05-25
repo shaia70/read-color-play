@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PayPalCheckoutProps {
   amount: number;
@@ -12,6 +14,8 @@ interface PayPalCheckoutProps {
 
 const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [isProcessing, setIsProcessing] = useState(false);
   const isHebrew = language === 'he';
 
   // יצירת return URL שמחזיר לעמוד הפליפבוק
@@ -29,9 +33,43 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
     console.log("Opening PayPal payment link with return URL");
   };
 
-  const handlePaymentConfirmation = () => {
-    // כאן המשתמש מאשר שהוא ביצע את התשלום
-    onSuccess();
+  const handlePaymentConfirmation = async () => {
+    if (!user?.id) {
+      console.error('No user ID available');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      console.log('Creating test payment record for user:', user.id);
+      
+      // יצירת רישום תשלום ישירות בבסיס הנתונים
+      const { data, error } = await supabase
+        .from('payments')
+        .insert({
+          user_id: user.id,
+          paypal_transaction_id: 'test_' + Date.now(),
+          amount: amount,
+          currency: 'ILS',
+          status: 'completed'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating payment record:', error);
+        alert(isHebrew ? 'שגיאה ברישום התשלום' : 'Error recording payment');
+        return;
+      }
+
+      console.log('Payment record created successfully:', data);
+      onSuccess();
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      alert(isHebrew ? 'שגיאה לא צפויה' : 'Unexpected error');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -78,8 +116,12 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
               icon={<CreditCard className="w-6 h-6" />} 
               className="w-full text-base py-3 h-14 min-h-0 font-bold"
               onClick={handlePaymentConfirmation}
+              disabled={isProcessing}
             >
-              {isHebrew ? "אישור השלמת התשלום" : "Confirm Payment Completed"}
+              {isProcessing 
+                ? (isHebrew ? "מעבד..." : "Processing...")
+                : (isHebrew ? "אישור השלמת התשלום" : "Confirm Payment Completed")
+              }
             </CustomButton>
           </div>
         </div>
