@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
@@ -62,7 +63,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS ===');
+      console.log('=== CHECKING PAYMENT STATUS DIRECTLY ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -84,27 +85,26 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Use Edge Function to check payment status via supabase client
-      console.log('Checking payment via Edge Function for user:', userId);
+      // Check database directly with Supabase client
+      console.log('Checking payment via Supabase client for user:', userId);
       
-      const { data, error: functionError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
+      const { data: payments, error: dbError } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(10);
 
-      if (functionError) {
-        console.error('Edge Function error:', functionError);
-        throw new Error(`Edge Function error: ${functionError.message}`);
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error(`Database error: ${dbError.message}`);
       }
 
-      console.log('Edge Function response:', data);
+      console.log('Database response:', payments);
 
-      if (data.error) {
-        console.error('Edge Function returned error:', data.error);
-        throw new Error(data.error);
-      }
-
-      const hasDbPayment = data.hasValidPayment;
-      console.log('Has payment for this user via Edge Function:', hasDbPayment);
+      const hasDbPayment = payments && payments.length > 0;
+      console.log('Has payment for this user:', hasDbPayment);
       
       if (hasDbPayment) {
         // User has valid payment - sync with localStorage and grant access
@@ -120,7 +120,7 @@ export const usePaymentVerification = () => {
         clearLocalPayment(userId);
         setHasValidPayment(false);
         
-        console.log('No payment found via Edge Function for user:', userId);
+        console.log('No payment found for user:', userId);
       }
       
     } catch (err) {
@@ -149,31 +149,30 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT ===');
+      console.log('=== RECORDING PAYMENT DIRECTLY ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Use Edge Function to record payment via supabase client
-      const { data, error: functionError } = await supabase.functions.invoke('record-payment', {
-        body: {
+      // Record payment directly to database
+      const { data, error: dbError } = await supabase
+        .from('payments')
+        .insert({
           user_id: userId,
-          transaction_id: sessionId,
-          amount: amount
-        }
-      });
+          paypal_transaction_id: sessionId,
+          amount: amount,
+          currency: 'ILS',
+          status: 'completed'
+        })
+        .select()
+        .single();
 
-      if (functionError) {
-        console.error('Edge Function error:', functionError);
-        throw new Error(`Edge Function error: ${functionError.message}`);
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error(`Database error: ${dbError.message}`);
       }
 
-      console.log('Payment recorded via Edge Function:', data);
-
-      if (data.error) {
-        console.error('Edge Function returned error:', data.error);
-        throw new Error(data.error);
-      }
+      console.log('Payment recorded directly:', data);
       
       // Save to localStorage for faster access
       saveLocalPayment(userId);
