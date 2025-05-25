@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Updated with RLS) ===')
+    console.log('=== RECORDING PAYMENT (Fixed Schema Access) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,7 +33,7 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key for RLS bypass
+    // Create Supabase client with service role key
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
@@ -55,72 +55,39 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Try RPC first
-    console.log('Attempting RPC call to record payment...')
+    // Use RPC function to create payment
+    console.log('Calling create_payment RPC function...')
     
-    const { data: rpcResult, error: rpcError } = await supabase
+    const { data: payment, error } = await supabase
       .rpc('create_payment', { 
         p_user_id: user_id,
         p_transaction_id: transaction_id,
         p_amount: parseFloat(amount)
       })
     
-    if (rpcError) {
-      console.log('RPC failed:', rpcError.message)
-      console.log('Trying direct table insert with service role...')
+    console.log('RPC result:', { payment, error })
+
+    if (error) {
+      console.error('RPC Error:', error)
       
-      // Fallback to direct table insert with service role
-      const paymentData = {
-        user_id,
-        paypal_transaction_id: transaction_id,
-        amount: parseFloat(amount),
-        currency: 'ILS',
-        status: 'success'
-      }
-
-      const { data, error } = await supabase
-        .from('payments')
-        .insert(paymentData)
-        .select()
-
-      console.log('Direct insert result:', { data, error })
-
-      if (error) {
-        console.error('Database Error:', error)
-        
-        return new Response(
-          JSON.stringify({ 
-            success: false,
-            error: 'Payment recording failed'
-          }),
-          { 
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        )
-      }
-
-      console.log('Payment recorded successfully:', data)
-
       return new Response(
         JSON.stringify({ 
-          success: true, 
-          payment: data?.[0] || data
+          success: false,
+          error: 'Payment recording failed'
         }),
         { 
-          status: 200,
+          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
     }
 
-    // RPC succeeded
-    console.log('Payment recorded via RPC:', rpcResult)
+    console.log('Payment recorded successfully:', payment)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        payment: rpcResult
+        payment: payment
       }),
       { 
         status: 200,

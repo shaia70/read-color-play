@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Updated with RLS) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Fixed Schema Access) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,7 +33,7 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key for RLS bypass
+    // Create Supabase client with service role key
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
@@ -55,54 +55,22 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Use RPC function first
-    console.log('Attempting RPC call to check payments...')
+    // Use RPC function to get user payments
+    console.log('Calling get_user_payments RPC function...')
     
-    const { data: rpcResult, error: rpcError } = await supabase
+    const { data: payments, error } = await supabase
       .rpc('get_user_payments', { p_user_id: user_id })
     
-    if (rpcError) {
-      console.log('RPC failed:', rpcError.message)
-      console.log('Trying direct table access with service role...')
+    console.log('RPC result:', { payments, error })
+
+    if (error) {
+      console.error('RPC Error:', error)
       
-      // Fallback to direct table access with service role
-      const { data: payments, error } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', user_id)
-        .eq('status', 'success')
-        .order('created_at', { ascending: false })
-
-      console.log('Direct table query result:', { payments, error })
-
-      if (error) {
-        console.error('Database Error:', error)
-        
-        // Return false instead of mock success
-        return new Response(
-          JSON.stringify({ 
-            hasValidPayment: false,
-            paymentCount: 0,
-            error: 'Payment check failed'
-          }),
-          { 
-            status: 200,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        )
-      }
-
-      const hasPayment = payments && payments.length > 0
-
-      console.log('Payment check result:', { 
-        hasPayment, 
-        paymentCount: payments?.length || 0 
-      })
-
       return new Response(
         JSON.stringify({ 
-          hasValidPayment: hasPayment,
-          paymentCount: payments?.length || 0
+          hasValidPayment: false,
+          paymentCount: 0,
+          error: 'Payment check failed'
         }),
         { 
           status: 200,
@@ -111,17 +79,17 @@ serve(async (req) => {
       )
     }
 
-    // RPC succeeded
-    const hasPayment = rpcResult && rpcResult.length > 0
-    console.log('RPC Payment check result:', { 
+    const hasPayment = payments && payments.length > 0
+
+    console.log('Payment check result:', { 
       hasPayment, 
-      paymentCount: rpcResult?.length || 0 
+      paymentCount: payments?.length || 0 
     })
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: rpcResult?.length || 0
+        paymentCount: payments?.length || 0
       }),
       { 
         status: 200,
