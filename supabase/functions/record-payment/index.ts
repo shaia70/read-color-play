@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Direct API) ===')
+    console.log('=== RECORDING PAYMENT (Supabase Client) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -32,6 +33,11 @@ serve(async (req) => {
       )
     }
 
+    // Create Supabase client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false }
+    })
+
     const { user_id, transaction_id, amount } = await req.json()
 
     if (!user_id || !transaction_id || !amount) {
@@ -46,9 +52,7 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Use direct REST API call instead of Supabase client
-    const apiUrl = `${supabaseUrl}/rest/v1/payments`
-    
+    // Use Supabase client instead of direct API call
     const paymentData = {
       user_id,
       paypal_transaction_id: transaction_id,
@@ -57,26 +61,19 @@ serve(async (req) => {
       status: 'success'
     }
 
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'apikey': supabaseServiceKey,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(paymentData)
-    })
+    const { data, error } = await supabase
+      .from('payments')
+      .insert(paymentData)
+      .select()
 
-    console.log('API Response status:', response.status)
+    console.log('Supabase insert result:', { data, error })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API Error:', errorText)
+    if (error) {
+      console.error('Supabase Error:', error)
       return new Response(
         JSON.stringify({ 
           error: 'Failed to record payment', 
-          details: errorText 
+          details: error.message 
         }),
         { 
           status: 500,
@@ -85,7 +82,6 @@ serve(async (req) => {
       )
     }
 
-    const data = await response.json()
     console.log('Payment recorded successfully:', data)
 
     return new Response(

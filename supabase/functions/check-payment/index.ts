@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Direct API) ===')
+    console.log('=== CHECKING PAYMENT STATUS (Supabase Client) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -32,6 +33,11 @@ serve(async (req) => {
       )
     }
 
+    // Create Supabase client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false }
+    })
+
     const { user_id } = await req.json()
 
     if (!user_id) {
@@ -46,28 +52,22 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Use direct REST API call instead of Supabase client
-    const apiUrl = `${supabaseUrl}/rest/v1/payments?user_id=eq.${user_id}&status=eq.success&order=created_at.desc`
-    
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'apikey': supabaseServiceKey,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      }
-    })
+    // Use Supabase client instead of direct API call
+    const { data: payments, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
 
-    console.log('API Response status:', response.status)
+    console.log('Supabase query result:', { payments, error })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API Error:', errorText)
+    if (error) {
+      console.error('Supabase Error:', error)
       return new Response(
         JSON.stringify({ 
           error: 'Database query failed', 
-          details: errorText 
+          details: error.message 
         }),
         { 
           status: 500,
@@ -75,9 +75,6 @@ serve(async (req) => {
         }
       )
     }
-
-    const payments = await response.json()
-    console.log('Payments found:', payments.length)
 
     const hasPayment = payments && payments.length > 0
 
