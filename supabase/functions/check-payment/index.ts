@@ -33,16 +33,8 @@ serve(async (req) => {
       )
     }
 
-    // Create supabase client with service role key for full access
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      },
-      db: {
-        schema: 'public'
-      }
-    })
+    // Create supabase client with service role key - using simple config
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
     const { user_id } = await req.json()
 
