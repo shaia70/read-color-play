@@ -29,47 +29,29 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== PAYMENT CHECK WITH DEBUG ===');
+      console.log('=== PAYMENT CHECK USING EDGE FUNCTION ===');
       console.log('User ID to check:', userId);
       
-      // First, let's check what's in the session
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Current session user ID:', session?.user?.id);
-      console.log('Session user email:', session?.user?.email);
-      
-      // Simple direct database access with detailed logging
-      const { data: payments, error: dbError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed');
+      // Use the edge function for payment checking
+      const { data, error: functionError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      console.log('=== DATABASE QUERY RESULT ===');
-      console.log('Query error:', dbError);
-      console.log('Query result:', payments);
-      console.log('Number of payments found:', payments?.length || 0);
-      
-      // Let's also try to fetch ALL payments for this user (without status filter) to see if there are any
-      const { data: allPayments, error: allError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId);
-      
-      console.log('=== ALL PAYMENTS FOR USER ===');
-      console.log('All payments query error:', allError);
-      console.log('All payments:', allPayments);
-      console.log('Total payments for user:', allPayments?.length || 0);
+      console.log('=== EDGE FUNCTION RESPONSE ===');
+      console.log('Function data:', data);
+      console.log('Function error:', functionError);
 
-      if (dbError) {
-        console.error('Database error details:', dbError);
-        throw new Error(`Database error: ${dbError.message}`);
+      if (functionError) {
+        console.error('Edge function error:', functionError);
+        throw new Error(`Function error: ${functionError.message}`);
       }
 
-      const hasPayment = payments && payments.length > 0;
+      const hasPayment = data?.hasValidPayment || false;
       setHasValidPayment(hasPayment);
       
       console.log('=== FINAL PAYMENT CHECK RESULT ===');
       console.log('Has valid payment:', hasPayment);
+      console.log('Payments found:', data?.payments?.length || 0);
       
       if (hasPayment) {
         toast({
@@ -103,39 +85,34 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT WITH DEBUG ===');
+      console.log('=== RECORDING PAYMENT USING EDGE FUNCTION ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Check current session again
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Current session during payment recording:', session?.user?.id);
-      console.log('Session matches user ID:', session?.user?.id === userId);
-      
-      // Simple direct database insert with detailed logging
-      const { data, error } = await supabase
-        .from('payments')
-        .insert({
+      // Use the edge function for payment recording
+      const { data, error: functionError } = await supabase.functions.invoke('record-payment', {
+        body: {
           user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount,
-          currency: 'ILS',
-          status: 'completed'
-        })
-        .select()
-        .single();
+          transaction_id: sessionId,
+          amount: amount
+        }
+      });
 
-      console.log('=== INSERT PAYMENT RESULT ===');
-      console.log('Insert data:', data);
-      console.log('Insert error:', error);
+      console.log('=== EDGE FUNCTION RECORD RESULT ===');
+      console.log('Function data:', data);
+      console.log('Function error:', functionError);
 
-      if (error) {
-        console.error('Insert error details:', error);
-        throw new Error(`Insert error: ${error.message}`);
+      if (functionError) {
+        console.error('Edge function error:', functionError);
+        throw new Error(`Function error: ${functionError.message}`);
+      }
+
+      if (!data?.success) {
+        throw new Error('Payment recording failed');
       }
       
-      console.log('Payment recorded successfully:', data);
+      console.log('Payment recorded successfully via edge function:', data);
       setHasValidPayment(true);
       
       toast({
