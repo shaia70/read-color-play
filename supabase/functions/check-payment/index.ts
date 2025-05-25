@@ -16,11 +16,10 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== CHECKING PAYMENT STATUS (Direct Table Access) ===')
-    console.log('Environment check:', {
-      hasUrl: !!supabaseUrl,
-      hasServiceKey: !!supabaseServiceKey
-    })
+    console.log('=== DETAILED PAYMENT CHECK DEBUG ===')
+    console.log('Environment variables:')
+    console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
+    console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
 
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error('Missing environment variables')
@@ -33,17 +32,29 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role key
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
+    // Parse request body
+    let requestBody;
+    try {
+      requestBody = await req.json()
+      console.log('Request body parsed:', requestBody)
+    } catch (e) {
+      console.error('Failed to parse request body:', e)
+      return new Response(
+        JSON.stringify({ error: 'Invalid request body' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
 
-    const { user_id } = await req.json()
+    const { user_id } = requestBody
+
+    console.log('User ID received:', user_id)
+    console.log('User ID type:', typeof user_id)
 
     if (!user_id) {
+      console.error('Missing user_id in request')
       return new Response(
         JSON.stringify({ error: 'Missing user_id' }),
         { 
@@ -53,28 +64,67 @@ serve(async (req) => {
       )
     }
 
-    console.log('Checking payment status for user:', user_id)
+    // Create Supabase client with detailed logging
+    console.log('Creating Supabase client...')
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+    console.log('Supabase client created successfully')
 
-    // Direct table access using service role
-    console.log('Querying payments table directly...')
+    // Try to query payments table with extensive logging
+    console.log('Executing database query...')
+    console.log('Query parameters:')
+    console.log('- Table: payments')
+    console.log('- Filter: user_id =', user_id)
+    console.log('- Filter: status = success')
     
-    const { data: payments, error } = await supabase
+    const { data: payments, error, count } = await supabase
       .from('payments')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('user_id', user_id)
       .eq('status', 'success')
       .order('created_at', { ascending: false })
     
-    console.log('Direct query result:', { payments, error })
+    console.log('=== QUERY RESULTS ===')
+    console.log('Error:', error)
+    console.log('Data:', payments)
+    console.log('Count:', count)
+    console.log('Payments array length:', payments ? payments.length : 'null/undefined')
+    
+    if (payments && payments.length > 0) {
+      console.log('=== INDIVIDUAL PAYMENTS ===')
+      payments.forEach((payment, index) => {
+        console.log(`Payment ${index + 1}:`, {
+          id: payment.id,
+          user_id: payment.user_id,
+          amount: payment.amount,
+          status: payment.status,
+          created_at: payment.created_at
+        })
+      })
+    }
 
     if (error) {
-      console.error('Database Error:', error)
+      console.error('=== DATABASE ERROR DETAILS ===')
+      console.error('Error code:', error.code)
+      console.error('Error message:', error.message)
+      console.error('Error details:', error.details)
+      console.error('Error hint:', error.hint)
+      console.error('Full error object:', JSON.stringify(error, null, 2))
       
       return new Response(
         JSON.stringify({ 
           hasValidPayment: false,
           paymentCount: 0,
-          error: 'Payment check failed'
+          error: 'Payment check failed',
+          errorDetails: {
+            code: error.code,
+            message: error.message,
+            details: error.details
+          }
         }),
         { 
           status: 200,
@@ -84,18 +134,22 @@ serve(async (req) => {
     }
 
     const hasPayment = payments && payments.length > 0
+    const paymentCount = payments?.length || 0
 
-    console.log('Payment check result:', { 
-      hasPayment, 
-      paymentCount: payments?.length || 0,
-      payments: payments 
-    })
+    console.log('=== FINAL RESULT ===')
+    console.log('Has payment:', hasPayment)
+    console.log('Payment count:', paymentCount)
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: payments?.length || 0,
-        payments: payments
+        paymentCount: paymentCount,
+        payments: payments,
+        debugInfo: {
+          queryExecuted: true,
+          userIdReceived: user_id,
+          totalRecordsFound: paymentCount
+        }
       }),
       { 
         status: 200,
@@ -104,13 +158,19 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Unexpected error:', error)
+    console.error('=== UNEXPECTED ERROR ===')
+    console.error('Error type:', typeof error)
+    console.error('Error message:', error?.message)
+    console.error('Error stack:', error?.stack)
+    console.error('Full error:', JSON.stringify(error, null, 2))
     
     return new Response(
       JSON.stringify({ 
         hasValidPayment: false,
         paymentCount: 0,
-        error: 'Internal server error' 
+        error: 'Internal server error',
+        errorType: typeof error,
+        errorMessage: error?.message
       }),
       { 
         status: 500,
