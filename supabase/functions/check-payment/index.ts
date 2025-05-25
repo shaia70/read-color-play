@@ -1,0 +1,78 @@
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  try {
+    // Create supabase client with service role key for full access
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
+
+    const { user_id } = await req.json()
+
+    console.log('Checking payment status for user:', user_id)
+
+    // Query payments using service role (bypasses RLS)
+    const { data: payments, error } = await supabaseAdmin
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('status', 'completed')
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    if (error) {
+      console.error('Error fetching payments:', error)
+      return new Response(
+        JSON.stringify({ error: 'Failed to check payment status' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+
+    const hasPayment = payments && payments.length > 0
+
+    console.log('Payment check result:', { hasPayment, paymentCount: payments?.length || 0 })
+
+    return new Response(
+      JSON.stringify({ 
+        hasValidPayment: hasPayment,
+        payments: payments || []
+      }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
+
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return new Response(
+      JSON.stringify({ error: 'Internal server error' }),
+      { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    )
+  }
+})

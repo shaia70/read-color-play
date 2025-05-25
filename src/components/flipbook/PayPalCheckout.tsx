@@ -4,7 +4,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 
 interface PayPalCheckoutProps {
   amount: number;
@@ -41,28 +40,31 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
 
     setIsProcessing(true);
     try {
-      console.log('Creating test payment record for user:', user.id);
+      console.log('Recording payment via Edge Function for user:', user.id);
       
-      // יצירת רישום תשלום ישירות בבסיס הנתונים
-      const { data, error } = await supabase
-        .from('payments')
-        .insert({
+      // Use Edge Function to record payment
+      const response = await fetch('/functions/v1/record-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
           user_id: user.id,
-          paypal_transaction_id: 'test_' + Date.now(),
-          amount: amount,
-          currency: 'ILS',
-          status: 'completed'
+          transaction_id: 'manual_confirmation_' + Date.now(),
+          amount: amount
         })
-        .select()
-        .single();
+      });
 
-      if (error) {
-        console.error('Error creating payment record:', error);
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('Edge Function error:', result);
         alert(isHebrew ? 'שגיאה ברישום התשלום' : 'Error recording payment');
         return;
       }
 
-      console.log('Payment record created successfully:', data);
+      console.log('Payment recorded successfully via Edge Function:', result);
       onSuccess();
     } catch (err) {
       console.error('Unexpected error:', err);

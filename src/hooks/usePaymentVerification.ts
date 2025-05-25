@@ -28,53 +28,38 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== PAYMENT CHECK START ===');
+      console.log('=== PAYMENT CHECK START (Edge Function) ===');
       console.log('Checking payment status for user:', userId);
       
-      // Import supabase client
-      const { supabase } = await import('@/integrations/supabase/client');
-      
-      console.log('About to query payments table...');
-      
-      const { data: payments, error: paymentError, count } = await supabase
-        .from('payments')
-        .select('*', { count: 'exact' })
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(10);
+      const response = await fetch('/functions/v1/check-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ user_id: userId })
+      });
 
-      console.log('Query completed. Error:', paymentError);
-      console.log('Raw payments data:', payments);
-      console.log('Payment count:', count);
+      const result = await response.json();
 
-      if (paymentError) {
-        console.error('Error fetching payments:', paymentError);
-        console.error('Error code:', paymentError.code);
-        console.error('Error message:', paymentError.message);
-        console.error('Error details:', paymentError.details);
-        console.error('Error hint:', paymentError.hint);
+      if (!response.ok) {
+        console.error('Edge Function error:', result);
         setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
         setHasValidPayment(false);
         return;
       }
 
-      const hasPayment = payments && payments.length > 0;
+      const hasPayment = result.hasValidPayment;
       setHasValidPayment(hasPayment);
       
-      console.log('=== PAYMENT CHECK RESULT ===');
+      console.log('=== PAYMENT CHECK RESULT (Edge Function) ===');
       console.log('Has payment:', hasPayment);
-      console.log('Number of payments found:', payments?.length || 0);
-      if (payments && payments.length > 0) {
-        console.log('Most recent payment:', payments[0]);
-      }
+      console.log('Number of payments found:', result.payments?.length || 0);
       console.log('=== PAYMENT CHECK END ===');
       
     } catch (err) {
       console.error('=== PAYMENT CHECK ERROR ===');
       console.error('Unexpected error during payment check:', err);
-      console.error('Error type:', typeof err);
-      console.error('Error constructor:', err?.constructor?.name);
       setError(language === 'he' ? 'שגיאה בבדיקת התשלום' : 'Error checking payment');
       setHasValidPayment(false);
     } finally {
@@ -84,39 +69,33 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT ===');
+      console.log('=== RECORDING PAYMENT (Edge Function) ===');
       console.log('Recording payment for user:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Import supabase client
-      const { supabase } = await import('@/integrations/supabase/client');
-      
-      const paymentData = {
-        user_id: userId,
-        paypal_transaction_id: sessionId,
-        amount,
-        status: 'completed' as const,
-        currency: 'ILS'
-      };
-      
-      console.log('Payment data to insert:', paymentData);
-      
-      const { data, error: recordError } = await supabase
-        .from('payments')
-        .insert(paymentData)
-        .select()
-        .single();
-      
-      if (recordError) {
-        console.error('Error recording payment:', recordError);
-        console.error('Record error code:', recordError.code);
-        console.error('Record error message:', recordError.message);
+      const response = await fetch('/functions/v1/record-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          transaction_id: sessionId,
+          amount
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('Edge Function error:', result);
         setError(language === 'he' ? 'שגיאה ברישום התשלום' : 'Error recording payment');
         return;
       }
       
-      console.log('Payment recorded successfully:', data);
+      console.log('Payment recorded successfully via Edge Function:', result);
       setHasValidPayment(true);
       
     } catch (err) {
