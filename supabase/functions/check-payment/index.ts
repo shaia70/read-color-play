@@ -38,9 +38,6 @@ serve(async (req) => {
       auth: {
         autoRefreshToken: false,
         persistSession: false
-      },
-      db: {
-        schema: 'public'
       }
     })
 
@@ -58,7 +55,7 @@ serve(async (req) => {
 
     console.log('Checking payment status for user:', user_id)
 
-    // Query payments using service role with explicit schema
+    // Query payments using service role
     const { data: payments, error } = await supabaseAdmin
       .from('payments')
       .select('*')
