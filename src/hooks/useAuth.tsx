@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
@@ -44,14 +45,14 @@ export const useAuthProvider = (): AuthContextType => {
           setTimeout(async () => {
             try {
               // Fetch user profile from our users table
-              const { data: profile, error } = await supabase
+              const { data: profile, error: profileError } = await supabase
                 .from('users')
                 .select('*')
                 .eq('id', session.user.id)
                 .maybeSingle();
 
-              if (error && error.code !== 'PGRST116') {
-                console.error('Error fetching user profile:', error);
+              if (profileError && profileError.code !== 'PGRST116') {
+                console.error('Error fetching user profile:', profileError);
               }
 
               const userData: AuthUser = {
@@ -61,8 +62,8 @@ export const useAuthProvider = (): AuthContextType => {
               };
 
               setUser(userData);
-            } catch (error) {
-              console.error('Error in auth state change:', error);
+            } catch (authError) {
+              console.error('Error in auth state change:', authError);
             }
           }, 0);
         } else {
