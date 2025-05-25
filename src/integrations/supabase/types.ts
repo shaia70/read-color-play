@@ -12,7 +12,7 @@ export type Database = {
       payments: {
         Row: {
           amount: number
-          created_at: string | null
+          created_at: string
           currency: string
           id: string
           paypal_transaction_id: string | null
@@ -22,7 +22,7 @@ export type Database = {
         }
         Insert: {
           amount: number
-          created_at?: string | null
+          created_at?: string
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
@@ -32,7 +32,7 @@ export type Database = {
         }
         Update: {
           amount?: number
-          created_at?: string | null
+          created_at?: string
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
@@ -40,15 +40,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "payments_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {

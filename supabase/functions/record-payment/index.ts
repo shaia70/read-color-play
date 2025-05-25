@@ -28,6 +28,16 @@ serve(async (req) => {
 
     const { user_id, transaction_id, amount } = await req.json()
 
+    if (!user_id || !transaction_id || !amount) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: user_id, transaction_id, amount' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
     // Insert payment record using service role (bypasses RLS)
@@ -36,7 +46,7 @@ serve(async (req) => {
       .insert({
         user_id,
         paypal_transaction_id: transaction_id,
-        amount,
+        amount: parseFloat(amount),
         currency: 'ILS',
         status: 'completed'
       })
@@ -46,7 +56,7 @@ serve(async (req) => {
     if (error) {
       console.error('Error inserting payment:', error)
       return new Response(
-        JSON.stringify({ error: 'Failed to record payment' }),
+        JSON.stringify({ error: 'Failed to record payment', details: error.message }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -67,7 +77,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Unexpected error:', error)
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: 'Internal server error', details: error.message }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
