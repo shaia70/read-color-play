@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PayPalCheckoutProps {
   amount: number;
@@ -17,18 +18,13 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
   const [isProcessing, setIsProcessing] = useState(false);
   const isHebrew = language === 'he';
 
-  // יצירת return URL שמחזיר לעמוד הפליפבוק
   const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
   const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
   
-  // לינק PayPal עם return URLs
   const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
 
   const handlePayPalClick = () => {
-    // פתיחת לינק PayPal בחלון חדש
     window.open(paypalLink, '_blank');
-    
-    // הצגת הודעה למשתמש
     console.log("Opening PayPal payment link with return URL");
   };
 
@@ -40,31 +36,23 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
 
     setIsProcessing(true);
     try {
-      console.log('Recording payment via Edge Function for user:', user.id);
+      console.log('Recording payment via Supabase Functions for user:', user.id);
       
-      // Use Edge Function to record payment
-      const response = await fetch('/functions/v1/record-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('record-payment', {
+        body: {
           user_id: user.id,
           transaction_id: 'manual_confirmation_' + Date.now(),
           amount: amount
-        })
+        }
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error('Edge Function error:', result);
+      if (error) {
+        console.error('Supabase function error:', error);
         alert(isHebrew ? 'שגיאה ברישום התשלום' : 'Error recording payment');
         return;
       }
 
-      console.log('Payment recorded successfully via Edge Function:', result);
+      console.log('Payment recorded successfully via Supabase Functions:', data);
       onSuccess();
     } catch (err) {
       console.error('Unexpected error:', err);
