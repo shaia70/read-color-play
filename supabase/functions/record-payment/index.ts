@@ -37,6 +37,9 @@ serve(async (req) => {
       auth: {
         autoRefreshToken: false,
         persistSession: false
+      },
+      db: {
+        schema: 'public'
       }
     })
 
@@ -54,7 +57,7 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Insert payment record using service role
+    // Insert payment record using service role with explicit schema
     const { data, error } = await supabaseAdmin
       .from('payments')
       .insert({
