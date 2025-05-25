@@ -20,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (Supabase) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Edge Function) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -28,27 +28,23 @@ export const usePaymentVerification = () => {
       const paymentStatus = urlParams.get('payment');
       
       if (paymentStatus === 'success') {
-        console.log('PayPal success detected, creating payment record...');
+        console.log('PayPal success detected, recording payment...');
         
-        // Create payment record in Supabase
-        const { data: payment, error: insertError } = await supabase
-          .from('payments')
-          .insert({
+        // Record payment via edge function
+        const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
+          body: {
             user_id: userId,
-            paypal_transaction_id: 'paypal_success_' + Date.now(),
-            amount: 70,
-            status: 'completed',
-            currency: 'ILS'
-          })
-          .select()
-          .single();
+            transaction_id: 'paypal_success_' + Date.now(),
+            amount: 70
+          }
+        });
 
-        if (insertError) {
-          console.error('Error creating payment record:', insertError);
-          throw insertError;
+        if (recordError) {
+          console.error('Error recording payment:', recordError);
+          throw recordError;
         }
 
-        console.log('Payment record created:', payment);
+        console.log('Payment recorded via edge function:', recordResult);
         setHasValidPayment(true);
         
         toast({
@@ -61,23 +57,20 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check Supabase for existing payments
-      const { data: payments, error: fetchError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false });
+      // Check payment status via edge function
+      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      if (fetchError) {
-        console.error('Error fetching payments:', fetchError);
-        throw fetchError;
+      if (checkError) {
+        console.error('Error checking payment:', checkError);
+        throw checkError;
       }
 
-      console.log('Payments found:', payments);
+      console.log('Payment check result from edge function:', checkResult);
       
-      if (payments && payments.length > 0) {
-        console.log('Valid payment found');
+      if (checkResult?.hasValidPayment) {
+        console.log('Valid payment found via edge function');
         setHasValidPayment(true);
         toast({
           title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
@@ -111,30 +104,26 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (Supabase) ===');
+      console.log('=== RECORDING PAYMENT (Edge Function) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Insert payment record in Supabase
-      const { data: payment, error: insertError } = await supabase
-        .from('payments')
-        .insert({
+      // Record payment via edge function
+      const { data: result, error: functionError } = await supabase.functions.invoke('record-payment', {
+        body: {
           user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          status: 'completed',
-          currency: 'ILS'
-        })
-        .select()
-        .single();
+          transaction_id: sessionId,
+          amount: amount
+        }
+      });
 
-      if (insertError) {
-        console.error('Error inserting payment:', insertError);
-        throw insertError;
+      if (functionError) {
+        console.error('Error recording payment via edge function:', functionError);
+        throw functionError;
       }
 
-      console.log('Payment recorded successfully:', payment);
+      console.log('Payment recorded successfully via edge function:', result);
       setHasValidPayment(true);
       
       toast({
