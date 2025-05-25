@@ -4,7 +4,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 
 interface PayPalCheckoutProps {
   amount: number;
@@ -25,38 +24,27 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
 
   const handlePayPalClick = () => {
     window.open(paypalLink, '_blank');
-    console.log("Opening PayPal payment link with return URL");
+    console.log("Opening PayPal payment link");
   };
 
   const handlePaymentConfirmation = async () => {
     if (!user?.id) {
       console.error('No user ID available');
+      alert(isHebrew ? 'לא נמצא משתמש מחובר' : 'No user logged in');
       return;
     }
 
     setIsProcessing(true);
+    console.log('=== MANUAL PAYMENT CONFIRMATION ===');
+    console.log('User ID:', user.id);
+    
     try {
-      console.log('Recording payment via Supabase Functions for user:', user.id);
-      
-      const { data, error } = await supabase.functions.invoke('record-payment', {
-        body: {
-          user_id: user.id,
-          transaction_id: 'manual_confirmation_' + Date.now(),
-          amount: amount
-        }
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        alert(isHebrew ? 'שגיאה ברישום התשלום' : 'Error recording payment');
-        return;
-      }
-
-      console.log('Payment recorded successfully via Supabase Functions:', data);
+      // קריאה ישירה לפונקציה של ההורה
       onSuccess();
+      
     } catch (err) {
-      console.error('Unexpected error:', err);
-      alert(isHebrew ? 'שגיאה לא צפויה' : 'Unexpected error');
+      console.error('Confirmation error:', err);
+      alert(isHebrew ? 'שגיאה באישור התשלום' : 'Error confirming payment');
     } finally {
       setIsProcessing(false);
     }
