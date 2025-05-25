@@ -64,6 +64,10 @@ const Flipbook = () => {
     console.log('=== MANUAL REFRESH ===');
     console.log('Manual refresh payment status for user:', user.id);
     setIsRefreshing(true);
+    
+    // Reset the check flag to allow re-checking
+    hasCheckedPayment.current = false;
+    
     try {
       await checkPaymentStatus(user.id);
     } finally {
@@ -168,15 +172,6 @@ const Flipbook = () => {
             </CustomButton>
           </div>
 
-          {/* Debug info - remove in production */}
-          <div className="mb-4 p-4 bg-gray-100 border rounded text-sm">
-            <p>Debug: User ID: {user?.id}</p>
-            <p>Has Payment: {hasValidPayment.toString()}</p>
-            <p>Loading: {paymentLoading.toString()}</p>
-            <p>Error: {error || 'none'}</p>
-            <p>Has Checked: {hasCheckedPayment.current.toString()}</p>
-          </div>
-
           {!hasValidPayment ? (
             <div className="text-center mb-16">
               <h1 className="text-4xl font-bold mb-6">
@@ -203,6 +198,12 @@ const Flipbook = () => {
               {error && (
                 <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-red-800">{error}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {isHebrew 
+                      ? 'ניתן להמשיך עם תשלום חדש או לנסות לרענן'
+                      : 'You can proceed with a new payment or try refreshing'
+                    }
+                  </p>
                 </div>
               )}
               
