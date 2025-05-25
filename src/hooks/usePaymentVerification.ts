@@ -55,19 +55,6 @@ export const usePaymentVerification = () => {
       console.log('=== CHECKING PAYMENT STATUS ===');
       console.log('User ID to check:', userId);
       
-      // First check localStorage for existing payment
-      const hasLocalPayment = checkLocalPayment(userId);
-      console.log('Local payment found:', hasLocalPayment);
-      
-      if (hasLocalPayment) {
-        setHasValidPayment(true);
-        toast({
-          title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
-          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-        });
-        return;
-      }
-
       // Check if user came back from PayPal
       const urlParams = new URLSearchParams(window.location.search);
       const paymentStatus = urlParams.get('payment');
@@ -87,7 +74,7 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Try to check database directly
+      // Check database first - this is the authoritative source
       console.log('Checking database for payments...');
       const { data: payments, error: dbError } = await supabase
         .from('payments')
@@ -99,38 +86,55 @@ export const usePaymentVerification = () => {
 
       if (dbError) {
         console.error('Database query error:', dbError);
-        // Still use localStorage as fallback
+        
+        // Fallback to localStorage only if DB fails
+        const hasLocalPayment = checkLocalPayment(userId);
+        console.log('Database failed, using localStorage fallback:', hasLocalPayment);
         setHasValidPayment(hasLocalPayment);
+        
+        if (!hasLocalPayment) {
+          const errorMsg = language === 'he' 
+            ? 'לא ניתן לבדוק את סטטוס התשלום כרגע' 
+            : 'Cannot check payment status at the moment';
+          
+          setError(errorMsg);
+          
+          toast({
+            variant: "destructive",
+            title: language === 'he' ? 'שגיאה' : 'Error',
+            description: errorMsg
+          });
+        }
       } else {
         console.log('Database query result:', payments);
         const hasDbPayment = payments && payments.length > 0;
         
-        if (hasDbPayment && !hasLocalPayment) {
-          // Sync with localStorage
-          saveLocalPayment(userId);
-        }
-        
-        setHasValidPayment(hasDbPayment || hasLocalPayment);
+        // The database is the authoritative source
+        setHasValidPayment(hasDbPayment);
         
         if (hasDbPayment) {
+          // Sync with localStorage for faster future checks
+          saveLocalPayment(userId);
+          
           toast({
             title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
             description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
           });
+        } else {
+          // No payment in database - clear any stale localStorage
+          const paymentKey = `payment_completed_${userId}`;
+          localStorage.removeItem(paymentKey);
+          localStorage.removeItem(`payment_date_${userId}`);
+          
+          console.log('No payment found in database for this user');
         }
-      }
-
-      // If no payment found anywhere
-      if (!hasLocalPayment && (!payments || payments.length === 0)) {
-        setHasValidPayment(false);
-        console.log('No payment found for this user');
       }
       
     } catch (err) {
       console.error('=== PAYMENT CHECK ERROR ===');
       console.error('Error details:', err);
       
-      // Check localStorage as fallback even on error
+      // Only use localStorage as absolute last resort
       const hasLocalPayment = checkLocalPayment(userId);
       setHasValidPayment(hasLocalPayment);
       
@@ -159,36 +163,29 @@ export const usePaymentVerification = () => {
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Save to localStorage first
+      // Save to database first
+      const { data, error } = await supabase
+        .from('payments')
+        .insert({
+          user_id: userId,
+          paypal_transaction_id: sessionId,
+          amount: amount,
+          currency: 'ILS',
+          status: 'completed'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database insert error:', error);
+        throw error;
+      }
+      
+      console.log('Payment saved to database:', data);
+      
+      // Save to localStorage for faster access
       saveLocalPayment(userId);
       setHasValidPayment(true);
-      
-      console.log('Payment recorded successfully in localStorage');
-      
-      // Try to save to database as well
-      try {
-        const { data, error } = await supabase
-          .from('payments')
-          .insert({
-            user_id: userId,
-            paypal_transaction_id: sessionId,
-            amount: amount,
-            currency: 'ILS',
-            status: 'completed'
-          })
-          .select()
-          .single();
-
-        if (error) {
-          console.error('Database insert error:', error);
-          // Continue with localStorage success
-        } else {
-          console.log('Payment also saved to database:', data);
-        }
-      } catch (dbErr) {
-        console.error('Database save error:', dbErr);
-        // Continue with localStorage success
-      }
       
       toast({
         title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
