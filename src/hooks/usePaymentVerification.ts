@@ -2,7 +2,6 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -20,7 +19,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS ===');
+      console.log('=== CHECKING PAYMENT STATUS (localStorage) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -30,65 +29,55 @@ export const usePaymentVerification = () => {
       if (paymentStatus === 'success') {
         console.log('PayPal success detected, recording payment...');
         
-        // Record payment in database
-        const { data: insertData, error: insertError } = await supabase
-          .from('payments')
-          .insert({
-            user_id: userId,
-            paypal_transaction_id: 'paypal_' + Date.now(),
-            amount: 70,
-            currency: 'ILS',
-            status: 'completed'
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error('Error recording payment:', insertError);
-        } else {
-          console.log('Payment recorded successfully:', insertData);
-          setHasValidPayment(true);
-          
-          toast({
-            title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
-            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-          });
-          
-          // Clean URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-          return;
-        }
-      }
-
-      // Check database for existing payments
-      console.log('Checking payments in database for user:', userId);
-      const { data: payments, error: fetchError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false });
-
-      console.log('Query result:', { payments, error: fetchError });
-      
-      if (fetchError) {
-        console.error('Error fetching payments:', fetchError);
-        throw fetchError;
-      }
-
-      const hasPayment = payments && payments.length > 0;
-      console.log('Has payment:', hasPayment);
-      
-      setHasValidPayment(hasPayment);
-      
-      if (hasPayment) {
+        // Record payment in localStorage
+        const paymentRecord = {
+          user_id: userId,
+          paypal_transaction_id: 'paypal_' + Date.now(),
+          amount: 70,
+          currency: 'ILS',
+          status: 'completed',
+          created_at: new Date().toISOString()
+        };
+        
+        localStorage.setItem(`payment_${userId}`, JSON.stringify(paymentRecord));
+        console.log('Payment recorded in localStorage:', paymentRecord);
+        
+        setHasValidPayment(true);
+        
         toast({
-          title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
+          title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
-      } else {
-        console.log('No payment found for user:', userId);
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
       }
+
+      // Check localStorage for existing payments
+      console.log('Checking localStorage for payments for user:', userId);
+      const storedPayment = localStorage.getItem(`payment_${userId}`);
+      
+      if (storedPayment) {
+        try {
+          const payment = JSON.parse(storedPayment);
+          console.log('Found payment in localStorage:', payment);
+          
+          if (payment.status === 'completed') {
+            setHasValidPayment(true);
+            toast({
+              title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
+              description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+            });
+            return;
+          }
+        } catch (parseError) {
+          console.error('Error parsing stored payment:', parseError);
+        }
+      }
+      
+      console.log('No payment found for user:', userId);
+      setHasValidPayment(false);
       
     } catch (err) {
       console.error('=== PAYMENT CHECK ERROR ===');
@@ -113,30 +102,24 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT ===');
+      console.log('=== RECORDING PAYMENT (localStorage) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Record payment in database
-      const { data, error } = await supabase
-        .from('payments')
-        .insert({
-          user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          currency: 'ILS',
-          status: 'completed'
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error recording payment:', error);
-        throw error;
-      }
-
-      console.log('Payment recorded successfully:', data);
+      // Record payment in localStorage
+      const paymentRecord = {
+        user_id: userId,
+        paypal_transaction_id: sessionId,
+        amount: amount,
+        currency: 'ILS',
+        status: 'completed',
+        created_at: new Date().toISOString()
+      };
+      
+      localStorage.setItem(`payment_${userId}`, JSON.stringify(paymentRecord));
+      console.log('Payment recorded in localStorage:', paymentRecord);
+      
       setHasValidPayment(true);
       
       toast({
