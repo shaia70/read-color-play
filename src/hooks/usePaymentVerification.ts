@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PaymentRecord {
@@ -17,7 +17,13 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
-  const checkPaymentStatus = async (userId: string) => {
+  const checkPaymentStatus = useCallback(async (userId: string) => {
+    // Prevent multiple simultaneous calls
+    if (isLoading) {
+      console.log('Payment check already in progress, skipping...');
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -45,7 +51,7 @@ export const usePaymentVerification = () => {
       const hasPayment = payments && payments.length > 0;
       setHasValidPayment(hasPayment);
       
-      console.log('Payment status:', hasPayment ? 'found' : 'not found', payments);
+      console.log('Payment status check completed:', hasPayment ? 'found' : 'not found', payments);
       
     } catch (err) {
       console.error('Error checking payment:', err);
@@ -54,7 +60,7 @@ export const usePaymentVerification = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [language, isLoading]);
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -18,6 +18,7 @@ const Flipbook = () => {
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, recordPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const hasCheckedPayment = useRef(false);
   const isHebrew = language === 'he';
 
   // Debug logging
@@ -27,7 +28,8 @@ const Flipbook = () => {
       hasValidPayment,
       paymentLoading,
       error,
-      isRefreshing
+      isRefreshing,
+      hasCheckedPayment: hasCheckedPayment.current
     });
   }, [user, hasValidPayment, paymentLoading, error, isRefreshing]);
 
@@ -48,17 +50,25 @@ const Flipbook = () => {
     }
   }, [user, recordPayment]);
 
-  // בדיקת סטטוס התשלום כאשר המשתמש מתחבר
+  // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && !hasCheckedPayment.current && !paymentLoading) {
       console.log('User logged in, checking payment status for:', user.id);
+      hasCheckedPayment.current = true;
       checkPaymentStatus(user.id);
     }
-  }, [user?.id, checkPaymentStatus]);
+  }, [user?.id, checkPaymentStatus, paymentLoading]);
+
+  // Reset check flag when user changes
+  useEffect(() => {
+    if (!user) {
+      hasCheckedPayment.current = false;
+    }
+  }, [user]);
 
   const handleRefreshPayment = async () => {
-    if (!user?.id) {
-      console.log('No user ID available for refresh');
+    if (!user?.id || paymentLoading) {
+      console.log('Cannot refresh: no user ID or already loading');
       return;
     }
     
@@ -148,7 +158,7 @@ const Flipbook = () => {
               <CustomButton
                 variant="outline"
                 size="sm"
-                icon={<RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />}
+                icon={<RefreshCw className={`w-4 h-4 ${isRefreshing || paymentLoading ? 'animate-spin' : ''}`} />}
                 onClick={handleRefreshPayment}
                 disabled={isRefreshing || paymentLoading}
               >
@@ -172,6 +182,7 @@ const Flipbook = () => {
             <p>Has Payment: {hasValidPayment.toString()}</p>
             <p>Loading: {paymentLoading.toString()}</p>
             <p>Error: {error || 'none'}</p>
+            <p>Has Checked: {hasCheckedPayment.current.toString()}</p>
           </div>
 
           {!hasValidPayment ? (
