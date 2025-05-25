@@ -2,16 +2,6 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-
-interface PaymentRecord {
-  id: string;
-  user_id: string;
-  paypal_transaction_id?: string;
-  amount: number;
-  status: 'pending' | 'completed' | 'failed';
-  created_at: string;
-}
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -63,7 +53,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS DIRECTLY ===');
+      console.log('=== CHECKING PAYMENT STATUS (LOCAL ONLY) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -71,7 +61,7 @@ export const usePaymentVerification = () => {
       const paymentStatus = urlParams.get('payment');
       
       if (paymentStatus === 'success') {
-        console.log('PayPal success detected, recording payment...');
+        console.log('PayPal success detected, recording payment locally...');
         saveLocalPayment(userId);
         setHasValidPayment(true);
         
@@ -85,30 +75,13 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check database directly with Supabase client
-      console.log('Checking payment via Supabase client for user:', userId);
+      // Check localStorage only (no database calls)
+      console.log('Checking payment in localStorage for user:', userId);
+      const hasLocalPayment = checkLocalPayment(userId);
       
-      const { data: payments, error: dbError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error(`Database error: ${dbError.message}`);
-      }
-
-      console.log('Database response:', payments);
-
-      const hasDbPayment = payments && payments.length > 0;
-      console.log('Has payment for this user:', hasDbPayment);
+      console.log('Has local payment for this user:', hasLocalPayment);
       
-      if (hasDbPayment) {
-        // User has valid payment - sync with localStorage and grant access
-        saveLocalPayment(userId);
+      if (hasLocalPayment) {
         setHasValidPayment(true);
         
         toast({
@@ -116,32 +89,31 @@ export const usePaymentVerification = () => {
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
       } else {
-        // No payment found for this user - clear localStorage and deny access
-        clearLocalPayment(userId);
         setHasValidPayment(false);
-        
-        console.log('No payment found for user:', userId);
+        console.log('No local payment found for user:', userId);
       }
       
     } catch (err) {
       console.error('=== PAYMENT CHECK ERROR ===');
       console.error('Error details:', err);
       
-      // When there's an error, DENY access and clear localStorage
-      clearLocalPayment(userId);
-      setHasValidPayment(false);
+      // When there's an error, check localStorage as fallback
+      const hasLocalPayment = checkLocalPayment(userId);
+      setHasValidPayment(hasLocalPayment);
       
-      const errorMsg = language === 'he' 
-        ? 'שגיאה בבדיקת התשלום. אנא נסה שוב מאוחר יותר' 
-        : 'Error checking payment. Please try again later';
-      
-      setError(errorMsg);
-      
-      toast({
-        variant: "destructive",
-        title: language === 'he' ? 'שגיאה' : 'Error',
-        description: errorMsg
-      });
+      if (!hasLocalPayment) {
+        const errorMsg = language === 'he' 
+          ? 'בעיה בבדיקת התשלום' 
+          : 'Payment check issue';
+        
+        setError(errorMsg);
+        
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'התראה' : 'Notice',
+          description: errorMsg
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -149,47 +121,29 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT DIRECTLY ===');
+      console.log('=== RECORDING PAYMENT (LOCAL ONLY) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Record payment directly to database
-      const { data, error: dbError } = await supabase
-        .from('payments')
-        .insert({
-          user_id: userId,
-          paypal_transaction_id: sessionId,
-          amount: amount,
-          currency: 'ILS',
-          status: 'completed'
-        })
-        .select()
-        .single();
-
-      if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error(`Database error: ${dbError.message}`);
-      }
-
-      console.log('Payment recorded directly:', data);
-      
-      // Save to localStorage for faster access
+      // Save payment to localStorage only
       saveLocalPayment(userId);
       setHasValidPayment(true);
       
       toast({
         title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
-        description: language === 'he' ? 'התשלום שלך נרשם במערכת' : 'Your payment has been recorded'
+        description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
       });
+      
+      console.log('Payment recorded locally for user:', userId);
       
     } catch (err) {
       console.error('=== RECORD PAYMENT ERROR ===');
       console.error('Error details:', err);
       
       const errorMsg = language === 'he' 
-        ? 'לא ניתן לרשום את התשלום כרגע' 
-        : 'Cannot record payment at the moment';
+        ? 'בעיה ברישום התשלום' 
+        : 'Payment recording issue';
       
       setError(errorMsg);
       
