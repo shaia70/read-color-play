@@ -1,6 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,7 +15,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT ===')
+    console.log('=== RECORDING PAYMENT (Direct API) ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -33,13 +32,6 @@ serve(async (req) => {
       )
     }
 
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
-
     const { user_id, transaction_id, amount } = await req.json()
 
     if (!user_id || !transaction_id || !amount) {
@@ -54,26 +46,37 @@ serve(async (req) => {
 
     console.log('Recording payment:', { user_id, transaction_id, amount })
 
-    // Insert payment record using service role
-    const { data, error } = await supabaseAdmin
-      .from('payments')
-      .insert({
-        user_id,
-        paypal_transaction_id: transaction_id,
-        amount: parseFloat(amount),
-        currency: 'ILS',
-        status: 'completed'
-      })
-      .select()
+    // Use direct REST API call instead of Supabase client
+    const apiUrl = `${supabaseUrl}/rest/v1/payments`
+    
+    const paymentData = {
+      user_id,
+      paypal_transaction_id: transaction_id,
+      amount: parseFloat(amount),
+      currency: 'ILS',
+      status: 'completed'
+    }
 
-    console.log('Insert result:', { error, data })
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'apikey': supabaseServiceKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(paymentData)
+    })
 
-    if (error) {
-      console.error('Database error:', error)
+    console.log('API Response status:', response.status)
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('API Error:', errorText)
       return new Response(
         JSON.stringify({ 
           error: 'Failed to record payment', 
-          details: error.message 
+          details: errorText 
         }),
         { 
           status: 500,
@@ -82,12 +85,13 @@ serve(async (req) => {
       )
     }
 
+    const data = await response.json()
     console.log('Payment recorded successfully:', data)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        payment: data?.[0] || null
+        payment: data?.[0] || data
       }),
       { 
         status: 200,
