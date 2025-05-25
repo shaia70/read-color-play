@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
@@ -15,7 +16,7 @@ import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 const Flipbook = () => {
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
-  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, recordPayment } = usePaymentVerification();
+  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const hasCheckedPayment = useRef(false);
@@ -88,11 +89,11 @@ const Flipbook = () => {
 
   const handlePaymentSuccess = () => {
     console.log('=== PAYMENT SUCCESS HANDLER ===');
-    if (user) {
-      console.log('Recording manual payment confirmation for user:', user.id);
-      recordPayment(user.id, 'manual_confirmation_' + Date.now(), 70);
-      setShowPayment(false);
-    }
+    setShowPayment(false);
+  };
+
+  const handleConfirmPayment = async (userId: string) => {
+    await confirmPaymentCompletion(userId);
   };
 
   // אם המשתמש לא מחובר, הצג טופס התחברות
@@ -262,6 +263,7 @@ const Flipbook = () => {
                       amount={70}
                       onSuccess={handlePaymentSuccess}
                       onCancel={() => setShowPayment(false)}
+                      onConfirmPayment={handleConfirmPayment}
                     />
                   </div>
                 )}

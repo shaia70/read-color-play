@@ -9,9 +9,10 @@ interface PayPalCheckoutProps {
   amount: number;
   onSuccess: () => void;
   onCancel: () => void;
+  onConfirmPayment: (userId: string) => Promise<void>;
 }
 
-const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) => {
+const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -39,7 +40,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
     console.log('User ID:', user.id);
     
     try {
-      // קריאה ישירה לפונקציה של ההורה
+      await onConfirmPayment(user.id);
       onSuccess();
       
     } catch (err) {

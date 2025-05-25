@@ -107,6 +107,81 @@ export const usePaymentVerification = () => {
     }
   }, [language, isLoading]);
 
+  const confirmPaymentCompletion = async (userId: string) => {
+    try {
+      setIsLoading(true);
+      console.log('=== CONFIRMING PAYMENT COMPLETION ===');
+      console.log('User ID:', userId);
+      
+      // First check if payment already exists
+      console.log('Checking for existing payment...');
+      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
+
+      console.log('Existing payment check result:', { checkResult, checkError });
+
+      if (checkError) {
+        console.error('Error checking existing payment:', checkError);
+        throw checkError;
+      }
+
+      if (checkResult?.hasValidPayment) {
+        console.log('Payment already exists, updating status');
+        setHasValidPayment(true);
+        
+        toast({
+          title: language === 'he' ? 'תשלום כבר קיים' : 'Payment already exists',
+          description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
+        });
+        return;
+      }
+
+      // If no payment exists, create a new one
+      console.log('No existing payment found, creating new payment record...');
+      const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
+        body: {
+          user_id: userId,
+          transaction_id: 'manual_confirmation_' + Date.now(),
+          amount: 70
+        }
+      });
+
+      console.log('Record payment result:', { recordResult, recordError });
+
+      if (recordError) {
+        console.error('Error recording payment:', recordError);
+        throw recordError;
+      }
+
+      console.log('Payment recorded successfully:', recordResult);
+      setHasValidPayment(true);
+      
+      toast({
+        title: language === 'he' ? 'תשלום אושר בהצלחה' : 'Payment confirmed successfully',
+        description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
+      });
+      
+    } catch (err) {
+      console.error('=== CONFIRM PAYMENT ERROR ===');
+      console.error('Error details:', err);
+      
+      const errorMsg = language === 'he' 
+        ? 'בעיה באישור התשלום' 
+        : 'Payment confirmation issue';
+      
+      setError(errorMsg);
+      
+      toast({
+        variant: "destructive",
+        title: language === 'he' ? 'שגיאה' : 'Error',
+        description: errorMsg
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
       console.log('=== RECORDING PAYMENT (Edge Function Only) ===');
@@ -161,6 +236,7 @@ export const usePaymentVerification = () => {
     isLoading,
     error,
     checkPaymentStatus,
+    confirmPaymentCompletion,
     recordPayment
   };
 };
