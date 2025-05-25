@@ -27,14 +27,6 @@ export const usePaymentVerification = () => {
       // Dynamically import supabase client to avoid initialization issues
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // Check if supabase client is properly initialized
-      if (!supabase) {
-        console.error('Supabase client is not initialized');
-        setError(language === 'he' ? 'שגיאה בחיבור למערכת' : 'System connection error');
-        setHasValidPayment(false);
-        return;
-      }
-      
       const { data: payments, error: paymentError } = await supabase
         .from('payments')
         .select('*')
@@ -70,13 +62,6 @@ export const usePaymentVerification = () => {
       
       // Dynamically import supabase client to avoid initialization issues
       const { supabase } = await import('@/integrations/supabase/client');
-      
-      // Check if supabase client is properly initialized
-      if (!supabase) {
-        console.error('Supabase client is not initialized');
-        setError(language === 'he' ? 'שגיאה בחיבור למערכת' : 'System connection error');
-        return;
-      }
       
       const paymentData = {
         user_id: userId,
