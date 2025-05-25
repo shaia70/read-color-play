@@ -47,7 +47,7 @@ serve(async (req) => {
     console.log('Checking payment status for user:', user_id)
 
     // Use direct REST API call instead of Supabase client
-    const apiUrl = `${supabaseUrl}/rest/v1/payments?user_id=eq.${user_id}&status=eq.completed&order=created_at.desc`
+    const apiUrl = `${supabaseUrl}/rest/v1/payments?user_id=eq.${user_id}&status=eq.success&order=created_at.desc`
     
     const response = await fetch(apiUrl, {
       method: 'GET',

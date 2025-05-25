@@ -54,7 +54,7 @@ serve(async (req) => {
       paypal_transaction_id: transaction_id,
       amount: parseFloat(amount),
       currency: 'ILS',
-      status: 'completed'
+      status: 'success'
     }
 
     const response = await fetch(apiUrl, {
