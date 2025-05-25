@@ -113,8 +113,8 @@ export const usePaymentVerification = () => {
       console.log('=== CONFIRMING PAYMENT COMPLETION ===');
       console.log('User ID:', userId);
       
-      // First check if payment already exists
-      console.log('Checking for existing payment...');
+      // SECURITY FIX: Check if payment already exists FIRST
+      console.log('Checking for existing payment before allowing access...');
       const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
         body: { user_id: userId }
       });
@@ -127,39 +127,26 @@ export const usePaymentVerification = () => {
       }
 
       if (checkResult?.hasValidPayment) {
-        console.log('Payment already exists, updating status');
+        console.log('Valid payment already exists, granting access');
         setHasValidPayment(true);
         
         toast({
-          title: language === 'he' ? 'תשלום כבר קיים' : 'Payment already exists',
+          title: language === 'he' ? 'תשלום נמצא במערכת' : 'Payment found in system',
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
         return;
       }
 
-      // If no payment exists, create a new one
-      console.log('No existing payment found, creating new payment record...');
-      const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
-        body: {
-          user_id: userId,
-          transaction_id: 'manual_confirmation_' + Date.now(),
-          amount: 70
-        }
-      });
-
-      console.log('Record payment result:', { recordResult, recordError });
-
-      if (recordError) {
-        console.error('Error recording payment:', recordError);
-        throw recordError;
-      }
-
-      console.log('Payment recorded successfully:', recordResult);
-      setHasValidPayment(true);
+      // SECURITY: If no payment exists, DO NOT create one automatically
+      // This would be a security vulnerability
+      console.log('No valid payment found - access denied');
       
       toast({
-        title: language === 'he' ? 'תשלום אושר בהצלחה' : 'Payment confirmed successfully',
-        description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
+        variant: "destructive",
+        title: language === 'he' ? 'לא נמצא תשלום' : 'No payment found',
+        description: language === 'he' 
+          ? 'לא נמצא תשלום תקף במערכת. אנא השלם תשלום דרך PayPal תחילה.'
+          : 'No valid payment found in system. Please complete payment through PayPal first.'
       });
       
     } catch (err) {

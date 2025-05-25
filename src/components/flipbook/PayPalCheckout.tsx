@@ -45,7 +45,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
       
     } catch (err) {
       console.error('Confirmation error:', err);
-      alert(isHebrew ? 'שגיאה באישור התשלום' : 'Error confirming payment');
+      // Don't show generic alert, the hook will show appropriate toast messages
     } finally {
       setIsProcessing(false);
     }
@@ -84,8 +84,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           <div className="border-t pt-4">
             <p className="text-sm text-gray-600 mb-3 text-center">
               {isHebrew 
-                ? "או לחץ כאן אם כבר השלמת את התשלום:"
-                : "Or click here if you've already completed payment:"
+                ? "רק אם השלמת תשלום ב-PayPal:"
+                : "Only if you completed payment via PayPal:"
               }
             </p>
             
@@ -98,8 +98,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
               disabled={isProcessing}
             >
               {isProcessing 
-                ? (isHebrew ? "מעבד..." : "Processing...")
-                : (isHebrew ? "אישור השלמת התשלום" : "Confirm Payment Completed")
+                ? (isHebrew ? "בודק..." : "Checking...")
+                : (isHebrew ? "בדיקת תשלום במערכת" : "Check Payment in System")
               }
             </CustomButton>
           </div>
@@ -112,11 +112,11 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           {isHebrew ? "ביטול" : "Cancel"}
         </button>
 
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm text-amber-800">
             {isHebrew 
-              ? "💡 לאחר התשלום תועבר אוטומטית חזרה לעמוד זה. אם זה לא קורה, לחץ על 'אישור השלמת התשלום'"
-              : "💡 After payment you'll be automatically redirected back to this page. If not, click 'Confirm Payment Completed'"
+              ? "⚠️ הכפתור 'בדיקת תשלום במערכת' רק בודק אם יש תשלום קיים - הוא לא יוצר תשלום חדש!"
+              : "⚠️ The 'Check Payment in System' button only verifies existing payments - it doesn't create new ones!"
             }
           </p>
         </div>
