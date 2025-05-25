@@ -8,7 +8,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -17,16 +16,17 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== DEBUGGING ENVIRONMENT ===')
-    console.log('SUPABASE_URL exists:', !!supabaseUrl)
-    console.log('SUPABASE_SERVICE_ROLE_KEY exists:', !!supabaseServiceKey)
-    console.log('URL value:', supabaseUrl)
-    console.log('Key prefix:', supabaseServiceKey?.substring(0, 20) + '...')
+    console.log('=== CHECKING PAYMENT STATUS ===')
+    console.log('Environment check:', {
+      hasUrl: !!supabaseUrl,
+      hasServiceKey: !!supabaseServiceKey,
+      url: supabaseUrl
+    })
 
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error('Missing environment variables')
       return new Response(
-        JSON.stringify({ error: 'Server configuration error - missing env vars' }),
+        JSON.stringify({ error: 'Server configuration error' }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -34,28 +34,12 @@ serve(async (req) => {
       )
     }
 
-    // Test direct table access with raw SQL
-    console.log('=== TESTING DIRECT TABLE ACCESS ===')
-    
-    try {
-      const testResponse = await fetch(`${supabaseUrl}/rest/v1/payments?select=count`, {
-        headers: {
-          'Authorization': `Bearer ${supabaseServiceKey}`,
-          'apikey': supabaseServiceKey,
-          'Content-Type': 'application/json'
-        }
-      })
-      
-      console.log('Direct API test status:', testResponse.status)
-      const testResult = await testResponse.text()
-      console.log('Direct API test result:', testResult)
-      
-    } catch (directError) {
-      console.error('Direct API test failed:', directError)
-    }
-
-    // Now try with client
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
 
     const { user_id } = await req.json()
 
@@ -69,30 +53,24 @@ serve(async (req) => {
       )
     }
 
-    console.log('=== QUERYING WITH CLIENT ===')
     console.log('Checking payment status for user:', user_id)
 
-    // Query payments using service role (bypasses RLS)
+    // Query payments using service role
     const { data: payments, error } = await supabaseAdmin
       .from('payments')
       .select('*')
       .eq('user_id', user_id)
       .eq('status', 'completed')
       .order('created_at', { ascending: false })
-      .limit(10)
 
-    console.log('=== QUERY RESULTS ===')
-    console.log('Query error:', error)
-    console.log('Query data:', payments)
+    console.log('Query result:', { error, paymentsCount: payments?.length })
 
     if (error) {
-      console.error('Error fetching payments:', error)
+      console.error('Database error:', error)
       return new Response(
         JSON.stringify({ 
-          error: 'Failed to check payment status', 
-          details: error.message,
-          code: error.code,
-          hint: error.hint
+          error: 'Database query failed', 
+          details: error.message 
         }),
         { 
           status: 500,
@@ -105,19 +83,13 @@ serve(async (req) => {
 
     console.log('Payment check result:', { 
       hasPayment, 
-      paymentCount: payments?.length || 0,
-      payments: payments || []
+      paymentCount: payments?.length || 0 
     })
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        payments: payments || [],
-        debug: {
-          user_id,
-          hasServiceKey: !!supabaseServiceKey,
-          hasUrl: !!supabaseUrl
-        }
+        paymentCount: payments?.length || 0
       }),
       { 
         status: 200,
@@ -126,16 +98,12 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('=== UNEXPECTED ERROR ===')
-    console.error('Error name:', error.name)
-    console.error('Error message:', error.message)
-    console.error('Error stack:', error.stack)
+    console.error('Unexpected error:', error)
     
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        details: error.message,
-        name: error.name
+        details: error.message 
       }),
       { 
         status: 500,
