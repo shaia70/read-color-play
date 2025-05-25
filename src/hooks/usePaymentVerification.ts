@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -19,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CHECKING PAYMENT STATUS (localStorage only) ===');
+      console.log('=== CHECKING PAYMENT STATUS (Supabase) ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -27,15 +28,27 @@ export const usePaymentVerification = () => {
       const paymentStatus = urlParams.get('payment');
       
       if (paymentStatus === 'success') {
-        console.log('PayPal success detected, marking as paid...');
+        console.log('PayPal success detected, creating payment record...');
         
-        // Store payment in localStorage
-        localStorage.setItem(`payment_${userId}`, JSON.stringify({
-          sessionId: 'paypal_success_' + Date.now(),
-          amount: 70,
-          timestamp: Date.now()
-        }));
-        
+        // Create payment record in Supabase
+        const { data: payment, error: insertError } = await supabase
+          .from('payments')
+          .insert({
+            user_id: userId,
+            paypal_transaction_id: 'paypal_success_' + Date.now(),
+            amount: 70,
+            status: 'completed',
+            currency: 'ILS'
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error('Error creating payment record:', insertError);
+          throw insertError;
+        }
+
+        console.log('Payment record created:', payment);
         setHasValidPayment(true);
         
         toast({
@@ -48,17 +61,30 @@ export const usePaymentVerification = () => {
         return;
       }
 
-      // Check localStorage for payment
-      const localPayment = localStorage.getItem(`payment_${userId}`);
-      if (localPayment) {
-        console.log('Found payment in localStorage:', localPayment);
+      // Check Supabase for existing payments
+      const { data: payments, error: fetchError } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false });
+
+      if (fetchError) {
+        console.error('Error fetching payments:', fetchError);
+        throw fetchError;
+      }
+
+      console.log('Payments found:', payments);
+      
+      if (payments && payments.length > 0) {
+        console.log('Valid payment found');
         setHasValidPayment(true);
         toast({
           title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
       } else {
-        console.log('No payment found in localStorage');
+        console.log('No valid payments found');
         setHasValidPayment(false);
       }
       
@@ -85,18 +111,30 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT (localStorage) ===');
+      console.log('=== RECORDING PAYMENT (Supabase) ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
       
-      // Store in localStorage
-      localStorage.setItem(`payment_${userId}`, JSON.stringify({
-        sessionId,
-        amount,
-        timestamp: Date.now()
-      }));
-      
+      // Insert payment record in Supabase
+      const { data: payment, error: insertError } = await supabase
+        .from('payments')
+        .insert({
+          user_id: userId,
+          paypal_transaction_id: sessionId,
+          amount: amount,
+          status: 'completed',
+          currency: 'ILS'
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Error inserting payment:', insertError);
+        throw insertError;
+      }
+
+      console.log('Payment recorded successfully:', payment);
       setHasValidPayment(true);
       
       toast({
