@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 
 interface PaymentRecord {
   id: string;
@@ -24,6 +23,9 @@ export const usePaymentVerification = () => {
       setError(null);
       
       console.log('Checking payment status for user:', userId);
+      
+      // Dynamically import supabase client to avoid initialization issues
+      const { supabase } = await import('@/integrations/supabase/client');
       
       // Check if supabase client is properly initialized
       if (!supabase) {
@@ -65,6 +67,9 @@ export const usePaymentVerification = () => {
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
       console.log('Recording payment for user:', userId);
+      
+      // Dynamically import supabase client to avoid initialization issues
+      const { supabase } = await import('@/integrations/supabase/client');
       
       // Check if supabase client is properly initialized
       if (!supabase) {
