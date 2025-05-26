@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== PAYMENT CHECK FROM USERS TABLE ===')
+    console.log('=== PAYMENT CHECK FROM PAYMENTS TABLE ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -72,25 +72,26 @@ serve(async (req) => {
       }
     })
 
-    console.log('Checking has_paid field in users table...')
+    console.log('Checking payments table for successful payments...')
     
-    // Check the has_paid field in users table
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('id, email, has_paid')
-      .eq('id', user_id)
-      .single()
+    // Check for successful payments in payments table
+    const { data: payments, error } = await supabase
+      .from('payments')
+      .select('id, user_id, amount, currency, status, created_at')
+      .eq('user_id', user_id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
     
-    console.log('Users table query result:', { user, error })
+    console.log('Payments table query result:', { payments, error })
 
     if (error) {
-      console.error('Users Table Query Error:', error)
+      console.error('Payments Table Query Error:', error)
       
       return new Response(
         JSON.stringify({ 
           hasValidPayment: false,
           paymentCount: 0,
-          error: 'Failed to check user payment status',
+          error: 'Failed to check payment status',
           errorDetails: {
             code: error.code,
             message: error.message
@@ -103,23 +104,23 @@ serve(async (req) => {
       )
     }
 
-    const hasPayment = user?.has_paid === true
+    const hasPayment = payments && payments.length > 0
     
     console.log('=== FINAL RESULT ===')
-    console.log('User found:', !!user)
+    console.log('Payments found:', payments?.length || 0)
     console.log('Has payment:', hasPayment)
-    console.log('User data:', user)
+    console.log('Payment data:', payments)
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: hasPayment ? 1 : 0,
-        user: user,
+        paymentCount: payments?.length || 0,
+        payments: payments,
         debugInfo: {
-          accessMethod: 'users_table_has_paid_field',
+          accessMethod: 'payments_table_direct_check',
           userIdReceived: user_id,
-          userFound: !!user,
-          hasPaidValue: user?.has_paid
+          paymentsFound: payments?.length || 0,
+          paymentsData: payments
         }
       }),
       { 
