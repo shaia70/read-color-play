@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== PAYMENT CHECK WITH DATABASE FUNCTION ===')
+    console.log('=== DIRECT TABLE ACCESS PAYMENT CHECK ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -64,50 +64,28 @@ serve(async (req) => {
       )
     }
 
-    // Create Supabase client with service role
-    console.log('Creating Supabase client with service role...')
+    // Create Supabase client with service role key
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
         persistSession: false
       }
     })
-    console.log('Supabase client created successfully')
 
-    // Use the database function instead of direct table access
-    console.log('Calling get_user_payments function...')
-    console.log('Function parameters:')
-    console.log('- p_user_id:', user_id)
+    console.log('Direct table query...')
     
-    const { data: payments, error } = await supabase.rpc('get_user_payments', {
-      p_user_id: user_id
-    })
+    // Try direct table access with service role
+    const { data: payments, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
     
-    console.log('=== FUNCTION CALL RESULTS ===')
-    console.log('Error:', error)
-    console.log('Data:', payments)
-    console.log('Payments array length:', payments ? payments.length : 'null/undefined')
-    
-    if (payments && payments.length > 0) {
-      console.log('=== INDIVIDUAL PAYMENTS ===')
-      payments.forEach((payment, index) => {
-        console.log(`Payment ${index + 1}:`, {
-          id: payment.id,
-          user_id: payment.user_id,
-          amount: payment.amount,
-          status: payment.status,
-          created_at: payment.created_at
-        })
-      })
-    }
+    console.log('Direct table query result:', { payments, error })
 
     if (error) {
-      console.error('=== DATABASE FUNCTION ERROR ===')
-      console.error('Error code:', error.code)
-      console.error('Error message:', error.message)
-      console.error('Error details:', error.details)
-      console.error('Error hint:', error.hint)
-      console.error('Full error object:', JSON.stringify(error, null, 2))
+      console.error('Database Error:', error)
       
       return new Response(
         JSON.stringify({ 
@@ -140,7 +118,7 @@ serve(async (req) => {
         paymentCount: paymentCount,
         payments: payments,
         debugInfo: {
-          functionUsed: 'get_user_payments',
+          accessMethod: 'direct_table_access',
           userIdReceived: user_id,
           totalRecordsFound: paymentCount
         }
