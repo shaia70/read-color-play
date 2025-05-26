@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
@@ -19,7 +20,7 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== CLIENT SIDE PAYMENT CHECK ===');
+      console.log('=== DIRECT CLIENT PAYMENT CHECK ===');
       console.log('User ID to check:', userId);
       
       // Check if user came back from PayPal
@@ -58,28 +59,30 @@ export const usePaymentVerification = () => {
         }
       }
 
-      // Use check-payment edge function instead of direct client query
-      console.log('=== CALLING CHECK-PAYMENT FUNCTION ===');
-      console.log('Request payload:', { user_id: userId });
+      // Direct query to payments table using regular client (not service role)
+      console.log('=== DIRECT PAYMENTS TABLE CHECK ===');
       
-      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
+      const { data: payments, error: paymentError } = await supabase
+        .from('payments')
+        .select('id, user_id, amount, currency, status, created_at')
+        .eq('user_id', userId)
+        .eq('status', 'success')
+        .order('created_at', { ascending: false });
 
-      console.log('=== CHECK-PAYMENT RESPONSE ===');
-      console.log('Error:', checkError);
-      console.log('Data:', checkResult);
-      console.log('Has valid payment:', checkResult?.hasValidPayment);
-      console.log('User data:', checkResult?.user);
-      console.log('Debug info:', checkResult?.debugInfo);
+      console.log('=== PAYMENTS QUERY RESULT ===');
+      console.log('Error:', paymentError);
+      console.log('Data:', payments);
+      console.log('Payments count:', payments?.length || 0);
 
-      if (checkError) {
-        console.error('=== FUNCTION INVOCATION ERROR ===');
-        console.error('Error details:', checkError);
-        throw checkError;
+      if (paymentError) {
+        console.error('=== PAYMENT QUERY ERROR ===');
+        console.error('Error details:', paymentError);
+        throw paymentError;
       }
 
-      if (checkResult?.hasValidPayment) {
+      const hasPayment = payments && payments.length > 0;
+      
+      if (hasPayment) {
         console.log('✅ Valid payment found!');
         setHasValidPayment(true);
         toast({
@@ -118,18 +121,24 @@ export const usePaymentVerification = () => {
       console.log('=== CONFIRMING PAYMENT COMPLETION ===');
       console.log('User ID:', userId);
       
-      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
+      // Use direct client query instead of edge function
+      const { data: payments, error: paymentError } = await supabase
+        .from('payments')
+        .select('id, user_id, amount, currency, status, created_at')
+        .eq('user_id', userId)
+        .eq('status', 'success')
+        .order('created_at', { ascending: false });
 
-      console.log('Existing payment check result:', { checkResult, checkError });
+      console.log('Direct payment check result:', { payments, paymentError });
 
-      if (checkError) {
-        console.error('Error checking existing payment:', checkError);
-        throw checkError;
+      if (paymentError) {
+        console.error('Error checking existing payment:', paymentError);
+        throw paymentError;
       }
 
-      if (checkResult?.hasValidPayment) {
+      const hasPayment = payments && payments.length > 0;
+
+      if (hasPayment) {
         console.log('Valid payment already exists, granting access');
         setHasValidPayment(true);
         
