@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
@@ -21,7 +22,6 @@ export const usePaymentVerification = () => {
       
       console.log('=== CLIENT SIDE PAYMENT CHECK ===');
       console.log('User ID to check:', userId);
-      console.log('User ID type:', typeof userId);
       
       // Check if user came back from PayPal
       const urlParams = new URLSearchParams(window.location.search);
@@ -59,29 +59,27 @@ export const usePaymentVerification = () => {
         }
       }
 
-      // Check payment status with detailed logging
-      console.log('=== CALLING CHECK-PAYMENT FUNCTION ===');
-      console.log('Request payload:', { user_id: userId });
+      // Check payment status directly from users table
+      console.log('=== CHECKING USER PAYMENT STATUS DIRECTLY ===');
       
-      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
+      const { data: user, error: userError } = await supabase
+        .from('users')
+        .select('id, email, has_paid')
+        .eq('id', userId)
+        .single();
 
-      console.log('=== CHECK-PAYMENT RESPONSE ===');
-      console.log('Error:', checkError);
-      console.log('Data:', checkResult);
-      console.log('Has valid payment:', checkResult?.hasValidPayment);
-      console.log('Payment count:', checkResult?.paymentCount);
-      console.log('Payments array:', checkResult?.payments);
-      console.log('Debug info:', checkResult?.debugInfo);
+      console.log('=== USER PAYMENT CHECK RESPONSE ===');
+      console.log('Error:', userError);
+      console.log('User data:', user);
+      console.log('Has paid:', user?.has_paid);
 
-      if (checkError) {
-        console.error('=== FUNCTION INVOCATION ERROR ===');
-        console.error('Error details:', checkError);
-        throw checkError;
+      if (userError) {
+        console.error('=== USER TABLE QUERY ERROR ===');
+        console.error('Error details:', userError);
+        throw userError;
       }
 
-      if (checkResult?.hasValidPayment) {
+      if (user?.has_paid === true) {
         console.log('✅ Valid payment found!');
         setHasValidPayment(true);
         toast({
@@ -89,19 +87,8 @@ export const usePaymentVerification = () => {
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
       } else {
-        console.log('❌ No valid payments found');
+        console.log('❌ No valid payment found');
         setHasValidPayment(false);
-        
-        if (checkResult?.error) {
-          console.error('Payment check returned error:', checkResult.error);
-          toast({
-            variant: "destructive",
-            title: language === 'he' ? 'שגיאה בבדיקת תשלום' : 'Payment check error',
-            description: language === 'he' 
-              ? 'בעיה בבדיקת התשלום. נסה שוב מאוחר יותר' 
-              : 'Payment check failed. Try again later'
-          });
-        }
       }
       
     } catch (err) {
@@ -131,18 +118,20 @@ export const usePaymentVerification = () => {
       console.log('=== CONFIRMING PAYMENT COMPLETION ===');
       console.log('User ID:', userId);
       
-      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
-      });
+      const { data: user, error: userError } = await supabase
+        .from('users')
+        .select('id, email, has_paid')
+        .eq('id', userId)
+        .single();
 
-      console.log('Existing payment check result:', { checkResult, checkError });
+      console.log('Existing payment check result:', { user, userError });
 
-      if (checkError) {
-        console.error('Error checking existing payment:', checkError);
-        throw checkError;
+      if (userError) {
+        console.error('Error checking existing payment:', userError);
+        throw userError;
       }
 
-      if (checkResult?.hasValidPayment) {
+      if (user?.has_paid === true) {
         console.log('Valid payment already exists, granting access');
         setHasValidPayment(true);
         
