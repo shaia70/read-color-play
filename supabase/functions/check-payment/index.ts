@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== PAYMENT CHECK FROM PAYMENTS TABLE ===')
+    console.log('=== PAYMENT CHECK USING DATABASE FUNCTION ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -72,20 +72,17 @@ serve(async (req) => {
       }
     })
 
-    console.log('Checking payments table for successful payments...')
+    console.log('Calling get_user_payments database function...')
     
-    // Check for successful payments in payments table
-    const { data: payments, error } = await supabase
-      .from('payments')
-      .select('id, user_id, amount, currency, status, created_at')
-      .eq('user_id', user_id)
-      .eq('status', 'success')
-      .order('created_at', { ascending: false })
+    // Use the database function instead of direct table access
+    const { data: payments, error } = await supabase.rpc('get_user_payments', {
+      p_user_id: user_id
+    })
     
-    console.log('Payments table query result:', { payments, error })
+    console.log('Database function result:', { payments, error })
 
     if (error) {
-      console.error('Payments Table Query Error:', error)
+      console.error('Database Function Error:', error)
       
       return new Response(
         JSON.stringify({ 
@@ -117,7 +114,7 @@ serve(async (req) => {
         paymentCount: payments?.length || 0,
         payments: payments,
         debugInfo: {
-          accessMethod: 'payments_table_direct_check',
+          accessMethod: 'database_function_get_user_payments',
           userIdReceived: user_id,
           paymentsFound: payments?.length || 0,
           paymentsData: payments
