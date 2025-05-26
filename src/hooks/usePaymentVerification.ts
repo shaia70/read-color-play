@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
@@ -59,27 +58,28 @@ export const usePaymentVerification = () => {
         }
       }
 
-      // Check payment status directly from users table
-      console.log('=== CHECKING USER PAYMENT STATUS DIRECTLY ===');
+      // Use check-payment edge function instead of direct client query
+      console.log('=== CALLING CHECK-PAYMENT FUNCTION ===');
+      console.log('Request payload:', { user_id: userId });
       
-      const { data: user, error: userError } = await supabase
-        .from('users')
-        .select('id, email, has_paid')
-        .eq('id', userId)
-        .single();
+      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      console.log('=== USER PAYMENT CHECK RESPONSE ===');
-      console.log('Error:', userError);
-      console.log('User data:', user);
-      console.log('Has paid:', user?.has_paid);
+      console.log('=== CHECK-PAYMENT RESPONSE ===');
+      console.log('Error:', checkError);
+      console.log('Data:', checkResult);
+      console.log('Has valid payment:', checkResult?.hasValidPayment);
+      console.log('User data:', checkResult?.user);
+      console.log('Debug info:', checkResult?.debugInfo);
 
-      if (userError) {
-        console.error('=== USER TABLE QUERY ERROR ===');
-        console.error('Error details:', userError);
-        throw userError;
+      if (checkError) {
+        console.error('=== FUNCTION INVOCATION ERROR ===');
+        console.error('Error details:', checkError);
+        throw checkError;
       }
 
-      if (user?.has_paid === true) {
+      if (checkResult?.hasValidPayment) {
         console.log('✅ Valid payment found!');
         setHasValidPayment(true);
         toast({
@@ -118,20 +118,18 @@ export const usePaymentVerification = () => {
       console.log('=== CONFIRMING PAYMENT COMPLETION ===');
       console.log('User ID:', userId);
       
-      const { data: user, error: userError } = await supabase
-        .from('users')
-        .select('id, email, has_paid')
-        .eq('id', userId)
-        .single();
+      const { data: checkResult, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      console.log('Existing payment check result:', { user, userError });
+      console.log('Existing payment check result:', { checkResult, checkError });
 
-      if (userError) {
-        console.error('Error checking existing payment:', userError);
-        throw userError;
+      if (checkError) {
+        console.error('Error checking existing payment:', checkError);
+        throw checkError;
       }
 
-      if (user?.has_paid === true) {
+      if (checkResult?.hasValidPayment) {
         console.log('Valid payment already exists, granting access');
         setHasValidPayment(true);
         
