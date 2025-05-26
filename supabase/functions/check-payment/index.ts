@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== PAYMENT CHECK WITH DATABASE FUNCTION ===')
+    console.log('=== PAYMENT CHECK WITH SERVICE ROLE ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -72,18 +72,20 @@ serve(async (req) => {
       }
     })
 
-    console.log('Calling get_user_payments function...')
-    console.log('Function parameters: p_user_id =', user_id)
+    console.log('Querying payments table directly with service role...')
     
-    // Use the database function with service role
-    const { data: payments, error } = await supabase.rpc('get_user_payments', {
-      p_user_id: user_id
-    })
+    // Direct table access using service role - this bypasses RLS completely
+    const { data: payments, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
     
-    console.log('Function call result:', { payments, error })
+    console.log('Direct table query result:', { payments, error })
 
     if (error) {
-      console.error('Database Function Error:', error)
+      console.error('Database Error:', error)
       
       return new Response(
         JSON.stringify({ 
@@ -117,7 +119,7 @@ serve(async (req) => {
         paymentCount: paymentCount,
         payments: payments,
         debugInfo: {
-          functionUsed: 'get_user_payments',
+          accessMethod: 'service_role_direct_access',
           userIdReceived: user_id,
           totalRecordsFound: paymentCount
         }
