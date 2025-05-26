@@ -20,8 +20,10 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== DIRECT CLIENT PAYMENT CHECK ===');
+      console.log('=== ENHANCED PAYMENT DEBUG ===');
       console.log('User ID to check:', userId);
+      console.log('User ID type:', typeof userId);
+      console.log('User ID length:', userId?.length);
       
       // Check if user came back from PayPal
       const urlParams = new URLSearchParams(window.location.search);
@@ -59,28 +61,52 @@ export const usePaymentVerification = () => {
         }
       }
 
-      // Direct query to payments table using regular client (not service role)
-      console.log('=== DIRECT PAYMENTS TABLE CHECK ===');
+      // First, let's see ALL payments in the table (for debugging)
+      console.log('=== CHECKING ALL PAYMENTS FOR DEBUG ===');
       
-      const { data: payments, error: paymentError } = await supabase
+      const { data: allPayments, error: allPaymentsError } = await supabase
         .from('payments')
-        .select('id, user_id, amount, currency, status, created_at')
+        .select('*');
+      
+      console.log('All payments in table:', allPayments);
+      console.log('All payments error:', allPaymentsError);
+      
+      // Now check specific user payments
+      console.log('=== CHECKING USER SPECIFIC PAYMENTS ===');
+      
+      const { data: userPayments, error: userPaymentsError } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('user_id', userId);
+      
+      console.log('User payments (all statuses):', userPayments);
+      console.log('User payments error:', userPaymentsError);
+      
+      // Check successful payments only
+      console.log('=== CHECKING SUCCESSFUL PAYMENTS ===');
+      
+      const { data: successfulPayments, error: successfulError } = await supabase
+        .from('payments')
+        .select('*')
         .eq('user_id', userId)
-        .eq('status', 'success')
-        .order('created_at', { ascending: false });
+        .eq('status', 'success');
+      
+      console.log('Successful payments:', successfulPayments);
+      console.log('Successful payments error:', successfulError);
 
-      console.log('=== PAYMENTS QUERY RESULT ===');
-      console.log('Error:', paymentError);
-      console.log('Data:', payments);
-      console.log('Payments count:', payments?.length || 0);
+      // Check current user info
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      console.log('Current auth user:', user);
+      console.log('Auth user error:', userError);
+      console.log('Auth user ID matches?', user?.id === userId);
 
-      if (paymentError) {
+      if (successfulError) {
         console.error('=== PAYMENT QUERY ERROR ===');
-        console.error('Error details:', paymentError);
-        throw paymentError;
+        console.error('Error details:', successfulError);
+        throw successfulError;
       }
 
-      const hasPayment = payments && payments.length > 0;
+      const hasPayment = successfulPayments && successfulPayments.length > 0;
       
       if (hasPayment) {
         console.log('✅ Valid payment found!');
@@ -91,6 +117,8 @@ export const usePaymentVerification = () => {
         });
       } else {
         console.log('❌ No valid payment found');
+        console.log('Total payments for user:', userPayments?.length || 0);
+        console.log('Successful payments for user:', successfulPayments?.length || 0);
         setHasValidPayment(false);
       }
       
