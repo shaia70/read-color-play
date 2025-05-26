@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== DIRECT TABLE ACCESS PAYMENT CHECK ===')
+    console.log('=== PAYMENT CHECK WITH DATABASE FUNCTION ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -72,20 +72,18 @@ serve(async (req) => {
       }
     })
 
-    console.log('Direct table query...')
+    console.log('Calling get_user_payments function...')
+    console.log('Function parameters: p_user_id =', user_id)
     
-    // Try direct table access with service role
-    const { data: payments, error } = await supabase
-      .from('payments')
-      .select('*')
-      .eq('user_id', user_id)
-      .eq('status', 'success')
-      .order('created_at', { ascending: false })
+    // Use the database function with service role
+    const { data: payments, error } = await supabase.rpc('get_user_payments', {
+      p_user_id: user_id
+    })
     
-    console.log('Direct table query result:', { payments, error })
+    console.log('Function call result:', { payments, error })
 
     if (error) {
-      console.error('Database Error:', error)
+      console.error('Database Function Error:', error)
       
       return new Response(
         JSON.stringify({ 
@@ -111,6 +109,7 @@ serve(async (req) => {
     console.log('=== FINAL RESULT ===')
     console.log('Has payment:', hasPayment)
     console.log('Payment count:', paymentCount)
+    console.log('Payments found:', payments)
 
     return new Response(
       JSON.stringify({ 
@@ -118,7 +117,7 @@ serve(async (req) => {
         paymentCount: paymentCount,
         payments: payments,
         debugInfo: {
-          accessMethod: 'direct_table_access',
+          functionUsed: 'get_user_payments',
           userIdReceived: user_id,
           totalRecordsFound: paymentCount
         }
