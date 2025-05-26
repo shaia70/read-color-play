@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== PAYMENT CHECK WITH SQL QUERY ===')
+    console.log('=== PAYMENT CHECK FROM USERS TABLE ===')
     console.log('Environment variables:')
     console.log('SUPABASE_URL:', supabaseUrl ? 'EXISTS' : 'MISSING')
     console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'EXISTS (length: ' + supabaseServiceKey.length + ')' : 'MISSING')
@@ -72,72 +72,54 @@ serve(async (req) => {
       }
     })
 
-    console.log('Using SQL query to check payments...')
+    console.log('Checking has_paid field in users table...')
     
-    // Use a raw SQL query with service role to bypass the schema issue
-    const { data: payments, error } = await supabase
-      .rpc('exec_sql', {
-        query: `
-          SELECT id, user_id, paypal_transaction_id, amount, currency, status, created_at, updated_at
-          FROM public.payments 
-          WHERE user_id = $1 AND status = 'success'
-          ORDER BY created_at DESC
-        `,
-        params: [user_id]
-      })
+    // Check the has_paid field in users table
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, email, has_paid')
+      .eq('id', user_id)
+      .single()
     
-    console.log('SQL query result:', { payments, error })
+    console.log('Users table query result:', { user, error })
 
     if (error) {
-      console.error('SQL Query Error:', error)
-      
-      // If SQL approach fails, try a simpler approach - just return success for testing
-      console.log('SQL approach failed, returning test response')
+      console.error('Users Table Query Error:', error)
       
       return new Response(
         JSON.stringify({ 
-          hasValidPayment: true, // For testing - assume payment exists
-          paymentCount: 1,
-          payments: [{
-            id: 'test-payment',
-            user_id: user_id,
-            paypal_transaction_id: 'test-transaction',
-            amount: 70,
-            currency: 'ILS',
-            status: 'success',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }],
-          debugInfo: {
-            accessMethod: 'fallback_test_mode',
-            userIdReceived: user_id,
-            note: 'Schema access issue - using test mode'
+          hasValidPayment: false,
+          paymentCount: 0,
+          error: 'Failed to check user payment status',
+          errorDetails: {
+            code: error.code,
+            message: error.message
           }
         }),
         { 
-          status: 200,
+          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
     }
 
-    const hasPayment = payments && payments.length > 0
-    const paymentCount = payments?.length || 0
-
+    const hasPayment = user?.has_paid === true
+    
     console.log('=== FINAL RESULT ===')
+    console.log('User found:', !!user)
     console.log('Has payment:', hasPayment)
-    console.log('Payment count:', paymentCount)
-    console.log('Payments found:', payments)
+    console.log('User data:', user)
 
     return new Response(
       JSON.stringify({ 
         hasValidPayment: hasPayment,
-        paymentCount: paymentCount,
-        payments: payments,
+        paymentCount: hasPayment ? 1 : 0,
+        user: user,
         debugInfo: {
-          accessMethod: 'sql_query_direct',
+          accessMethod: 'users_table_has_paid_field',
           userIdReceived: user_id,
-          totalRecordsFound: paymentCount
+          userFound: !!user,
+          hasPaidValue: user?.has_paid
         }
       }),
       { 
