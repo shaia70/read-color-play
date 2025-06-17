@@ -20,10 +20,8 @@ export const usePaymentVerification = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('=== ENHANCED PAYMENT DEBUG ===');
+      console.log('=== PAYMENT CHECK VIA EDGE FUNCTION ===');
       console.log('User ID to check:', userId);
-      console.log('User ID type:', typeof userId);
-      console.log('User ID length:', userId?.length);
       
       // Check if user came back from PayPal
       const urlParams = new URLSearchParams(window.location.search);
@@ -61,64 +59,34 @@ export const usePaymentVerification = () => {
         }
       }
 
-      // First, let's see ALL payments in the table (for debugging)
-      console.log('=== CHECKING ALL PAYMENTS FOR DEBUG ===');
+      // Use Edge Function to check payment status
+      console.log('Checking payment status via Edge Function...');
       
-      const { data: allPayments, error: allPaymentsError } = await supabase
-        .from('payments')
-        .select('*');
-      
-      console.log('All payments in table:', allPayments);
-      console.log('All payments error:', allPaymentsError);
-      
-      // Now check specific user payments
-      console.log('=== CHECKING USER SPECIFIC PAYMENTS ===');
-      
-      const { data: userPayments, error: userPaymentsError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId);
-      
-      console.log('User payments (all statuses):', userPayments);
-      console.log('User payments error:', userPaymentsError);
-      
-      // Check successful payments only
-      console.log('=== CHECKING SUCCESSFUL PAYMENTS ===');
-      
-      const { data: successfulPayments, error: successfulError } = await supabase
-        .from('payments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('status', 'success');
-      
-      console.log('Successful payments:', successfulPayments);
-      console.log('Successful payments error:', successfulError);
+      const { data: result, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      // Check current user info
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      console.log('Current auth user:', user);
-      console.log('Auth user error:', userError);
-      console.log('Auth user ID matches?', user?.id === userId);
+      console.log('Edge Function result:', { result, checkError });
 
-      if (successfulError) {
-        console.error('=== PAYMENT QUERY ERROR ===');
-        console.error('Error details:', successfulError);
-        throw successfulError;
+      if (checkError) {
+        console.error('Error calling check-payment function:', checkError);
+        throw checkError;
       }
 
-      const hasPayment = successfulPayments && successfulPayments.length > 0;
+      const hasPayment = result?.hasValidPayment === true;
       
       if (hasPayment) {
-        console.log('✅ Valid payment found!');
+        console.log('✅ Valid payment found via Edge Function!');
+        console.log('Payment count:', result?.paymentCount || 0);
         setHasValidPayment(true);
+        
         toast({
           title: language === 'he' ? 'תשלום נמצא' : 'Payment found',
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
       } else {
         console.log('❌ No valid payment found');
-        console.log('Total payments for user:', userPayments?.length || 0);
-        console.log('Successful payments for user:', successfulPayments?.length || 0);
+        console.log('Payment count:', result?.paymentCount || 0);
         setHasValidPayment(false);
       }
       
@@ -146,28 +114,25 @@ export const usePaymentVerification = () => {
   const confirmPaymentCompletion = async (userId: string) => {
     try {
       setIsLoading(true);
-      console.log('=== CONFIRMING PAYMENT COMPLETION ===');
+      console.log('=== CONFIRMING PAYMENT VIA EDGE FUNCTION ===');
       console.log('User ID:', userId);
       
-      // Use direct client query instead of edge function
-      const { data: payments, error: paymentError } = await supabase
-        .from('payments')
-        .select('id, user_id, amount, currency, status, created_at')
-        .eq('user_id', userId)
-        .eq('status', 'success')
-        .order('created_at', { ascending: false });
+      // Use Edge Function for payment confirmation
+      const { data: result, error: checkError } = await supabase.functions.invoke('check-payment', {
+        body: { user_id: userId }
+      });
 
-      console.log('Direct payment check result:', { payments, paymentError });
+      console.log('Payment confirmation result:', { result, checkError });
 
-      if (paymentError) {
-        console.error('Error checking existing payment:', paymentError);
-        throw paymentError;
+      if (checkError) {
+        console.error('Error confirming payment:', checkError);
+        throw checkError;
       }
 
-      const hasPayment = payments && payments.length > 0;
+      const hasPayment = result?.hasValidPayment === true;
 
       if (hasPayment) {
-        console.log('Valid payment already exists, granting access');
+        console.log('Valid payment confirmed via Edge Function');
         setHasValidPayment(true);
         
         toast({
@@ -209,7 +174,7 @@ export const usePaymentVerification = () => {
 
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
     try {
-      console.log('=== RECORDING PAYMENT ===');
+      console.log('=== RECORDING PAYMENT VIA EDGE FUNCTION ===');
       console.log('User ID for payment:', userId);
       console.log('Session ID:', sessionId);
       console.log('Amount:', amount);
