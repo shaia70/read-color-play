@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -21,7 +22,7 @@ import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import Flipbook from "./pages/Flipbook";
 
-// Simple scroll restoration
+// Scroll restoration and analytics tracking component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   
@@ -33,14 +34,8 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-    },
-  });
+  // Create a new QueryClient instance within the component
+  const queryClient = new QueryClient();
   
   return (
     <QueryClientProvider client={queryClient}>
