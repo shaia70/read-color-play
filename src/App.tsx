@@ -34,40 +34,13 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
-  // Create a new QueryClient instance within the component
-  const queryClient = new QueryClient();
+  console.log('App component rendering...');
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AnalyticsProvider>
-                <ScrollToTop />
-                <AnimatePresence mode="wait">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/books" element={<Books />} />
-                    <Route path="/technology" element={<Technology />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/concept" element={<Concept />} />
-                    <Route path="/download" element={<Download />} />
-                    <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/flipbook" element={<Flipbook />} />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/admin-statistics" element={<Statistics />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </AnimatePresence>
-              </AnalyticsProvider>
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </QueryClientProvider>
+    <div style={{ padding: '20px', color: 'black', backgroundColor: 'white' }}>
+      <h1>Hello World - בדיקה</h1>
+      <p>If you can see this, the app is working!</p>
+    </div>
   );
 };
 
