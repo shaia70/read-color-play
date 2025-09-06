@@ -98,8 +98,8 @@ export default function AccessibilityMenu() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             className={cn(
-              "absolute top-full z-50 mt-2 min-w-[320px] w-max max-w-sm rounded-lg border bg-card p-4 shadow-lg",
-              isRTL ? "right-0" : "left-0"
+              "absolute top-full z-50 mt-2 min-w-[300px] w-max max-w-xs rounded-lg border bg-card p-4 shadow-lg",
+              isRTL ? "left-0" : "right-0"
             )}
           >
             <div className="space-y-4">
