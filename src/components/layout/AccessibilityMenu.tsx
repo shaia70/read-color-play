@@ -98,8 +98,9 @@ export default function AccessibilityMenu() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             className={cn(
-              "absolute top-full z-50 mt-2 min-w-[300px] w-max max-w-xs rounded-lg border bg-card p-4 shadow-lg",
-              isRTL ? "left-0" : "right-0"
+              "absolute top-full z-50 mt-2 min-w-[280px] w-max max-w-xs rounded-lg border bg-card p-4 shadow-lg",
+              // In Hebrew (RTL), menu opens to the right, in English (LTR) to the left
+              isRTL ? "right-0 origin-top-right" : "left-0 origin-top-left"
             )}
           >
             <div className="space-y-4">
