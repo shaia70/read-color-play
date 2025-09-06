@@ -98,7 +98,7 @@ export default function AccessibilityMenu() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             className={cn(
-              "absolute top-full z-50 mt-2 w-80 rounded-lg border bg-card p-4 shadow-lg",
+              "absolute top-full z-50 mt-2 min-w-[320px] w-max max-w-sm rounded-lg border bg-card p-4 shadow-lg",
               isRTL ? "left-0" : "right-0"
             )}
           >
