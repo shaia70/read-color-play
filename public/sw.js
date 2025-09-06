@@ -26,6 +26,11 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache if available, otherwise fetch from network
 self.addEventListener('fetch', event => {
+  // Skip non-http requests (chrome-extension, etc.)
+  if (!event.request.url.startsWith('http')) {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -47,10 +52,20 @@ self.addEventListener('fetch', event => {
             
             caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
+                // Only cache http/https requests
+                if (event.request.url.startsWith('http')) {
+                  cache.put(event.request, responseToCache).catch(err => {
+                    console.log('Failed to cache:', event.request.url, err);
+                  });
+                }
               });
               
             return networkResponse;
+          })
+          .catch(err => {
+            console.log('Fetch failed:', event.request.url, err);
+            // Return a fallback response or just let it fail
+            throw err;
           });
       })
   );
