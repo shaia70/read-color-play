@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, Type, Contrast, Zap, Keyboard } from "lucide-react";
+import { Accessibility, Type, Contrast, Zap, Keyboard, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ export default function AccessibilityMenu() {
     {
       id: 'images',
       label: isRTL ? 'הסתר תמונות' : 'Hide Images',
-      icon: <Eye className="h-4 w-4" />,
+      icon: <EyeOff className="h-4 w-4" />,
       type: 'toggle',
       active: hideImages,
       action: toggleHideImages
@@ -88,7 +88,7 @@ export default function AccessibilityMenu() {
         aria-label={isRTL ? "פתח תפריט נגישות" : "Open accessibility menu"}
         aria-expanded={isOpen}
       >
-        <Eye className="h-4 w-4" />
+        <Accessibility className="h-4 w-4" />
       </Button>
 
       <AnimatePresence>
@@ -99,7 +99,7 @@ export default function AccessibilityMenu() {
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             className={cn(
               "absolute top-full z-50 mt-2 w-80 rounded-lg border bg-card p-4 shadow-lg",
-              isRTL ? "right-0" : "left-0"
+              isRTL ? "left-0" : "right-0"
             )}
           >
             <div className="space-y-4">
@@ -111,7 +111,7 @@ export default function AccessibilityMenu() {
 
               {accessibilityItems.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                  <div className={cn("flex items-center", isRTL ? "space-x-reverse space-x-2" : "space-x-2")}>
                     {item.icon}
                     <span className="text-sm font-medium">{item.label}</span>
                   </div>
