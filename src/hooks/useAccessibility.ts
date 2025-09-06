@@ -22,12 +22,19 @@ export function useAccessibility() {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
     if (typeof window === 'undefined') return DEFAULT_SETTINGS;
     
-    const saved = localStorage.getItem('accessibility-settings');
-    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+    try {
+      const saved = localStorage.getItem('accessibility-settings');
+      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+    } catch (error) {
+      console.warn('Failed to load accessibility settings:', error);
+      return DEFAULT_SETTINGS;
+    }
   });
 
   // Apply settings to document
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const root = document.documentElement;
     
     // Font size
@@ -53,15 +60,21 @@ export function useAccessibility() {
     root.setAttribute('data-keyboard-navigation', settings.keyboardNavigation.toString());
     
     // Respect system preference for reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion || settings.reduceAnimations) {
-      root.classList.add('reduce-motion');
-    } else {
-      root.classList.remove('reduce-motion');
+    if (typeof window !== 'undefined') {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion || settings.reduceAnimations) {
+        root.classList.add('reduce-motion');
+      } else {
+        root.classList.remove('reduce-motion');
+      }
     }
     
     // Save to localStorage
-    localStorage.setItem('accessibility-settings', JSON.stringify(settings));
+    try {
+      localStorage.setItem('accessibility-settings', JSON.stringify(settings));
+    } catch (error) {
+      console.warn('Failed to save accessibility settings:', error);
+    }
   }, [settings]);
 
   const updateSetting = <K extends keyof AccessibilitySettings>(
