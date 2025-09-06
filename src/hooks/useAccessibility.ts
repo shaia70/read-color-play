@@ -19,21 +19,27 @@ const DEFAULT_SETTINGS: AccessibilitySettings = {
 };
 
 export function useAccessibility() {
-  const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    if (typeof window === 'undefined') return DEFAULT_SETTINGS;
+  const [settings, setSettings] = useState<AccessibilitySettings>(DEFAULT_SETTINGS);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure we're on the client side
+  useEffect(() => {
+    setIsClient(true);
     
+    // Load settings from localStorage only on client
     try {
       const saved = localStorage.getItem('accessibility-settings');
-      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+      if (saved) {
+        setSettings(JSON.parse(saved));
+      }
     } catch (error) {
       console.warn('Failed to load accessibility settings:', error);
-      return DEFAULT_SETTINGS;
     }
-  });
+  }, []);
 
-  // Apply settings to document
+  // Apply settings to document only on client
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!isClient) return;
     
     const root = document.documentElement;
     
@@ -60,13 +66,11 @@ export function useAccessibility() {
     root.setAttribute('data-keyboard-navigation', settings.keyboardNavigation.toString());
     
     // Respect system preference for reduced motion
-    if (typeof window !== 'undefined') {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion || settings.reduceAnimations) {
-        root.classList.add('reduce-motion');
-      } else {
-        root.classList.remove('reduce-motion');
-      }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || settings.reduceAnimations) {
+      root.classList.add('reduce-motion');
+    } else {
+      root.classList.remove('reduce-motion');
     }
     
     // Save to localStorage
@@ -75,7 +79,7 @@ export function useAccessibility() {
     } catch (error) {
       console.warn('Failed to save accessibility settings:', error);
     }
-  }, [settings]);
+  }, [settings, isClient]);
 
   const updateSetting = <K extends keyof AccessibilitySettings>(
     key: K,
