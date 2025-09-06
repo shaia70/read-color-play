@@ -27,7 +27,7 @@ if ('serviceWorker' in navigator) {
       }
       
         // Register the new service worker with updated version
-        navigator.serviceWorker.register('/sw.js?v=16', { 
+        navigator.serviceWorker.register('/sw.js?v=17', { 
           scope: '/' 
         }).then(registration => {
         console.log('Service worker registered successfully:', registration);

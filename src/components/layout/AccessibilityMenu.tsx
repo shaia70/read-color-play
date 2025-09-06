@@ -99,7 +99,7 @@ export default function AccessibilityMenu() {
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             className={cn(
               "absolute top-full z-50 mt-2 min-w-[320px] w-max max-w-sm rounded-lg border bg-card p-4 shadow-lg",
-              isRTL ? "left-0" : "right-0"
+              isRTL ? "right-0" : "left-0"
             )}
           >
             <div className="space-y-4">
