@@ -37,6 +37,13 @@
 
     --radius: 1rem;
 
+    /* Shelley color palette in HSL */
+    --shelley-blue: 217 57% 56%;
+    --shelley-orange: 26 100% 65%;
+    --shelley-red: 358 60% 62%;
+    --shelley-green: 97 44% 49%;
+    --shelley-purple: 274 45% 60%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
