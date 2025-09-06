@@ -8,18 +8,15 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    historyApiFallback: true,
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: undefined,
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
       },
     },
   },
