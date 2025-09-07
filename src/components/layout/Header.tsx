@@ -116,13 +116,13 @@ export default function Header() {
             </Link>
           ))}
           
-          <div className={cn("flex items-center", language === 'he' ? "mr-2 space-x-reverse space-x-2" : "ml-2 space-x-2")}>
+          <div className={language === 'he' ? "mr-2" : "ml-2"}>
             <LanguageSwitcher />
           </div>
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className={cn("md:hidden flex items-center", language === 'he' ? "space-x-reverse space-x-2" : "space-x-2")}>
+        <div className="md:hidden flex items-center space-x-2">
           <LanguageSwitcher />
           <button
             className="flex items-center text-gray-700"
