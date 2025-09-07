@@ -3,35 +3,52 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PayPalCheckoutProps {
   amount: number;
   onSuccess: () => void;
   onCancel: () => void;
+  onConfirmPayment: (userId: string) => Promise<void>;
 }
 
-const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) => {
+const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [isProcessing, setIsProcessing] = useState(false);
   const isHebrew = language === 'he';
 
-  // יצירת return URL שמחזיר לעמוד הפליפבוק
   const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
   const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
   
-  // לינק PayPal עם return URLs
   const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
 
   const handlePayPalClick = () => {
-    // פתיחת לינק PayPal בחלון חדש
     window.open(paypalLink, '_blank');
-    
-    // הצגת הודעה למשתמש
-    console.log("Opening PayPal payment link with return URL");
+    console.log("Opening PayPal payment link");
   };
 
-  const handlePaymentConfirmation = () => {
-    // כאן המשתמש מאשר שהוא ביצע את התשלום
-    onSuccess();
+  const handlePaymentConfirmation = async () => {
+    if (!user?.id) {
+      console.error('No user ID available');
+      alert(isHebrew ? 'לא נמצא משתמש מחובר' : 'No user logged in');
+      return;
+    }
+
+    setIsProcessing(true);
+    console.log('=== MANUAL PAYMENT CONFIRMATION ===');
+    console.log('User ID:', user.id);
+    
+    try {
+      await onConfirmPayment(user.id);
+      onSuccess();
+      
+    } catch (err) {
+      console.error('Confirmation error:', err);
+      // Don't show generic alert, the hook will show appropriate toast messages
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -43,7 +60,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
         
         <div className="text-center mb-6">
           <div className="text-3xl font-bold text-shelley-green mb-2">
-            ${amount}
+            {amount} ₪
           </div>
           <p className="text-gray-600">
             {isHebrew 
@@ -67,8 +84,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
           <div className="border-t pt-4">
             <p className="text-sm text-gray-600 mb-3 text-center">
               {isHebrew 
-                ? "או לחץ כאן אם כבר השלמת את התשלום:"
-                : "Or click here if you've already completed payment:"
+                ? "רק אם השלמת תשלום ב-PayPal:"
+                : "Only if you completed payment via PayPal:"
               }
             </p>
             
@@ -78,8 +95,12 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
               icon={<CreditCard className="w-6 h-6" />} 
               className="w-full text-base py-3 h-14 min-h-0 font-bold"
               onClick={handlePaymentConfirmation}
+              disabled={isProcessing}
             >
-              {isHebrew ? "אישור השלמת התשלום" : "Confirm Payment Completed"}
+              {isProcessing 
+                ? (isHebrew ? "בודק..." : "Checking...")
+                : (isHebrew ? "בדיקת תשלום במערכת" : "Check Payment in System")
+              }
             </CustomButton>
           </div>
         </div>
@@ -91,11 +112,11 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel }: PayPalCheckoutProps) =>
           {isHebrew ? "ביטול" : "Cancel"}
         </button>
 
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm text-amber-800">
             {isHebrew 
-              ? "💡 לאחר התשלום תועבר אוטומטית חזרה לעמוד זה. אם זה לא קורה, לחץ על 'אישור השלמת התשלום'"
-              : "💡 After payment you'll be automatically redirected back to this page. If not, click 'Confirm Payment Completed'"
+              ? "⚠️ הכפתור 'בדיקת תשלום במערכת' רק בודק אם יש תשלום קיים - הוא לא יוצר תשלום חדש!"
+              : "⚠️ The 'Check Payment in System' button only verifies existing payments - it doesn't create new ones!"
             }
           </p>
         </div>

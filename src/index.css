@@ -37,6 +37,13 @@
 
     --radius: 1rem;
 
+    /* Shelley color palette in HSL */
+    --shelley-blue: 217 57% 56%;
+    --shelley-orange: 26 100% 65%;
+    --shelley-red: 358 60% 62%;
+    --shelley-green: 97 44% 49%;
+    --shelley-purple: 274 45% 60%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -92,6 +99,65 @@
 }
 
 @layer utilities {
+  /* Accessibility classes */
+  [data-font-size="small"] {
+    font-size: 14px;
+  }
+
+  [data-font-size="normal"] {
+    font-size: 16px;
+  }
+
+  [data-font-size="large"] {
+    font-size: 18px;
+  }
+
+  [data-font-size="extra-large"] {
+    font-size: 22px;
+  }
+
+  [data-high-contrast="true"] {
+    filter: contrast(200%);
+  }
+
+  [data-high-contrast="true"] * {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+  }
+
+  [data-hide-images="true"] img {
+    opacity: 0.1;
+    filter: blur(2px);
+  }
+
+  [data-keyboard-navigation="true"] *:focus {
+    outline: 3px solid hsl(var(--primary)) !important;
+    outline-offset: 2px !important;
+  }
+
+  .reduce-motion,
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Respect system preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   .font-heebo {
     font-family: 'Heebo', sans-serif;
   }
