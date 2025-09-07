@@ -59,11 +59,11 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				shelley: {
-					blue: '#5b87c7',
-					orange: '#ff9e4f',
-					red: '#e36162',
-					green: '#67b346',
-					purple: '#9d65c9'
+					blue: 'hsl(var(--shelley-blue))',
+					orange: 'hsl(var(--shelley-orange))',
+					red: 'hsl(var(--shelley-red))',
+					green: 'hsl(var(--shelley-green))',
+					purple: 'hsl(var(--shelley-purple))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
