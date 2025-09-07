@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Logo from "./Logo";
-import AccessibilityMenu from "./AccessibilityMenu";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -117,15 +116,13 @@ export default function Header() {
             </Link>
           ))}
           
-          <div className={cn("flex items-center", language === 'he' ? "mr-2 space-x-reverse space-x-2" : "ml-2 space-x-2")}>
-            <AccessibilityMenu />
+          <div className={language === 'he' ? "mr-2" : "ml-2"}>
             <LanguageSwitcher />
           </div>
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className={cn("md:hidden flex items-center", language === 'he' ? "space-x-reverse space-x-2" : "space-x-2")}>
-          <AccessibilityMenu />
+        <div className="md:hidden flex items-center space-x-2">
           <LanguageSwitcher />
           <button
             className="flex items-center text-gray-700"
