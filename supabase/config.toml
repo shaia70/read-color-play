@@ -1,1 +1,46 @@
 project_id = "pahqikhckqjujbhvqnyb"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
+
+[storage]
+enabled = true
+port = 54327
+image_transformation = { enabled = true }
+
+[auth]
+enabled = true
+port = 54328
+
+[edge-functions]
+enabled = true
+port = 54329
+
+[[edge-functions.function]]
+name = "check-payment"
+verify_jwt = false
+
+[[edge-functions.function]]
+name = "record-payment"
+verify_jwt = false
+
+[[edge-functions.function]]
+name = "session-security"
+verify_jwt = false

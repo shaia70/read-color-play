@@ -5,13 +5,14 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Lock, Eye, CreditCard, LogOut, RefreshCw } from "lucide-react";
+import { Lock, Eye, CreditCard, LogOut, RefreshCw, Shield } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import { ActiveSessions } from "@/components/security/ActiveSessions";
 
 const Flipbook = () => {
   const { t, language } = useLanguage();
@@ -172,6 +173,12 @@ const Flipbook = () => {
               {isHebrew ? 'יציאה' : 'Logout'}
             </CustomButton>
           </div>
+
+          {hasValidPayment && (
+            <div className="mb-6">
+              <ActiveSessions />
+            </div>
+          )}
 
           {!hasValidPayment ? (
             <div className="text-center mb-16">
