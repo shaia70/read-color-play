@@ -93,7 +93,7 @@ const FlipbookViewer: React.FC = () => {
   };
 
   const zoomOut = () => {
-    if (zoom > 0.5) {
+    if (zoom > 1) {
       setZoom(zoom - 0.25);
     }
   };
