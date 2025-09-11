@@ -12,6 +12,7 @@ import FlipbookViewer from "@/components/flipbook/FlipbookViewer";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import CouponInput from "@/components/flipbook/CouponInput";
 import { ActiveSessions } from "@/components/security/ActiveSessions";
 
 const Flipbook = () => {
@@ -209,6 +210,13 @@ const Flipbook = () => {
                   </p>
                 </div>
               )}
+              
+              <CouponInput 
+                userId={user.id}
+                onSuccess={() => {
+                  checkPaymentStatus(user.id);
+                }}
+              />
               
               <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">
                 
