@@ -81,8 +81,18 @@ serve(async (req) => {
     
     console.log('Database function result:', { payments, error })
 
-    if (error) {
-      console.error('Database Function Error:', error)
+    // Also check user has_paid status for coupon redemptions
+    console.log('Checking user has_paid status...')
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('has_paid, access_expires_at')
+      .eq('id', user_id)
+      .single()
+    
+    console.log('User data result:', { userData, userError })
+
+    if (error && userError) {
+      console.error('Both payment and user queries failed:', { error, userError })
       
       return new Response(
         JSON.stringify({ 
@@ -90,8 +100,8 @@ serve(async (req) => {
           paymentCount: 0,
           error: 'Failed to check payment status',
           errorDetails: {
-            code: error.code,
-            message: error.message
+            paymentError: error?.message,
+            userError: userError?.message
           }
         }),
         { 
@@ -101,23 +111,33 @@ serve(async (req) => {
       )
     }
 
-    const hasPayment = payments && payments.length > 0
+    // Check if user has paid (either through payment or coupon)
+    const hasPaymentRecord = payments && payments.length > 0
+    const hasPaidStatus = userData?.has_paid && (!userData?.access_expires_at || new Date(userData.access_expires_at) > new Date())
+    const hasValidAccess = hasPaymentRecord || hasPaidStatus
     
     console.log('=== FINAL RESULT ===')
     console.log('Payments found:', payments?.length || 0)
-    console.log('Has payment:', hasPayment)
+    console.log('Has payment record:', hasPaymentRecord)
+    console.log('Has paid status:', hasPaidStatus)
+    console.log('Access expires at:', userData?.access_expires_at)
+    console.log('Has valid access:', hasValidAccess)
     console.log('Payment data:', payments)
 
     return new Response(
       JSON.stringify({ 
-        hasValidPayment: hasPayment,
+        hasValidPayment: hasValidAccess,
         paymentCount: payments?.length || 0,
-        payments: payments,
+        payments: payments || [],
         debugInfo: {
           accessMethod: 'database_function_get_user_payments',
           userIdReceived: user_id,
           paymentsFound: payments?.length || 0,
-          paymentsData: payments
+          paymentsData: payments || [],
+          userHasPaid: userData?.has_paid,
+          accessExpiresAt: userData?.access_expires_at,
+          hasPaymentRecord: hasPaymentRecord,
+          hasPaidStatus: hasPaidStatus
         }
       }),
       { 
