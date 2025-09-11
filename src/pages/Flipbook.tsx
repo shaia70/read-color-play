@@ -258,7 +258,7 @@ const Flipbook = () => {
                 </div>
                 
                 <div className="text-3xl font-bold text-shelley-green mb-6">
-                  60 ₪
+                  {bookPrice}
                 </div>
                 
                 {!showPayment ? (
