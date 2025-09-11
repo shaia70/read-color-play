@@ -99,7 +99,7 @@ const FlipbookViewer: React.FC = () => {
   };
 
   const resetZoom = () => {
-    setZoom(1);
+    setZoom(2);
   };
 
   useEffect(() => {
