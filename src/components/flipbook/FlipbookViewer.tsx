@@ -681,8 +681,8 @@ const FlipbookViewer: React.FC = () => {
           variant="ghost"
           size="lg"
           className="bg-white/80 hover:bg-white shadow-lg"
-          onClick={isHebrew ? nextPage : prevPage}
-          disabled={isHebrew ? currentPage >= BOOK_PAGES.length - 1 : currentPage <= 0}
+          onClick={prevPage}
+          disabled={currentPage <= 0}
           icon={<ChevronLeft className="w-6 h-6" />}
         >
           {isHebrew ? "הקודם" : "Previous"}
@@ -692,8 +692,8 @@ const FlipbookViewer: React.FC = () => {
           variant="ghost"
           size="lg"
           className="bg-white/80 hover:bg-white shadow-lg"
-          onClick={isHebrew ? prevPage : nextPage}
-          disabled={isHebrew ? currentPage <= 0 : currentPage >= BOOK_PAGES.length - 1}
+          onClick={nextPage}
+          disabled={currentPage >= BOOK_PAGES.length - 1}
           icon={<ChevronRight className="w-6 h-6" />}
         >
           {isHebrew ? "הבא" : "Next"}
