@@ -2,7 +2,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
-import { useSessionSecurity } from './useSessionSecurity';
 import { toast } from './use-toast';
 
 interface AuthUser {
@@ -42,7 +41,6 @@ export const useAuthProvider = (): AuthContextType => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { createSession, validateSession, destroySession, hasValidSession } = useSessionSecurity();
 
   useEffect(() => {
     // Set up auth state listener
@@ -52,51 +50,15 @@ export const useAuthProvider = (): AuthContextType => {
         setSession(session);
         
         if (session?.user) {
-          // Defer user profile fetching to prevent deadlocks
-          setTimeout(async () => {
-            try {
-              // Fetch user profile from our users table
-              const { data: profile, error: profileError } = await supabase
-                .from('users')
-                .select('*')
-                .eq('id', session.user.id)
-                .maybeSingle();
-
-              if (profileError && profileError.code !== 'PGRST116') {
-                console.error('Error fetching user profile:', profileError);
-              }
-
-              const userData: AuthUser = {
-                id: session.user.id,
-                email: session.user.email || '',
-                name: profile?.name || session.user.user_metadata?.name
-              };
-
-              setUser(userData);
-
-              // Validate or create secure session
-              if (event === 'SIGNED_IN') {
-                console.log('User signed in, creating secure session...');
-                await createSession(session.user.id);
-              } else if (hasValidSession) {
-                console.log('Validating existing secure session...');
-                const isValid = await validateSession(session.user.id);
-                if (!isValid) {
-                  console.log('Session validation failed, logging out...');
-                  await supabase.auth.signOut();
-                  return;
-                }
-              }
-            } catch (authError) {
-              console.error('Error in auth state change:', authError);
-            }
-          }, 0);
+          // Simple user data setup without complex session handling
+          const userData: AuthUser = {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.name || session.user.email?.split('@')[0]
+          };
+          setUser(userData);
         } else {
           setUser(null);
-          // Destroy session when user logs out
-          if (event === 'SIGNED_OUT') {
-            await destroySession();
-          }
         }
         
         setIsLoading(false);
@@ -105,13 +67,20 @@ export const useAuthProvider = (): AuthContextType => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        setIsLoading(false);
+      if (session) {
+        const userData: AuthUser = {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.name || session.user.email?.split('@')[0]
+        };
+        setUser(userData);
+        setSession(session);
       }
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [createSession, validateSession, destroySession, hasValidSession]);
+  }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -162,20 +131,17 @@ export const useAuthProvider = (): AuthContextType => {
 
   const logout = async () => {
     try {
-      console.log('Logging out and destroying secure session...');
+      console.log('Logging out...');
       
       setUser(null);
       setSession(null);
       
-      // Destroy secure session first
-      await destroySession();
-      
-      // Then logout from Supabase
+      // Simple logout from Supabase
       await supabase.auth.signOut();
       
       toast({
         title: 'יציאה בוצעה בהצלחה',
-        description: 'הסשן המאובטח הושמד'
+        description: 'התנתקת מהמערכת'
       });
     } catch (error) {
       console.error('Logout error:', error);
