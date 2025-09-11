@@ -41,7 +41,7 @@ const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     pixelConfig.facebookPixelId === 'XXXXXXXXXX';
   
   if (skipTracking) {
-    console.warn('Analytics tracking is disabled: using placeholder IDs. Configure real IDs from the Statistics page.');
+    // Silently skip without warning in development
     return <>{children}</>;
   }
   

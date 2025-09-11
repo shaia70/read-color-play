@@ -44,9 +44,17 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
     document.head.appendChild(noscript);
     
     return () => {
-      // Clean up
-      document.head.removeChild(script);
-      document.head.removeChild(noscript);
+      // Clean up safely
+      try {
+        if (document.head.contains(script)) {
+          document.head.removeChild(script);
+        }
+        if (document.head.contains(noscript)) {
+          document.head.removeChild(noscript);
+        }
+      } catch (error) {
+        console.warn('Error cleaning up Facebook Pixel scripts:', error);
+      }
     };
   }, [pixelId]);
   
@@ -56,12 +64,16 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
       return;
     }
     
-    window.fbq && window.fbq('track', 'PageView', {
-      page_title: document.title,
-      page_location: window.location.href,
-      page_path: location.pathname
-    });
-    console.log('Facebook Pixel page view:', location.pathname);
+    try {
+      window.fbq && window.fbq('track', 'PageView', {
+        page_title: document.title,
+        page_location: window.location.href,
+        page_path: location.pathname
+      });
+      console.log('Facebook Pixel page view:', location.pathname);
+    } catch (error) {
+      console.warn('Facebook Pixel tracking error:', error);
+    }
   }, [location]);
   
   return null;

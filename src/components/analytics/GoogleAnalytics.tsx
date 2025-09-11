@@ -63,16 +63,20 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
       return;
     }
     
-    const pageView = () => {
-      window.gtag && window.gtag('event', 'page_view', {
-        page_title: document.title,
-        page_location: window.location.href,
-        page_path: location.pathname
-      });
-      console.log('Google Analytics page view:', location.pathname);
-    };
-    
-    pageView();
+    try {
+      const pageView = () => {
+        window.gtag && window.gtag('event', 'page_view', {
+          page_title: document.title,
+          page_location: window.location.href,
+          page_path: location.pathname
+        });
+        console.log('Google Analytics page view:', location.pathname);
+      };
+      
+      pageView();
+    } catch (error) {
+      console.warn('Google Analytics tracking error:', error);
+    }
   }, [location]);
   
   return null;
