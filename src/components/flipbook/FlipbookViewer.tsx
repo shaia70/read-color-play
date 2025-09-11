@@ -694,9 +694,11 @@ const FlipbookViewer: React.FC = () => {
           className="bg-white/80 hover:bg-white shadow-lg"
           onClick={nextPage}
           disabled={currentPage >= BOOK_PAGES.length - 1}
-          icon={<ChevronLeft className="w-6 h-6" />}
         >
-          {isHebrew ? "הבא" : "Next"}
+          <span className="flex items-center gap-2">
+            {isHebrew ? "הבא" : "Next"}
+            <ChevronLeft className="w-6 h-6" />
+          </span>
         </CustomButton>
       </div>
 
