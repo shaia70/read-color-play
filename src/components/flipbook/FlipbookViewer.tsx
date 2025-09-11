@@ -617,8 +617,28 @@ const FlipbookViewer: React.FC = () => {
         msUserSelect: 'none'
       } as React.CSSProperties}
     >
-      {/* FlipbookControls */}
+      {/* אזור הפליפבוק */}
+      <div className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center mb-6" style={{ height: '700px' }}>
+        <div 
+          ref={flipbookRef} 
+          className="flipbook-container"
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+        >
+          {getPageContent()}
+        </div>
+      </div>
+
+      {/* FlipbookControls - הועברו לתחתית */}
       <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
+        <div className="text-center">
+          <span className="text-lg font-semibold">
+            {getCurrentPageDisplay()}
+          </span>
+          <span className="text-sm text-gray-500 block">
+            {isHebrew ? `מתוך ${BOOK_PAGES.length}` : `of ${BOOK_PAGES.length}`}
+          </span>
+        </div>
+        
         <div className="flex items-center gap-2">
           <CustomButton
             variant="outline"
@@ -653,48 +673,30 @@ const FlipbookViewer: React.FC = () => {
             {isHebrew ? "איפוס" : "Reset"}
           </CustomButton>
         </div>
-        
-        <div className="text-center">
-          <span className="text-lg font-semibold">
-            {getCurrentPageDisplay()}
-          </span>
-          <span className="text-sm text-gray-500 block">
-            {isHebrew ? `מתוך ${BOOK_PAGES.length}` : `of ${BOOK_PAGES.length}`}
-          </span>
-        </div>
       </div>
 
-      {/* אזור הפליפבוק */}
-      <div className="relative overflow-hidden bg-gray-50 rounded-lg shadow-lg flex justify-center items-center" style={{ height: '700px' }}>
-        <div 
-          ref={flipbookRef} 
-          className="flipbook-container"
-          style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
-        >
-          {getPageContent()}
-        </div>
-        
-        {/* FlipbookNavigation */}
+      {/* FlipbookNavigation - חצי התקדמות */}
+      <div className="flex items-center justify-center gap-4 mb-4">
         <CustomButton
           variant="ghost"
           size="lg"
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg"
+          className="bg-white/80 hover:bg-white shadow-lg"
           onClick={isHebrew ? nextPage : prevPage}
           disabled={isHebrew ? currentPage >= BOOK_PAGES.length - 1 : currentPage <= 0}
           icon={<ChevronLeft className="w-6 h-6" />}
         >
-          {""}
+          {isHebrew ? "הקודם" : "Previous"}
         </CustomButton>
         
         <CustomButton
           variant="ghost"
           size="lg"
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white shadow-lg"
+          className="bg-white/80 hover:bg-white shadow-lg"
           onClick={isHebrew ? prevPage : nextPage}
           disabled={isHebrew ? currentPage <= 0 : currentPage >= BOOK_PAGES.length - 1}
           icon={<ChevronRight className="w-6 h-6" />}
         >
-          {""}
+          {isHebrew ? "הבא" : "Next"}
         </CustomButton>
       </div>
 
