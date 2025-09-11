@@ -10,8 +10,13 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
   const location = useLocation();
   
   useEffect(() => {
-    // Skip in development mode
-    if (process.env.NODE_ENV !== 'production') {
+    // Skip in development mode or if no measurement ID
+    if (process.env.NODE_ENV !== 'production' || !measurementId || measurementId === 'G-XXXXXXXXXX') {
+      return;
+    }
+    
+    // Check if already loaded
+    if (window.gtag) {
       return;
     }
     
@@ -27,8 +32,9 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
       gtag('js', new Date());
       gtag('config', '${measurementId}', { 
         send_page_view: true,
-        cookie_domain: 'shelley.co.il',
-        cookie_flags: 'SameSite=None;Secure'
+        anonymize_ip: true,
+        cookie_domain: 'auto',
+        cookie_flags: 'SameSite=Lax;Secure'
       });
     `;
     
@@ -37,9 +43,17 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
     document.head.appendChild(inlineScript);
     
     return () => {
-      // Clean up
-      document.head.removeChild(gtagScript);
-      document.head.removeChild(inlineScript);
+      // Clean up only if elements exist
+      try {
+        if (document.head.contains(gtagScript)) {
+          document.head.removeChild(gtagScript);
+        }
+        if (document.head.contains(inlineScript)) {
+          document.head.removeChild(inlineScript);
+        }
+      } catch (error) {
+        console.warn('Error cleaning up analytics scripts:', error);
+      }
     };
   }, [measurementId]);
   
