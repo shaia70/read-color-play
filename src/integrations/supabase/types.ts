@@ -758,6 +758,14 @@ export type Database = {
         Args: { p_action: string; p_details?: Json; p_resource?: string }
         Returns: undefined
       }
+      redeem_coupon_access: {
+        Args: {
+          p_coupon_code: string
+          p_duration_days: number
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       update_google_drive_tokens: {
         Args: {
           p_access_token: string

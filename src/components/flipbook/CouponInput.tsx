@@ -59,14 +59,14 @@ const CouponInput = ({ userId, onSuccess }: CouponInputProps) => {
         return;
       }
 
-      // Grant access to the user
+      // Grant access to the user using the coupon-specific function
       console.log('Granting access with coupon:', result);
       
       const { error: accessError } = await supabase
-        .rpc('grant_course_access', {
-          user_id: userId,
-          duration_days: result.access_duration_days || 30,
-          amount: 0 // Free access via coupon
+        .rpc('redeem_coupon_access', {
+          p_user_id: userId,
+          p_duration_days: result.access_duration_days || 30,
+          p_coupon_code: couponCode.trim()
         });
 
       if (accessError) {
