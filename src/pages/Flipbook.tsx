@@ -24,19 +24,25 @@ const Flipbook = () => {
   const hasCheckedPayment = useRef(false);
   const isHebrew = language === 'he';
 
+  const bookPrice = "60 ₪";
+  const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
+
   // Debug logging
   useEffect(() => {
     console.log('=== FLIPBOOK COMPONENT STATE ===');
     console.log('User ID:', user?.id);
     console.log('User email:', user?.email);
+    console.log('User name:', user?.name);
     console.log('Has valid payment:', hasValidPayment);
     console.log('Payment loading:', paymentLoading);
     console.log('Payment error:', error);
     console.log('Is refreshing:', isRefreshing);
     console.log('Has checked payment:', hasCheckedPayment.current);
     console.log('Show payment form:', showPayment);
+    console.log('Book price variable:', bookPrice);
+    console.log('Amount passed to PayPal:', 60);
     console.log('=== END STATE ===');
-  }, [user, hasValidPayment, paymentLoading, error, isRefreshing, showPayment]);
+  }, [user, hasValidPayment, paymentLoading, error, isRefreshing, showPayment, bookPrice]);
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
   useEffect(() => {
@@ -86,8 +92,6 @@ const Flipbook = () => {
     ? "חוו את ספרי הילדים שלנו בפורמט פליפבוק דיגיטלי אינטראקטיבי. גישה מיידית לאחר תשלום"
     : "Experience our children's books in an interactive digital flipbook format. Instant access after payment";
 
-  const bookPrice = "60 ₪";
-  const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   const handlePaymentSuccess = () => {
     console.log('=== PAYMENT SUCCESS HANDLER ===');
