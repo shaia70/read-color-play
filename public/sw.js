@@ -1,6 +1,6 @@
 
 // This is a simple service worker that caches the app shell
-const CACHE_NAME = 'shelley-books-v15';
+const CACHE_NAME = 'shelley-books-v16';
 
 // Assets to cache
 const urlsToCache = [
@@ -26,6 +26,14 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache if available, otherwise fetch from network
 self.addEventListener('fetch', event => {
+  // Skip non-HTTP requests and chrome-extension requests
+  if (!event.request.url.startsWith('http') || 
+      event.request.url.startsWith('chrome-extension://') ||
+      event.request.url.startsWith('moz-extension://') ||
+      event.request.url.startsWith('ms-browser-extension://')) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -37,20 +45,41 @@ self.addEventListener('fetch', event => {
         // Not in cache - fetch from network
         return fetch(event.request)
           .then(networkResponse => {
-            // Don't cache if response is not ok
-            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            // Don't cache if response is not ok or if it's an extension request
+            if (!networkResponse || 
+                networkResponse.status !== 200 || 
+                networkResponse.type !== 'basic' ||
+                event.request.url.includes('chrome-extension')) {
               return networkResponse;
             }
             
             // Clone the response as it can only be consumed once
             const responseToCache = networkResponse.clone();
             
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
+            // Cache only valid HTTP requests
+            if (event.request.url.startsWith('http')) {
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  try {
+                    cache.put(event.request, responseToCache);
+                  } catch (error) {
+                    console.warn('Failed to cache request:', event.request.url, error);
+                  }
+                })
+                .catch(error => {
+                  console.warn('Cache operation failed:', error);
+                });
+            }
               
             return networkResponse;
+          })
+          .catch(error => {
+            console.warn('Fetch failed:', error);
+            // Return a basic response if fetch fails
+            return new Response('Network error', {
+              status: 503,
+              statusText: 'Service Unavailable'
+            });
           });
       })
   );
