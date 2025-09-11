@@ -24,7 +24,9 @@ const Flipbook = () => {
   const hasCheckedPayment = useRef(false);
   const isHebrew = language === 'he';
 
+  // Fixed price to prevent caching issues
   const bookPrice = "60 ₪";
+  const paymentAmount = 60;
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   // Debug logging
@@ -273,9 +275,9 @@ const Flipbook = () => {
                   </CustomButton>
                 ) : (
                   <div className="mt-6">
-                    <PayPalCheckout 
-                      amount={60}
-                      onSuccess={handlePaymentSuccess}
+                     <PayPalCheckout 
+                       amount={paymentAmount}
+                       onSuccess={handlePaymentSuccess}
                       onCancel={() => setShowPayment(false)}
                       onConfirmPayment={handleConfirmPayment}
                     />

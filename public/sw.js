@@ -1,6 +1,6 @@
 
 // This is a simple service worker that caches the app shell
-const CACHE_NAME = 'shelley-books-v17';
+const CACHE_NAME = 'shelley-books-v18';
 
 // Assets to cache
 const urlsToCache = [
