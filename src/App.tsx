@@ -20,7 +20,6 @@ import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import { SessionMonitor } from "./components/security/SessionMonitor";
 import Flipbook from "./pages/Flipbook";
 
 // Scroll restoration and analytics tracking component
