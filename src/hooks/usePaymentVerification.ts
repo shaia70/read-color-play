@@ -34,7 +34,7 @@ export const usePaymentVerification = () => {
           body: {
             user_id: userId,
             transaction_id: 'paypal_success_' + Date.now(),
-            amount: 70
+            amount: 60
           }
         });
 
