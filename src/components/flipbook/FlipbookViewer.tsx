@@ -628,7 +628,34 @@ const FlipbookViewer: React.FC = () => {
         </div>
       </div>
 
-      {/* FlipbookControls - הועברו לתחתית */}
+      {/* FlipbookNavigation - חצי התקדמות */}
+      <div className="flex items-center justify-center gap-4 mb-4">
+        <CustomButton
+          variant="ghost"
+          size="lg"
+          className="bg-white/80 hover:bg-white shadow-lg"
+          onClick={prevPage}
+          disabled={currentPage <= 0}
+          icon={<ChevronRight className="w-6 h-6" />}
+        >
+          {isHebrew ? "הקודם" : "Previous"}
+        </CustomButton>
+        
+        <CustomButton
+          variant="ghost"
+          size="lg"
+          className="bg-white/80 hover:bg-white shadow-lg"
+          onClick={nextPage}
+          disabled={currentPage >= BOOK_PAGES.length - 1}
+        >
+          <span className="flex items-center gap-2">
+            {isHebrew ? "הבא" : "Next"}
+            <ChevronLeft className="w-6 h-6" />
+          </span>
+        </CustomButton>
+      </div>
+
+      {/* FlipbookControls - זום ומידע עמודים */}
       <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg">
         <div className="text-center">
           <span className="text-lg font-semibold">
@@ -673,33 +700,6 @@ const FlipbookViewer: React.FC = () => {
             {isHebrew ? "איפוס" : "Reset"}
           </CustomButton>
         </div>
-      </div>
-
-      {/* FlipbookNavigation - חצי התקדמות */}
-      <div className="flex items-center justify-center gap-4 mb-4">
-        <CustomButton
-          variant="ghost"
-          size="lg"
-          className="bg-white/80 hover:bg-white shadow-lg"
-          onClick={prevPage}
-          disabled={currentPage <= 0}
-          icon={<ChevronRight className="w-6 h-6" />}
-        >
-          {isHebrew ? "הקודם" : "Previous"}
-        </CustomButton>
-        
-        <CustomButton
-          variant="ghost"
-          size="lg"
-          className="bg-white/80 hover:bg-white shadow-lg"
-          onClick={nextPage}
-          disabled={currentPage >= BOOK_PAGES.length - 1}
-        >
-          <span className="flex items-center gap-2">
-            {isHebrew ? "הבא" : "Next"}
-            <ChevronLeft className="w-6 h-6" />
-          </span>
-        </CustomButton>
       </div>
 
       {/* FlipbookPageSlider */}
