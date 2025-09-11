@@ -174,11 +174,6 @@ const Flipbook = () => {
             </CustomButton>
           </div>
 
-          {hasValidPayment && (
-            <div className="mb-6">
-              <ActiveSessions />
-            </div>
-          )}
 
           {!hasValidPayment ? (
             <div className="text-center mb-16">

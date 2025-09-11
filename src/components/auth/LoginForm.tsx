@@ -39,8 +39,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       if (err.message?.includes('Invalid login credentials')) {
         setError(isHebrew ? 'שם משתמש או סיסמה שגויים' : 'Invalid email or password');
       } else if (err.message?.includes('User already registered')) {
-        setError(isHebrew ? 'המשתמש כבר רשום במערכת. נסה להתחבר במקום' : 'User already registered. Try logging in instead');
+        setError(isHebrew ? 'החשבון כבר קיים. עברנו למצב התחברות' : 'Account exists. Switched to login mode');
         setIsLoginMode(true);
+        // Clear the error after 2 seconds to show the switch
+        setTimeout(() => setError(''), 2000);
       } else if (err.message?.includes('Email not confirmed')) {
         setError(isHebrew ? 'נדרש אימות מייל. בדוק את תיבת המייל שלך או פנה למנהל המערכת' : 'Email confirmation required. Check your email or contact support');
       } else if (err.message?.includes('signup is disabled')) {
