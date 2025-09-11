@@ -1,9 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 interface PayPalCheckoutProps {
   amount: number;
@@ -15,6 +16,7 @@ interface PayPalCheckoutProps {
 const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { recordPayment } = usePaymentVerification();
   const [isProcessing, setIsProcessing] = useState(false);
   const isHebrew = language === 'he';
 
@@ -22,6 +24,36 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
   
   const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
+
+  // Check for PayPal success on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success' && user?.id && !isProcessing) {
+      console.log('PayPal success detected, auto-recording payment...');
+      handleAutoPaymentRecord();
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [user?.id]);
+
+  const handleAutoPaymentRecord = async () => {
+    if (!user?.id) return;
+    
+    setIsProcessing(true);
+    try {
+      const transactionId = `paypal_auto_${Date.now()}_${user.id.slice(0, 8)}`;
+      console.log('Auto-recording PayPal payment:', { userId: user.id, transactionId, amount });
+      
+      await recordPayment(user.id, transactionId, amount);
+      onSuccess();
+    } catch (error) {
+      console.error('Auto payment recording failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handlePayPalClick = () => {
     window.open(paypalLink, '_blank');
