@@ -247,7 +247,7 @@ const Flipbook = () => {
                     className="text-base px-8 py-3 h-14 min-h-0 font-bold"
                     onClick={() => setShowPayment(true)}
                   >
-                    {isHebrew ? "רכישה עם PayPal" : "Purchase with PayPal"}
+                    {isHebrew ? "רכישה עם כרטיס אשראי או Paypal" : "Purchase with Credit Card or PayPal"}
                   </CustomButton>
                 ) : (
                   <div className="mt-6">

@@ -88,7 +88,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     <div className="max-w-md mx-auto">
       <div className="glass-card p-6">
         <h3 className="text-xl font-bold mb-4 text-center">
-          {isHebrew ? "תשלום באמצעות PayPal" : "Payment via PayPal"}
+          {isHebrew ? "תשלום באמצעות כרטיס אשראי או PayPal" : "Payment via Credit Card or PayPal"}
         </h3>
         
         <div className="text-center mb-6">
@@ -117,8 +117,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           <div className="border-t pt-4">
             <p className="text-sm text-gray-600 mb-3 text-center">
               {isHebrew 
-                ? "רק אם השלמת תשלום ב-PayPal:"
-                : "Only if you completed payment via PayPal:"
+                ? "רק אם השלמת תשלום בכרטיס אשראי או PayPal:"
+                : "Only if you completed payment via Credit Card or PayPal:"
               }
             </p>
             

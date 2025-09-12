@@ -148,13 +148,6 @@ const CouponInput = ({ userId, onSuccess }: CouponInputProps) => {
             }
           </CustomButton>
         </div>
-        
-        <p className="text-xs text-gray-500 mt-3 text-center">
-          {isHebrew 
-            ? "קופון תקף יעניק לך גישה חינמית לתוכן"
-            : "Valid coupon will grant you free access to content"
-          }
-        </p>
       </div>
     </div>
   );
