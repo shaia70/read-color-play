@@ -62,7 +62,7 @@ const Books = () => {
         <meta name="keywords" content={keywords} />
         <link rel="canonical" href={isHebrew ? "https://shelley.co.il/books" : "https://shelley.co.il/en/books"} />
         
-        {/* Schema.org structured data for Book */}
+        {/* Schema.org structured data for Books */}
         <script type="application/ld+json">
           {`
             {
@@ -93,6 +93,32 @@ const Books = () => {
                     },
                     "image": "https://shelley.co.il/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png",
                     "description": "${isHebrew ? 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "item": {
+                    "@type": "Book",
+                    "name": "${isHebrew ? 'בת ואות ב' : 'Bat and the Letter B'}",
+                    "author": {
+                      "@type": "Organization",
+                      "name": "שלי ספרים"
+                    },
+                    "bookFormat": "Hardcover",
+                    "numberOfPages": "36",
+                    "inLanguage": "he",
+                    "audience": {
+                      "@type": "Audience",
+                      "suggestedMinAge": "3",
+                      "suggestedMaxAge": "6"
+                    },
+                    "publisher": {
+                      "@type": "Organization",
+                      "name": "שלי ספרים"
+                    },
+                    "image": "https://shelley.co.il/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png",
+                    "description": "${isHebrew ? 'ספר חדש ומרתק על בת ואות ב, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A new and exciting book about Bat and the letter B, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
                   }
                 }
               ]
@@ -160,6 +186,91 @@ const Books = () => {
                   <div className="bg-shelley-purple/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-purple">{t('books.pages')}</p>
                     <p>40</p>
+                  </div>
+                  <div className="bg-shelley-orange/10 p-3 rounded-lg">
+                    <p className="font-bold text-shelley-orange">{t('books.cover')}</p>
+                    <p>{t('books.hardcover')}</p>
+                  </div>
+                  <div className="bg-shelley-green/10 p-3 rounded-lg">
+                    <p className="font-bold text-shelley-green">{t('books.language')}</p>
+                    <p>{t('books.hebrew')}</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col items-center space-y-6 mb-4">
+                  <CustomButton 
+                    variant="green" 
+                    size="lg" 
+                    icon={<Eye className="w-6 h-6" />} 
+                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
+                    onClick={navigateToARSection}
+                  >
+                    {t('books.peek')}
+                  </CustomButton>
+                  <CustomButton 
+                    variant="orange" 
+                    size="lg" 
+                    icon={<Download className="w-6 h-6" />} 
+                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
+                    onClick={navigateToDownload}
+                  >
+                    {t('books.coloring')}
+                  </CustomButton>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Second Book - Bat and the Letter B */}
+          <div className="glass-card mb-16 p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="flex justify-center">
+                <div className="book-cover relative">
+                  <div 
+                    className={`${isZoomed ? 'w-128 h-128 z-10 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' : 'w-64 h-64'} rounded-lg shadow-xl overflow-hidden transition-all duration-500 ${isMobile ? '' : 'cursor-pointer'}`}
+                    onClick={toggleZoom}
+                  >
+                    <img 
+                      src="/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png" 
+                      alt={t('book.bat.title')} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 right-2 bg-shelley-green text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {t('books.new')}
+                    </div>
+                  </div>
+                  {isZoomed && (
+                    <div 
+                      className="fixed inset-0 bg-black/50 z-0"
+                      onClick={toggleZoom}
+                    ></div>
+                  )}
+                </div>
+              </div>
+              
+              <div className={`flex flex-col justify-center ${language === 'en' ? 'text-left' : 'text-right'}`}>
+                <h2 className="text-3xl font-bold mb-4">{t('book.bat.title')}</h2>
+                <p className="text-gray-600 mb-6">
+                  {t('book.bat.description')}
+                </p>
+                
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h3 className={`font-bold mb-2 ${language === 'he' ? 'text-right' : 'text-left'}`}>
+                    {t('books.bookDescription')}
+                  </h3>
+                  <p className="text-gray-600">
+                    {t('book.bat.story')}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-shelley-blue/10 p-3 rounded-lg">
+                    <p className="font-bold text-shelley-blue">{t('books.ages')}</p>
+                    <p>3-6</p>
+                  </div>
+                  <div className="bg-shelley-purple/10 p-3 rounded-lg">
+                    <p className="font-bold text-shelley-purple">{t('books.pages')}</p>
+                    <p>36</p>
                   </div>
                   <div className="bg-shelley-orange/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-orange">{t('books.cover')}</p>
