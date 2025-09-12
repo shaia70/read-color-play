@@ -111,7 +111,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
             className="w-full text-base py-3 h-14 min-h-0 font-bold"
             onClick={handlePayPalClick}
           >
-            {isHebrew ? "תשלום PayPal" : "Pay with PayPal"}
+            {isHebrew ? "תשלום בכרטיס אשראי או PayPal" : "Pay with Credit Card or PayPal"}
           </CustomButton>
 
           <div className="border-t pt-4">
