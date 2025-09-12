@@ -29,30 +29,11 @@ const Flipbook = () => {
   const paymentAmount = 60;
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
-  // Debug logging
-  useEffect(() => {
-    console.log('=== FLIPBOOK COMPONENT STATE ===');
-    console.log('User ID:', user?.id);
-    console.log('User email:', user?.email);
-    console.log('User name:', user?.name);
-    console.log('Has valid payment:', hasValidPayment);
-    console.log('Payment loading:', paymentLoading);
-    console.log('Payment error:', error);
-    console.log('Is refreshing:', isRefreshing);
-    console.log('Has checked payment:', hasCheckedPayment.current);
-    console.log('Show payment form:', showPayment);
-    console.log('Book price variable:', bookPrice);
-    console.log('Amount passed to PayPal:', 60);
-    console.log('=== END STATE ===');
-  }, [user, hasValidPayment, paymentLoading, error, isRefreshing, showPayment, bookPrice]);
+  // Debug logging removed for production
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
   useEffect(() => {
-    console.log('=== PAYMENT CHECK EFFECT ===');
-    console.log('Should check payment?', user?.id && !hasCheckedPayment.current && !paymentLoading);
-    
     if (user?.id && !hasCheckedPayment.current && !paymentLoading) {
-      console.log('User logged in, checking payment status for:', user.id);
       hasCheckedPayment.current = true;
       checkPaymentStatus(user.id);
     }
@@ -61,19 +42,15 @@ const Flipbook = () => {
   // Reset check flag when user changes
   useEffect(() => {
     if (!user) {
-      console.log('User logged out, resetting payment check flag');
       hasCheckedPayment.current = false;
     }
   }, [user]);
 
   const handleRefreshPayment = async () => {
     if (!user?.id || paymentLoading) {
-      console.log('Cannot refresh: no user ID or already loading');
       return;
     }
     
-    console.log('=== MANUAL REFRESH ===');
-    console.log('Manual refresh payment status for user:', user.id);
     setIsRefreshing(true);
     
     // Reset the check flag to allow re-checking
@@ -96,7 +73,6 @@ const Flipbook = () => {
 
 
   const handlePaymentSuccess = () => {
-    console.log('=== PAYMENT SUCCESS HANDLER ===');
     setShowPayment(false);
   };
 
