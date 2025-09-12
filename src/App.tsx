@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -40,10 +40,8 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+          <BrowserRouter>
+            <TooltipProvider>
               <AnalyticsProvider>
                 <ScrollToTop />
                 <AnimatePresence mode="wait">
@@ -61,9 +59,11 @@ const App = () => {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </AnimatePresence>
+                <Toaster />
+                <Sonner />
               </AnalyticsProvider>
-            </BrowserRouter>
-          </TooltipProvider>
+            </TooltipProvider>
+          </BrowserRouter>
         </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>
