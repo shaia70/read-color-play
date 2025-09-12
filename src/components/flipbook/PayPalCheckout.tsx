@@ -97,8 +97,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           </div>
           <p className="text-gray-600">
             {isHebrew 
-              ? "לחץ על הכפתור למעבר לתשלום PayPal" 
-              : "Click the button to proceed to PayPal payment"
+              ? "לחץ על הכפתור למעבר לתשלום" 
+              : "Click the button to proceed to payment"
             }
           </p>
         </div>

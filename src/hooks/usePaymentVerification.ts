@@ -148,8 +148,8 @@ export const usePaymentVerification = () => {
         variant: "destructive",
         title: language === 'he' ? 'לא נמצא תשלום' : 'No payment found',
         description: language === 'he' 
-          ? 'לא נמצא תשלום תקף במערכת. אנא השלם תשלום דרך PayPal תחילה.'
-          : 'No valid payment found in system. Please complete payment through PayPal first.'
+          ? 'לא נמצא תשלום תקף במערכת. אנא השלם תשלום דרך כרטיס אשראי או PayPal.'
+          : 'No valid payment found in system. Please complete payment through Credit Card or PayPal first.'
       });
       
     } catch (err) {
