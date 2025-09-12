@@ -23,9 +23,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
   const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
   
-  // TODO: Replace with correct PayPal payment ID for 60 NIS
-  // Current ID might be configured for 70 NIS - needs updating from PayPal dashboard
-  const paypalLink = `https://www.paypal.com/ncp/payment/UPDATE_WITH_CORRECT_ID?return=${returnUrl}&cancel_return=${cancelUrl}`;
+  // PayPal payment link for 60 NIS
+  const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
 
   // Check for PayPal success on component mount
   useEffect(() => {
