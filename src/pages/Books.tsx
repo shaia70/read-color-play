@@ -266,11 +266,11 @@ const Books = () => {
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-shelley-blue/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-blue">{t('books.ages')}</p>
-                    <p>3-6</p>
+                    <p>3-7</p>
                   </div>
                   <div className="bg-shelley-purple/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-purple">{t('books.pages')}</p>
-                    <p>32</p>
+                    <p>40</p>
                   </div>
                   <div className="bg-shelley-orange/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-orange">{t('books.cover')}</p>
