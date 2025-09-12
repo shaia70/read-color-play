@@ -264,7 +264,7 @@ const Flipbook = () => {
           ) : (
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold mb-6 text-shelley-green">
-                {isHebrew ? "תשלום בוצע בהצלחה!" : "Payment Successful!"}
+                {isHebrew ? "תשלום בוצע בהצלחה!" : "!Payment Successful"}
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 {isHebrew 
