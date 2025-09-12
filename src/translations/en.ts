@@ -59,8 +59,8 @@ const enTranslations: Record<string, string> = {
   
   // New book - Daniel and the New Brother
   'book.newbrother.title': 'Daniel and the New Brother',
-  'book.newbrother.description': 'A new and touching book about Daniel and his little brother, with original illustrations created using artificial intelligence that come to life using augmented reality technology.',
-  'book.newbrother.story': 'Daniel gets a new brother and discovers how fun it is to be a big brother. Join him on an exciting journey of family love and friendship',
+  'book.newbrother.description': 'When Mom and Dad tell Daniel that he\'ll soon have a little brother, he feels everything at once - joy, confusion, and a little fear',
+  'book.newbrother.story': 'What if there\'s no room left for him in their hearts? What if the baby takes everything he loves? But then, on one magical night, his beloved toys come to life and teach him a very important lesson: love doesn\'t run out - it only grows. A touching story about family, acceptance, and the magical role of being a big brother',
   
   // AR Technology section
   'ar.title': 'Augmented Reality Technology',

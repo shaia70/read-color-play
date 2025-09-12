@@ -100,7 +100,7 @@ const Books = () => {
                   "position": 2,
                   "item": {
                     "@type": "Book",
-                    "name": "${isHebrew ? 'דניאל ואח החדש' : 'Daniel and the New Brother'}",
+                    "name": "${isHebrew ? 'דניאל והאח החדש' : 'Daniel and the New Brother'}",
                     "author": {
                       "@type": "Person",
                       "name": "שי אהרונוב"
@@ -118,7 +118,7 @@ const Books = () => {
                       "name": "שלי ספרים"
                     },
                     "image": "https://shelley.co.il/lovable-uploads/daniel-new-brother-front.png",
-                    "description": "${isHebrew ? 'ספר חדש ומרגש על דניאל ואחיו הקטן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A new and touching book about Daniel and his little brother, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
+                    "description": "${isHebrew ? 'סיפור מרגש על משפחה, קבלה, ותפקידו הקסום של אח גדול. כשאמא ואבא מספרים לדניאל שבקרוב יוולד לו אח קטן, הוא מרגיש הכל ביחד - שמחה, בלבול וקצת פחד. עם איורים מקוריים ומציאות רבודה' : 'A touching story about family, acceptance, and the magical role of being a big brother. When Mom and Dad tell Daniel he will soon have a little brother, he feels everything at once - joy, confusion, and a little fear. With original illustrations and augmented reality technology'}"
                   }
                 }
               ]
