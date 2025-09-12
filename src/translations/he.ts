@@ -31,7 +31,7 @@ const heTranslations: Record<string, string> = {
   'download.easyToUse': 'קל לשימוש',
   'download.easyToUseDesc': 'ממשק פשוט המיועד לילדים בכל הגילאים',
   'download.worksOffline': 'עובד ללא אינטרנט',
-  'download.worksOfflineDesc': 'הורד תוכן כדי להשתמש באפליקציה ללא חיבור לאינטרנט',
+  'download.worksOfflineDesc': 'לאחר התקנה הורדה אחת של הספר ואחר כך אפשר לעבוד ללא אינטרנט',
   'download.regularUpdates': 'עדכונים תקופתיים',
   'download.regularUpdatesDesc': 'תוכן ותכונות חדשות נוספים באופן קבוע',
   'download.comingSoon': 'בקרוב במכשירי iOS ו-Android. היו הראשונים לדעת מתי האפליקציה שלנו זמינה!',
