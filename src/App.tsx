@@ -2,7 +2,7 @@
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+// import { TooltipProvider } from "@/components/ui/tooltip"; // Temporarily removed for troubleshooting
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -41,7 +41,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>
-          <TooltipProvider>
+          {/* <TooltipProvider> Temporarily removed for troubleshooting */}
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -64,7 +64,7 @@ const App = () => {
                 </AnimatePresence>
               </AnalyticsProvider>
             </BrowserRouter>
-          </TooltipProvider>
+          {/* </TooltipProvider> Temporarily removed for troubleshooting */}
         </AuthProvider>
       </LanguageProvider>
     </QueryClientProvider>
