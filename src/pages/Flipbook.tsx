@@ -205,7 +205,7 @@ const Flipbook = () => {
                 <div className="flex justify-center mb-6">
                   <div className="w-48 h-48 rounded-lg shadow-xl overflow-hidden relative">
                     <img 
-                      src="/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png" 
+                      src="/lovable-uploads/cover_Frontbook.png" 
                       alt="דניאל הולך לגן" 
                       className="w-full h-full object-cover"
                     />

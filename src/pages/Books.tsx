@@ -91,7 +91,7 @@ const Books = () => {
                       "@type": "Organization",
                       "name": "שלי ספרים"
                     },
-                    "image": "https://shelley.co.il/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png",
+                    "image": "https://shelley.co.il/lovable-uploads/cover_Frontbook.png",
                     "description": "${isHebrew ? 'ספר על יום ראשון בגן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
                   }
                 },
@@ -146,7 +146,7 @@ const Books = () => {
                     onClick={toggleZoom}
                   >
                     <img 
-                      src="/lovable-uploads/f3774be2-f5fb-45b0-a9e8-83e77df84a9e.png" 
+                      src="/lovable-uploads/cover_Frontbook.png" 
                       alt={t('book.daniel.title')} 
                       className="w-full h-full object-cover"
                     />
