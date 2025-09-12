@@ -106,12 +106,12 @@ const Books = () => {
                       "name": "שי אהרונוב"
                     },
                     "bookFormat": "Hardcover",
-                    "numberOfPages": "32",
+                    "numberOfPages": "40",
                     "inLanguage": "he",
                     "audience": {
                       "@type": "Audience",
                       "suggestedMinAge": "3",
-                      "suggestedMaxAge": "6"
+                      "suggestedMaxAge": "7"
                     },
                     "publisher": {
                       "@type": "Organization",
