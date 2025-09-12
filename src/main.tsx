@@ -1,5 +1,5 @@
 
-import React from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx'
@@ -22,10 +22,10 @@ if ('serviceWorker' in navigator) {
 const rootElement = document.getElementById("root");
 if (rootElement) {
   createRoot(rootElement).render(
-    <React.StrictMode>
+    <StrictMode>
       <HelmetProvider>
         <App />
       </HelmetProvider>
-    </React.StrictMode>
+    </StrictMode>
   );
 }
