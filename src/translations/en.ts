@@ -84,7 +84,7 @@ const enTranslations: Record<string, string> = {
   'footer.technology': 'AR Technology',
   'footer.contactUs': 'Contact Us',
   'footer.allRights': 'All Rights Reserved',
-  'books.comingSoon': '! Coming Soon',
+  'books.comingSoon': '!Coming Soon',
   'books.workingOn': 'We are working on more books in the series. Follow us on social media for updates.',
   'books.peek': 'Peek at the Book',
   'books.coloring': 'Download Coloring Pages',
@@ -94,7 +94,7 @@ const enTranslations: Record<string, string> = {
   'books.pages': 'Number of Pages:',
   'books.cover': 'Cover:',
   'books.language': 'Language:',
-  'books.new': 'New!',
+  'books.new': '!New',
   'books.hardcover': 'Hardcover',
   'books.hebrew': 'Hebrew',
   
