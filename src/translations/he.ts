@@ -84,7 +84,7 @@ const heTranslations: Record<string, string> = {
   'footer.technology': 'טכנולוגיית AR',
   'footer.contactUs': 'צור קשר',
   'footer.allRights': 'כל הזכויות שמורות',
-  'books.comingSoon': 'ספרים נוספים בקרוב!',
+  'books.comingSoon': 'בקרוב!',
   'books.workingOn': 'אנחנו עובדים על ספרים נוספים בסדרה. עקבו אחרינו ברשתות החברתיות לעדכונים.',
   'books.peek': 'הצץ בספר',
   'books.coloring': 'דפי צביעה להורדה',
