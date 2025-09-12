@@ -2,10 +2,10 @@
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-// import { TooltipProvider } from "@/components/ui/tooltip"; // Temporarily removed for troubleshooting
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Technology from "./pages/Technology";
@@ -39,11 +39,9 @@ const App = () => {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <AuthProvider>
-          {/* <TooltipProvider> Temporarily removed for troubleshooting */}
-            <Toaster />
-            <Sonner />
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <LanguageProvider>
+          <AuthProvider>
             <BrowserRouter>
               <AnalyticsProvider>
                 <ScrollToTop />
@@ -64,9 +62,11 @@ const App = () => {
                 </AnimatePresence>
               </AnalyticsProvider>
             </BrowserRouter>
-          {/* </TooltipProvider> Temporarily removed for troubleshooting */}
-        </AuthProvider>
-      </LanguageProvider>
+            <Toaster />
+            <Sonner />
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
