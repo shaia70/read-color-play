@@ -57,10 +57,10 @@ const enTranslations: Record<string, string> = {
   'book.daniel.description': 'A book about the first day in kindergarten, with original illustrations created using artificial intelligence that come to life using augmented reality technology',
   'book.daniel.story': 'The first day of kindergarten is a special day for Daniel. He is a little worried, but also very excited. Let\'s discover together how he will handle his first day',
   
-  // New book - Bat/Beth
-  'book.bat.title': 'Bat and the Letter B',
-  'book.bat.description': 'A new and exciting book about Bat and the letter B, with original illustrations created using artificial intelligence that come to life using augmented reality technology.',
-  'book.bat.story': 'Bat discovers the letter B in a world full of adventures. Join her on an exciting journey of learning and discovery',
+  // New book - Daniel and the New Brother
+  'book.newbrother.title': 'Daniel and the New Brother',
+  'book.newbrother.description': 'A new and touching book about Daniel and his little brother, with original illustrations created using artificial intelligence that come to life using augmented reality technology.',
+  'book.newbrother.story': 'Daniel gets a new brother and discovers how fun it is to be a big brother. Join him on an exciting journey of family love and friendship',
   
   // AR Technology section
   'ar.title': 'Augmented Reality Technology',

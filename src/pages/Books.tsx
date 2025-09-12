@@ -100,13 +100,13 @@ const Books = () => {
                   "position": 2,
                   "item": {
                     "@type": "Book",
-                    "name": "${isHebrew ? 'בת ואות ב' : 'Bat and the Letter B'}",
+                    "name": "${isHebrew ? 'דניאל ואח החדש' : 'Daniel and the New Brother'}",
                     "author": {
-                      "@type": "Organization",
-                      "name": "שלי ספרים"
+                      "@type": "Person",
+                      "name": "שי אהרונוב"
                     },
                     "bookFormat": "Hardcover",
-                    "numberOfPages": "36",
+                    "numberOfPages": "32",
                     "inLanguage": "he",
                     "audience": {
                       "@type": "Audience",
@@ -117,8 +117,8 @@ const Books = () => {
                       "@type": "Organization",
                       "name": "שלי ספרים"
                     },
-                    "image": "https://shelley.co.il/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png",
-                    "description": "${isHebrew ? 'ספר חדש ומרתק על בת ואות ב, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A new and exciting book about Bat and the letter B, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
+                    "image": "https://shelley.co.il/lovable-uploads/daniel-new-brother-front.png",
+                    "description": "${isHebrew ? 'ספר חדש ומרגש על דניאל ואחיו הקטן, עם איורים מקוריים שנוצרו באמצעות בינה מלאכותית ומתעוררים לחיים באמצעות טכנולוגיית מציאות רבודה' : 'A new and touching book about Daniel and his little brother, with original illustrations created using artificial intelligence that come to life using augmented reality technology'}"
                   }
                 }
               ]
@@ -231,8 +231,8 @@ const Books = () => {
                     onClick={toggleZoom}
                   >
                     <img 
-                      src="/lovable-uploads/59335ecd-65c0-4a29-9ef0-2e2fd1e6c395.png" 
-                      alt={t('book.bat.title')} 
+                      src="/lovable-uploads/daniel-new-brother-front.png" 
+                      alt={t('book.newbrother.title')} 
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 right-2 bg-shelley-green text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -249,9 +249,9 @@ const Books = () => {
               </div>
               
               <div className={`flex flex-col justify-center ${language === 'en' ? 'text-left' : 'text-right'}`}>
-                <h2 className="text-3xl font-bold mb-4">{t('book.bat.title')}</h2>
+                <h2 className="text-3xl font-bold mb-4">{t('book.newbrother.title')}</h2>
                 <p className="text-gray-600 mb-6">
-                  {t('book.bat.description')}
+                  {t('book.newbrother.description')}
                 </p>
                 
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -259,7 +259,7 @@ const Books = () => {
                     {t('books.bookDescription')}
                   </h3>
                   <p className="text-gray-600">
-                    {t('book.bat.story')}
+                    {t('book.newbrother.story')}
                   </p>
                 </div>
                 
@@ -270,7 +270,7 @@ const Books = () => {
                   </div>
                   <div className="bg-shelley-purple/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-purple">{t('books.pages')}</p>
-                    <p>36</p>
+                    <p>32</p>
                   </div>
                   <div className="bg-shelley-orange/10 p-3 rounded-lg">
                     <p className="font-bold text-shelley-orange">{t('books.cover')}</p>
