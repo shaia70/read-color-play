@@ -235,8 +235,8 @@ const Books = () => {
                       alt={t('book.newbrother.title')} 
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-2 right-2 bg-shelley-green text-white text-xs font-bold px-2 py-1 rounded-full">
-                      {t('books.new')}
+                    <div className="absolute top-2 right-2 bg-shelley-blue text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {t('books.comingSoon')}
                     </div>
                   </div>
                   {isZoomed && (
@@ -282,26 +282,7 @@ const Books = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-center space-y-6 mb-4">
-                  <CustomButton 
-                    variant="green" 
-                    size="lg" 
-                    icon={<Eye className="w-6 h-6" />} 
-                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
-                    onClick={navigateToARSection}
-                  >
-                    {t('books.peek')}
-                  </CustomButton>
-                  <CustomButton 
-                    variant="orange" 
-                    size="lg" 
-                    icon={<Download className="w-6 h-6" />} 
-                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
-                    onClick={navigateToDownload}
-                  >
-                    {t('books.coloring')}
-                  </CustomButton>
-                </div>
+                {/* Buttons hidden for coming soon book */}
               </div>
             </div>
           </div>
