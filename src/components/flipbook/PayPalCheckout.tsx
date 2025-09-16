@@ -41,16 +41,17 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
-    const paymentId = urlParams.get('paymentId') || urlParams.get('PayerID'); // PayPal sends different params
+    const paymentId = urlParams.get('paymentId') || urlParams.get('PayerID') || urlParams.get('token'); // PayPal sends different params
     
     if (paymentStatus === 'success' && user?.id && !isProcessing) {
-      console.log('PayPal success detected, verifying with PayPal API...');
+      console.log('PayPal success detected, checking for payment ID...');
       
       if (paymentId) {
+        console.log('PayPal payment ID found, verifying with PayPal API:', paymentId);
         handlePayPalVerification(paymentId);
       } else {
-        console.warn('No PayPal payment ID found in URL, falling back to old method');
-        handleAutoPaymentRecord();
+        console.error('No PayPal payment ID found in URL - cannot verify payment without valid payment ID');
+        alert(isHebrew ? 'לא נמצא מזהה תשלום מפייפאל. אנא בצע תשלום מחדש.' : 'No PayPal payment ID found. Please make payment again.');
       }
       
       // Clean URL
@@ -68,49 +69,17 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
       const verified = await verifyPayPalPayment(user.id, paymentId, amount);
       if (verified) {
         onSuccess();
+      } else {
+        alert(isHebrew ? 'אימות התשלום נכשל. אנא בצע תשלום מחדש.' : 'Payment verification failed. Please make payment again.');
       }
     } catch (error) {
       console.error('PayPal verification failed:', error);
-      // Fallback to old method if verification fails
-      handleAutoPaymentRecord();
+      alert(isHebrew ? 'שגיאה באימות התשלום. אנא בצע תשלום מחדש.' : 'Payment verification error. Please make payment again.');
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleAutoPaymentRecord = async () => {
-    if (!user?.id) return;
-    
-    setIsProcessing(true);
-    try {
-      const transactionId = `paypal_auto_${Date.now()}_${user.id.slice(0, 8)}`;
-      console.log('Fallback: Auto-recording PayPal payment:', { userId: user.id, transactionId, amount });
-      
-      // Use the old record payment method as fallback
-      const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
-        body: {
-          user_id: user.id,
-          transaction_id: transactionId,
-          amount: amount,
-          service_type: 'flipbook'
-        }
-      });
-
-      if (recordError) {
-        console.error('Error recording payment:', recordError);
-        throw recordError;
-      }
-
-      if (recordResult?.success) {
-        console.log('Payment recorded successfully via fallback method');
-        onSuccess();
-      }
-    } catch (error) {
-      console.error('Auto payment recording failed:', error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   const handlePayPalClick = () => {
     window.open(paypalLink, '_blank');
@@ -201,14 +170,14 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           {isHebrew ? "ביטול" : "Cancel"}
         </button>
 
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            {isHebrew 
-              ? "✅ המערכת כעת מאמתת תשלומים ישירות מול PayPal API לבטיחות מקסימלית. הכפתור 'בדיקת תשלום במערכת' מאמת תשלומים קיימים במערכת."
-              : "✅ The system now verifies payments directly with PayPal API for maximum security. The 'Check Payment in System' button verifies existing payments in the system."
-            }
-          </p>
-        </div>
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-800">
+              {isHebrew 
+                ? "🔒 המערכת מאמתת כל תשלום ישירות מול PayPal API. גישה מותרת רק לאחר אימות מלא של התשלום."
+                : "🔒 The system verifies every payment directly with PayPal API. Access is granted only after full payment verification."
+              }
+            </p>
+          </div>
       </div>
     </div>
   );
