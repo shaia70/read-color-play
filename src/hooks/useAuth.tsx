@@ -3,6 +3,8 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
 import { toast } from './use-toast';
+import { sendRegistrationEmail } from '@/services/emailService';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AuthUser {
   id: string;
@@ -41,6 +43,7 @@ export const useAuthProvider = (): AuthContextType => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     // Set up auth state listener
@@ -111,7 +114,8 @@ export const useAuthProvider = (): AuthContextType => {
         password,
         options: {
           data: {
-            name: name || email.split('@')[0]
+            name: name || email.split('@')[0],
+            registration_email_sent: false
           }
         }
       });
@@ -120,6 +124,30 @@ export const useAuthProvider = (): AuthContextType => {
 
       if (data.user) {
         console.log('Registration successful:', data.user.id);
+        
+        // Send registration email only if user was created successfully
+        try {
+          await sendRegistrationEmail({
+            name: name || email.split('@')[0],
+            email: email,
+            password: password
+          }, language);
+          
+          console.log('Registration email sent successfully');
+          
+          // Update user metadata to mark email as sent
+          const { error: updateError } = await supabase.auth.updateUser({
+            data: { registration_email_sent: true }
+          });
+          
+          if (updateError) {
+            console.error('Error updating registration email status:', updateError);
+          }
+          
+        } catch (emailError) {
+          console.error('Error sending registration email:', emailError);
+          // Don't throw error here as registration was successful
+        }
       }
     } catch (error) {
       console.error('Registration error:', error);

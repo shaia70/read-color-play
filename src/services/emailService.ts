@@ -15,6 +15,18 @@ export interface EmailParams {
   message: string;
 }
 
+export interface RegistrationEmailParams {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface PaymentConfirmationParams {
+  name: string;
+  email: string;
+  password?: string;
+}
+
 export const sendEmail = async (params: EmailParams, language: string) => {
   const defaultSubject = language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר';
   
@@ -54,6 +66,102 @@ export const sendEmail = async (params: EmailParams, language: string) => {
     console.error("Error in emailService:", error);
     throw error;
   }
+};
+
+// Send registration confirmation email
+export const sendRegistrationEmail = async (params: RegistrationEmailParams, language: string) => {
+  const subject = language === 'he' ? 'ברוכים הבאים לשלי בוקס - הרשמה הושלמה' : 'Welcome to Shelley Books - Registration Complete';
+  
+  const message = language === 'he' 
+    ? `שלום ${params.name},
+
+ברוכים הבאים לשלי בוקס!
+
+הרשמתך הושלמה בהצלחה. להלן פרטי הכניסה שלך:
+
+שם משתמש (אימייל): ${params.email}
+סיסמה: ${params.password}
+
+⚠️ שים לב: טרם בוצע תשלום עבור גישה לספר הדיגיטלי.
+כדי לקבל גישה מלאה לתוכן, יש צורך להשלים את התשלום בערך של 60 ש"ח.
+
+לאחר התשלום תקבל אימייל נוסף המאשר את הרכישה.
+
+תודה שבחרת בשלי בוקס!
+
+בברכה,
+צוות שלי בוקס`
+    : `Hello ${params.name},
+
+Welcome to Shelley Books!
+
+Your registration has been completed successfully. Here are your login details:
+
+Username (Email): ${params.email}
+Password: ${params.password}
+
+⚠️ Please note: Payment has not yet been made for access to the digital book.
+To get full access to the content, you need to complete payment of 60 ILS.
+
+After payment, you will receive another email confirming your purchase.
+
+Thank you for choosing Shelley Books!
+
+Best regards,
+Shelley Books Team`;
+
+  return sendEmail({
+    name: params.name,
+    email: params.email,
+    subject,
+    message
+  }, language);
+};
+
+// Send payment confirmation email
+export const sendPaymentConfirmationEmail = async (params: PaymentConfirmationParams, language: string) => {
+  const subject = language === 'he' ? 'שלי בוקס - תשלום התקבל בהצלחה!' : 'Shelley Books - Payment Received Successfully!';
+  
+  const message = language === 'he' 
+    ? `שלום ${params.name},
+
+מעולה! התשלום שלך התקבל בהצלחה.
+
+כעת יש לך גישה מלאה לספר הדיגיטלי של שלי בוקס.
+
+פרטי הכניסה שלך:
+שם משתמש (אימייל): ${params.email}
+${params.password ? `סיסמה: ${params.password}` : '(השתמש בסיסמה שבחרת בעת ההרשמה)'}
+
+תוכל לגשת לתוכן בכל עת באתר.
+
+תודה על הרכישה וההצטרפות למשפחת שלי בוקס!
+
+בברכה,
+צוות שלי בוקס`
+    : `Hello ${params.name},
+
+Excellent! Your payment has been received successfully.
+
+You now have full access to the Shelley Books digital flipbook.
+
+Your login details:
+Username (Email): ${params.email}
+${params.password ? `Password: ${params.password}` : '(Use the password you chose during registration)'}
+
+You can access the content at any time on our website.
+
+Thank you for your purchase and for joining the Shelley Books family!
+
+Best regards,
+Shelley Books Team`;
+
+  return sendEmail({
+    name: params.name,
+    email: params.email,
+    subject,
+    message
+  }, language);
 };
 
 // Create a function to generate a mailto link as fallback

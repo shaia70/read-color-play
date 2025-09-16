@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { sendPaymentConfirmationEmail } from '@/services/emailService';
 
 export const usePaymentVerification = () => {
   const [hasValidPayment, setHasValidPayment] = useState(false);
@@ -48,6 +49,22 @@ export const usePaymentVerification = () => {
         if (recordResult?.success) {
           console.log('Payment recorded successfully:', recordResult);
           setHasValidPayment(true);
+          
+          // Send payment confirmation email
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await sendPaymentConfirmationEmail({
+                name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+                email: user.email || '',
+              }, language);
+              
+              console.log('Payment confirmation email sent successfully');
+            }
+          } catch (emailError) {
+            console.error('Error sending payment confirmation email:', emailError);
+            // Don't block the payment success flow
+          }
           
           toast({
             title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
@@ -197,6 +214,22 @@ export const usePaymentVerification = () => {
       if (result?.success) {
         console.log('Payment recorded successfully:', result);
         setHasValidPayment(true);
+        
+        // Send payment confirmation email
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await sendPaymentConfirmationEmail({
+              name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+              email: user.email || '',
+            }, language);
+            
+            console.log('Payment confirmation email sent successfully');
+          }
+        } catch (emailError) {
+          console.error('Error sending payment confirmation email:', emailError);
+          // Don't block the payment success flow
+        }
         
         toast({
           title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
