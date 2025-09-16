@@ -255,6 +255,7 @@ export type Database = {
           currency: string
           id: string
           paypal_transaction_id: string | null
+          service_type: string | null
           status: string
           updated_at: string | null
           user_id: string
@@ -265,6 +266,7 @@ export type Database = {
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
+          service_type?: string | null
           status?: string
           updated_at?: string | null
           user_id: string
@@ -275,6 +277,7 @@ export type Database = {
           currency?: string
           id?: string
           paypal_transaction_id?: string | null
+          service_type?: string | null
           status?: string
           updated_at?: string | null
           user_id?: string
@@ -600,14 +603,22 @@ export type Database = {
           access_duration_days: number | null
           access_expires_at: string | null
           access_granted_at: string | null
+          bina_access_expires_at: string | null
+          bina_access_granted_at: string | null
           created_at: string
           email: string
+          flipbook_access_expires_at: string | null
+          flipbook_access_granted_at: string | null
           has_paid: boolean | null
           id: string
           last_seen: string | null
           name: string | null
+          paid_for_bina: boolean | null
+          paid_for_flipbook: boolean | null
           parent_emails: string[] | null
           payment_amount: number | null
+          registered_for_bina: boolean | null
+          registered_for_flipbook: boolean | null
           role: string | null
           updated_at: string | null
         }
@@ -615,14 +626,22 @@ export type Database = {
           access_duration_days?: number | null
           access_expires_at?: string | null
           access_granted_at?: string | null
+          bina_access_expires_at?: string | null
+          bina_access_granted_at?: string | null
           created_at?: string
           email?: string
+          flipbook_access_expires_at?: string | null
+          flipbook_access_granted_at?: string | null
           has_paid?: boolean | null
           id?: string
           last_seen?: string | null
           name?: string | null
+          paid_for_bina?: boolean | null
+          paid_for_flipbook?: boolean | null
           parent_emails?: string[] | null
           payment_amount?: number | null
+          registered_for_bina?: boolean | null
+          registered_for_flipbook?: boolean | null
           role?: string | null
           updated_at?: string | null
         }
@@ -630,14 +649,22 @@ export type Database = {
           access_duration_days?: number | null
           access_expires_at?: string | null
           access_granted_at?: string | null
+          bina_access_expires_at?: string | null
+          bina_access_granted_at?: string | null
           created_at?: string
           email?: string
+          flipbook_access_expires_at?: string | null
+          flipbook_access_granted_at?: string | null
           has_paid?: boolean | null
           id?: string
           last_seen?: string | null
           name?: string | null
+          paid_for_bina?: boolean | null
+          paid_for_flipbook?: boolean | null
           parent_emails?: string[] | null
           payment_amount?: number | null
+          registered_for_bina?: boolean | null
+          registered_for_flipbook?: boolean | null
           role?: string | null
           updated_at?: string | null
         }
@@ -738,8 +765,21 @@ export type Database = {
         Args: { amount?: number; duration_days?: number; user_id: string }
         Returns: undefined
       }
+      grant_service_access: {
+        Args: {
+          amount?: number
+          duration_days?: number
+          service_name: string
+          user_id: string
+        }
+        Returns: undefined
+      }
       has_active_access: {
         Args: { user_id?: string }
+        Returns: boolean
+      }
+      has_service_access: {
+        Args: { service_name: string; user_id: string }
         Returns: boolean
       }
       is_parent_of: {
