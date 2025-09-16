@@ -806,6 +806,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      reset_user_testing_data: {
+        Args: { p_coupon_code: string; p_user_name: string }
+        Returns: undefined
+      }
       update_google_drive_tokens: {
         Args: {
           p_access_token: string
