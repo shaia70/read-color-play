@@ -28,7 +28,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     // Different PayPal payment links for different amounts
     if (amount <= 5) {
       // PayPal link for 5 NIS discount price
-      return `https://www.paypal.com/ncp/payment/TJTQL9CZRJ5MJ?return=${returnUrl}&cancel_return=${cancelUrl}`;
+      return `https://www.paypal.com/ncp/payment/CQXVLC4MF9E3N?return=${returnUrl}&cancel_return=${cancelUrl}`;
     }
     // Default PayPal link for 60 NIS
     return `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
