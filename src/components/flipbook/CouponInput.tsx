@@ -74,8 +74,8 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60 
         discountType: result.discount_type
       });
 
-      // If it's a full discount (price becomes 0) or very low price, give free access
-      if (newPrice <= 5) {
+      // If it's a full discount (price becomes 0 or nearly 0), give free access
+      if (newPrice <= 0.5) {
         console.log('Coupon provides free or very cheap access - granting immediately');
         
         // Grant access to the user using the coupon-specific function
