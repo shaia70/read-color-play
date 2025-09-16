@@ -110,12 +110,36 @@ Thank you for choosing Shelley Books!
 Best regards,
 Shelley Books Team`;
 
-  return sendEmail({
+  // Use different template parameters for user-directed emails
+  const templateParams = {
     name: params.name,
-    email: params.email,
+    title: subject,
+    from_name: "Shelley Books",
+    from_email: "contact@shelley.co.il", // Send FROM contact@shelley.co.il
     subject,
-    message
-  }, language);
+    message,
+    to_name: params.name,
+    to_email: params.email, // Send TO the user's email
+    recipient: params.email,
+    reply_to: "contact@shelley.co.il",
+  };
+
+  console.log("Sending registration email with params:", templateParams);
+  
+  try {
+    const response = await emailjs.send(
+      SERVICE_ID, 
+      TEMPLATE_ID, 
+      templateParams,
+      PUBLIC_KEY
+    );
+    
+    console.log("Registration email sent successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Error sending registration email:", error);
+    throw error;
+  }
 };
 
 // Send payment confirmation email
@@ -156,12 +180,36 @@ Thank you for your purchase and for joining the Shelley Books family!
 Best regards,
 Shelley Books Team`;
 
-  return sendEmail({
+  // Use different template parameters for user-directed emails
+  const templateParams = {
     name: params.name,
-    email: params.email,
+    title: subject,
+    from_name: "Shelley Books",
+    from_email: "contact@shelley.co.il", // Send FROM contact@shelley.co.il
     subject,
-    message
-  }, language);
+    message,
+    to_name: params.name,
+    to_email: params.email, // Send TO the user's email
+    recipient: params.email,
+    reply_to: "contact@shelley.co.il",
+  };
+
+  console.log("Sending payment confirmation email with params:", templateParams);
+  
+  try {
+    const response = await emailjs.send(
+      SERVICE_ID, 
+      TEMPLATE_ID, 
+      templateParams,
+      PUBLIC_KEY
+    );
+    
+    console.log("Payment confirmation email sent successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Error sending payment confirmation email:", error);
+    throw error;
+  }
 };
 
 // Create a function to generate a mailto link as fallback
