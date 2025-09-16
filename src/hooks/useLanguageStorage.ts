@@ -6,15 +6,19 @@ import { Language } from '@/types/language';
 export const useLanguageStorage = () => {
   // Get stored language from localStorage or default to Hebrew
   const getStoredLanguage = (): Language => {
+    if (typeof window === 'undefined') return 'he'; // Default for SSR
     const storedLanguage = localStorage.getItem('shelley-language');
     return (storedLanguage === 'en' || storedLanguage === 'he') ? storedLanguage : 'he';
   };
 
-  const [language, setLanguageState] = useState<Language>(getStoredLanguage);
+  // Use lazy initial state to avoid localStorage access during render
+  const [language, setLanguageState] = useState<Language>(() => getStoredLanguage());
 
   // Update localStorage when language changes
   const setLanguage = (newLanguage: Language) => {
-    localStorage.setItem('shelley-language', newLanguage);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('shelley-language', newLanguage);
+    }
     setLanguageState(newLanguage);
   };
 
