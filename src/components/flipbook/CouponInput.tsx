@@ -9,9 +9,11 @@ import { toast } from "@/hooks/use-toast";
 interface CouponInputProps {
   userId: string;
   onSuccess: () => void;
+  onDiscountApplied?: (discountAmount: number, newPrice: number) => void;
+  originalPrice?: number;
 }
 
-const CouponInput = ({ userId, onSuccess }: CouponInputProps) => {
+const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60 }: CouponInputProps) => {
   const { language } = useLanguage();
   const [couponCode, setCouponCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -59,43 +61,74 @@ const CouponInput = ({ userId, onSuccess }: CouponInputProps) => {
         return;
       }
 
-      // Grant access to the user using the coupon-specific function
-      console.log('Granting access with coupon:', result);
+      // Check if this is a discount coupon or free access coupon
+      const discountAmount = result.discount_amount || 0;
+      const discountInNIS = discountAmount / 100; // Convert agorot to NIS
+      const newPrice = Math.max(0, originalPrice - discountInNIS);
       
-      const { error: accessError } = await supabase
-        .rpc('redeem_coupon_access', {
-          p_user_id: userId,
-          p_duration_days: result.access_duration_days || 30,
-          p_coupon_code: couponCode.trim()
-        });
-
-      if (accessError) {
-        throw accessError;
-      }
-
-      // Record coupon usage
-      const { error: usageError } = await supabase
-        .from('coupon_usage')
-        .insert({
-          user_id: userId,
-          coupon_code: couponCode.trim()
-        });
-
-      if (usageError) {
-        console.error('Error recording coupon usage:', usageError);
-        // Don't throw - access was already granted
-      }
-
-      // Note: Coupon usage count should be updated by a database trigger or function
-
-      toast({
-        title: isHebrew ? 'קופון הופעל בהצלחה!' : 'Coupon activated successfully!',
-        description: isHebrew 
-          ? `קיבלת גישה חינמית לתוכן ל-${result.access_duration_days || 30} ימים`
-          : `You received free access to content for ${result.access_duration_days || 30} days`
+      console.log('Coupon details:', {
+        discountAmount,
+        discountInNIS,
+        originalPrice,
+        newPrice,
+        discountType: result.discount_type
       });
 
-      onSuccess();
+      // If it's a full discount (price becomes 0) or very low price, give free access
+      if (newPrice <= 5) {
+        console.log('Coupon provides free or very cheap access - granting immediately');
+        
+        // Grant access to the user using the coupon-specific function
+        const { error: accessError } = await supabase
+          .rpc('redeem_coupon_access', {
+            p_user_id: userId,
+            p_duration_days: result.access_duration_days || 30,
+            p_coupon_code: couponCode.trim()
+          });
+
+        if (accessError) {
+          throw accessError;
+        }
+
+        // Record coupon usage
+        const { error: usageError } = await supabase
+          .from('coupon_usage')
+          .insert({
+            user_id: userId,
+            coupon_code: couponCode.trim()
+          });
+
+        if (usageError) {
+          console.error('Error recording coupon usage:', usageError);
+          // Don't throw - access was already granted
+        }
+
+        toast({
+          title: isHebrew ? 'קופון הופעל בהצלחה!' : 'Coupon activated successfully!',
+          description: isHebrew 
+            ? `קיבלת גישה חינמית לתוכן ל-${result.access_duration_days || 30} ימים`
+            : `You received free access to content for ${result.access_duration_days || 30} days`
+        });
+
+        onSuccess();
+      } else {
+        console.log('Coupon provides discount - updating price display');
+        
+        // This is a discount coupon, update the price display
+        toast({
+          title: isHebrew ? 'קופון הופעל!' : 'Coupon activated!',
+          description: isHebrew 
+            ? `הנחה של ${discountInNIS} ש"ח הופעלה! המחיר החדש: ${newPrice} ש"ח`
+            : `Discount of ${discountInNIS} NIS applied! New price: ${newPrice} NIS`
+        });
+
+        // Call the discount callback if provided
+        if (onDiscountApplied) {
+          onDiscountApplied(discountInNIS, newPrice);
+        }
+        
+        // Don't call onSuccess() yet - wait for payment
+      }
       
     } catch (error) {
       console.error('Coupon processing error:', error);

@@ -21,12 +21,15 @@ const Flipbook = () => {
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion } = usePaymentVerification();
   const [showPayment, setShowPayment] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [appliedDiscount, setAppliedDiscount] = useState<{amount: number, newPrice: number} | null>(null);
   const hasCheckedPayment = useRef(false);
   const isHebrew = language === 'he';
 
   // Fixed price to prevent caching issues
-  const bookPrice = "60 ₪";
-  const paymentAmount = 60;
+  const originalPrice = 60;
+  const currentPrice = appliedDiscount?.newPrice || originalPrice;
+  const bookPrice = `${currentPrice} ₪`;
+  const paymentAmount = currentPrice;
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
 
   // Debug logging removed for production
@@ -78,6 +81,11 @@ const Flipbook = () => {
 
   const handleConfirmPayment = async (userId: string) => {
     await confirmPaymentCompletion(userId);
+  };
+
+  const handleDiscountApplied = (discountAmount: number, newPrice: number) => {
+    console.log('Discount applied:', { discountAmount, newPrice });
+    setAppliedDiscount({ amount: discountAmount, newPrice });
   };
 
   // אם המשתמש לא מחובר, הצג טופס התחברות
@@ -195,9 +203,11 @@ const Flipbook = () => {
               
               <CouponInput 
                 userId={user.id}
+                originalPrice={originalPrice}
                 onSuccess={() => {
                   checkPaymentStatus(user.id);
                 }}
+                onDiscountApplied={handleDiscountApplied}
               />
               
               <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">
@@ -235,8 +245,18 @@ const Flipbook = () => {
                   </ul>
                 </div>
                 
-                <div className="text-3xl font-bold text-shelley-green mb-6">
-                  {bookPrice}
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-shelley-green mb-2">
+                    {bookPrice}
+                  </div>
+                  {appliedDiscount && (
+                    <div className="text-sm text-gray-600 mb-4">
+                      <span className="line-through text-red-500">{originalPrice} ₪</span>
+                      <span className="mr-2 text-green-600">
+                        {isHebrew ? ` הנחה של ${appliedDiscount.amount} ₪` : ` Save ${appliedDiscount.amount} NIS`}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 
                 {!showPayment ? (
