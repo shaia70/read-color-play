@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import GoogleAnalytics from './GoogleAnalytics';
 import FacebookPixel from './FacebookPixel';
 
@@ -12,27 +11,27 @@ const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   children,
   disabled = false
 }) => {
-  const [pixelConfig, setPixelConfig] = useState({
-    googleAnalyticsId: 'G-XXXXXXXXXX', // Default placeholder
-    facebookPixelId: 'XXXXXXXXXX'      // Default placeholder
-  });
-  
-  useEffect(() => {
-    // Get configuration from local storage if available
-    const storedConfig = localStorage.getItem('analytics_pixel_config');
-    if (storedConfig) {
-      try {
-        const parsedConfig = JSON.parse(storedConfig);
-        setPixelConfig(parsedConfig);
-      } catch (error) {
-        console.error("Error parsing stored pixel configuration:", error);
-      }
-    }
-  }, []);
+  // For now, just return children to avoid React hook issues
+  // TODO: Re-implement state management after React issues are resolved
   
   // Only render in production and when not disabled
   if (process.env.NODE_ENV !== 'production' || disabled) {
     return <>{children}</>;
+  }
+
+  // Get configuration from local storage synchronously
+  let pixelConfig = {
+    googleAnalyticsId: 'G-XXXXXXXXXX', // Default placeholder
+    facebookPixelId: 'XXXXXXXXXX'      // Default placeholder
+  };
+  
+  try {
+    const storedConfig = localStorage.getItem('analytics_pixel_config');
+    if (storedConfig) {
+      pixelConfig = JSON.parse(storedConfig);
+    }
+  } catch (error) {
+    console.error("Error parsing stored pixel configuration:", error);
   }
   
   // Skip tracking if using placeholder IDs
@@ -41,7 +40,6 @@ const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     pixelConfig.facebookPixelId === 'XXXXXXXXXX';
   
   if (skipTracking) {
-    // Silently skip without warning in development
     return <>{children}</>;
   }
   
