@@ -21,6 +21,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import Flipbook from "./pages/Flipbook";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Scroll restoration and analytics tracking component
 const ScrollToTop = () => {
@@ -38,36 +39,42 @@ const App = () => {
   const queryClient = new QueryClient();
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <LanguageProvider>
-          <AuthProvider>
-            <BrowserRouter>
-              <AnalyticsProvider>
-                <ScrollToTop />
-                <AnimatePresence mode="wait">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/books" element={<Books />} />
-                    <Route path="/technology" element={<Technology />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/concept" element={<Concept />} />
-                    <Route path="/download" element={<Download />} />
-                    <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/flipbook" element={<Flipbook />} />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/admin-statistics" element={<Statistics />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </AnimatePresence>
-              </AnalyticsProvider>
-            </BrowserRouter>
-            <Toaster />
-            <Sonner />
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <LanguageProvider>
+            <AuthProvider>
+              <BrowserRouter>
+                <ErrorBoundary>
+                  <AnalyticsProvider>
+                    <ScrollToTop />
+                    <AnimatePresence mode="wait">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/books" element={<Books />} />
+                        <Route path="/technology" element={<Technology />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/concept" element={<Concept />} />
+                        <Route path="/download" element={<Download />} />
+                        <Route path="/gallery" element={<Gallery />} />
+                        <Route path="/flipbook" element={<Flipbook />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/admin-statistics" element={<Statistics />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </AnimatePresence>
+                  </AnalyticsProvider>
+                </ErrorBoundary>
+              </BrowserRouter>
+              <ErrorBoundary>
+                <Toaster />
+                <Sonner />
+              </ErrorBoundary>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 
