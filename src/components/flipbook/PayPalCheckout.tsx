@@ -20,8 +20,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const [isProcessing, setIsProcessing] = useState(false);
   const isHebrew = language === 'he';
 
-  const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
-  const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
+  const returnUrl = `${window.location.origin}/flipbook?payment=success`;
+  const cancelUrl = `${window.location.origin}/flipbook`;
   
   // Dynamic PayPal payment links based on amount
   const getPayPalLink = (amount: number) => {
