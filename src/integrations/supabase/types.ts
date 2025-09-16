@@ -254,33 +254,45 @@ export type Database = {
           created_at: string
           currency: string
           id: string
+          payer_email: string | null
+          payer_id: string | null
           paypal_transaction_id: string | null
+          paypal_verification_date: string | null
           service_type: string | null
           status: string
           updated_at: string | null
           user_id: string
+          verified_with_paypal: boolean | null
         }
         Insert: {
           amount: number
           created_at?: string
           currency?: string
           id?: string
+          payer_email?: string | null
+          payer_id?: string | null
           paypal_transaction_id?: string | null
+          paypal_verification_date?: string | null
           service_type?: string | null
           status?: string
           updated_at?: string | null
           user_id: string
+          verified_with_paypal?: boolean | null
         }
         Update: {
           amount?: number
           created_at?: string
           currency?: string
           id?: string
+          payer_email?: string | null
+          payer_id?: string | null
           paypal_transaction_id?: string | null
+          paypal_verification_date?: string | null
           service_type?: string | null
           status?: string
           updated_at?: string | null
           user_id?: string
+          verified_with_paypal?: boolean | null
         }
         Relationships: []
       }

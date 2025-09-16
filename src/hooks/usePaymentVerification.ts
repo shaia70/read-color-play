@@ -264,12 +264,96 @@ export const usePaymentVerification = () => {
     }
   };
 
+  const verifyPayPalPayment = async (userId: string, paymentId: string, amount: number) => {
+    try {
+      setIsLoading(true);
+      console.log('=== VERIFYING PAYPAL PAYMENT ===');
+      console.log('User ID:', userId);
+      console.log('Payment ID:', paymentId);
+      console.log('Amount:', amount);
+      
+      const { data: result, error: verifyError } = await supabase.functions.invoke('verify-paypal-payment', {
+        body: {
+          user_id: userId,
+          payment_id: paymentId,
+          amount: amount
+        }
+      });
+
+      console.log('PayPal verification result:', { result, verifyError });
+
+      if (verifyError) {
+        console.error('Error verifying PayPal payment:', verifyError);
+        throw verifyError;
+      }
+
+      if (result?.success && result?.verified) {
+        console.log('PayPal payment verified successfully:', result);
+        setHasValidPayment(true);
+        
+        // Send payment confirmation email
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await sendPaymentConfirmationEmail({
+              name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+              email: user.email || '',
+            }, language);
+            
+            console.log('Payment confirmation email sent successfully');
+          }
+        } catch (emailError) {
+          console.error('Error sending payment confirmation email:', emailError);
+          // Don't block the payment success flow
+        }
+        
+        toast({
+          title: language === 'he' ? 'תשלום אומת בהצלחה' : 'Payment verified successfully',
+          description: language === 'he' ? 'התשלום שלך אומת מול PayPal' : 'Your payment has been verified with PayPal'
+        });
+        
+        return true;
+      } else {
+        console.log('PayPal payment verification failed:', result);
+        
+        toast({
+          variant: "destructive",
+          title: language === 'he' ? 'אימות התשלום נכשל' : 'Payment verification failed',
+          description: result?.error || (language === 'he' ? 'לא ניתן לאמת את התשלום מול PayPal' : 'Could not verify payment with PayPal')
+        });
+        
+        return false;
+      }
+      
+    } catch (err) {
+      console.error('=== PAYPAL VERIFICATION ERROR ===');
+      console.error('Error details:', err);
+      
+      const errorMsg = language === 'he' 
+        ? 'בעיה באימות התשלום מול PayPal' 
+        : 'PayPal payment verification issue';
+      
+      setError(errorMsg);
+      
+      toast({
+        variant: "destructive",
+        title: language === 'he' ? 'שגיאה' : 'Error',
+        description: errorMsg
+      });
+      
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     hasValidPayment,
     isLoading,
     error,
     checkPaymentStatus,
     confirmPaymentCompletion,
-    recordPayment
+    recordPayment,
+    verifyPayPalPayment
   };
 };
