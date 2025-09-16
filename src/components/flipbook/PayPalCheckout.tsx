@@ -23,8 +23,18 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const returnUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=success`);
   const cancelUrl = encodeURIComponent(`${window.location.origin}/flipbook?payment=cancel`);
   
-  // PayPal payment link for 60 NIS
-  const paypalLink = `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
+  // Dynamic PayPal payment links based on amount
+  const getPayPalLink = (amount: number) => {
+    // Different PayPal payment links for different amounts
+    if (amount <= 5) {
+      // PayPal link for 5 NIS discount price
+      return `https://www.paypal.com/ncp/payment/TJTQL9CZRJ5MJ?return=${returnUrl}&cancel_return=${cancelUrl}`;
+    }
+    // Default PayPal link for 60 NIS
+    return `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
+  };
+  
+  const paypalLink = getPayPalLink(amount);
 
   // Check for PayPal success on component mount
   useEffect(() => {
