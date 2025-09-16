@@ -35,7 +35,8 @@ export const usePaymentVerification = () => {
           body: {
             user_id: userId,
             transaction_id: 'paypal_success_' + Date.now(),
-            amount: 60
+            amount: 60,
+            service_type: 'flipbook' // Record as flipbook payment
           }
         });
 
@@ -77,10 +78,13 @@ export const usePaymentVerification = () => {
       }
 
       // Use Edge Function to check payment status
-      console.log('Checking payment status via Edge Function...');
+      console.log('Checking flipbook payment status via Edge Function...');
       
       const { data: result, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
+        body: { 
+          user_id: userId,
+          service_type: 'flipbook' // Check specifically for flipbook payments
+        }
       });
 
       console.log('Edge Function result:', { result, checkError });
@@ -93,7 +97,7 @@ export const usePaymentVerification = () => {
       const hasPayment = result?.hasValidPayment === true;
       
       if (hasPayment) {
-        console.log('✅ Valid payment found via Edge Function!');
+        console.log('✅ Valid flipbook payment found via Edge Function!');
         console.log('Payment count:', result?.paymentCount || 0);
         setHasValidPayment(true);
         
@@ -102,7 +106,7 @@ export const usePaymentVerification = () => {
           description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
         });
       } else {
-        console.log('❌ No valid payment found');
+        console.log('❌ No valid flipbook payment found');
         console.log('Payment count:', result?.paymentCount || 0);
         setHasValidPayment(false);
       }
@@ -136,7 +140,10 @@ export const usePaymentVerification = () => {
       
       // Use Edge Function for payment confirmation
       const { data: result, error: checkError } = await supabase.functions.invoke('check-payment', {
-        body: { user_id: userId }
+        body: { 
+          user_id: userId,
+          service_type: 'flipbook' // Check specifically for flipbook access
+        }
       });
 
       console.log('Payment confirmation result:', { result, checkError });

@@ -48,9 +48,10 @@ serve(async (req) => {
       )
     }
 
-    const { user_id } = requestBody
+    const { user_id, service_type = 'flipbook' } = requestBody
 
     console.log('User ID received:', user_id)
+    console.log('Service type:', service_type)
     console.log('User ID type:', typeof user_id)
 
     if (!user_id) {
@@ -72,27 +73,43 @@ serve(async (req) => {
       }
     })
 
-    console.log('Calling get_user_payments database function...')
+    console.log('Calling get_user_payments database function for service:', service_type)
     
-    // Use the database function instead of direct table access
-    const { data: payments, error } = await supabase.rpc('get_user_payments', {
-      p_user_id: user_id
+    // Get payments for specific service type
+    const { data: payments, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('service_type', service_type)
+      .eq('status', 'success')
+    
+    console.log('Service-specific payments result:', { payments, error })
+
+    // Also check service-specific access using the new function
+    console.log('Checking service-specific access...')
+    const { data: hasAccess, error: accessError } = await supabase.rpc('has_service_access', {
+      user_id: user_id,
+      service_name: service_type
     })
     
-    console.log('Database function result:', { payments, error })
+    console.log('Service access check:', { hasAccess, accessError })
 
-    // Also check user has_paid status for coupon redemptions
-    console.log('Checking user has_paid status...')
+    // Also check user service-specific fields for coupon redemptions
+    console.log('Checking user service-specific status...')
+    const serviceFields = service_type === 'flipbook' 
+      ? 'paid_for_flipbook, flipbook_access_expires_at, registered_for_flipbook'
+      : 'paid_for_bina, bina_access_expires_at, registered_for_bina'
+      
     const { data: userData, error: userError } = await supabase
       .from('users')
-      .select('has_paid, access_expires_at')
+      .select(serviceFields + ', has_paid, access_expires_at')
       .eq('id', user_id)
       .single()
     
-    console.log('User data result:', { userData, userError })
+    console.log('User service data result:', { userData, userError })
 
-    if (error && userError) {
-      console.error('Both payment and user queries failed:', { error, userError })
+    if (error && userError && accessError) {
+      console.error('All payment checks failed:', { error, userError, accessError })
       
       return new Response(
         JSON.stringify({ 
@@ -101,7 +118,8 @@ serve(async (req) => {
           error: 'Failed to check payment status',
           errorDetails: {
             paymentError: error?.message,
-            userError: userError?.message
+            userError: userError?.message,
+            accessError: accessError?.message
           }
         }),
         { 
@@ -111,16 +129,28 @@ serve(async (req) => {
       )
     }
 
-    // Check if user has paid (either through payment or coupon)
+    // Check service-specific access
     const hasPaymentRecord = payments && payments.length > 0
-    const hasPaidStatus = userData?.has_paid && (!userData?.access_expires_at || new Date(userData.access_expires_at) > new Date())
-    const hasValidAccess = hasPaymentRecord || hasPaidStatus
+    const hasServiceAccess = hasAccess === true
     
-    console.log('=== FINAL RESULT ===')
+    // Check service-specific paid status and expiration
+    let hasServicePaidStatus = false
+    if (service_type === 'flipbook') {
+      hasServicePaidStatus = userData?.paid_for_flipbook && 
+        (!userData?.flipbook_access_expires_at || new Date(userData.flipbook_access_expires_at) > new Date())
+    } else if (service_type === 'bina') {
+      hasServicePaidStatus = userData?.paid_for_bina && 
+        (!userData?.bina_access_expires_at || new Date(userData.bina_access_expires_at) > new Date())
+    }
+    
+    const hasValidAccess = hasPaymentRecord || hasServiceAccess || hasServicePaidStatus
+    
+    console.log('=== FINAL SERVICE-SPECIFIC RESULT ===')
+    console.log('Service type:', service_type)
     console.log('Payments found:', payments?.length || 0)
     console.log('Has payment record:', hasPaymentRecord)
-    console.log('Has paid status:', hasPaidStatus)
-    console.log('Access expires at:', userData?.access_expires_at)
+    console.log('Has service access (function):', hasServiceAccess)
+    console.log('Has service paid status:', hasServicePaidStatus)
     console.log('Has valid access:', hasValidAccess)
     console.log('Payment data:', payments)
 
@@ -129,15 +159,17 @@ serve(async (req) => {
         hasValidPayment: hasValidAccess,
         paymentCount: payments?.length || 0,
         payments: payments || [],
+        serviceType: service_type,
         debugInfo: {
-          accessMethod: 'database_function_get_user_payments',
+          accessMethod: 'service_specific_check',
           userIdReceived: user_id,
+          serviceType: service_type,
           paymentsFound: payments?.length || 0,
           paymentsData: payments || [],
-          userHasPaid: userData?.has_paid,
-          accessExpiresAt: userData?.access_expires_at,
+          hasServiceAccess: hasServiceAccess,
+          hasServicePaidStatus: hasServicePaidStatus,
           hasPaymentRecord: hasPaymentRecord,
-          hasPaidStatus: hasPaidStatus
+          userData: userData
         }
       }),
       { 

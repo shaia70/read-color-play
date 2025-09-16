@@ -16,7 +16,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
-    console.log('=== RECORDING PAYMENT (Direct Table Access) ===')
+    console.log('=== RECORDING FLIPBOOK PAYMENT ===')
     console.log('Environment check:', {
       hasUrl: !!supabaseUrl,
       hasServiceKey: !!supabaseServiceKey
@@ -41,7 +41,7 @@ serve(async (req) => {
       }
     })
 
-    const { user_id, transaction_id, amount } = await req.json()
+    const { user_id, transaction_id, amount, service_type = 'flipbook' } = await req.json()
 
     if (!user_id || !transaction_id || !amount) {
       return new Response(
@@ -53,46 +53,56 @@ serve(async (req) => {
       )
     }
 
-    console.log('Recording payment:', { user_id, transaction_id, amount })
+    console.log('Recording payment:', { user_id, transaction_id, amount, service_type })
 
-    // Direct table insert using service role
-    console.log('Inserting payment into table directly...')
+    // Record payment in payments table
+    console.log('Inserting payment into table...')
     
-    const { data: payment, error } = await supabase
+    const { data: payment, error: paymentError } = await supabase
       .from('payments')
       .insert({
         user_id: user_id,
         paypal_transaction_id: transaction_id,
         amount: parseFloat(amount),
         currency: 'ILS',
-        status: 'success'
+        status: 'success',
+        service_type: service_type
       })
       .select()
       .single()
     
-    console.log('Direct insert result:', { payment, error })
+    console.log('Payment insert result:', { payment, paymentError })
 
-    if (error) {
-      console.error('Database Error:', error)
-      
-      return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Payment recording failed'
-        }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      )
+    if (paymentError) {
+      console.error('Payment insert error:', paymentError)
+      throw paymentError;
     }
 
-    console.log('Payment recorded successfully:', payment)
+    // Grant service-specific access using the new function
+    console.log('Granting flipbook access...')
+    
+    const { error: accessError } = await supabase.rpc('grant_service_access', {
+      user_id: user_id,
+      service_name: service_type,
+      duration_days: 30,
+      amount: parseFloat(amount)
+    })
+
+    if (accessError) {
+      console.error('Access grant error:', accessError)
+      // Don't fail the payment recording if access grant fails
+      console.log('Payment recorded but access grant failed - manual intervention may be needed')
+    } else {
+      console.log('Flipbook access granted successfully')
+    }
+
+    console.log('Payment and access recorded successfully:', payment)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        payment: payment
+        payment: payment,
+        service_type: service_type
       }),
       { 
         status: 200,

@@ -115,7 +115,8 @@ export const useAuthProvider = (): AuthContextType => {
         options: {
           data: {
             name: name || email.split('@')[0],
-            registration_email_sent: false
+            registration_email_sent: false,
+            service: 'flipbook' // Track that this is a flipbook registration
           }
         }
       });
@@ -124,6 +125,23 @@ export const useAuthProvider = (): AuthContextType => {
 
       if (data.user) {
         console.log('Registration successful:', data.user.id);
+        
+        // Update user record to mark as registered for flipbook
+        try {
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({ 
+              registered_for_flipbook: true,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', data.user.id);
+
+          if (updateError) {
+            console.error('Error updating flipbook registration:', updateError);
+          }
+        } catch (dbError) {
+          console.error('Database update error:', dbError);
+        }
         
         // Send registration email only if user was created successfully
         try {
