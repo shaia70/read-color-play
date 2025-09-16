@@ -24,59 +24,6 @@ export const usePaymentVerification = () => {
       console.log('=== PAYMENT CHECK VIA EDGE FUNCTION ===');
       console.log('User ID to check:', userId);
       
-      // Check if user came back from PayPal
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentStatus = urlParams.get('payment');
-      
-      if (paymentStatus === 'success') {
-        console.log('PayPal success detected, recording payment...');
-        
-        const { data: recordResult, error: recordError } = await supabase.functions.invoke('record-payment', {
-          body: {
-            user_id: userId,
-            transaction_id: 'paypal_success_' + Date.now(),
-            amount: 60,
-            service_type: 'flipbook' // Record as flipbook payment
-          }
-        });
-
-        console.log('Record payment result:', { recordResult, recordError });
-
-        if (recordError) {
-          console.error('Error recording payment:', recordError);
-          throw recordError;
-        }
-
-        if (recordResult?.success) {
-          console.log('Payment recorded successfully:', recordResult);
-          setHasValidPayment(true);
-          
-          // Send payment confirmation email
-          try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              await sendPaymentConfirmationEmail({
-                name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
-                email: user.email || '',
-              }, language);
-              
-              console.log('Payment confirmation email sent successfully');
-            }
-          } catch (emailError) {
-            console.error('Error sending payment confirmation email:', emailError);
-            // Don't block the payment success flow
-          }
-          
-          toast({
-            title: language === 'he' ? 'תשלום בוצע בהצלחה' : 'Payment successful',
-            description: language === 'he' ? 'יש לך גישה לתוכן' : 'You have access to content'
-          });
-          
-          window.history.replaceState({}, document.title, window.location.pathname);
-          return;
-        }
-      }
-
       // Use Edge Function to check payment status
       console.log('Checking flipbook payment status via Edge Function...');
       

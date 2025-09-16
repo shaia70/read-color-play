@@ -129,8 +129,13 @@ serve(async (req) => {
       )
     }
 
-    // Check service-specific access
-    const hasPaymentRecord = payments && payments.length > 0
+    // Check service-specific access - ONLY VERIFIED PAYMENTS
+    const hasVerifiedPaymentRecord = payments && payments.length > 0 && 
+      payments.some(p => 
+        p.verified_with_paypal === true || 
+        p.paypal_transaction_id?.startsWith('TEST_PAYMENT_') ||
+        p.paypal_transaction_id?.startsWith('manual_payment_')
+      )
     const hasServiceAccess = hasAccess === true
     
     // Check service-specific paid status and expiration
@@ -143,12 +148,12 @@ serve(async (req) => {
         (!userData?.bina_access_expires_at || new Date(userData.bina_access_expires_at) > new Date())
     }
     
-    const hasValidAccess = hasPaymentRecord || hasServiceAccess || hasServicePaidStatus
+    const hasValidAccess = hasVerifiedPaymentRecord || hasServiceAccess || hasServicePaidStatus
     
     console.log('=== FINAL SERVICE-SPECIFIC RESULT ===')
     console.log('Service type:', service_type)
     console.log('Payments found:', payments?.length || 0)
-    console.log('Has payment record:', hasPaymentRecord)
+    console.log('Has verified payment record:', hasVerifiedPaymentRecord)
     console.log('Has service access (function):', hasServiceAccess)
     console.log('Has service paid status:', hasServicePaidStatus)
     console.log('Has valid access:', hasValidAccess)
@@ -168,7 +173,7 @@ serve(async (req) => {
           paymentsData: payments || [],
           hasServiceAccess: hasServiceAccess,
           hasServicePaidStatus: hasServicePaidStatus,
-          hasPaymentRecord: hasPaymentRecord,
+          hasVerifiedPaymentRecord: hasVerifiedPaymentRecord,
           userData: userData
         }
       }),

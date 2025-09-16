@@ -41,7 +41,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
-    const paymentId = urlParams.get('paymentId') || urlParams.get('PayerID') || urlParams.get('token'); // PayPal sends different params
+    const paymentId = urlParams.get('paymentId') || urlParams.get('PayerID') || urlParams.get('token');
     
     if (paymentStatus === 'success' && user?.id && !isProcessing) {
       console.log('PayPal success detected, checking for payment ID...');
@@ -50,14 +50,22 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
         console.log('PayPal payment ID found, verifying with PayPal API:', paymentId);
         handlePayPalVerification(paymentId);
       } else {
-        console.error('No PayPal payment ID found in URL - cannot verify payment without valid payment ID');
-        alert(isHebrew ? 'לא נמצא מזהה תשלום מפייפאל. אנא בצע תשלום מחדש.' : 'No PayPal payment ID found. Please make payment again.');
+        console.error('SECURITY BLOCK: No PayPal payment ID found in URL - access denied');
+        alert(isHebrew ? 'אימות תשלום נכשל - לא נמצא מזהה תשלום מפייפאל. גישה נדחתה.' : 'Payment verification failed - no PayPal payment ID found. Access denied.');
+        
+        // Remove payment parameter from URL to prevent refresh attempts
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // Block any further processing
+        return;
       }
       
-      // Clean URL
-      window.history.replaceState({}, document.title, window.location.pathname);
+      // Clean URL after successful ID verification
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
-  }, [user?.id, isProcessing]);
+  }, [user?.id, isProcessing, amount]);
 
   const handlePayPalVerification = async (paymentId: string) => {
     if (!user?.id) return;
