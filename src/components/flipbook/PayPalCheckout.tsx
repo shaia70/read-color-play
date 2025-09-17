@@ -19,53 +19,36 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const { user } = useAuth();
   const { verifyPayPalPayment } = usePaymentVerification();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentId, setPaymentId] = useState('');
+  const [showPaymentIdInput, setShowPaymentIdInput] = useState(false);
   const isHebrew = language === 'he';
 
   const returnUrl = `${window.location.origin}/flipbook?payment=success`;
   const cancelUrl = `${window.location.origin}/flipbook`;
   
-  // Dynamic PayPal payment links based on amount
+  // PayPal Smart Payment Buttons setup - no return URL needed
   const getPayPalLink = (amount: number) => {
-    // Different PayPal payment links for different amounts
+    // Create a secure payment session that doesn't rely on URL params
     if (amount <= 5) {
-      // PayPal link for 5 NIS discount price
-      return `https://www.paypal.com/ncp/payment/CQXVLC4MF9E3N?return=${returnUrl}&cancel_return=${cancelUrl}`;
+      // PayPal link for 5 NIS discount price - removed return URLs
+      return `https://www.paypal.com/ncp/payment/CQXVLC4MF9E3N`;
     }
-    // Default PayPal link for 60 NIS
-    return `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC?return=${returnUrl}&cancel_return=${cancelUrl}`;
+    // Default PayPal link for 60 NIS - removed return URLs  
+    return `https://www.paypal.com/ncp/payment/A56X3XMDJAEEC`;
   };
   
   const paypalLink = getPayPalLink(amount);
 
-  // Check for PayPal success on component mount and verify with PayPal API
+  // Remove all URL-based payment detection - security vulnerability
   useEffect(() => {
+    // Clean any payment parameters from URL on component mount
     const urlParams = new URLSearchParams(window.location.search);
-    const paymentStatus = urlParams.get('payment');
-    const paymentId = urlParams.get('paymentId') || urlParams.get('PayerID') || urlParams.get('token');
-    
-    if (paymentStatus === 'success' && user?.id && !isProcessing) {
-      console.log('PayPal success detected, checking for payment ID...');
-      
-      if (paymentId) {
-        console.log('PayPal payment ID found, verifying with PayPal API:', paymentId);
-        handlePayPalVerification(paymentId);
-      } else {
-        console.error('SECURITY BLOCK: No PayPal payment ID found in URL - access denied');
-        alert(isHebrew ? 'אימות תשלום נכשל - לא נמצא מזהה תשלום מפייפאל. גישה נדחתה.' : 'Payment verification failed - no PayPal payment ID found. Access denied.');
-        
-        // Remove payment parameter from URL to prevent refresh attempts
-        const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-        
-        // Block any further processing
-        return;
-      }
-      
-      // Clean URL after successful ID verification
+    if (urlParams.has('payment') || urlParams.has('paymentId') || urlParams.has('PayerID') || urlParams.has('token')) {
+      console.log('SECURITY: Removing payment parameters from URL');
       const newUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
-  }, [user?.id, isProcessing, amount]);
+  }, []);
 
   const handlePayPalVerification = async (paymentId: string) => {
     if (!user?.id) return;
@@ -91,7 +74,37 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
 
   const handlePayPalClick = () => {
     window.open(paypalLink, '_blank');
-    console.log("Opening PayPal payment link");
+    setShowPaymentIdInput(true);
+    console.log("Opening PayPal payment link - user will need to enter payment ID manually");
+  };
+
+  const handlePayPalVerificationWithId = async () => {
+    if (!user?.id) {
+      alert(isHebrew ? 'לא נמצא משתמש מחובר' : 'No user logged in');
+      return;
+    }
+
+    if (!paymentId.trim()) {
+      alert(isHebrew ? 'אנא הזן את מזהה התשלום מPayPal' : 'Please enter the PayPal payment ID');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      console.log('Verifying PayPal payment with ID:', { userId: user.id, paymentId, amount });
+      
+      const verified = await verifyPayPalPayment(user.id, paymentId.trim(), amount);
+      if (verified) {
+        onSuccess();
+      } else {
+        alert(isHebrew ? 'אימות התשלום נכשל. ודא שמזהה התשלום נכון.' : 'Payment verification failed. Please check the payment ID.');
+      }
+    } catch (error) {
+      console.error('PayPal verification failed:', error);
+      alert(isHebrew ? 'שגיאה באימות התשלום. אנא בדוק את מזהה התשלום.' : 'Payment verification error. Please check the payment ID.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handlePaymentConfirmation = async () => {
@@ -147,16 +160,52 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
             {isHebrew ? "תשלום בכרטיס אשראי או PayPal" : "Pay with Credit Card or PayPal"}
           </CustomButton>
 
+          {showPaymentIdInput && (
+            <div className="border-t pt-4">
+              <p className="text-sm text-gray-600 mb-3 text-center">
+                {isHebrew 
+                  ? "לאחר השלמת התשלום בPayPal, הזן את מזהה התשלום (Payment ID) כאן:"
+                  : "After completing PayPal payment, enter the Payment ID here:"
+                }
+              </p>
+              
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  value={paymentId}
+                  onChange={(e) => setPaymentId(e.target.value)}
+                  placeholder={isHebrew ? "מזהה תשלום מPayPal" : "PayPal Payment ID"}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isProcessing}
+                />
+                
+                <CustomButton 
+                  variant="green" 
+                  size="lg" 
+                  icon={<CreditCard className="w-6 h-6" />} 
+                  className="w-full text-base py-3 h-14 min-h-0 font-bold"
+                  onClick={handlePayPalVerificationWithId}
+                  disabled={isProcessing || !paymentId.trim()}
+                >
+                  {isProcessing 
+                    ? (isHebrew ? "מאמת תשלום..." : "Verifying Payment...")
+                    : (isHebrew ? "אמת תשלום PayPal" : "Verify PayPal Payment")
+                  }
+                </CustomButton>
+              </div>
+            </div>
+          )}
+
           <div className="border-t pt-4">
             <p className="text-sm text-gray-600 mb-3 text-center">
               {isHebrew 
-                ? "רק אם השלמת תשלום בכרטיס אשראי או PayPal:"
-                : "Only if you completed payment via Credit Card or PayPal:"
+                ? "אם יש לך גישה קיימת - בדוק במערכת:"
+                : "If you have existing access - check in system:"
               }
             </p>
             
             <CustomButton 
-              variant="green" 
+              variant="outline" 
               size="lg" 
               icon={<CreditCard className="w-6 h-6" />} 
               className="w-full text-base py-3 h-14 min-h-0 font-bold"
@@ -165,7 +214,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
             >
               {isProcessing 
                 ? (isHebrew ? "בודק..." : "Checking...")
-                : (isHebrew ? "בדיקת תשלום במערכת" : "Check Payment in System")
+                : (isHebrew ? "בדיקת גישה קיימת" : "Check Existing Access")
               }
             </CustomButton>
           </div>
@@ -181,10 +230,20 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-sm text-green-800">
               {isHebrew 
-                ? "🔒 המערכת מאמתת כל תשלום ישירות מול PayPal API. גישה מותרת רק לאחר אימות מלא של התשלום."
-                : "🔒 The system verifies every payment directly with PayPal API. Access is granted only after full payment verification."
+                ? "🔒 המערכת מאמתת כל תשלום ישירות מול PayPal API. לאחר התשלום, תקבל מזהה תשלום (Payment ID) שיש להזין לאימות. גישה מותרת רק לאחר אימות מלא של התשלום."
+                : "🔒 The system verifies every payment directly with PayPal API. After payment, you'll receive a Payment ID that must be entered for verification. Access is granted only after full payment verification."
               }
             </p>
+            {showPaymentIdInput && (
+              <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded">
+                <p className="text-xs text-blue-800">
+                  {isHebrew 
+                    ? "💡 איך למצוא את מזהה התשלום: לאחר התשלום בPayPal, חפש ב'Transaction ID' או 'Payment ID' במייל האישור או בהיסטוריית התשלומים"
+                    : "💡 How to find Payment ID: After PayPal payment, look for 'Transaction ID' or 'Payment ID' in confirmation email or payment history"
+                  }
+                </p>
+              </div>
+            )}
           </div>
       </div>
     </div>
