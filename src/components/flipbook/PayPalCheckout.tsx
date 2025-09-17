@@ -98,9 +98,16 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     }
 
     const script = document.createElement('script');
-    script.src = 'https://www.paypal.com/sdk/js?client-id=AQiJxW1nOvVJu6NF5zZb5rJQb7qFyFf-LsRQpQ2qOQnhpVMNpFpI1EQr_0xgOGPwBjSAMYjNQKh-xKzW&currency=ILS&components=buttons';
-    script.onload = () => setPaypalLoaded(true);
-    script.onerror = () => console.error('Failed to load PayPal SDK');
+    // Using PayPal sandbox client ID for testing
+    script.src = 'https://www.paypal.com/sdk/js?client-id=ATseWJk1Mz_1Y5pOdBGdz7Fz8gJl4n8qVtGJmQD8cJGTVvK_J7RQpbXKm8GqQr7gQn5RnMzQ5FZQ1Vz5&currency=ILS&components=buttons';
+    script.onload = () => {
+      console.log('PayPal SDK loaded successfully');
+      setPaypalLoaded(true);
+    };
+    script.onerror = () => {
+      console.error('Failed to load PayPal SDK');
+      alert(isHebrew ? 'שגיאה בטעינת מערכת התשלומים' : 'Failed to load payment system');
+    };
     document.head.appendChild(script);
 
     return () => {
@@ -109,7 +116,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
         document.head.removeChild(existingScript);
       }
     };
-  }, []);
+  }, [isHebrew]);
 
   // Render PayPal buttons when loaded
   useEffect(() => {
@@ -179,9 +186,16 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
               )}
             </div>
           ) : (
-            <div className="text-center py-4">
-              <p className="text-gray-600">
-                {isHebrew ? "טוען מערכת תשלומים..." : "Loading payment system..."}
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-shelley-blue mx-auto mb-4"></div>
+              <p className="text-gray-600 mb-4">
+                {isHebrew ? "מערכת תשלומים טוען..." : "Payment system loading..."}
+              </p>
+              <p className="text-xs text-gray-500">
+                {isHebrew 
+                  ? "אם הטעינה נתקעת, נסה לרענן את הדף"
+                  : "If loading is stuck, try refreshing the page"
+                }
               </p>
             </div>
           )}
