@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,6 +11,12 @@ export const usePaymentVerification = () => {
   const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
 
+  // SECURITY: Reset payment state on hook initialization
+  useEffect(() => {
+    setHasValidPayment(false);
+    setError(null);
+  }, []); // Empty dependency array - runs once on mount
+
   const checkPaymentStatus = useCallback(async (userId: string) => {
     if (isLoading) {
       console.log('Payment check already in progress, skipping...');
@@ -20,6 +26,7 @@ export const usePaymentVerification = () => {
     try {
       setIsLoading(true);
       setError(null);
+      setHasValidPayment(false); // SECURITY: Reset payment state before check
       
       console.log('=== PAYMENT CHECK VIA EDGE FUNCTION ===');
       console.log('User ID to check:', userId);
@@ -41,7 +48,8 @@ export const usePaymentVerification = () => {
         throw checkError;
       }
 
-      const hasPayment = result?.hasValidPayment === true;
+      // SECURITY: Strict boolean verification to prevent undefined bypass
+      const hasPayment = Boolean(result?.hasValidPayment === true);
       
       if (hasPayment) {
         console.log('✅ Valid flipbook payment found via Edge Function!');
@@ -82,6 +90,7 @@ export const usePaymentVerification = () => {
   const confirmPaymentCompletion = async (userId: string) => {
     try {
       setIsLoading(true);
+      setHasValidPayment(false); // SECURITY: Reset payment state before check
       console.log('=== CONFIRMING PAYMENT VIA EDGE FUNCTION ===');
       console.log('User ID:', userId);
       
@@ -100,7 +109,8 @@ export const usePaymentVerification = () => {
         throw checkError;
       }
 
-      const hasPayment = result?.hasValidPayment === true;
+      // SECURITY: Strict boolean verification to prevent undefined bypass
+      const hasPayment = Boolean(result?.hasValidPayment === true);
 
       if (hasPayment) {
         console.log('Valid payment confirmed via Edge Function');

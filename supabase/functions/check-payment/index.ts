@@ -129,26 +129,34 @@ serve(async (req) => {
       )
     }
 
-    // Check service-specific access - ONLY VERIFIED PAYMENTS
-    const hasVerifiedPaymentRecord = payments && payments.length > 0 && 
+    // Check service-specific access - ONLY VERIFIED PAYMENTS (STRICT SECURITY)
+    const hasVerifiedPaymentRecord = Boolean(
+      payments && payments.length > 0 && 
       payments.some(p => 
         p.verified_with_paypal === true || 
-        p.paypal_transaction_id?.startsWith('TEST_PAYMENT_') ||
-        p.paypal_transaction_id?.startsWith('manual_payment_')
+        (p.paypal_transaction_id?.startsWith('TEST_PAYMENT_') && p.status === 'success') ||
+        (p.paypal_transaction_id?.startsWith('manual_payment_') && p.status === 'success')
       )
-    const hasServiceAccess = hasAccess === true
+    )
     
-    // Check service-specific paid status and expiration
+    const hasServiceAccess = Boolean(hasAccess === true)
+    
+    // Check service-specific paid status and expiration - STRICT VERIFICATION
     let hasServicePaidStatus = false
-    if (service_type === 'flipbook') {
-      hasServicePaidStatus = userData?.paid_for_flipbook && 
-        (!userData?.flipbook_access_expires_at || new Date(userData.flipbook_access_expires_at) > new Date())
-    } else if (service_type === 'bina') {
-      hasServicePaidStatus = userData?.paid_for_bina && 
-        (!userData?.bina_access_expires_at || new Date(userData.bina_access_expires_at) > new Date())
+    if (service_type === 'flipbook' && userData) {
+      hasServicePaidStatus = Boolean(
+        userData.paid_for_flipbook === true && 
+        (!userData.flipbook_access_expires_at || new Date(userData.flipbook_access_expires_at) > new Date())
+      )
+    } else if (service_type === 'bina' && userData) {
+      hasServicePaidStatus = Boolean(
+        userData.paid_for_bina === true && 
+        (!userData.bina_access_expires_at || new Date(userData.bina_access_expires_at) > new Date())
+      )
     }
     
-    const hasValidAccess = hasVerifiedPaymentRecord || hasServiceAccess || hasServicePaidStatus
+    // CRITICAL SECURITY: Explicit boolean conversion to prevent undefined bypass
+    const hasValidAccess = Boolean(hasVerifiedPaymentRecord || hasServiceAccess || hasServicePaidStatus)
     
     console.log('=== FINAL SERVICE-SPECIFIC RESULT ===')
     console.log('Service type:', service_type)
@@ -161,7 +169,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ 
-        hasValidPayment: hasValidAccess,
+        hasValidPayment: Boolean(hasValidAccess), // CRITICAL: Explicit boolean to prevent undefined
         paymentCount: payments?.length || 0,
         payments: payments || [],
         serviceType: service_type,
