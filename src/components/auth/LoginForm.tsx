@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import * as React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { CustomButton } from '@/components/ui/CustomButton';
@@ -12,12 +12,12 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const { t, language } = useLanguage();
   const { login, register, isLoading } = useAuth();
-  const [isLoginMode, setIsLoginMode] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [isLoginMode, setIsLoginMode] = React.useState(true);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [error, setError] = React.useState('');
   
   const isHebrew = language === 'he';
 

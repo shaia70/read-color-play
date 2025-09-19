@@ -1,9 +1,9 @@
 
-import React, { ReactNode } from 'react';
+import * as React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LanguageDirectionWrapperProps {
-  children: ReactNode;
+  children: React.ReactNode;
   forceDirection?: boolean;
 }
 

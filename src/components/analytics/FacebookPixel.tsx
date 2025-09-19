@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface FacebookPixelProps {
@@ -9,7 +9,7 @@ interface FacebookPixelProps {
 const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
   const location = useLocation();
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Skip in development mode
     if (process.env.NODE_ENV !== 'production') {
       return;
@@ -59,7 +59,7 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
   }, [pixelId]);
   
   // Track page views on route change
-  useEffect(() => {
+  React.useEffect(() => {
     if (process.env.NODE_ENV !== 'production' || !window.fbq) {
       return;
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CustomButton } from '@/components/ui/CustomButton';
@@ -22,8 +22,8 @@ interface SessionInfo {
 export const ActiveSessions: React.FC = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
-  const [sessions, setSessions] = useState<SessionInfo[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [sessions, setSessions] = React.useState<SessionInfo[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
   const isHebrew = language === 'he';
 
   const loadSessions = async () => {
@@ -57,7 +57,7 @@ export const ActiveSessions: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     loadSessions();
   }, [user?.id]);
 

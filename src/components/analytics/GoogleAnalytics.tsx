@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface GoogleAnalyticsProps {
@@ -9,7 +9,7 @@ interface GoogleAnalyticsProps {
 const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
   const location = useLocation();
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Skip in development mode or if no measurement ID
     if (process.env.NODE_ENV !== 'production' || !measurementId || measurementId === 'G-XXXXXXXXXX') {
       return;
@@ -58,7 +58,7 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
   }, [measurementId]);
   
   // Track page views on route change
-  useEffect(() => {
+  React.useEffect(() => {
     if (process.env.NODE_ENV !== 'production' || !window.gtag) {
       return;
     }

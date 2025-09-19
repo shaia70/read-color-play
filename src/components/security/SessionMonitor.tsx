@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSessionSecurity } from '@/hooks/useSessionSecurity';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -10,7 +10,7 @@ export const SessionMonitor: React.FC = () => {
   const { language } = useLanguage();
 
   // Monitor session security every 5 minutes
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user?.id || !sessionData.sessionToken) return;
 
     const interval = setInterval(async () => {
@@ -34,7 +34,7 @@ export const SessionMonitor: React.FC = () => {
   }, [user?.id, sessionData.sessionToken, validateSession, language]);
 
   // Monitor for suspicious activity
-  useEffect(() => {
+  React.useEffect(() => {
     if (sessionData.suspiciousActivity) {
       console.warn('Suspicious session activity detected');
       
