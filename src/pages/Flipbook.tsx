@@ -22,11 +22,12 @@ const Flipbook = () => {
   
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
-  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion } = usePaymentVerification();
+  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion, verifyPayPalPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number} | null>(null);
   const hasCheckedPayment = React.useRef(false);
+  const hasProcessedPayPalReturn = React.useRef(false);
   const isHebrew = language === 'he';
 
   // Fixed price to prevent caching issues
@@ -45,6 +46,33 @@ const Flipbook = () => {
       checkPaymentStatus(user.id);
     }
   }, [user?.id, checkPaymentStatus, paymentLoading]);
+
+  // Process PayPal return parameters
+  React.useEffect(() => {
+    if (user?.id && !hasProcessedPayPalReturn.current) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const transactionId = urlParams.get('tx');
+      const amount = urlParams.get('amt');
+      const status = urlParams.get('st');
+      
+      if (transactionId && amount && status === 'COMPLETED') {
+        hasProcessedPayPalReturn.current = true;
+        console.log('Processing PayPal return:', { transactionId, amount, status });
+        
+        // Verify the payment with PayPal API
+        verifyPayPalPayment(user.id, transactionId, parseFloat(amount))
+          .then(() => {
+            console.log('PayPal payment verified successfully');
+            // Clean up URL parameters
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+          })
+          .catch((error) => {
+            console.error('PayPal payment verification failed:', error);
+          });
+      }
+    }
+  }, [user?.id, verifyPayPalPayment]);
 
   // Reset check flag when user changes
   React.useEffect(() => {
