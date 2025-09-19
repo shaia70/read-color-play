@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from "react";
+import * as React from "react";
 import {
   Carousel,
   CarouselContent,
@@ -26,11 +26,11 @@ interface GalleryCarouselProps {
 const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items }) => {
   const { language } = useLanguage();
   const isMobile = useIsMobile();
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [api, setApi] = useState<any>(null);
+  const [activeSlide, setActiveSlide] = React.useState(0);
+  const [api, setApi] = React.useState<any>(null);
   const isRTL = language === 'he';
   
-  const onCarouselSelect = useCallback((api: any) => {
+  const onCarouselSelect = React.useCallback((api: any) => {
     if (!api) return;
     
     const selectedIndex = api.selectedScrollSnap();
@@ -44,7 +44,7 @@ const GalleryCarousel: React.FC<GalleryCarouselProps> = ({ items }) => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!api) return;
     
     const handleSelect = () => {
