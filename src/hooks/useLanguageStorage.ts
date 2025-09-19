@@ -1,26 +1,34 @@
 
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import { Language } from '@/types/language';
 
-// Hook to manage language state with localStorage  
+// Hook to manage language state with localStorage - Fixed version
 export const useLanguageStorage = () => {
   // Get stored language from localStorage or default to Hebrew
-  const getStoredLanguage = (): Language => {
+  const getStoredLanguage = React.useCallback((): Language => {
     if (typeof window === 'undefined') return 'he'; // Default for SSR
-    const storedLanguage = localStorage.getItem('shelley-language');
-    return (storedLanguage === 'en' || storedLanguage === 'he') ? storedLanguage : 'he';
-  };
+    try {
+      const storedLanguage = localStorage.getItem('shelley-language');
+      return (storedLanguage === 'en' || storedLanguage === 'he') ? storedLanguage : 'he';
+    } catch {
+      return 'he';
+    }
+  }, []);
 
   // Use lazy initial state to avoid localStorage access during render
-  const [language, setLanguageState] = React.useState<Language>(() => getStoredLanguage());
+  const [language, setLanguageState] = React.useState<Language>(getStoredLanguage);
 
   // Update localStorage when language changes
-  const setLanguage = (newLanguage: Language) => {
+  const setLanguage = React.useCallback((newLanguage: Language) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('shelley-language', newLanguage);
+      try {
+        localStorage.setItem('shelley-language', newLanguage);
+      } catch (error) {
+        console.warn('Failed to save language to localStorage:', error);
+      }
     }
     setLanguageState(newLanguage);
-  };
+  }, []);
 
   // Initialize with stored language on component mount
   React.useEffect(() => {
@@ -28,7 +36,7 @@ export const useLanguageStorage = () => {
     if (storedLanguage !== language) {
       setLanguageState(storedLanguage);
     }
-  }, [language]);
+  }, [getStoredLanguage, language]);
 
   return { language, setLanguage };
 };

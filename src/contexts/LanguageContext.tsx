@@ -2,12 +2,12 @@
 import * as React from 'react';
 import translations from '@/translations';
 import { Language, LanguageContextType } from '@/types/language';
-import { useLanguageStorageFixed } from '@/hooks/useLanguageStorageFixed';
+import { useLanguageStorage } from '@/hooks/useLanguageStorage';
 
 const LanguageContext = React.createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { language, setLanguage } = useLanguageStorageFixed();
+  const { language, setLanguage } = useLanguageStorage();
 
   const t = (key: string): string => {
     return translations[language][key] || key;
