@@ -156,7 +156,12 @@ serve(async (req) => {
     }
     
     // CRITICAL SECURITY: Explicit boolean conversion to prevent undefined bypass
-    const hasValidAccess = Boolean(hasVerifiedPaymentRecord || hasServiceAccess || hasServicePaidStatus)
+    // ONLY grant access if ALL security checks pass explicitly
+    const hasValidAccess = Boolean(
+      (hasVerifiedPaymentRecord === true) || 
+      (hasServiceAccess === true) || 
+      (hasServicePaidStatus === true)
+    )
     
     console.log('=== FINAL SERVICE-SPECIFIC RESULT ===')
     console.log('Service type:', service_type)
@@ -169,7 +174,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ 
-        hasValidPayment: Boolean(hasValidAccess), // CRITICAL: Explicit boolean to prevent undefined
+        hasValidPayment: Boolean(hasValidAccess === true), // ULTRA STRICT: Double boolean check
         paymentCount: payments?.length || 0,
         payments: payments || [],
         serviceType: service_type,
@@ -178,11 +183,10 @@ serve(async (req) => {
           userIdReceived: user_id,
           serviceType: service_type,
           paymentsFound: payments?.length || 0,
-          paymentsData: payments || [],
           hasServiceAccess: hasServiceAccess,
           hasServicePaidStatus: hasServicePaidStatus,
           hasVerifiedPaymentRecord: hasVerifiedPaymentRecord,
-          userData: userData
+          finalAccessDecision: Boolean(hasValidAccess === true)
         }
       }),
       { 

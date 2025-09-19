@@ -14,8 +14,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 import CouponInput from "@/components/flipbook/CouponInput";
 import { ActiveSessions } from "@/components/security/ActiveSessions";
+import { useUrlSecurity } from "@/hooks/useUrlSecurity";
 
 const Flipbook = () => {
+  // SECURITY: Remove suspicious URL parameters to prevent bypass
+  useUrlSecurity();
+  
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion } = usePaymentVerification();

@@ -52,7 +52,13 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
               currency_code: 'ILS'
             },
             description: isHebrew ? 'גישה לספר דיגיטלי' : 'Digital Book Access'
-          }]
+          }],
+          application_context: {
+            shipping_preference: 'NO_SHIPPING',
+            user_action: 'PAY_NOW',
+            return_url: 'https://example.com/noaccess', // Dummy URL - never used due to onApprove
+            cancel_url: 'https://example.com/noaccess'  // Dummy URL - never used due to onCancel
+          }
         });
       },
       onApprove: async (data: any, actions: any) => {
@@ -98,8 +104,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     }
 
     const script = document.createElement('script');
-    // Using PayPal sandbox client ID for testing
-    script.src = 'https://www.paypal.com/sdk/js?client-id=ATseWJk1Mz_1Y5pOdBGdz7Fz8gJl4n8qVtGJmQD8cJGTVvK_J7RQpbXKm8GqQr7gQn5RnMzQ5FZQ1Vz5&currency=ILS&components=buttons';
+    // Using PayPal sandbox client ID for testing - disable return URLs for security
+    script.src = 'https://www.paypal.com/sdk/js?client-id=ATseWJk1Mz_1Y5pOdBGdz7Fz8gJl4n8qVtGJmQD8cJGTVvK_J7RQpbXKm8GqQr7gQn5RnMzQ5FZQ1Vz5&currency=ILS&components=buttons&disable-funding=credit,card';
     script.onload = () => {
       console.log('PayPal SDK loaded successfully');
       setPaypalLoaded(true);
