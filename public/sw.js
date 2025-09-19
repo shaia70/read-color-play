@@ -53,22 +53,25 @@ self.addEventListener('fetch', event => {
               return networkResponse;
             }
             
-            // Clone the response as it can only be consumed once
-            const responseToCache = networkResponse.clone();
-            
-            // Cache only valid HTTP requests
-            if (event.request.url.startsWith('http')) {
-              caches.open(CACHE_NAME)
-                .then(cache => {
-                  try {
-                    cache.put(event.request, responseToCache);
-                  } catch (error) {
-                    console.warn('Failed to cache request:', event.request.url, error);
-                  }
-                })
-                .catch(error => {
-                  console.warn('Cache operation failed:', error);
-                });
+            // Only cache GET requests - POST requests cannot be cached
+            if (event.request.method === 'GET') {
+              // Clone the response as it can only be consumed once
+              const responseToCache = networkResponse.clone();
+              
+              // Cache only valid HTTP requests
+              if (event.request.url.startsWith('http')) {
+                caches.open(CACHE_NAME)
+                  .then(cache => {
+                    try {
+                      cache.put(event.request, responseToCache);
+                    } catch (error) {
+                      console.warn('Failed to cache request:', event.request.url, error);
+                    }
+                  })
+                  .catch(error => {
+                    console.warn('Cache operation failed:', error);
+                  });
+              }
             }
               
             return networkResponse;

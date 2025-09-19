@@ -11,19 +11,18 @@ interface PayPalTokenResponse {
   expires_in: number;
 }
 
-interface PayPalPaymentDetails {
+interface PayPalOrderDetails {
   id: string;
   status: string;
-  amount: {
-    total: string;
-    currency: string;
-  };
-  payer: {
-    payment_method: string;
-    payer_info: {
-      email: string;
-      payer_id: string;
+  purchase_units: [{
+    amount: {
+      currency_code: string;
+      value: string;
     };
+  }];
+  payer: {
+    email_address: string;
+    payer_id: string;
   };
 }
 
@@ -103,9 +102,9 @@ Deno.serve(async (req) => {
     const tokenData: PayPalTokenResponse = await tokenResponse.json();
     console.log('PayPal token obtained successfully');
 
-    // Step 2: Verify Payment with PayPal
+    // Step 2: Verify Payment with PayPal - using Orders API v2
     console.log('Verifying payment with PayPal:', payment_id);
-    const paymentResponse = await fetch(`https://api.paypal.com/v1/payments/payment/${payment_id}`, {
+    const paymentResponse = await fetch(`https://api.paypal.com/v2/checkout/orders/${payment_id}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -126,16 +125,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    const paymentDetails: PayPalPaymentDetails = await paymentResponse.json();
-    console.log('PayPal payment details:', paymentDetails);
+    const orderDetails: PayPalOrderDetails = await paymentResponse.json();
+    console.log('PayPal order details:', orderDetails);
 
     // Step 3: Validate Payment Details
-    if (paymentDetails.status !== 'approved') {
-      console.error('Payment not approved. Status:', paymentDetails.status);
+    if (orderDetails.status !== 'COMPLETED') {
+      console.error('Payment not completed. Status:', orderDetails.status);
       return new Response(
         JSON.stringify({ 
-          error: 'Payment not approved', 
-          status: paymentDetails.status,
+          error: 'Payment not completed', 
+          status: orderDetails.status,
           verified: false 
         }),
         { 
@@ -145,7 +144,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const paymentAmount = parseFloat(paymentDetails.amount.total);
+    const paymentAmount = parseFloat(orderDetails.purchase_units[0].amount.value);
     const expectedAmount = parseFloat(amount.toString());
     
     if (Math.abs(paymentAmount - expectedAmount) > 0.01) {
@@ -195,11 +194,11 @@ Deno.serve(async (req) => {
         user_id: user_id,
         paypal_transaction_id: payment_id,
         amount: paymentAmount,
-        currency: paymentDetails.amount.currency,
+        currency: orderDetails.purchase_units[0].amount.currency_code,
         status: 'success',
         service_type: 'flipbook',
-        payer_email: paymentDetails.payer.payer_info.email,
-        payer_id: paymentDetails.payer.payer_info.payer_id
+        payer_email: orderDetails.payer.email_address,
+        payer_id: orderDetails.payer.payer_id
       })
       .select()
       .single();
@@ -245,10 +244,10 @@ Deno.serve(async (req) => {
         verified: true,
         payment: payment,
         paypal_details: {
-          id: paymentDetails.id,
-          status: paymentDetails.status,
-          amount: paymentDetails.amount,
-          payer_email: paymentDetails.payer.payer_info.email
+          id: orderDetails.id,
+          status: orderDetails.status,
+          amount: orderDetails.purchase_units[0].amount,
+          payer_email: orderDetails.payer.email_address
         },
         message: 'Payment verified with PayPal and access granted successfully'
       }),
