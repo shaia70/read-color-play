@@ -5,6 +5,7 @@ import { CustomButton } from "../ui/CustomButton";
 import { CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import { supabase } from "@/integrations/supabase/client";
 
 // PayPal SDK types
 declare global {
@@ -30,6 +31,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const { verifyPayPalPayment, confirmPaymentCompletion } = usePaymentVerification();
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [paypalLoaded, setPaypalLoaded] = React.useState(false);
+  const [paypalClientId, setPaypalClientId] = React.useState<string | null>(null);
+  const [loadingConfig, setLoadingConfig] = React.useState(true);
   const isHebrew = language === 'he';
   
   // PayPal Smart Buttons setup
@@ -120,11 +123,50 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     });
   };
 
-  // Load PayPal SDK
+  // Get PayPal configuration from backend
   React.useEffect(() => {
+    const getPayPalConfig = async () => {
+      try {
+        console.log('=== GETTING PAYPAL CONFIG ===');
+        setLoadingConfig(true);
+        
+        const { data, error } = await supabase.functions.invoke('get-paypal-config');
+        
+        if (error) {
+          console.error('Error getting PayPal config:', error);
+          alert(isHebrew ? 'שגיאה בטעינת הגדרות PayPal' : 'Error loading PayPal configuration');
+          return;
+        }
+        
+        if (data?.success && data?.clientId) {
+          console.log('✅ PayPal Client ID retrieved successfully');
+          setPaypalClientId(data.clientId);
+        } else {
+          console.error('Invalid PayPal config response:', data);
+          alert(isHebrew ? 'הגדרות PayPal לא תקינות' : 'Invalid PayPal configuration');
+        }
+      } catch (error) {
+        console.error('Error fetching PayPal config:', error);
+        alert(isHebrew ? 'שגיאה בחיבור לשרת' : 'Server connection error');
+      } finally {
+        setLoadingConfig(false);
+      }
+    };
+    
+    getPayPalConfig();
+  }, [isHebrew]);
+
+  // Load PayPal SDK when client ID is available
+  React.useEffect(() => {
+    if (!paypalClientId || loadingConfig) {
+      console.log('PayPal Client ID not ready yet:', { paypalClientId, loadingConfig });
+      return;
+    }
+    
     console.log('=== PAYPAL SDK LOADING EFFECT ===');
     console.log('window.paypal exists:', !!window.paypal);
     console.log('paypalLoaded state:', paypalLoaded);
+    console.log('Using PayPal Client ID:', paypalClientId);
     
     if (window.paypal) {
       console.log('PayPal SDK already exists, setting loaded to true');
@@ -134,8 +176,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
 
     console.log('Creating PayPal SDK script...');
     const script = document.createElement('script');
-    // Using production PayPal client ID
-    script.src = 'https://www.paypal.com/sdk/js?client-id=ASFTFjgFIkVz6iFZ8cQZNk_BfUnMu2hbN5O0Cy5O-sVhUfgAY4_PuCx7xvNrjCl0dJfRBRe2q3jyY4Yx&currency=ILS&components=buttons';
+    script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=ILS&components=buttons`;
     
     script.onload = () => {
       console.log('✅ PayPal SDK loaded successfully');
@@ -159,7 +200,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
         document.head.removeChild(existingScript);
       }
     };
-  }, [isHebrew]);
+  }, [paypalClientId, loadingConfig, isHebrew, paypalLoaded]);
 
   // Render PayPal buttons when loaded
   React.useEffect(() => {
@@ -167,16 +208,22 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
     console.log('PayPal loaded:', paypalLoaded);
     console.log('User ID:', user?.id);
     console.log('Amount for PayPal:', amount);
+    console.log('PayPal Client ID available:', !!paypalClientId);
     
-    if (paypalLoaded && user?.id) {
+    if (paypalLoaded && user?.id && paypalClientId) {
       const paypalButtonContainer = document.getElementById('paypal-button-container');
       if (paypalButtonContainer) {
         console.log('Clearing and re-rendering PayPal buttons with amount:', amount);
         paypalButtonContainer.innerHTML = '';
-        renderPayPalButtons().render('#paypal-button-container');
+        try {
+          renderPayPalButtons().render('#paypal-button-container');
+        } catch (error) {
+          console.error('Error rendering PayPal buttons:', error);
+          paypalButtonContainer.innerHTML = '<div class="text-center p-4 bg-red-50 border border-red-200 rounded"><p class="text-red-800">שגיאה בטעינת כפתורי PayPal</p></div>';
+        }
       }
     }
-  }, [paypalLoaded, user?.id, amount]);
+  }, [paypalLoaded, user?.id, amount, paypalClientId]);
 
   const handlePaymentConfirmation = async () => {
     if (!user?.id) {
@@ -220,7 +267,14 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
         </div>
 
         <div className="space-y-4">
-          {paypalLoaded ? (
+          {loadingConfig ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-shelley-blue mx-auto mb-4"></div>
+              <p className="text-gray-600">
+                {isHebrew ? "טוען הגדרות PayPal..." : "Loading PayPal configuration..."}
+              </p>
+            </div>
+          ) : paypalLoaded ? (
             <div>
               <p className="text-center mb-4 text-gray-700">
                 {isHebrew ? "תשלום בכרטיס אשראי או PayPal" : "Pay with Credit Card or PayPal"}
