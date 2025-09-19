@@ -1,6 +1,6 @@
 
 import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
+import * as React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Home, RefreshCw } from "lucide-react";
 
@@ -8,7 +8,7 @@ const NotFound = () => {
   const location = useLocation();
   const { language } = useLanguage();
 
-  useEffect(() => {
+  React.useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname

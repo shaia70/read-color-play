@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react";
+import * as React from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Sparkles } from "lucide-react";
@@ -9,11 +9,11 @@ import Logo from "../layout/Logo";
 
 export default function Hero() {
   const controls = useAnimation();
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (inView) {
       controls.start("visible");
     }

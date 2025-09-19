@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import * as React from "react";
 import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { ArrowLeft, Eye } from "lucide-react";
@@ -10,10 +10,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function FeaturedBook() {
   const controls = useAnimation();
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = React.useState(false);
   const isMobile = useIsMobile();
 
   const toggleZoom = () => {
@@ -21,7 +21,7 @@ export default function FeaturedBook() {
     setIsZoomed(!isZoomed);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (inView) {
       controls.start("visible");
     }

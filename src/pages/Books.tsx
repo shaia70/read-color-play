@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const Books = () => {
   const { t, language } = useLanguage();
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = React.useState(false);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const isHebrew = language === 'he';

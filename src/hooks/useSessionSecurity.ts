@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
@@ -14,17 +14,17 @@ const SESSION_STORAGE_KEY = 'flipbook_session';
 const VALIDATION_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 export const useSessionSecurity = () => {
-  const [sessionData, setSessionData] = useState<SessionData>({
+  const [sessionData, setSessionData] = React.useState<SessionData>({
     sessionToken: null,
     isValid: false,
     suspiciousActivity: false,
     lastValidation: 0
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const { language } = useLanguage();
 
   // Get device fingerprint
-  const getDeviceFingerprint = useCallback(() => {
+  const getDeviceFingerprint = React.useCallback(() => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -45,7 +45,7 @@ export const useSessionSecurity = () => {
   }, []);
 
   // Get client IP (approximation using timezone and other data)
-  const getClientInfo = useCallback(() => {
+  const getClientInfo = React.useCallback(() => {
     return {
       userAgent: navigator.userAgent,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -54,7 +54,7 @@ export const useSessionSecurity = () => {
   }, [getDeviceFingerprint]);
 
   // Load session from localStorage
-  useEffect(() => {
+  React.useEffect(() => {
     const stored = localStorage.getItem(SESSION_STORAGE_KEY);
     if (stored) {
       try {
@@ -68,13 +68,13 @@ export const useSessionSecurity = () => {
   }, []);
 
   // Save session to localStorage
-  const saveSession = useCallback((data: SessionData) => {
+  const saveSession = React.useCallback((data: SessionData) => {
     setSessionData(data);
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
   }, []);
 
   // Create new session
-  const createSession = useCallback(async (userId: string) => {
+  const createSession = React.useCallback(async (userId: string) => {
     if (isLoading) return false;
     
     try {
@@ -134,7 +134,7 @@ export const useSessionSecurity = () => {
   }, [isLoading, language, getClientInfo, saveSession]);
 
   // Validate session
-  const validateSession = useCallback(async (userId: string, forceValidation = false) => {
+  const validateSession = React.useCallback(async (userId: string, forceValidation = false) => {
     if (!sessionData.sessionToken) return false;
     if (isLoading) return sessionData.isValid;
 
@@ -229,7 +229,7 @@ export const useSessionSecurity = () => {
   }, [sessionData, isLoading, language, getClientInfo, saveSession]);
 
   // Destroy session
-  const destroySession = useCallback(async () => {
+  const destroySession = React.useCallback(async () => {
     console.log('Destroying secure session');
     
     const emptySession = {
@@ -244,7 +244,7 @@ export const useSessionSecurity = () => {
   }, [saveSession]);
 
   // Auto-validate session periodically
-  useEffect(() => {
+  React.useEffect(() => {
     if (!sessionData.sessionToken || !sessionData.isValid) return;
 
     const interval = setInterval(() => {

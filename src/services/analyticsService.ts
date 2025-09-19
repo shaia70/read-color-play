@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import * as React from 'react';
 
 // Interface for analytics event
 export interface AnalyticsEvent {
@@ -391,7 +391,7 @@ export const getClickData = (): ClickData[] => {
 
 // Hook to track page views
 export const usePageViewTracking = (page: string) => {
-  useEffect(() => {
+  React.useEffect(() => {
     // Track the page view when the component mounts
     trackPageView(page);
     

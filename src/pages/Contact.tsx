@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import * as React from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -22,11 +22,11 @@ const Contact = () => {
   const { toast } = useToast();
   const { language, t } = useLanguage();
   const location = useLocation();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFromNotifyMe, setIsFromNotifyMe] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState<EmailParams | null>(null);
-  const [useDirectEmail, setUseDirectEmail] = useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isFromNotifyMe, setIsFromNotifyMe] = React.useState(false);
+  const [formSubmitted, setFormSubmitted] = React.useState(false);
+  const [formData, setFormData] = React.useState<EmailParams | null>(null);
+  const [useDirectEmail, setUseDirectEmail] = React.useState(false);
 
   const formSchema = z.object({
     name: z.string().min(1, language === 'en' ? "Name is required" : "נדרש שם"),
@@ -45,7 +45,7 @@ const Contact = () => {
     }
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (location.state) {
       if (location.state.prefilledSubject) {
         form.setValue("subject", location.state.prefilledSubject);
@@ -62,7 +62,7 @@ const Contact = () => {
     }
   }, [location.state, form]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isFromNotifyMe) {
       if (language === 'he') {
         form.setValue("subject", 'עדכנו אותי בשחרור האפליקציה');

@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import * as React from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -23,10 +23,10 @@ const Flipbook = () => {
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion } = usePaymentVerification();
-  const [showPayment, setShowPayment] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [appliedDiscount, setAppliedDiscount] = useState<{amount: number, newPrice: number} | null>(null);
-  const hasCheckedPayment = useRef(false);
+  const [showPayment, setShowPayment] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number} | null>(null);
+  const hasCheckedPayment = React.useRef(false);
   const isHebrew = language === 'he';
 
   // Fixed price to prevent caching issues
@@ -39,7 +39,7 @@ const Flipbook = () => {
   // Debug logging removed for production
 
   // בדיקת סטטוס התשלום כאשר המשתמש מתחבר (פעם אחת בלבד)
-  useEffect(() => {
+  React.useEffect(() => {
     if (user?.id && !hasCheckedPayment.current && !paymentLoading) {
       hasCheckedPayment.current = true;
       checkPaymentStatus(user.id);
@@ -47,7 +47,7 @@ const Flipbook = () => {
   }, [user?.id, checkPaymentStatus, paymentLoading]);
 
   // Reset check flag when user changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user) {
       hasCheckedPayment.current = false;
     }

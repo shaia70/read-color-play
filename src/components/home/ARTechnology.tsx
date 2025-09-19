@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Smartphone, Download, Info, X } from "lucide-react";
@@ -9,11 +9,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function ARTechnology() {
   const controls = useAnimation();
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
-  const [imageState, setImageState] = useState("normal"); // "normal", "left-zoomed", "right-zoomed"
-  const [mobileImageIndex, setMobileImageIndex] = useState(0);
+  const [imageState, setImageState] = React.useState("normal"); // "normal", "left-zoomed", "right-zoomed"
+  const [mobileImageIndex, setMobileImageIndex] = React.useState(0);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function ARTechnology() {
     "/lovable-uploads/e2937d84-0ea2-43c7-b3be-d65528e9a40e.png"
   ];
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (inView) {
       controls.start("visible");
     }

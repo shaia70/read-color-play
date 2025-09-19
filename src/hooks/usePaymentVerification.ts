@@ -1,23 +1,23 @@
 
-import { useState, useCallback, useEffect } from 'react';
+import * as React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { sendPaymentConfirmationEmail } from '@/services/emailService';
 
 export const usePaymentVerification = () => {
-  const [hasValidPayment, setHasValidPayment] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [hasValidPayment, setHasValidPayment] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
   const { language } = useLanguage();
 
   // SECURITY: Reset payment state on hook initialization
-  useEffect(() => {
+  React.useEffect(() => {
     setHasValidPayment(false);
     setError(null);
   }, []); // Empty dependency array - runs once on mount
 
-  const checkPaymentStatus = useCallback(async (userId: string) => {
+  const checkPaymentStatus = React.useCallback(async (userId: string) => {
     if (isLoading) {
       console.log('Payment check already in progress, skipping...');
       return;

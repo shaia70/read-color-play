@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 /**
@@ -9,7 +9,7 @@ export const useUrlSecurity = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const suspiciousParams = ['payment', 'success', 'paid', 'access', 'verified'];
     

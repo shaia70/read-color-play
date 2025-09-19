@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackPixelEvent, PixelEvents, PixelType } from '../services/pixelService';
 
@@ -14,7 +14,7 @@ export const usePixelTracking = (props?: UsePixelTrackingProps) => {
   const currentPage = location.pathname.replace('/', '') || 'home';
   
   // Track page view when location changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (disabled || process.env.NODE_ENV !== 'production') {
       return;
     }

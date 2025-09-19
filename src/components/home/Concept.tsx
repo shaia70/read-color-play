@@ -1,16 +1,16 @@
 
-import { useEffect, useRef } from "react";
+import * as React from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { BookOpen, Palette, Gamepad2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Concept() {
   const controls = useAnimation();
-  const ref = useRef(null);
+  const ref = React.useRef(null);
   const inView = useInView(ref, { once: true });
   const { t, language } = useLanguage();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (inView) {
       controls.start("visible");
     }

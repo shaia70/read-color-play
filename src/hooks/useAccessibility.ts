@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import * as React from 'react';
 
 type FontSize = 'small' | 'normal' | 'large' | 'extra-large';
 
@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: AccessibilitySettings = {
 };
 
 export function useAccessibility() {
-  const [settings, setSettings] = useState<AccessibilitySettings>(() => {
+  const [settings, setSettings] = React.useState<AccessibilitySettings>(() => {
     if (typeof window === 'undefined') return DEFAULT_SETTINGS;
     
     const saved = localStorage.getItem('accessibility-settings');
@@ -27,7 +27,7 @@ export function useAccessibility() {
   });
 
   // Apply settings to document
-  useEffect(() => {
+  React.useEffect(() => {
     const root = document.documentElement;
     
     // Font size
