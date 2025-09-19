@@ -218,10 +218,15 @@ Deno.serve(async (req) => {
 
     // Step 6: Grant Service Access
     console.log('Granting service access...');
+    
+    // Calculate access duration based on payment amount
+    const duration_days = paymentAmount >= 60 ? 3650 : 30; // 10 years for 60+ ILS, 30 days for less
+    console.log(`Granting ${duration_days} days access for payment of ${paymentAmount} ILS`);
+    
     const { error: accessError } = await supabase.rpc('grant_service_access', {
       user_id: user_id,
       service_name: 'flipbook',
-      duration_days: 30,
+      duration_days: duration_days,
       amount: paymentAmount
     });
 
