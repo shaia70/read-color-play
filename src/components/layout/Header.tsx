@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import * as React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download, Image } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,13 +10,13 @@ import Logo from "./Logo";
 import AccessibilityMenu from "./AccessibilityMenu";
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
@@ -29,7 +29,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
 

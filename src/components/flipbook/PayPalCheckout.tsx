@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import * as React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { CreditCard } from "lucide-react";
@@ -28,8 +28,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   const { language } = useLanguage();
   const { user } = useAuth();
   const { recordPayment, confirmPaymentCompletion } = usePaymentVerification();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paypalLoaded, setPaypalLoaded] = useState(false);
+  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [paypalLoaded, setPaypalLoaded] = React.useState(false);
   const isHebrew = language === 'he';
   
   // PayPal Smart Buttons setup
@@ -97,7 +97,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   };
 
   // Load PayPal SDK
-  useEffect(() => {
+  React.useEffect(() => {
     if (window.paypal) {
       setPaypalLoaded(true);
       return;
@@ -125,7 +125,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   }, [isHebrew]);
 
   // Render PayPal buttons when loaded
-  useEffect(() => {
+  React.useEffect(() => {
     if (paypalLoaded && user?.id) {
       const paypalButtonContainer = document.getElementById('paypal-button-container');
       if (paypalButtonContainer) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import * as React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CustomButton } from "../ui/CustomButton";
 import { Input } from "../ui/input";
@@ -15,8 +15,8 @@ interface CouponInputProps {
 
 const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60 }: CouponInputProps) => {
   const { language } = useLanguage();
-  const [couponCode, setCouponCode] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [couponCode, setCouponCode] = React.useState("");
+  const [isProcessing, setIsProcessing] = React.useState(false);
   const isHebrew = language === 'he';
 
   const handleCouponSubmit = async () => {

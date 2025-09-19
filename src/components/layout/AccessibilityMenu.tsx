@@ -1,4 +1,4 @@
-import { useState } from "react";
+import * as React from "react";
 import { Accessibility, Type, Contrast, Zap, Keyboard, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { useAccessibility } from "@/hooks/useAccessibility";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AccessibilityMenu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const { language } = useLanguage();
   const {
     fontSize,
