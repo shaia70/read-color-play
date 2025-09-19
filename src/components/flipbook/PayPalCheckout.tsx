@@ -45,6 +45,9 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
         height: 55
       },
       createOrder: (data: any, actions: any) => {
+        console.log('=== PAYPAL CREATE ORDER ===');
+        console.log('Amount being sent to PayPal:', amount);
+        
         return actions.order.create({
           purchase_units: [{
             amount: {
@@ -126,9 +129,15 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
 
   // Render PayPal buttons when loaded
   React.useEffect(() => {
+    console.log('=== PAYPAL BUTTONS RENDER EFFECT ===');
+    console.log('PayPal loaded:', paypalLoaded);
+    console.log('User ID:', user?.id);
+    console.log('Amount for PayPal:', amount);
+    
     if (paypalLoaded && user?.id) {
       const paypalButtonContainer = document.getElementById('paypal-button-container');
       if (paypalButtonContainer) {
+        console.log('Clearing and re-rendering PayPal buttons with amount:', amount);
         paypalButtonContainer.innerHTML = '';
         renderPayPalButtons().render('#paypal-button-container');
       }

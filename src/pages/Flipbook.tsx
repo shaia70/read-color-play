@@ -26,10 +26,35 @@ const Flipbook = () => {
   const [showPayment, setShowPayment] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(() => {
-    // Try to restore discount from sessionStorage
-    const savedDiscount = sessionStorage.getItem('appliedDiscount');
-    return savedDiscount ? JSON.parse(savedDiscount) : null;
+    // Try to restore discount from sessionStorage on every render to ensure consistency
+    try {
+      const savedDiscount = sessionStorage.getItem('appliedDiscount');
+      if (savedDiscount) {
+        const parsed = JSON.parse(savedDiscount);
+        console.log('Restored discount from sessionStorage:', parsed);
+        return parsed;
+      }
+    } catch (error) {
+      console.error('Error parsing saved discount:', error);
+      sessionStorage.removeItem('appliedDiscount');
+    }
+    return null;
   });
+
+  // Ensure discount persists across all re-renders
+  React.useEffect(() => {
+    const savedDiscount = sessionStorage.getItem('appliedDiscount');
+    if (savedDiscount && !appliedDiscount) {
+      try {
+        const parsed = JSON.parse(savedDiscount);
+        console.log('Re-applying saved discount:', parsed);
+        setAppliedDiscount(parsed);
+      } catch (error) {
+        console.error('Error re-applying saved discount:', error);
+        sessionStorage.removeItem('appliedDiscount');
+      }
+    }
+  }, [appliedDiscount]);
   const hasCheckedPayment = React.useRef(false);
   const hasProcessedPayPalReturn = React.useRef(false);
   const isHebrew = language === 'he';
@@ -40,6 +65,16 @@ const Flipbook = () => {
   const bookPrice = `${currentPrice} ₪`;
   const paymentAmount = currentPrice;
   const bookTitle = isHebrew ? "דניאל הולך לגן" : "Daniel Goes to Kindergarten";
+
+  // Debug logging for price calculations
+  React.useEffect(() => {
+    console.log('=== PRICE CALCULATION DEBUG ===');
+    console.log('Applied discount:', appliedDiscount);
+    console.log('Original price:', originalPrice);
+    console.log('Current price:', currentPrice);
+    console.log('Payment amount:', paymentAmount);
+    console.log('Book price display:', bookPrice);
+  }, [appliedDiscount, currentPrice, paymentAmount, bookPrice]);
 
   // Debug logging removed for production
 
@@ -117,20 +152,33 @@ const Flipbook = () => {
   };
 
   const handleDiscountApplied = (discountAmount: number, newPrice: number, couponCode: string) => {
-    console.log('Discount applied:', { discountAmount, newPrice, couponCode });
+    console.log('=== DISCOUNT APPLIED ===');
+    console.log('Discount amount:', discountAmount);
+    console.log('New price:', newPrice);
+    console.log('Coupon code:', couponCode);
+    
     const discountData = { amount: discountAmount, newPrice, couponCode };
     setAppliedDiscount(discountData);
+    
     // Save to sessionStorage to persist across refreshes
     sessionStorage.setItem('appliedDiscount', JSON.stringify(discountData));
+    console.log('Discount saved to sessionStorage:', discountData);
+    
+    // Force a small delay to ensure state is updated
+    setTimeout(() => {
+      console.log('Current appliedDiscount state:', appliedDiscount);
+      console.log('Current price:', currentPrice);
+    }, 100);
   };
 
   const handlePaymentSuccess = () => {
+    console.log('=== PAYMENT SUCCESS ===');
     setShowPayment(false);
+    
     // Clear the discount after successful payment completion
-    setTimeout(() => {
-      setAppliedDiscount(null);
-      sessionStorage.removeItem('appliedDiscount');
-    }, 1000);
+    console.log('Clearing discount after successful payment');
+    setAppliedDiscount(null);
+    sessionStorage.removeItem('appliedDiscount');
   };
 
   // אם המשתמש לא מחובר, הצג טופס התחברות
@@ -318,6 +366,7 @@ const Flipbook = () => {
                 ) : (
                   <div className="mt-6">
                      <PayPalCheckout 
+                       key={`paypal-${paymentAmount}`}
                        amount={paymentAmount}
                        onSuccess={handlePaymentSuccess}
                       onCancel={() => setShowPayment(false)}
