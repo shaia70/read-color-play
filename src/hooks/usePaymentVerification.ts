@@ -248,6 +248,33 @@ export const usePaymentVerification = () => {
         console.log('PayPal payment verified successfully:', result);
         setHasValidPayment(true);
         
+        // If this was a discounted payment (using coupon), record coupon usage
+        const savedDiscount = sessionStorage.getItem('appliedDiscount');
+        if (savedDiscount && amount < 59) { // Less than full price indicates coupon was used
+          try {
+            const discountData = JSON.parse(savedDiscount);
+            console.log('Recording coupon usage for:', discountData.couponCode);
+            
+            const { error: usageError } = await supabase
+              .from('coupon_usage')
+              .insert({
+                user_id: userId,
+                coupon_code: discountData.couponCode
+              });
+
+            if (usageError) {
+              console.error('Error recording coupon usage:', usageError);
+              // Don't block the payment success
+            } else {
+              console.log('Coupon usage recorded successfully');
+              // Clear the discount from session storage after successful use
+              sessionStorage.removeItem('appliedDiscount');
+            }
+          } catch (parseError) {
+            console.error('Error parsing saved discount:', parseError);
+          }
+        }
+        
         // Send payment confirmation email
         try {
           const { data: { user } } = await supabase.auth.getUser();

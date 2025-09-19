@@ -25,7 +25,11 @@ const Flipbook = () => {
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion, verifyPayPalPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number} | null>(null);
+  const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(() => {
+    // Try to restore discount from sessionStorage
+    const savedDiscount = sessionStorage.getItem('appliedDiscount');
+    return savedDiscount ? JSON.parse(savedDiscount) : null;
+  });
   const hasCheckedPayment = React.useRef(false);
   const hasProcessedPayPalReturn = React.useRef(false);
   const isHebrew = language === 'he';
@@ -107,17 +111,26 @@ const Flipbook = () => {
     : "Experience our children's books in an interactive digital flipbook format. Instant access after payment";
 
 
-  const handlePaymentSuccess = () => {
-    setShowPayment(false);
-  };
 
   const handleConfirmPayment = async (userId: string) => {
     await confirmPaymentCompletion(userId);
   };
 
-  const handleDiscountApplied = (discountAmount: number, newPrice: number) => {
-    console.log('Discount applied:', { discountAmount, newPrice });
-    setAppliedDiscount({ amount: discountAmount, newPrice });
+  const handleDiscountApplied = (discountAmount: number, newPrice: number, couponCode: string) => {
+    console.log('Discount applied:', { discountAmount, newPrice, couponCode });
+    const discountData = { amount: discountAmount, newPrice, couponCode };
+    setAppliedDiscount(discountData);
+    // Save to sessionStorage to persist across refreshes
+    sessionStorage.setItem('appliedDiscount', JSON.stringify(discountData));
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPayment(false);
+    // Clear the discount after successful payment completion
+    setTimeout(() => {
+      setAppliedDiscount(null);
+      sessionStorage.removeItem('appliedDiscount');
+    }, 1000);
   };
 
   // אם המשתמש לא מחובר, הצג טופס התחברות
@@ -233,13 +246,14 @@ const Flipbook = () => {
                 </div>
               )}
               
-              <CouponInput 
+                <CouponInput 
                 userId={user.id}
                 originalPrice={originalPrice}
                 onSuccess={() => {
                   checkPaymentStatus(user.id);
                 }}
                 onDiscountApplied={handleDiscountApplied}
+                appliedDiscount={appliedDiscount}
               />
               
               <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">

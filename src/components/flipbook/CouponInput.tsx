@@ -9,15 +9,40 @@ import { toast } from "@/hooks/use-toast";
 interface CouponInputProps {
   userId: string;
   onSuccess: () => void;
-  onDiscountApplied?: (discountAmount: number, newPrice: number) => void;
+  onDiscountApplied?: (discountAmount: number, newPrice: number, couponCode: string) => void;
   originalPrice?: number;
+  appliedDiscount?: {amount: number, newPrice: number, couponCode: string} | null;
 }
 
-const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60 }: CouponInputProps) => {
+const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60, appliedDiscount }: CouponInputProps) => {
   const { language } = useLanguage();
-  const [couponCode, setCouponCode] = React.useState("");
+  const [couponCode, setCouponCode] = React.useState(appliedDiscount?.couponCode || "");
   const [isProcessing, setIsProcessing] = React.useState(false);
   const isHebrew = language === 'he';
+
+  // If there's already an applied discount, don't show the coupon input
+  if (appliedDiscount) {
+    return (
+      <div className="max-w-md mx-auto mb-6">
+        <div className="glass-card p-6 bg-green-50 border-green-200">
+          <div className="flex items-center gap-2 mb-2">
+            <Gift className="w-5 h-5 text-green-600" />
+            <h3 className="text-lg font-bold text-green-800">
+              {isHebrew ? "קופון הופעל!" : "Coupon Applied!"}
+            </h3>
+          </div>
+          <p className="text-green-700">
+            {isHebrew 
+              ? `קוד: ${appliedDiscount.couponCode} | הנחה: ${appliedDiscount.amount} ₪`
+              : `Code: ${appliedDiscount.couponCode} | Discount: ${appliedDiscount.amount} NIS`}
+          </p>
+          <p className="text-sm text-green-600 mt-1">
+            {isHebrew ? "המחיר המעודכן מוצג למטה" : "Updated price shown below"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const handleCouponSubmit = async () => {
     if (!couponCode.trim()) {
@@ -124,10 +149,11 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60 
 
         // Call the discount callback if provided
         if (onDiscountApplied) {
-          onDiscountApplied(discountInNIS, newPrice);
+          onDiscountApplied(discountInNIS, newPrice, couponCode.trim());
         }
         
-        // Don't call onSuccess() yet - wait for payment
+        // Don't record coupon usage yet - wait for successful payment
+        // Coupon usage will be recorded by the payment system
       }
       
     } catch (error) {
