@@ -70,12 +70,12 @@ export const sendEmail = async (params: EmailParams, language: string) => {
 
 // Send registration confirmation email
 export const sendRegistrationEmail = async (params: RegistrationEmailParams, language: string) => {
-  const subject = language === 'he' ? 'ברוכים הבאים לשלי בוקס - הרשמה הושלמה' : 'Welcome to Shelley Books - Registration Complete';
+  const subject = language === 'he' ? 'ברוכים הבאים לשלי ספרים - הרשמה הושלמה' : 'Welcome to Shelley Books - Registration Complete';
   
   const message = language === 'he' 
     ? `שלום ${params.name},
 
-ברוכים הבאים לשלי בוקס!
+ברוכים הבאים לשלי ספרים!
 
 הרשמתך הושלמה בהצלחה. להלן פרטי הכניסה שלך:
 
@@ -87,10 +87,10 @@ export const sendRegistrationEmail = async (params: RegistrationEmailParams, lan
 
 לאחר התשלום תקבל אימייל נוסף המאשר את הרכישה.
 
-תודה שבחרת בשלי בוקס!
+תודה שבחרת בשלי ספרים!
 
 בברכה,
-צוות שלי בוקס`
+צוות שלי ספרים`
     : `Hello ${params.name},
 
 Welcome to Shelley Books!
@@ -144,14 +144,14 @@ Shelley Books Team`;
 
 // Send payment confirmation email
 export const sendPaymentConfirmationEmail = async (params: PaymentConfirmationParams, language: string) => {
-  const subject = language === 'he' ? 'שלי בוקס - תשלום התקבל בהצלחה!' : 'Shelley Books - Payment Received Successfully!';
+  const subject = language === 'he' ? 'שלי ספרים - תשלום התקבל בהצלחה!' : 'Shelley Books - Payment Received Successfully!';
   
   const message = language === 'he' 
     ? `שלום ${params.name},
 
 מעולה! התשלום שלך התקבל בהצלחה.
 
-כעת יש לך גישה מלאה לספר הדיגיטלי של שלי בוקס.
+כעת יש לך גישה מלאה לספר הדיגיטלי של שלי ספרים.
 
 פרטי הכניסה שלך:
 שם משתמש (אימייל): ${params.email}
@@ -159,10 +159,10 @@ ${params.password ? `סיסמה: ${params.password}` : '(השתמש בסיסמה
 
 תוכל לגשת לתוכן בכל עת באתר.
 
-תודה על הרכישה וההצטרפות למשפחת שלי בוקס!
+תודה על הרכישה וההצטרפות למשפחת שלי ספרים!
 
 בברכה,
-צוות שלי בוקס`
+צוות שלי ספרים`
     : `Hello ${params.name},
 
 Excellent! Your payment has been received successfully.
