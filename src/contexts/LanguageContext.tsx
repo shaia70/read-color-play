@@ -1,13 +1,13 @@
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import * as React from 'react';
 import translations from '@/translations';
 import { Language, LanguageContextType } from '@/types/language';
-import { useLanguageStorage } from '@/hooks/useLanguageStorage';
+import { useLanguageStorageFixed } from '@/hooks/useLanguageStorageFixed';
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = React.createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { language, setLanguage } = useLanguageStorage();
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { language, setLanguage } = useLanguageStorageFixed();
 
   const t = (key: string): string => {
     return translations[language][key] || key;
@@ -21,7 +21,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 };
 
 export const useLanguage = (): LanguageContextType => {
-  const context = useContext(LanguageContext);
+  const context = React.useContext(LanguageContext);
   if (context === undefined) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }

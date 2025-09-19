@@ -1,8 +1,8 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language } from '@/types/language';
 
-// Hook to manage language state with localStorage
+// Hook to manage language state with localStorage  
 export const useLanguageStorage = () => {
   // Get stored language from localStorage or default to Hebrew
   const getStoredLanguage = (): Language => {
@@ -12,7 +12,7 @@ export const useLanguageStorage = () => {
   };
 
   // Use lazy initial state to avoid localStorage access during render
-  const [language, setLanguageState] = useState<Language>(() => getStoredLanguage());
+  const [language, setLanguageState] = React.useState<Language>(() => getStoredLanguage());
 
   // Update localStorage when language changes
   const setLanguage = (newLanguage: Language) => {
@@ -23,12 +23,12 @@ export const useLanguageStorage = () => {
   };
 
   // Initialize with stored language on component mount
-  useEffect(() => {
+  React.useEffect(() => {
     const storedLanguage = getStoredLanguage();
     if (storedLanguage !== language) {
       setLanguageState(storedLanguage);
     }
-  }, []);
+  }, [language]);
 
   return { language, setLanguage };
 };
