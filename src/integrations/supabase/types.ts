@@ -822,6 +822,10 @@ export type Database = {
         Args: { p_coupon_code: string; p_user_name: string }
         Returns: undefined
       }
+      revoke_service_access: {
+        Args: { service_name: string; user_id: string }
+        Returns: undefined
+      }
       update_google_drive_tokens: {
         Args: {
           p_access_token: string
