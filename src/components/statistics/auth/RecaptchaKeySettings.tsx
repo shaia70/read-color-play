@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import * as React from "react";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -25,19 +25,19 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   isEnterpriseMode = false,
   enterpriseSiteKey
 }) => {
-  const [localProductionKey, setLocalProductionKey] = useState(
+  const [localProductionKey, setLocalProductionKey] = React.useState(
     productionSiteKey !== testSiteKey ? productionSiteKey : ''
   );
   
-  const [localEnterpriseKey, setLocalEnterpriseKey] = useState(
+  const [localEnterpriseKey, setLocalEnterpriseKey] = React.useState(
     enterpriseSiteKey || ''
   );
   
-  const [keyStatus, setKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
-  const [enterpriseKeyStatus, setEnterpriseKeyStatus] = useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
-  const [validationTimeouts, setValidationTimeouts] = useState<{[key: string]: ReturnType<typeof setTimeout>}>({});
+  const [keyStatus, setKeyStatus] = React.useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
+  const [enterpriseKeyStatus, setEnterpriseKeyStatus] = React.useState<'validating' | 'valid' | 'invalid' | 'idle'>('idle');
+  const [validationTimeouts, setValidationTimeouts] = React.useState<{[key: string]: ReturnType<typeof setTimeout>}>({});
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Don't save test key preference if it's disabled permanently
     if (!testKeyDisabled) {
       localStorage.setItem('shelley_use_test_recaptcha', useTestKey.toString());
@@ -45,7 +45,7 @@ export const RecaptchaKeySettings: React.FC<RecaptchaKeySettingsProps> = ({
   }, [useTestKey, testKeyDisabled]);
   
   // Cleanup timeouts when component unmounts
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       Object.values(validationTimeouts).forEach(timeout => clearTimeout(timeout));
     };

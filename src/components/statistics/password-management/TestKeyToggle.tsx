@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

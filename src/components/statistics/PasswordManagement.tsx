@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import PasswordSection from "./password-management/PasswordSection";
 import RecaptchaSection from "./password-management/RecaptchaSection";
 

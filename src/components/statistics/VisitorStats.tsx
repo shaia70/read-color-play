@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Tooltip, BarChart, Bar } from "recharts";
@@ -15,12 +15,12 @@ const chartConfig = {
 };
 
 export const VisitorStats: React.FC = () => {
-  const [visitorData, setVisitorData] = useState<any[]>([]);
-  const [deviceData, setDeviceData] = useState<any[]>([]);
-  const [referralData, setReferralData] = useState<any[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [visitorData, setVisitorData] = React.useState<any[]>([]);
+  const [deviceData, setDeviceData] = React.useState<any[]>([]);
+  const [referralData, setReferralData] = React.useState<any[]>([]);
+  const [lastUpdated, setLastUpdated] = React.useState<Date>(new Date());
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Load real analytics data
     const loadData = () => {
       const events = getEvents();

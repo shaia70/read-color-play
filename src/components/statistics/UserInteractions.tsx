@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -31,11 +31,11 @@ const chartConfig = {
 };
 
 export const UserInteractions: React.FC = () => {
-  const [clickData, setClickData] = useState<ClickData[]>([]);
-  const [navigationFlowData, setNavigationFlowData] = useState<NavigationFlowData[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [clickData, setClickData] = React.useState<ClickData[]>([]);
+  const [navigationFlowData, setNavigationFlowData] = React.useState<NavigationFlowData[]>([]);
+  const [lastUpdated, setLastUpdated] = React.useState<Date>(new Date());
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Load real analytics data
     const loadData = () => {
       const clicks = getClickData();

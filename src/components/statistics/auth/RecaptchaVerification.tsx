@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from "react";
+import * as React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -18,10 +18,10 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   useTestKey,
   onError
 }) => {
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const recaptchaRef = React.useRef<ReCAPTCHA>(null);
   const isMobile = useIsMobile();
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Reset captcha when key changes
     onVerify(null);
     if (recaptchaRef.current) {
@@ -30,7 +30,7 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   }, [siteKey, useTestKey, testKeyDisabled, onVerify]);
   
   // Listen for reCAPTCHA error messages
-  useEffect(() => {
+  React.useEffect(() => {
     const handleErrorMessages = (event: ErrorEvent) => {
       if (event.message && 
          (event.message.includes('Invalid domain for site key') || 
@@ -48,7 +48,7 @@ export const RecaptchaVerification: React.FC<RecaptchaVerificationProps> = ({
   }, [onError]);
   
   // For test key, we'll simulate a successful verification
-  useEffect(() => {
+  React.useEffect(() => {
     if (!testKeyDisabled && useTestKey) {
       // Automatically simulate verification
       const testToken = "test-captcha-token-123456789";

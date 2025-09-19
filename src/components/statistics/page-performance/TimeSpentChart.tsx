@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 import { TimeSpentData } from "@/services/analyticsService";

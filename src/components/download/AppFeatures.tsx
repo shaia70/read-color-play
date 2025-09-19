@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { Smartphone, Download, Apple } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";

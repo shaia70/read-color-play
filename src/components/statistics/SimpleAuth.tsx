@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import * as React from "react";
 import { AuthCard } from "./auth/AuthCard";
 import { AuthForm } from "./auth/AuthForm";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -9,7 +9,7 @@ interface SimpleAuthProps {
 }
 
 export const SimpleAuth: React.FC<SimpleAuthProps> = ({ onAuthenticate }) => {
-  const [useTestKey, setUseTestKey] = useState(() => {
+  const [useTestKey, setUseTestKey] = React.useState(() => {
     // Check if test key is permanently disabled
     if (localStorage.getItem('shelley_disable_test_recaptcha') === 'true') {
       return false;

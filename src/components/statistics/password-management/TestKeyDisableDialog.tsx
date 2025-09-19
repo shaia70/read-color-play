@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { toast } from "sonner";
 import { ShieldAlert } from "lucide-react";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";

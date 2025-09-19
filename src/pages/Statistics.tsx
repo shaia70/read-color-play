@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import * as React from "react";
 import SimpleAuth from "@/components/statistics/SimpleAuth";
 import AdminSettings from "@/components/statistics/AdminSettings";
 import { VisitorStats } from "@/components/statistics/VisitorStats";
@@ -12,12 +12,12 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
 const Statistics: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+  const [isAuthenticated, setIsAuthenticated] = React.useState(() => {
     // Check if user is authenticated via session storage
     return sessionStorage.getItem('shelley_admin_authenticated') === 'true';
   });
-  const [activeTab, setActiveTab] = useState("visitors");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [activeTab, setActiveTab] = React.useState("visitors");
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const isMobile = useIsMobile();
   
   const handleAuthenticate = () => {

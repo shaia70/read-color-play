@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,15 +12,15 @@ interface PixelConfig {
 }
 
 export const PixelManagement: React.FC = () => {
-  const [pixelConfig, setPixelConfig] = useState<PixelConfig>({
+  const [pixelConfig, setPixelConfig] = React.useState<PixelConfig>({
     googleAnalyticsId: "",
     facebookPixelId: ""
   });
   
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   
   // Load existing configuration on component mount
-  useEffect(() => {
+  React.useEffect(() => {
     const storedConfig = localStorage.getItem('analytics_pixel_config');
     if (storedConfig) {
       try {

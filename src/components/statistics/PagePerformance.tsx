@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -22,12 +22,12 @@ const chartConfig = {
 
 // Using named export to match the import in Statistics.tsx
 export const PagePerformance: React.FC = () => {
-  const [pageViewsData, setPageViewsData] = useState<PageViewData[]>([]);
-  const [timeSpentData, setTimeSpentData] = useState<TimeSpentData[]>([]);
-  const [bounceRateData, setBounceRateData] = useState<BounceRateData[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [pageViewsData, setPageViewsData] = React.useState<PageViewData[]>([]);
+  const [timeSpentData, setTimeSpentData] = React.useState<TimeSpentData[]>([]);
+  const [bounceRateData, setBounceRateData] = React.useState<BounceRateData[]>([]);
+  const [lastUpdated, setLastUpdated] = React.useState<Date>(new Date());
   
-  useEffect(() => {
+  React.useEffect(() => {
     const loadData = () => {
       const pageViews = getPageViewsData();
       const timeSpent = getTimeSpentData();

@@ -1,12 +1,12 @@
 
-import React, { useState } from "react";
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import PasswordChangeDialog from "./PasswordChangeDialog";
 
 export const PasswordSection: React.FC = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   
   return (
     <Card>

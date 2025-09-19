@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, KeyRound } from "lucide-react";
 
@@ -12,7 +12,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
   password, 
   setPassword 
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
   
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

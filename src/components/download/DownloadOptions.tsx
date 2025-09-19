@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { Download, Play, PaintBucket } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";

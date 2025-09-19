@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import * as React from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CustomButton } from "../ui/CustomButton";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -54,9 +54,9 @@ const PAGE_33_URL = "/lovable-uploads/561280c9-6bce-4561-9eb1-c0921af9e5b7.png";
 
 const FlipbookViewer: React.FC = () => {
   const { language } = useLanguage();
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [zoom, setZoom] = useState<number>(2); // Changed from 1 to 2 for 200% default zoom
-  const flipbookRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
+  const [zoom, setZoom] = React.useState<number>(2); // Changed from 1 to 2 for 200% default zoom
+  const flipbookRef = React.useRef<HTMLDivElement>(null);
   const isHebrew = language === 'he';
 
   console.log('FlipbookViewer rendered successfully');
@@ -102,7 +102,7 @@ const FlipbookViewer: React.FC = () => {
     setZoom(2);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       console.log('Key pressed:', e.key, 'Current page:', currentPage);
       

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lock, Info } from "lucide-react";
@@ -32,19 +32,19 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   isEnterpriseMode = false,
   enterpriseSiteKey
 }) => {
-  const [password, setPassword] = useState("");
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [domainError, setDomainError] = useState(false);
+  const [password, setPassword] = React.useState("");
+  const [recaptchaToken, setRecaptchaToken] = React.useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = React.useState(false);
+  const [domainError, setDomainError] = React.useState(false);
   
   // Reset recaptcha token when key changes
-  useEffect(() => {
+  React.useEffect(() => {
     setRecaptchaToken(null);
     setDomainError(false);
   }, [activeSiteKey, useTestKey]);
   
   // For enterprise reCAPTCHA, load the script when component mounts
-  useEffect(() => {
+  React.useEffect(() => {
     if (isEnterpriseMode && typeof window !== 'undefined') {
       // Check if the script already exists
       const existingScript = document.querySelector(`script[src*="recaptcha/enterprise.js"]`);
@@ -73,7 +73,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   }, [isEnterpriseMode, enterpriseSiteKey]);
   
   // Listen for reCAPTCHA errors in window.console messages
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const originalConsoleError = console.error;
       

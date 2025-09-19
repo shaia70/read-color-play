@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Dialog } from "@/components/ui/dialog";
@@ -10,13 +10,13 @@ import TestKeyDisableDialog from "./TestKeyDisableDialog";
 import DisabledTestKeyInfo from "./DisabledTestKeyInfo";
 
 export const RecaptchaSection: React.FC = () => {
-  const [isDisableTestKeyDialogOpen, setIsDisableTestKeyDialogOpen] = useState(false);
+  const [isDisableTestKeyDialogOpen, setIsDisableTestKeyDialogOpen] = React.useState(false);
   
-  const [productionKeyWorking, setProductionKeyWorking] = useState(() => {
+  const [productionKeyWorking, setProductionKeyWorking] = React.useState(() => {
     return localStorage.getItem('shelley_production_key_working') === 'true';
   });
   
-  const [testKeyDisabled, setTestKeyDisabled] = useState(() => {
+  const [testKeyDisabled, setTestKeyDisabled] = React.useState(() => {
     return localStorage.getItem('shelley_disable_test_recaptcha') === 'true';
   });
   
@@ -25,7 +25,7 @@ export const RecaptchaSection: React.FC = () => {
   const testKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
   const hasCustomProductionKey = productionKey && productionKey !== testKey;
   
-  useEffect(() => {
+  React.useEffect(() => {
     const workingKey = localStorage.getItem('shelley_production_key_working') === 'true';
     setProductionKeyWorking(workingKey);
     

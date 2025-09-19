@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { motion } from "framer-motion";
 import { PaintBucket, Printer } from "lucide-react";
 import { CustomButton } from "@/components/ui/CustomButton";

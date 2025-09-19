@@ -1,5 +1,5 @@
 
-import React from "react";
+import * as React from "react";
 import { ShieldAlert } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
