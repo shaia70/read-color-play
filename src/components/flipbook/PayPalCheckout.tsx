@@ -27,7 +27,7 @@ interface PayPalCheckoutProps {
 const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const { recordPayment, confirmPaymentCompletion } = usePaymentVerification();
+  const { verifyPayPalPayment, confirmPaymentCompletion } = usePaymentVerification();
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [paypalLoaded, setPaypalLoaded] = React.useState(false);
   const isHebrew = language === 'he';
@@ -73,8 +73,8 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
           const transactionId = order.id;
           const paymentAmount = parseFloat(order.purchase_units[0].amount.value);
           
-          // Record payment in our system
-          await recordPayment(user.id, transactionId, paymentAmount);
+          // Verify payment with PayPal API and record in our system
+          await verifyPayPalPayment(user.id, transactionId, paymentAmount);
           onSuccess();
           
         } catch (error) {
