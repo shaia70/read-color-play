@@ -34,7 +34,28 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
   
   // PayPal Smart Buttons setup
   const renderPayPalButtons = () => {
-    if (!paypalLoaded || !window.paypal || !user?.id) return null;
+    console.log('=== RENDER PAYPAL BUTTONS ===');
+    console.log('paypalLoaded:', paypalLoaded);
+    console.log('window.paypal exists:', !!window.paypal);
+    console.log('user?.id:', user?.id);
+    console.log('amount:', amount);
+    
+    if (!paypalLoaded) {
+      console.log('❌ PayPal not loaded yet');
+      return null;
+    }
+    
+    if (!window.paypal) {
+      console.log('❌ window.paypal not available');
+      return null;
+    }
+    
+    if (!user?.id) {
+      console.log('❌ No user ID available');
+      return null;
+    }
+
+    console.log('✅ All conditions met, creating PayPal buttons...');
 
     return window.paypal.Buttons({
       style: {
@@ -101,25 +122,38 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
 
   // Load PayPal SDK
   React.useEffect(() => {
+    console.log('=== PAYPAL SDK LOADING EFFECT ===');
+    console.log('window.paypal exists:', !!window.paypal);
+    console.log('paypalLoaded state:', paypalLoaded);
+    
     if (window.paypal) {
+      console.log('PayPal SDK already exists, setting loaded to true');
       setPaypalLoaded(true);
       return;
     }
 
+    console.log('Creating PayPal SDK script...');
     const script = document.createElement('script');
-    // Using PayPal sandbox client ID for testing - disable return URLs for security
-    script.src = 'https://www.paypal.com/sdk/js?client-id=ATseWJk1Mz_1Y5pOdBGdz7Fz8gJl4n8qVtGJmQD8cJGTVvK_J7RQpbXKm8GqQr7gQn5RnMzQ5FZQ1Vz5&currency=ILS&components=buttons&disable-funding=credit,card';
+    // Using production PayPal client ID
+    script.src = 'https://www.paypal.com/sdk/js?client-id=ASFTFjgFIkVz6iFZ8cQZNk_BfUnMu2hbN5O0Cy5O-sVhUfgAY4_PuCx7xvNrjCl0dJfRBRe2q3jyY4Yx&currency=ILS&components=buttons';
+    
     script.onload = () => {
-      console.log('PayPal SDK loaded successfully');
+      console.log('✅ PayPal SDK loaded successfully');
+      console.log('window.paypal now exists:', !!window.paypal);
       setPaypalLoaded(true);
     };
-    script.onerror = () => {
-      console.error('Failed to load PayPal SDK');
-      alert(isHebrew ? 'שגיאה בטעינת מערכת התשלומים' : 'Failed to load payment system');
+    
+    script.onerror = (error) => {
+      console.error('❌ Failed to load PayPal SDK:', error);
+      console.error('Script src was:', script.src);
+      alert(isHebrew ? 'שגיאה בטעינת מערכת התשלומים - אנא רענן את הדף' : 'Failed to load payment system - please refresh page');
     };
+    
+    console.log('Adding PayPal script to document head...');
     document.head.appendChild(script);
 
     return () => {
+      console.log('Cleaning up PayPal script...');
       const existingScript = document.querySelector('script[src*="paypal.com/sdk"]');
       if (existingScript) {
         document.head.removeChild(existingScript);
@@ -191,11 +225,18 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
               <p className="text-center mb-4 text-gray-700">
                 {isHebrew ? "תשלום בכרטיס אשראי או PayPal" : "Pay with Credit Card or PayPal"}
               </p>
-              <div id="paypal-button-container" className="w-full"></div>
+              <div id="paypal-button-container" className="w-full min-h-[60px]"></div>
               {isProcessing && (
                 <div className="text-center mt-2">
                   <p className="text-sm text-gray-600">
                     {isHebrew ? "מעבד תשלום..." : "Processing payment..."}
+                  </p>
+                </div>
+              )}
+              {paypalLoaded && !document.getElementById('paypal-button-container')?.innerHTML && (
+                <div className="text-center mt-2 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                  <p className="text-sm text-yellow-800">
+                    {isHebrew ? "כפתורי PayPal לא נטענו - אנא רענן את הדף" : "PayPal buttons failed to load - please refresh"}
                   </p>
                 </div>
               )}
@@ -206,12 +247,18 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
               <p className="text-gray-600 mb-4">
                 {isHebrew ? "מערכת תשלומים טוען..." : "Payment system loading..."}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 mb-4">
                 {isHebrew 
-                  ? "אם הטעינה נתקעת, נסה לרענן את הדף"
-                  : "If loading is stuck, try refreshing the page"
+                  ? "אם הטעינה נתקעת, נסה לרענן את הדף או לחץ על הכפתור למטה"
+                  : "If loading is stuck, try refreshing the page or click the button below"
                 }
               </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-shelley-blue text-white rounded hover:bg-shelley-blue/80 transition-colors"
+              >
+                {isHebrew ? "רענן דף" : "Refresh Page"}
+              </button>
             </div>
           )}
 
