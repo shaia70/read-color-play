@@ -48,3 +48,11 @@ verify_jwt = false
 [[edge-functions.function]]
 name = "verify-paypal-payment"
 verify_jwt = false
+
+[[edge-functions.function]]
+name = "verify-existing-payment"
+verify_jwt = false
+
+[[edge-functions.function]]
+name = "manual-verify-payment"
+verify_jwt = false
