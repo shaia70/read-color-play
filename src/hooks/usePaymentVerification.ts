@@ -153,72 +153,13 @@ export const usePaymentVerification = () => {
     }
   };
 
+  // DEPRECATED: recordPayment function removed for security
+  // This function was dangerous - it recorded payments without PayPal verification
+  // All payments MUST go through verifyPayPalPayment function only
   const recordPayment = async (userId: string, sessionId: string, amount: number) => {
-    try {
-      console.log('=== RECORDING PAYMENT VIA EDGE FUNCTION ===');
-      console.log('User ID for payment:', userId);
-      console.log('Session ID:', sessionId);
-      console.log('Amount:', amount);
-      
-      const { data: result, error: insertError } = await supabase.functions.invoke('record-payment', {
-        body: {
-          user_id: userId,
-          transaction_id: sessionId,
-          amount: amount
-        }
-      });
-
-      console.log('Record payment function result:', { result, insertError });
-
-      if (insertError) {
-        console.error('Error recording payment:', insertError);
-        throw insertError;
-      }
-
-      if (result?.success) {
-        console.log('Payment recorded successfully:', result);
-        setHasValidPayment(true);
-        
-        // Send payment confirmation email
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await sendPaymentConfirmationEmail({
-              name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
-              email: user.email || '',
-            }, language);
-            
-            console.log('Payment confirmation email sent successfully');
-          }
-        } catch (emailError) {
-          console.error('Error sending payment confirmation email:', emailError);
-          // Don't block the payment success flow
-        }
-        
-        toast({
-          title: language === 'he' ? 'תשלום נרשם בהצלחה' : 'Payment recorded successfully',
-          description: language === 'he' ? 'התשלום שלך נרשם' : 'Your payment has been recorded'
-        });
-      } else {
-        throw new Error('Payment recording failed');
-      }
-      
-    } catch (err) {
-      console.error('=== RECORD PAYMENT ERROR ===');
-      console.error('Error details:', err);
-      
-      const errorMsg = language === 'he' 
-        ? 'בעיה ברישום התשלום' 
-        : 'Payment recording issue';
-      
-      setError(errorMsg);
-      
-      toast({
-        variant: "destructive",
-        title: language === 'he' ? 'שגיאה' : 'Error',
-        description: errorMsg
-      });
-    }
+    console.error('🚨 SECURITY ERROR: recordPayment is deprecated and dangerous!');
+    console.error('All payments must be verified through PayPal API');
+    throw new Error('recordPayment is deprecated - use verifyPayPalPayment only');
   };
 
   const verifyPayPalPayment = async (userId: string, paymentId: string, amount: number) => {
