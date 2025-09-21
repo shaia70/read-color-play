@@ -16,7 +16,7 @@ interface TransactionResult {
 }
 
 export const PayPalTransactionChecker = () => {
-  const [orderId, setOrderId] = useState('5XE03844WW957952U');
+  const [orderId, setOrderId] = useState('34T3389822652725C');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TransactionResult | null>(null);
 
