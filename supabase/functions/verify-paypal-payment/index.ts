@@ -186,7 +186,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Step 5: Record Payment
+    // Step 5: Record Payment with proper verification
     console.log('Recording verified payment...');
     const { data: payment, error: paymentError } = await supabase
       .from('payments')
@@ -198,7 +198,10 @@ Deno.serve(async (req) => {
         status: 'success',
         service_type: 'flipbook',
         payer_email: orderDetails.payer.email_address,
-        payer_id: orderDetails.payer.payer_id
+        payer_id: orderDetails.payer.payer_id,
+        verified_with_paypal: true,
+        paypal_verification_date: new Date().toISOString(),
+        requires_paypal_verification: false
       })
       .select()
       .single();

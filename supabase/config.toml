@@ -38,7 +38,7 @@ name = "check-payment"
 verify_jwt = false
 
 [[edge-functions.function]]
-name = "record-payment"
+name = "block-fake-payments"
 verify_jwt = false
 
 [[edge-functions.function]]
