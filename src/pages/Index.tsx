@@ -8,6 +8,7 @@ import ARTechnology from "@/components/home/ARTechnology";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PayPalUpdater } from "@/components/debug/PayPalUpdater";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -73,6 +74,7 @@ const Index = () => {
       
       <Header />
       <main>
+      <PayPalUpdater />
       <Hero />
       <Concept />
       <FeaturedBook />
