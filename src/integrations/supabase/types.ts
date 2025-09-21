@@ -258,6 +258,7 @@ export type Database = {
           payer_id: string | null
           paypal_transaction_id: string | null
           paypal_verification_date: string | null
+          requires_paypal_verification: boolean | null
           service_type: string | null
           status: string
           updated_at: string | null
@@ -273,6 +274,7 @@ export type Database = {
           payer_id?: string | null
           paypal_transaction_id?: string | null
           paypal_verification_date?: string | null
+          requires_paypal_verification?: boolean | null
           service_type?: string | null
           status?: string
           updated_at?: string | null
@@ -288,6 +290,7 @@ export type Database = {
           payer_id?: string | null
           paypal_transaction_id?: string | null
           paypal_verification_date?: string | null
+          requires_paypal_verification?: boolean | null
           service_type?: string | null
           status?: string
           updated_at?: string | null
@@ -873,6 +876,15 @@ export type Database = {
           should_logout: boolean
           suspicious_activity: boolean
         }[]
+      }
+      verify_payment_with_paypal: {
+        Args: {
+          p_payer_email: string
+          p_payer_id: string
+          p_payment_id: string
+          p_paypal_order_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
