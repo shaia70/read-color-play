@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,6 +19,11 @@ export const PayPalTransactionChecker = () => {
   const [orderId, setOrderId] = useState('34T3389822652725C');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TransactionResult | null>(null);
+
+  // Auto-search for Donny Simon's transaction on load
+  useEffect(() => {
+    searchTransaction();
+  }, []);
 
   const searchTransaction = async () => {
     if (!orderId.trim()) {
@@ -66,6 +71,11 @@ export const PayPalTransactionChecker = () => {
           <CardTitle>PayPal Transaction ID Checker</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="mb-4 p-3 bg-blue-50 rounded">
+            <h3 className="font-bold text-blue-700">חיפוש Transaction ID עבור דוני סימון</h3>
+            <p className="text-sm text-blue-600">Order ID: 34T3389822652725C</p>
+          </div>
+          
           <div className="flex gap-2">
             <Input
               placeholder="הכנס Order ID או Transaction ID"
