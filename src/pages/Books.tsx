@@ -50,7 +50,7 @@ const Books = () => {
   };
 
   const navigateToPurchase = () => {
-    navigate('/flipbook');
+    navigate('/physical-book');
   };
 
   return (

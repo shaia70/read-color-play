@@ -20,6 +20,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import Flipbook from "./pages/Flipbook";
+import PhysicalBookPurchase from "./pages/PhysicalBookPurchase";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Scroll restoration and analytics tracking component
@@ -57,6 +58,7 @@ const App = () => {
                         <Route path="/download" element={<Download />} />
                         <Route path="/gallery" element={<Gallery />} />
                         <Route path="/flipbook" element={<Flipbook />} />
+                        <Route path="/physical-book" element={<PhysicalBookPurchase />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/admin-statistics" element={<Statistics />} />
                         <Route path="*" element={<NotFound />} />
