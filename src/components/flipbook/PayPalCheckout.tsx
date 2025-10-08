@@ -83,6 +83,7 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment, deliver
         console.log('Amount being sent to PayPal:', amount);
         console.log('Delivery method:', deliveryMethod);
         console.log('Shipping address:', shippingAddress);
+        console.log('Product description:', productDescription);
         
         const orderData: any = {
           purchase_units: [{

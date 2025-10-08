@@ -296,8 +296,8 @@ const PhysicalBookPurchase = () => {
                       country_code: 'IL'
                     } : undefined}
                     productDescription={isHebrew 
-                      ? `ספר פיזי - דניאל הולך לגן${deliveryMethod === 'delivery' ? ' (כולל משלוח)' : ' (איסוף עצמי)'}`
-                      : `Physical Book - Daniel Goes to Kindergarten${deliveryMethod === 'delivery' ? ' (with delivery)' : ' (self pickup)'}`
+                      ? `רכישת ספר פיזי - דניאל הולך לגן${deliveryMethod === 'delivery' ? ' (כולל משלוח)' : ' (איסוף עצמי)'}`
+                      : `Physical Book Purchase - Daniel Goes to Kindergarten${deliveryMethod === 'delivery' ? ' (with delivery)' : ' (self pickup)'}`
                     }
                     skipAccessCheck={true}
                   />
