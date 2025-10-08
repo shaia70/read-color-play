@@ -258,22 +258,6 @@ const Flipbook = () => {
             </CustomButton>
           </div>
 
-          {/* הצגת Session ID */}
-          {session && (
-            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-              <div className="text-sm text-gray-600">
-                <strong>{isHebrew ? 'Session ID נוכחי:' : 'Current Session ID:'}</strong>
-              </div>
-              <div className="font-mono text-xs text-gray-800 bg-white p-2 rounded border break-all mt-1">
-                {session.access_token ? session.access_token.substring(0, 50) + '...' : 'N/A'}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                {isHebrew ? 'זהו מזהה הסשן הנוכחי שלך (מקוצר)' : 'This is your current session identifier (truncated)'}
-              </div>
-            </div>
-          )}
-
-
           {!hasValidPayment ? (
             <div className="text-center mb-16">
               <h1 className="text-4xl font-bold mb-6">
