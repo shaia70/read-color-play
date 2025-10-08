@@ -288,6 +288,17 @@ const PhysicalBookPurchase = () => {
                     onSuccess={handlePaymentSuccess}
                     onCancel={() => setShowPayment(false)}
                     onConfirmPayment={async () => {}}
+                    deliveryMethod={deliveryMethod}
+                    shippingAddress={deliveryMethod === 'delivery' ? {
+                      name: user.name || user.email || 'Customer',
+                      address_line_1: isHebrew ? 'יש למלא כתובת במסך הבא' : 'Please fill address in next screen',
+                      admin_area_2: isHebrew ? 'עיר' : 'City',
+                      country_code: 'IL'
+                    } : undefined}
+                    productDescription={isHebrew 
+                      ? `ספר פיזי - דניאל הולך לגן${deliveryMethod === 'delivery' ? ' (כולל משלוח)' : ' (איסוף עצמי)'}`
+                      : `Physical Book - Daniel Goes to Kindergarten${deliveryMethod === 'delivery' ? ' (with delivery)' : ' (self pickup)'}`
+                    }
                   />
                 </div>
               )}

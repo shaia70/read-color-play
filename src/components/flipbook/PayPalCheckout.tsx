@@ -23,9 +23,18 @@ interface PayPalCheckoutProps {
   onSuccess: () => void;
   onCancel: () => void;
   onConfirmPayment: (userId: string) => Promise<void>;
+  deliveryMethod?: 'pickup' | 'delivery';
+  shippingAddress?: {
+    name: string;
+    address_line_1: string;
+    admin_area_2: string; // City
+    postal_code?: string;
+    country_code: string;
+  };
+  productDescription?: string;
 }
 
-const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPalCheckoutProps) => {
+const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment, deliveryMethod, shippingAddress, productDescription }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { verifyPayPalPayment, confirmPaymentCompletion } = usePaymentVerification();
@@ -71,22 +80,41 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment }: PayPa
       createOrder: (data: any, actions: any) => {
         console.log('=== PAYPAL CREATE ORDER ===');
         console.log('Amount being sent to PayPal:', amount);
+        console.log('Delivery method:', deliveryMethod);
+        console.log('Shipping address:', shippingAddress);
         
-        return actions.order.create({
+        const orderData: any = {
           purchase_units: [{
             amount: {
               value: amount.toString(),
               currency_code: 'ILS'
             },
-            description: isHebrew ? 'גישה לספר דיגיטלי' : 'Digital Book Access'
+            description: productDescription || (isHebrew ? 'גישה לספר דיגיטלי' : 'Digital Book Access')
           }],
           application_context: {
-            shipping_preference: 'NO_SHIPPING',
+            shipping_preference: deliveryMethod === 'delivery' ? 'SET_PROVIDED_ADDRESS' : 'NO_SHIPPING',
             user_action: 'PAY_NOW',
             return_url: 'https://example.com/noaccess', // Dummy URL - never used due to onApprove
             cancel_url: 'https://example.com/noaccess'  // Dummy URL - never used due to onCancel
           }
-        });
+        };
+
+        // Add shipping address if delivery is selected
+        if (deliveryMethod === 'delivery' && shippingAddress) {
+          orderData.purchase_units[0].shipping = {
+            name: {
+              full_name: shippingAddress.name
+            },
+            address: {
+              address_line_1: shippingAddress.address_line_1,
+              admin_area_2: shippingAddress.admin_area_2,
+              postal_code: shippingAddress.postal_code || '',
+              country_code: shippingAddress.country_code
+            }
+          };
+        }
+        
+        return actions.order.create(orderData);
       },
       onApprove: async (data: any, actions: any) => {
         setIsProcessing(true);
