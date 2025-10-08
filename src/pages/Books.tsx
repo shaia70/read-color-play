@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Eye, Download } from "lucide-react";
+import { Eye, Download, ShoppingCart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -47,6 +47,10 @@ const Books = () => {
 
   const navigateToDownload = () => {
     navigate('/download');
+  };
+
+  const navigateToPurchase = () => {
+    navigate('/flipbook');
   };
 
   return (
@@ -215,6 +219,15 @@ const Books = () => {
                     onClick={navigateToDownload}
                   >
                     {t('books.coloring')}
+                  </CustomButton>
+                  <CustomButton 
+                    variant="blue" 
+                    size="lg" 
+                    icon={<ShoppingCart className="w-6 h-6" />} 
+                    className={`text-base px-8 py-3 h-14 min-h-0 w-64 font-bold ${language === 'he' ? 'justify-start' : ''}`}
+                    onClick={navigateToPurchase}
+                  >
+                    {isHebrew ? 'רכישת הספר - 89 ₪' : 'Buy Book - 89 ₪'}
                   </CustomButton>
                 </div>
               </div>
