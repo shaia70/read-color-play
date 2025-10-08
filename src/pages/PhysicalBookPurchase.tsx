@@ -5,14 +5,15 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CustomButton } from "@/components/ui/CustomButton";
-import { Lock, CreditCard, LogOut, RefreshCw, ShoppingCart } from "lucide-react";
+import { LogOut, ShoppingCart, Truck, MapPin } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PayPalCheckout from "@/components/flipbook/PayPalCheckout";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
-import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 import CouponInput from "@/components/flipbook/CouponInput";
 import { useUrlSecurity } from "@/hooks/useUrlSecurity";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const PhysicalBookPurchase = () => {
   // SECURITY: Remove suspicious URL parameters to prevent bypass
@@ -20,18 +21,17 @@ const PhysicalBookPurchase = () => {
   
   const { t, language } = useLanguage();
   const { user, session, logout } = useAuth();
-  const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion, verifyPayPalPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = React.useState(false);
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = React.useState<'pickup' | 'delivery'>('pickup');
 
-  const hasCheckedPayment = React.useRef(false);
-  const hasProcessedPayPalReturn = React.useRef(false);
   const isHebrew = language === 'he';
 
-  // Fixed price for physical book
-  const originalPrice = 89;
-  const currentPrice = appliedDiscount?.newPrice || originalPrice;
+  // Fixed prices
+  const basePrice = 89;
+  const deliveryFee = 30;
+  const originalPrice = basePrice + (deliveryMethod === 'delivery' ? deliveryFee : 0);
+  const currentPrice = appliedDiscount ? appliedDiscount.newPrice + (deliveryMethod === 'delivery' ? deliveryFee : 0) : originalPrice;
   const bookPrice = `${currentPrice} ₪`;
   const paymentAmount = currentPrice;
   const bookTitle = isHebrew ? "דניאל הולך לגן - ספר פיזי" : "Daniel Goes to Kindergarten - Physical Book";
@@ -40,52 +40,21 @@ const PhysicalBookPurchase = () => {
   React.useEffect(() => {
     console.log('=== PHYSICAL BOOK PRICE CALCULATION ===');
     console.log('Applied discount:', appliedDiscount);
+    console.log('Delivery method:', deliveryMethod);
+    console.log('Base price:', basePrice);
+    console.log('Delivery fee:', deliveryMethod === 'delivery' ? deliveryFee : 0);
     console.log('Original price:', originalPrice);
     console.log('Current price:', currentPrice);
     console.log('Payment amount:', paymentAmount);
-  }, [appliedDiscount, currentPrice, paymentAmount]);
-
-  // Check payment status when user logs in
-  React.useEffect(() => {
-    if (user?.id && !hasCheckedPayment.current && !paymentLoading) {
-      hasCheckedPayment.current = true;
-      checkPaymentStatus(user.id);
-    }
-  }, [user?.id, checkPaymentStatus, paymentLoading]);
-
-  // Reset check flag when user changes
-  React.useEffect(() => {
-    if (!user) {
-      hasCheckedPayment.current = false;
-    }
-  }, [user]);
-
-  const handleRefreshPayment = async () => {
-    if (!user?.id || paymentLoading) {
-      return;
-    }
-    
-    setIsRefreshing(true);
-    hasCheckedPayment.current = false;
-    
-    try {
-      await checkPaymentStatus(user.id);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+  }, [appliedDiscount, deliveryMethod, currentPrice, paymentAmount]);
 
   const pageTitle = isHebrew 
     ? "רכישת ספר פיזי | שלי ספרים - דניאל הולך לגן" 
     : "Physical Book Purchase | Shelley Books - Daniel Goes to Kindergarten";
     
   const pageDescription = isHebrew
-    ? "רכשו את הספר הפיזי 'דניאל הולך לגן' במחיר מיוחד. משלוח לכל הארץ"
-    : "Purchase the physical book 'Daniel Goes to Kindergarten' at a special price. Shipping nationwide";
-
-  const handleConfirmPayment = async (userId: string) => {
-    await confirmPaymentCompletion(userId);
-  };
+    ? "רכשו את הספר הפיזי 'דניאל הולך לגן' במחיר מיוחד. משלוח לכל הארץ או איסוף עצמי"
+    : "Purchase the physical book 'Daniel Goes to Kindergarten' at a special price. Shipping or pickup";
 
   const handleDiscountApplied = (discountAmount: number, newPrice: number, couponCode: string) => {
     console.log('=== PHYSICAL BOOK DISCOUNT APPLIED ===');
@@ -159,19 +128,7 @@ const PhysicalBookPurchase = () => {
       <main className="pt-28 pb-20">
         <div className="page-container">
           {/* Action buttons */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex gap-2">
-              <CustomButton
-                variant="outline"
-                size="sm"
-                icon={<RefreshCw className={`w-4 h-4 ${isRefreshing || paymentLoading ? 'animate-spin' : ''}`} />}
-                onClick={handleRefreshPayment}
-                disabled={isRefreshing || paymentLoading}
-              >
-                {isHebrew ? 'רענון סטטוס' : 'Refresh Status'}
-              </CustomButton>
-            </div>
-            
+          <div className="flex justify-end items-center mb-4">
             <CustomButton
               variant="outline"
               size="sm"
@@ -190,32 +147,16 @@ const PhysicalBookPurchase = () => {
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-blue-800">
                 {isHebrew 
-                  ? `שלום ${user.name || user.email}, הזמינו את הספר הפיזי עם משלוח עד הבית`
-                  : `Hello ${user.name || user.email}, order the physical book with home delivery`
+                  ? `שלום ${user.name || user.email}, הזמינו את הספר הפיזי`
+                  : `Hello ${user.name || user.email}, order the physical book`
                 }
               </p>
             </div>
-
-            {paymentLoading && (
-              <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-yellow-800">
-                  {isHebrew ? 'בודק סטטוס...' : 'Checking status...'}
-                </p>
-              </div>
-            )}
-
-            {error && (
-              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-800">{error}</p>
-              </div>
-            )}
             
             <CouponInput 
               userId={user.id}
-              originalPrice={originalPrice}
-              onSuccess={() => {
-                checkPaymentStatus(user.id);
-              }}
+              originalPrice={basePrice}
+              onSuccess={() => {}}
               onDiscountApplied={handleDiscountApplied}
               appliedDiscount={appliedDiscount}
               serviceType="physical_book"
@@ -249,17 +190,78 @@ const PhysicalBookPurchase = () => {
                   <li>• {isHebrew ? "40 עמודים עם איורים מקוריים" : "40 pages with original illustrations"}</li>
                   <li>• {isHebrew ? "כריכה קשה איכותית" : "Quality hardcover binding"}</li>
                   <li>• {isHebrew ? "תמיכה במציאות רבודה (AR)" : "Augmented reality (AR) support"}</li>
-                  <li>• {isHebrew ? "משלוח לכל הארץ" : "Nationwide shipping"}</li>
                 </ul>
               </div>
               
+              {/* Delivery Method Selection */}
+              <div className="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 className="font-bold text-lg mb-4">
+                  {isHebrew ? "אופן קבלת הספר:" : "Delivery Method:"}
+                </h3>
+                <RadioGroup value={deliveryMethod} onValueChange={(value: 'pickup' | 'delivery') => setDeliveryMethod(value)}>
+                  <div className="space-y-4">
+                    {/* Self Pickup */}
+                    <div className="flex items-start space-x-3 space-x-reverse p-4 border-2 rounded-lg hover:border-shelley-blue transition-colors cursor-pointer">
+                      <RadioGroupItem value="pickup" id="pickup" />
+                      <Label htmlFor="pickup" className="flex-1 cursor-pointer">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="w-5 h-5 text-shelley-blue" />
+                          <span className="font-bold text-lg">
+                            {isHebrew ? "איסוף עצמי - ללא עלות" : "Self Pickup - Free"}
+                          </span>
+                        </div>
+                        <div className={`text-sm text-gray-600 ${isHebrew ? 'text-right' : 'text-left'}`}>
+                          <p className="font-semibold mb-1">{isHebrew ? "כתובת:" : "Address:"}</p>
+                          <p>{isHebrew ? "משה דיין 10, קריית אריה, פתח תקווה" : "Moshe Dayan 10, Kiryat Arye, Petah Tikva"}</p>
+                          <p>{isHebrew ? "בניין A, קומה 6" : "Building A, Floor 6"}</p>
+                          <p className="mt-2">
+                            <span className="font-semibold">{isHebrew ? "טלפון:" : "Phone:"}</span> 03-5562677
+                          </p>
+                        </div>
+                      </Label>
+                    </div>
+                    
+                    {/* Home Delivery */}
+                    <div className="flex items-start space-x-3 space-x-reverse p-4 border-2 rounded-lg hover:border-shelley-blue transition-colors cursor-pointer">
+                      <RadioGroupItem value="delivery" id="delivery" />
+                      <Label htmlFor="delivery" className="flex-1 cursor-pointer">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Truck className="w-5 h-5 text-shelley-blue" />
+                          <span className="font-bold text-lg">
+                            {isHebrew ? `משלוח עד הבית - ${deliveryFee} ₪` : `Home Delivery - ${deliveryFee} NIS`}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          {isHebrew ? "משלוח מהיר לכל הארץ" : "Fast delivery nationwide"}
+                        </p>
+                      </Label>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </div>
+              
               <div className="text-center">
-                <div className="text-3xl font-bold text-shelley-green mb-2">
-                  {bookPrice}
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center text-lg">
+                    <span>{isHebrew ? "מחיר ספר:" : "Book price:"}</span>
+                    <span>{appliedDiscount ? appliedDiscount.newPrice : basePrice} ₪</span>
+                  </div>
+                  {deliveryMethod === 'delivery' && (
+                    <div className="flex justify-between items-center text-lg">
+                      <span>{isHebrew ? "משלוח:" : "Delivery:"}</span>
+                      <span>{deliveryFee} ₪</span>
+                    </div>
+                  )}
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold">{isHebrew ? "סה\"כ לתשלום:" : "Total:"}</span>
+                      <span className="text-3xl font-bold text-shelley-green">{bookPrice}</span>
+                    </div>
+                  </div>
                 </div>
                 {appliedDiscount && (
                   <div className="text-sm text-gray-600 mb-4">
-                    <span className="line-through text-red-500">{originalPrice} ₪</span>
+                    <span className="line-through text-red-500">{basePrice} ₪</span>
                     <span className="mr-2 text-green-600">
                       {isHebrew ? ` הנחה של ${appliedDiscount.amount} ₪` : ` Save ${appliedDiscount.amount} NIS`}
                     </span>
@@ -280,11 +282,11 @@ const PhysicalBookPurchase = () => {
               ) : (
                 <div className="mt-6">
                   <PayPalCheckout 
-                    key={`paypal-physical-${paymentAmount}`}
+                    key={`paypal-physical-${paymentAmount}-${deliveryMethod}`}
                     amount={paymentAmount}
                     onSuccess={handlePaymentSuccess}
                     onCancel={() => setShowPayment(false)}
-                    onConfirmPayment={handleConfirmPayment}
+                    onConfirmPayment={async () => {}}
                   />
                 </div>
               )}
