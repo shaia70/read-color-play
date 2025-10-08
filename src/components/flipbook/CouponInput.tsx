@@ -113,9 +113,30 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60,
         newPrice
       });
 
-      // If it's a full discount (price becomes 0 or nearly 0), give free access
-      if (newPrice <= 0.5) {
-        console.log('Coupon provides free or very cheap access - granting immediately');
+      // For physical books, always show as discount (even if price becomes 0)
+      // For digital books, if price becomes 0 or nearly 0, give free access immediately
+      if (serviceType === 'physical_book' || newPrice > 0.5) {
+        console.log('Coupon provides discount - updating price display');
+        
+        // This is a discount coupon, update the price display
+        const finalPrice = Math.max(0, newPrice);
+        toast({
+          title: isHebrew ? 'קופון הופעל!' : 'Coupon activated!',
+          description: isHebrew 
+            ? `הנחה של ${discountInNIS} ש"ח הופעלה! המחיר החדש: ${finalPrice} ש"ח`
+            : `Discount of ${discountInNIS} NIS applied! New price: ${finalPrice} NIS`
+        });
+
+        // Call the discount callback if provided
+        if (onDiscountApplied) {
+          onDiscountApplied(discountInNIS, finalPrice, couponCode.trim());
+        }
+        
+        // Don't record coupon usage yet - wait for successful payment
+        // Coupon usage will be recorded by the payment system
+      } else {
+        // Only for digital books with free access
+        console.log('Digital book coupon provides free access - granting immediately');
         
         // Grant access to the user using the coupon-specific function
         const { error: accessError } = await supabase
@@ -145,29 +166,11 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60,
         toast({
           title: isHebrew ? 'קופון הופעל בהצלחה!' : 'Coupon activated successfully!',
           description: isHebrew 
-            ? `קיבלת גישה חינמית לתוכן ל-${result.access_duration_days || 30} ימים`
-            : `You received free access to content for ${result.access_duration_days || 30} days`
+            ? `קיבלת גישה חינמית לספר הדיגיטלי ל-${result.access_duration_days || 30} ימים`
+            : `You received free access to the digital book for ${result.access_duration_days || 30} days`
         });
 
         onSuccess();
-      } else {
-        console.log('Coupon provides discount - updating price display');
-        
-        // This is a discount coupon, update the price display
-        toast({
-          title: isHebrew ? 'קופון הופעל!' : 'Coupon activated!',
-          description: isHebrew 
-            ? `הנחה של ${discountInNIS} ש"ח הופעלה! המחיר החדש: ${newPrice} ש"ח`
-            : `Discount of ${discountInNIS} NIS applied! New price: ${newPrice} NIS`
-        });
-
-        // Call the discount callback if provided
-        if (onDiscountApplied) {
-          onDiscountApplied(discountInNIS, newPrice, couponCode.trim());
-        }
-        
-        // Don't record coupon usage yet - wait for successful payment
-        // Coupon usage will be recorded by the payment system
       }
       
     } catch (error) {
