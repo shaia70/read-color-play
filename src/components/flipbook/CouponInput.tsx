@@ -92,15 +92,25 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60,
 
       // Check if this is a discount coupon or free access coupon
       const discountAmount = result.discount_amount || 0;
-      const discountInNIS = discountAmount / 100; // Convert agorot to NIS
+      let discountInNIS: number;
+      
+      // Calculate discount based on type
+      if (result.discount_type === 'percentage') {
+        // For percentage, discount_amount is the percentage (e.g., 25 for 25%)
+        discountInNIS = (originalPrice * discountAmount) / 100;
+      } else {
+        // For fixed, discount_amount is in agorot
+        discountInNIS = discountAmount / 100;
+      }
+      
       const newPrice = Math.max(0, originalPrice - discountInNIS);
       
       console.log('Coupon details:', {
         discountAmount,
+        discountType: result.discount_type,
         discountInNIS,
         originalPrice,
-        newPrice,
-        discountType: result.discount_type
+        newPrice
       });
 
       // If it's a full discount (price becomes 0 or nearly 0), give free access
