@@ -99,8 +99,8 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60,
         // For percentage, discount_amount is the percentage (e.g., 25 for 25%)
         discountInNIS = (originalPrice * discountAmount) / 100;
       } else {
-        // For fixed, discount_amount is in agorot
-        discountInNIS = discountAmount / 100;
+        // For fixed, discount_amount is already in shekels
+        discountInNIS = discountAmount;
       }
       
       const newPrice = Math.max(0, originalPrice - discountInNIS);
