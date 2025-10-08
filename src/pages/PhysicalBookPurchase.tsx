@@ -23,21 +23,7 @@ const PhysicalBookPurchase = () => {
   const { hasValidPayment, isLoading: paymentLoading, error, checkPaymentStatus, confirmPaymentCompletion, verifyPayPalPayment } = usePaymentVerification();
   const [showPayment, setShowPayment] = React.useState(false);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(() => {
-    // Try to restore discount from sessionStorage
-    try {
-      const savedDiscount = sessionStorage.getItem('physicalBookDiscount');
-      if (savedDiscount) {
-        const parsed = JSON.parse(savedDiscount);
-        console.log('Restored physical book discount from sessionStorage:', parsed);
-        return parsed;
-      }
-    } catch (error) {
-      console.error('Error parsing saved discount:', error);
-      sessionStorage.removeItem('physicalBookDiscount');
-    }
-    return null;
-  });
+  const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(null);
 
   const hasCheckedPayment = React.useRef(false);
   const hasProcessedPayPalReturn = React.useRef(false);
@@ -109,10 +95,6 @@ const PhysicalBookPurchase = () => {
     
     const discountData = { amount: discountAmount, newPrice, couponCode };
     setAppliedDiscount(discountData);
-    
-    // Save to sessionStorage
-    sessionStorage.setItem('physicalBookDiscount', JSON.stringify(discountData));
-    console.log('Physical book discount saved to sessionStorage:', discountData);
   };
 
   const handlePaymentSuccess = () => {
@@ -121,7 +103,6 @@ const PhysicalBookPurchase = () => {
     
     // Clear the discount after successful payment
     setAppliedDiscount(null);
-    sessionStorage.removeItem('physicalBookDiscount');
   };
 
   // If user is not logged in, show login form
