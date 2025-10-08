@@ -32,9 +32,10 @@ interface PayPalCheckoutProps {
     country_code: string;
   };
   productDescription?: string;
+  skipAccessCheck?: boolean;
 }
 
-const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment, deliveryMethod, shippingAddress, productDescription }: PayPalCheckoutProps) => {
+const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment, deliveryMethod, shippingAddress, productDescription, skipAccessCheck }: PayPalCheckoutProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { verifyPayPalPayment, confirmPaymentCompletion } = usePaymentVerification();
@@ -344,28 +345,30 @@ const PayPalCheckout = ({ amount, onSuccess, onCancel, onConfirmPayment, deliver
             </div>
           )}
 
-          <div className="border-t pt-4">
-            <p className="text-sm text-gray-600 mb-3 text-center">
-              {isHebrew 
-                ? "אם יש לך גישה קיימת - בדוק במערכת:"
-                : "If you have existing access - check in system:"
-              }
-            </p>
-            
-            <CustomButton 
-              variant="outline" 
-              size="lg" 
-              icon={<CreditCard className="w-6 h-6" />} 
-              className="w-full text-base py-3 h-14 min-h-0 font-bold"
-              onClick={handlePaymentConfirmation}
-              disabled={isProcessing}
-            >
-              {isProcessing 
-                ? (isHebrew ? "בודק..." : "Checking...")
-                : (isHebrew ? "בדיקת גישה קיימת" : "Check Existing Access")
-              }
-            </CustomButton>
-          </div>
+          {!skipAccessCheck && (
+            <div className="border-t pt-4">
+              <p className="text-sm text-gray-600 mb-3 text-center">
+                {isHebrew 
+                  ? "אם יש לך גישה קיימת - בדוק במערכת:"
+                  : "If you have existing access - check in system:"
+                }
+              </p>
+              
+              <CustomButton 
+                variant="outline" 
+                size="lg" 
+                icon={<CreditCard className="w-6 h-6" />} 
+                className="w-full text-base py-3 h-14 min-h-0 font-bold"
+                onClick={handlePaymentConfirmation}
+                disabled={isProcessing}
+              >
+                {isProcessing 
+                  ? (isHebrew ? "בודק..." : "Checking...")
+                  : (isHebrew ? "בדיקת גישה קיימת" : "Check Existing Access")
+                }
+              </CustomButton>
+            </div>
+          )}
         </div>
 
         <button

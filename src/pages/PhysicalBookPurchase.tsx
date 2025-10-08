@@ -299,6 +299,7 @@ const PhysicalBookPurchase = () => {
                       ? `ספר פיזי - דניאל הולך לגן${deliveryMethod === 'delivery' ? ' (כולל משלוח)' : ' (איסוף עצמי)'}`
                       : `Physical Book - Daniel Goes to Kindergarten${deliveryMethod === 'delivery' ? ' (with delivery)' : ' (self pickup)'}`
                     }
+                    skipAccessCheck={true}
                   />
                 </div>
               )}
