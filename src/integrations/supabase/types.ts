@@ -146,6 +146,7 @@ export type Database = {
           id: string
           is_active: boolean
           max_uses: number | null
+          service_type: string
           updated_at: string
         }
         Insert: {
@@ -159,6 +160,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           max_uses?: number | null
+          service_type?: string
           updated_at?: string
         }
         Update: {
@@ -172,6 +174,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           max_uses?: number | null
+          service_type?: string
           updated_at?: string
         }
         Relationships: []
@@ -846,7 +849,9 @@ export type Database = {
         Returns: undefined
       }
       validate_coupon: {
-        Args: { coupon_code: string }
+        Args:
+          | { coupon_code: string }
+          | { coupon_code: string; p_service_type?: string }
         Returns: {
           access_duration_days: number
           discount_amount: number

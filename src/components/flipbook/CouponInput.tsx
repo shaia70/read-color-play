@@ -12,9 +12,10 @@ interface CouponInputProps {
   onDiscountApplied?: (discountAmount: number, newPrice: number, couponCode: string) => void;
   originalPrice?: number;
   appliedDiscount?: {amount: number, newPrice: number, couponCode: string} | null;
+  serviceType?: 'flipbook' | 'physical_book';
 }
 
-const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60, appliedDiscount }: CouponInputProps) => {
+const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60, appliedDiscount, serviceType = 'flipbook' }: CouponInputProps) => {
   const { language } = useLanguage();
   const [couponCode, setCouponCode] = React.useState(appliedDiscount?.couponCode || "");
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -63,7 +64,10 @@ const CouponInput = ({ userId, onSuccess, onDiscountApplied, originalPrice = 60,
 
       // Validate the coupon using the database function
       const { data: validationResult, error: validationError } = await supabase
-        .rpc('validate_coupon', { coupon_code: couponCode.trim() });
+        .rpc('validate_coupon', { 
+          coupon_code: couponCode.trim(),
+          p_service_type: serviceType 
+        });
 
       console.log('Coupon validation result:', { validationResult, validationError });
 

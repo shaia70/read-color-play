@@ -237,6 +237,7 @@ const PhysicalBookPurchase = () => {
               }}
               onDiscountApplied={handleDiscountApplied}
               appliedDiscount={appliedDiscount}
+              serviceType="physical_book"
             />
             
             <div className="glass-card mb-16 p-8 max-w-2xl mx-auto">
