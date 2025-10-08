@@ -211,6 +211,7 @@ const PhysicalBookPurchase = () => {
                           </span>
                         </div>
                         <div className={`text-sm text-gray-600 ${isHebrew ? 'text-right' : 'text-left'}`}>
+                          <p className="font-bold text-base mb-2">{isHebrew ? "אופיר ביכורים - הוצאה לאור" : "Ofir Bikurim Publishing"}</p>
                           <p className="font-semibold mb-1">{isHebrew ? "כתובת:" : "Address:"}</p>
                           <p>{isHebrew ? "משה דיין 10, קריית אריה, פתח תקווה" : "Moshe Dayan 10, Kiryat Arye, Petah Tikva"}</p>
                           <p>{isHebrew ? "בניין A, קומה 6" : "Building A, Floor 6"}</p>
