@@ -212,6 +212,93 @@ Shelley Books Team`;
   }
 };
 
+// Send physical book order notification to site owner
+export interface PhysicalBookOrderParams {
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  deliveryMethod: 'pickup' | 'delivery';
+  shippingAddress?: {
+    address_line_1: string;
+    admin_area_2: string;
+    postal_code?: string;
+  };
+  amount: number;
+}
+
+export const sendPhysicalBookOrderNotification = async (params: PhysicalBookOrderParams, language: string) => {
+  const subject = language === 'he' 
+    ? 'הזמנה חדשה - ספר פיזי "דניאל הולך לגן"' 
+    : 'New Order - Physical Book "Daniel Goes to Kindergarten"';
+  
+  const deliveryMethodText = params.deliveryMethod === 'pickup' 
+    ? (language === 'he' ? 'איסוף עצמי' : 'Self Pickup')
+    : (language === 'he' ? 'משלוח עד הבית' : 'Home Delivery');
+
+  let addressSection = '';
+  if (params.deliveryMethod === 'delivery' && params.shippingAddress) {
+    addressSection = language === 'he' 
+      ? `\n\n📍 כתובת למשלוח:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`
+      : `\n\n📍 Shipping Address:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`;
+  }
+
+  const message = language === 'he' 
+    ? `התקבלה הזמנה חדשה לספר פיזי "דניאל הולך לגן"
+
+📦 פרטי ההזמנה:
+שם הלקוח: ${params.customerName}
+אימייל: ${params.customerEmail}${params.customerPhone ? '\nטלפון: ' + params.customerPhone : ''}
+אופן קבלה: ${deliveryMethodText}
+סכום: ${params.amount} ₪${addressSection}
+
+אנא הכן את הספר למשלוח/איסוף.
+
+בברכה,
+מערכת שלי ספרים`
+    : `New order received for physical book "Daniel Goes to Kindergarten"
+
+📦 Order Details:
+Customer Name: ${params.customerName}
+Email: ${params.customerEmail}${params.customerPhone ? '\nPhone: ' + params.customerPhone : ''}
+Delivery Method: ${deliveryMethodText}
+Amount: ${params.amount} NIS${addressSection}
+
+Please prepare the book for shipping/pickup.
+
+Best regards,
+Shelley Books System`;
+
+  const templateParams = {
+    name: params.customerName,
+    title: subject,
+    from_name: "Shelley Books System",
+    from_email: "contact@shelley.co.il",
+    subject,
+    message,
+    to_name: "Shelley Team",
+    to_email: "contact@shelley.co.il",
+    recipient: "contact@shelley.co.il",
+    reply_to: params.customerEmail,
+  };
+
+  console.log("Sending physical book order notification with params:", templateParams);
+  
+  try {
+    const response = await emailjs.send(
+      SERVICE_ID, 
+      TEMPLATE_ID, 
+      templateParams,
+      PUBLIC_KEY
+    );
+    
+    console.log("Physical book order notification sent successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Error sending physical book order notification:", error);
+    throw error;
+  }
+};
+
 // Create a function to generate a mailto link as fallback
 export const generateMailtoLink = (params: EmailParams, language: string) => {
   const defaultSubject = language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר';

@@ -14,6 +14,8 @@ import CouponInput from "@/components/flipbook/CouponInput";
 import { useUrlSecurity } from "@/hooks/useUrlSecurity";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { sendPhysicalBookOrderNotification } from "@/services/emailService";
+import { toast } from "@/hooks/use-toast";
 
 const PhysicalBookPurchase = () => {
   // SECURITY: Remove suspicious URL parameters to prevent bypass
@@ -24,6 +26,13 @@ const PhysicalBookPurchase = () => {
   const [showPayment, setShowPayment] = React.useState(false);
   const [appliedDiscount, setAppliedDiscount] = React.useState<{amount: number, newPrice: number, couponCode: string} | null>(null);
   const [deliveryMethod, setDeliveryMethod] = React.useState<'pickup' | 'delivery'>('pickup');
+  const [shippingAddress, setShippingAddress] = React.useState<{
+    name: string;
+    address_line_1: string;
+    admin_area_2: string;
+    postal_code?: string;
+    country_code: string;
+  } | undefined>(undefined);
 
   const isHebrew = language === 'he';
 
@@ -66,9 +75,46 @@ const PhysicalBookPurchase = () => {
     setAppliedDiscount(discountData);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async () => {
     console.log('=== PHYSICAL BOOK PAYMENT SUCCESS ===');
     setShowPayment(false);
+    
+    // Send order notification email to site owner
+    try {
+      await sendPhysicalBookOrderNotification({
+        customerName: user?.name || user?.email?.split('@')[0] || 'Customer',
+        customerEmail: user?.email || '',
+        deliveryMethod: deliveryMethod,
+        shippingAddress: deliveryMethod === 'delivery' && shippingAddress ? {
+          address_line_1: shippingAddress.address_line_1,
+          admin_area_2: shippingAddress.admin_area_2,
+          postal_code: shippingAddress.postal_code
+        } : undefined,
+        amount: currentPrice
+      }, language);
+      
+      console.log('Physical book order notification sent to site owner');
+      
+      toast({
+        title: isHebrew ? 'ההזמנה התקבלה בהצלחה!' : 'Order received successfully!',
+        description: isHebrew 
+          ? deliveryMethod === 'delivery' 
+            ? 'נשלח אליך אישור למייל. הספר יישלח בקרוב לכתובת שציינת.'
+            : 'נשלח אליך אישור למייל. הספר מוכן לאיסוף במשרדי ההוצאה לאור.'
+          : deliveryMethod === 'delivery'
+            ? 'Confirmation sent to your email. The book will be shipped to your address soon.'
+            : 'Confirmation sent to your email. The book is ready for pickup at the publisher office.'
+      });
+    } catch (emailError) {
+      console.error('Error sending physical book order notification:', emailError);
+      // Don't block the success flow
+      toast({
+        title: isHebrew ? 'התשלום התקבל' : 'Payment received',
+        description: isHebrew 
+          ? 'התשלום התקבל בהצלחה. נציג יצור איתך קשר בקרוב.'
+          : 'Payment received successfully. A representative will contact you soon.'
+      });
+    }
     
     // Clear the discount after successful payment
     setAppliedDiscount(null);
@@ -285,7 +331,18 @@ const PhysicalBookPurchase = () => {
                   <PayPalCheckout 
                     key={`paypal-physical-${paymentAmount}-${deliveryMethod}`}
                     amount={paymentAmount}
-                    onSuccess={handlePaymentSuccess}
+                    onSuccess={() => {
+                      // Store shipping address before calling success handler
+                      if (deliveryMethod === 'delivery') {
+                        setShippingAddress({
+                          name: user.name || user.email || 'Customer',
+                          address_line_1: isHebrew ? 'כתובת תתקבל מ-PayPal' : 'Address from PayPal',
+                          admin_area_2: isHebrew ? 'עיר' : 'City',
+                          country_code: 'IL'
+                        });
+                      }
+                      handlePaymentSuccess();
+                    }}
                     onCancel={() => setShowPayment(false)}
                     onConfirmPayment={async () => {}}
                     deliveryMethod={deliveryMethod}
