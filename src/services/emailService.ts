@@ -240,6 +240,10 @@ export const sendPhysicalBookOrderNotification = async (params: PhysicalBookOrde
     addressSection = language === 'he' 
       ? `\n\n📍 כתובת למשלוח:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`
       : `\n\n📍 Shipping Address:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`;
+  } else if (params.deliveryMethod === 'pickup') {
+    addressSection = language === 'he'
+      ? `\n\n📍 נקודת איסוף עצמי:\nאופיר ביכורים - הוצאה לאור\nמשה דיין 10, קריית אריה, פתח תקווה\nבניין A, קומה 6\nטלפון: 03-5562677`
+      : `\n\n📍 Self Pickup Location:\nOfir Bikurim Publishing\nMoshe Dayan 10, Kiryat Arye, Petah Tikva\nBuilding A, Floor 6\nPhone: 03-5562677`;
   }
 
   const message = language === 'he' 
