@@ -14,7 +14,7 @@ import CouponInput from "@/components/flipbook/CouponInput";
 import { useUrlSecurity } from "@/hooks/useUrlSecurity";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { sendPhysicalBookOrderNotification } from "@/services/emailService";
+import { sendPhysicalBookOrderNotification, sendPhysicalBookCustomerConfirmation } from "@/services/emailService";
 import { toast } from "@/hooks/use-toast";
 
 const PhysicalBookPurchase = () => {
@@ -79,11 +79,14 @@ const PhysicalBookPurchase = () => {
     console.log('=== PHYSICAL BOOK PAYMENT SUCCESS ===');
     setShowPayment(false);
     
+    const customerName = user?.name || user?.email?.split('@')[0] || 'Customer';
+    const customerEmail = user?.email || '';
+    
     // Send order notification email to site owner
     try {
       await sendPhysicalBookOrderNotification({
-        customerName: user?.name || user?.email?.split('@')[0] || 'Customer',
-        customerEmail: user?.email || '',
+        customerName,
+        customerEmail,
         deliveryMethod: deliveryMethod,
         shippingAddress: deliveryMethod === 'delivery' && shippingAddress ? {
           address_line_1: shippingAddress.address_line_1,
@@ -94,6 +97,25 @@ const PhysicalBookPurchase = () => {
       }, language);
       
       console.log('Physical book order notification sent to site owner');
+    } catch (emailError) {
+      console.error('Error sending physical book order notification to site owner:', emailError);
+    }
+    
+    // Send confirmation email to customer
+    try {
+      await sendPhysicalBookCustomerConfirmation({
+        customerName,
+        customerEmail,
+        deliveryMethod: deliveryMethod,
+        shippingAddress: deliveryMethod === 'delivery' && shippingAddress ? {
+          address_line_1: shippingAddress.address_line_1,
+          admin_area_2: shippingAddress.admin_area_2,
+          postal_code: shippingAddress.postal_code
+        } : undefined,
+        amount: currentPrice
+      }, language);
+      
+      console.log('Physical book customer confirmation sent');
       
       toast({
         title: isHebrew ? 'ההזמנה התקבלה בהצלחה!' : 'Order received successfully!',
@@ -106,8 +128,8 @@ const PhysicalBookPurchase = () => {
             : 'Confirmation sent to your email. The book is ready for pickup at the publisher office.'
       });
     } catch (emailError) {
-      console.error('Error sending physical book order notification:', emailError);
-      // Don't block the success flow
+      console.error('Error sending physical book customer confirmation:', emailError);
+      // Don't block the success flow - show success even if email fails
       toast({
         title: isHebrew ? 'התשלום התקבל' : 'Payment received',
         description: isHebrew 

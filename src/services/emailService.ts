@@ -304,6 +304,104 @@ Shelley Books System`;
 };
 
 // Create a function to generate a mailto link as fallback
+// Send physical book purchase confirmation to customer
+export interface PhysicalBookCustomerConfirmationParams {
+  customerName: string;
+  customerEmail: string;
+  deliveryMethod: 'pickup' | 'delivery';
+  shippingAddress?: {
+    address_line_1: string;
+    admin_area_2: string;
+    postal_code?: string;
+  };
+  amount: number;
+}
+
+export const sendPhysicalBookCustomerConfirmation = async (params: PhysicalBookCustomerConfirmationParams, language: string) => {
+  const subject = language === 'he' 
+    ? 'שלי ספרים - אישור הזמנת ספר פיזי' 
+    : 'Shelley Books - Physical Book Order Confirmation';
+  
+  const deliveryMethodText = params.deliveryMethod === 'pickup' 
+    ? (language === 'he' ? 'איסוף עצמי' : 'Self Pickup')
+    : (language === 'he' ? 'משלוח עד הבית' : 'Home Delivery');
+
+  let addressSection = '';
+  if (params.deliveryMethod === 'delivery' && params.shippingAddress) {
+    addressSection = language === 'he' 
+      ? `\n\n📍 הספר יישלח לכתובת:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}\n\nזמן אספקה משוער: 5-7 ימי עסקים`
+      : `\n\n📍 The book will be shipped to:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}\n\nEstimated delivery: 5-7 business days`;
+  } else if (params.deliveryMethod === 'pickup') {
+    addressSection = language === 'he'
+      ? `\n\n📍 נקודת איסוף עצמי:\nאופיר ביכורים - הוצאה לאור\nמשה דיין 10, קריית אריה, פתח תקווה\nבניין A, קומה 6\nטלפון: 03-5562677\n\nניתן לאסוף את הספר בימים א'-ה' בין השעות 9:00-17:00`
+      : `\n\n📍 Self Pickup Location:\nOfir Bikurim Publishing\nMoshe Dayan 10, Kiryat Arye, Petah Tikva\nBuilding A, Floor 6\nPhone: 03-5562677\n\nYou can pick up the book Sun-Thu between 9:00-17:00`;
+  }
+
+  const message = language === 'he' 
+    ? `שלום ${params.customerName},
+
+תודה על הזמנתך!
+
+📚 הזמנת ספר פיזי: "דניאל הולך לגן"
+
+פרטי ההזמנה:
+אופן קבלה: ${deliveryMethodText}
+סכום ששולם: ${params.amount} ₪${addressSection}
+
+אם יש לך שאלות, אנא צור קשר איתנו.
+
+תודה שבחרת בשלי ספרים!
+
+בברכה,
+צוות שלי ספרים`
+    : `Hello ${params.customerName},
+
+Thank you for your order!
+
+📚 Physical Book Order: "Daniel Goes to Kindergarten"
+
+Order Details:
+Delivery Method: ${deliveryMethodText}
+Amount Paid: ${params.amount} NIS${addressSection}
+
+If you have any questions, please contact us.
+
+Thank you for choosing Shelley Books!
+
+Best regards,
+Shelley Books Team`;
+
+  const templateParams = {
+    name: params.customerName,
+    title: subject,
+    from_name: "Shelley Books",
+    from_email: "contact@shelley.co.il",
+    subject,
+    message,
+    to_name: params.customerName,
+    to_email: params.customerEmail,
+    recipient: params.customerEmail,
+    reply_to: "contact@shelley.co.il",
+  };
+
+  console.log("Sending physical book customer confirmation with params:", templateParams);
+  
+  try {
+    const response = await emailjs.send(
+      SERVICE_ID, 
+      TEMPLATE_ID, 
+      templateParams,
+      PUBLIC_KEY
+    );
+    
+    console.log("Physical book customer confirmation sent successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Error sending physical book customer confirmation:", error);
+    throw error;
+  }
+};
+
 export const generateMailtoLink = (params: EmailParams, language: string) => {
   const defaultSubject = language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר';
   const subject = encodeURIComponent(params.subject || defaultSubject);
