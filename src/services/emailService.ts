@@ -1,12 +1,4 @@
-import emailjs from 'emailjs-com';
-
-// EmailJS configuration
-const SERVICE_ID = "service_b8wznhv";
-const TEMPLATE_ID = "template_n7g59yj";
-const PUBLIC_KEY = "jWPCnv-Rf3v6GmioO";
-
-// Initialize EmailJS
-emailjs.init(PUBLIC_KEY);
+import { supabase } from '@/integrations/supabase/client';
 
 export interface EmailParams {
   name: string;
@@ -27,43 +19,58 @@ export interface PaymentConfirmationParams {
   password?: string;
 }
 
+// Send contact form email (to site owner)
 export const sendEmail = async (params: EmailParams, language: string) => {
   const defaultSubject = language === 'en' ? 'Contact Form Submission' : 'הודעה מטופס יצירת קשר';
+  const subject = params.subject || defaultSubject;
   
-  try {
-    // Create template parameters with all possible recipient fields
-    const templateParams = {
-      // User information with correct template fields
-      name: params.name, // This maps to {{name}} in the template
-      title: params.subject || defaultSubject, // This maps to {{title}} in the template
-      from_name: params.name,
-      from_email: params.email, // This maps to {{from_email}} in the template
-      subject: params.subject || defaultSubject,
-      message: params.message,
-      
-      // Remove the incorrect email field and ensure from_email is used
-      
-      // Keep other recipient formats for compatibility
-      to_name: "Shelley Team",
-      to_email: "contact@shelley.co.il",
-      recipient: "contact@shelley.co.il",
-      reply_to: params.email,
-    };
+  const html = language === 'he'
+    ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>הודעה חדשה מטופס יצירת קשר</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>שם:</strong> ${params.name}</p>
+          <p style="margin: 5px 0;"><strong>אימייל:</strong> ${params.email}</p>
+          <p style="margin: 5px 0;"><strong>נושא:</strong> ${subject}</p>
+        </div>
+        <div style="background-color: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+          <p style="margin: 0;"><strong>הודעה:</strong></p>
+          <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${params.message}</p>
+        </div>
+      </div>
+    `
+    : `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Contact Form Message</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>Name:</strong> ${params.name}</p>
+          <p style="margin: 5px 0;"><strong>Email:</strong> ${params.email}</p>
+          <p style="margin: 5px 0;"><strong>Subject:</strong> ${subject}</p>
+        </div>
+        <div style="background-color: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+          <p style="margin: 0;"><strong>Message:</strong></p>
+          <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${params.message}</p>
+        </div>
+      </div>
+    `;
 
-    console.log("Sending email with template params:", templateParams);
+  try {
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to_email: "contact@shelley.co.il",
+        to_name: "Shelley Team",
+        subject: `פניה חדשה מאתר שלי ספרים מ:${params.name}, נושא:${subject}`,
+        html,
+        reply_to: params.email
+      }
+    });
     
-    // Send email using EmailJS with PUBLIC_KEY as third parameter
-    const response = await emailjs.send(
-      SERVICE_ID, 
-      TEMPLATE_ID, 
-      templateParams,
-      PUBLIC_KEY
-    );
+    if (error) throw error;
     
-    console.log("Email sent successfully:", response);
-    return response;
+    console.log("Contact form email sent successfully:", data);
+    return data;
   } catch (error) {
-    console.error("Error in emailService:", error);
+    console.error("Error sending contact form email:", error);
     throw error;
   }
 };
@@ -72,70 +79,61 @@ export const sendEmail = async (params: EmailParams, language: string) => {
 export const sendRegistrationEmail = async (params: RegistrationEmailParams, language: string) => {
   const subject = language === 'he' ? 'ברוכים הבאים לשלי ספרים - הרשמה הושלמה' : 'Welcome to Shelley Books - Registration Complete';
   
-  const message = language === 'he' 
-    ? `שלום ${params.name},
+  const html = language === 'he' 
+    ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">שלום ${params.name},</h1>
+        <p>ברוכים הבאים לשלי ספרים!</p>
+        <p>הרשמתך הושלמה בהצלחה. להלן פרטי הכניסה שלך:</p>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>שם משתמש (אימייל):</strong> ${params.email}</p>
+          <p style="margin: 5px 0;"><strong>סיסמה:</strong> ${params.password}</p>
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 0;"><strong>⚠️ שים לב:</strong> טרם בוצע תשלום עבור גישה לספר הדיגיטלי.</p>
+          <p style="margin: 10px 0 0 0;">כדי לקבל גישה מלאה לתוכן, יש צורך להשלים את התשלום בערך של 60 ש"ח.</p>
+        </div>
+        <p>לאחר התשלום תקבל אימייל נוסף המאשר את הרכישה.</p>
+        <p>תודה שבחרת בשלי ספרים!</p>
+        <p style="margin-top: 30px;">בברכה,<br/>צוות שלי ספרים</p>
+      </div>
+    `
+    : `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">Hello ${params.name},</h1>
+        <p>Welcome to Shelley Books!</p>
+        <p>Your registration has been completed successfully. Here are your login details:</p>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>Username (Email):</strong> ${params.email}</p>
+          <p style="margin: 5px 0;"><strong>Password:</strong> ${params.password}</p>
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 0;"><strong>⚠️ Please note:</strong> Payment has not yet been made for access to the digital book.</p>
+          <p style="margin: 10px 0 0 0;">To get full access to the content, you need to complete payment of 60 ILS.</p>
+        </div>
+        <p>After payment, you will receive another email confirming your purchase.</p>
+        <p>Thank you for choosing Shelley Books!</p>
+        <p style="margin-top: 30px;">Best regards,<br/>Shelley Books Team</p>
+      </div>
+    `;
 
-ברוכים הבאים לשלי ספרים!
-
-הרשמתך הושלמה בהצלחה. להלן פרטי הכניסה שלך:
-
-שם משתמש (אימייל): ${params.email}
-סיסמה: ${params.password}
-
-⚠️ שים לב: טרם בוצע תשלום עבור גישה לספר הדיגיטלי.
-כדי לקבל גישה מלאה לתוכן, יש צורך להשלים את התשלום בערך של 60 ש"ח.
-
-לאחר התשלום תקבל אימייל נוסף המאשר את הרכישה.
-
-תודה שבחרת בשלי ספרים!
-
-בברכה,
-צוות שלי ספרים`
-    : `Hello ${params.name},
-
-Welcome to Shelley Books!
-
-Your registration has been completed successfully. Here are your login details:
-
-Username (Email): ${params.email}
-Password: ${params.password}
-
-⚠️ Please note: Payment has not yet been made for access to the digital book.
-To get full access to the content, you need to complete payment of 60 ILS.
-
-After payment, you will receive another email confirming your purchase.
-
-Thank you for choosing Shelley Books!
-
-Best regards,
-Shelley Books Team`;
-
-  // Use different template parameters for user-directed emails
-  const templateParams = {
-    name: params.name,
-    title: subject,
-    from_name: "Shelley Books",
-    from_email: "contact@shelley.co.il", // Send FROM contact@shelley.co.il
-    subject,
-    message,
-    to_name: params.name,
-    to_email: params.email, // Send TO the user's email
-    recipient: params.email,
-    reply_to: "contact@shelley.co.il",
-  };
-
-  console.log("Sending registration email with params:", templateParams);
+  console.log("Sending registration email to:", params.email);
   
   try {
-    const response = await emailjs.send(
-      SERVICE_ID, 
-      TEMPLATE_ID, 
-      templateParams,
-      PUBLIC_KEY
-    );
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to_email: params.email,
+        to_name: params.name,
+        subject,
+        html,
+        reply_to: "contact@shelley.co.il"
+      }
+    });
     
-    console.log("Registration email sent successfully:", response);
-    return response;
+    if (error) throw error;
+    
+    console.log("Registration email sent successfully:", data);
+    return data;
   } catch (error) {
     console.error("Error sending registration email:", error);
     throw error;
@@ -146,66 +144,55 @@ Shelley Books Team`;
 export const sendPaymentConfirmationEmail = async (params: PaymentConfirmationParams, language: string) => {
   const subject = language === 'he' ? 'שלי ספרים - תשלום התקבל בהצלחה!' : 'Shelley Books - Payment Received Successfully!';
   
-  const message = language === 'he' 
-    ? `שלום ${params.name},
+  const html = language === 'he'
+    ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #28a745;">שלום ${params.name},</h1>
+        <p><strong>מעולה! התשלום שלך התקבל בהצלחה.</strong></p>
+        <p>כעת יש לך גישה מלאה לספר הדיגיטלי של שלי ספרים.</p>
+        <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>פרטי הכניסה שלך:</strong></p>
+          <p style="margin: 5px 0;">שם משתמש (אימייל): ${params.email}</p>
+          ${params.password ? `<p style="margin: 5px 0;">סיסמה: ${params.password}</p>` : '<p style="margin: 5px 0;">(השתמש בסיסמה שבחרת בעת ההרשמה)</p>'}
+        </div>
+        <p>תוכל לגשת לתוכן בכל עת באתר.</p>
+        <p>תודה על הרכישה וההצטרפות למשפחת שלי ספרים!</p>
+        <p style="margin-top: 30px;">בברכה,<br/>צוות שלי ספרים</p>
+      </div>
+    `
+    : `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #28a745;">Hello ${params.name},</h1>
+        <p><strong>Excellent! Your payment has been received successfully.</strong></p>
+        <p>You now have full access to the Shelley Books digital flipbook.</p>
+        <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 5px 0;"><strong>Your login details:</strong></p>
+          <p style="margin: 5px 0;">Username (Email): ${params.email}</p>
+          ${params.password ? `<p style="margin: 5px 0;">Password: ${params.password}</p>` : '<p style="margin: 5px 0;">(Use the password you chose during registration)</p>'}
+        </div>
+        <p>You can access the content at any time on our website.</p>
+        <p>Thank you for your purchase and for joining the Shelley Books family!</p>
+        <p style="margin-top: 30px;">Best regards,<br/>Shelley Books Team</p>
+      </div>
+    `;
 
-מעולה! התשלום שלך התקבל בהצלחה.
-
-כעת יש לך גישה מלאה לספר הדיגיטלי של שלי ספרים.
-
-פרטי הכניסה שלך:
-שם משתמש (אימייל): ${params.email}
-${params.password ? `סיסמה: ${params.password}` : '(השתמש בסיסמה שבחרת בעת ההרשמה)'}
-
-תוכל לגשת לתוכן בכל עת באתר.
-
-תודה על הרכישה וההצטרפות למשפחת שלי ספרים!
-
-בברכה,
-צוות שלי ספרים`
-    : `Hello ${params.name},
-
-Excellent! Your payment has been received successfully.
-
-You now have full access to the Shelley Books digital flipbook.
-
-Your login details:
-Username (Email): ${params.email}
-${params.password ? `Password: ${params.password}` : '(Use the password you chose during registration)'}
-
-You can access the content at any time on our website.
-
-Thank you for your purchase and for joining the Shelley Books family!
-
-Best regards,
-Shelley Books Team`;
-
-  // Use different template parameters for user-directed emails
-  const templateParams = {
-    name: params.name,
-    title: subject,
-    from_name: "Shelley Books",
-    from_email: "contact@shelley.co.il", // Send FROM contact@shelley.co.il
-    subject,
-    message,
-    to_name: params.name,
-    to_email: params.email, // Send TO the user's email
-    recipient: params.email,
-    reply_to: "contact@shelley.co.il",
-  };
-
-  console.log("Sending payment confirmation email with params:", templateParams);
+  console.log("Sending payment confirmation email to:", params.email);
   
   try {
-    const response = await emailjs.send(
-      SERVICE_ID, 
-      TEMPLATE_ID, 
-      templateParams,
-      PUBLIC_KEY
-    );
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to_email: params.email,
+        to_name: params.name,
+        subject,
+        html,
+        reply_to: "contact@shelley.co.il"
+      }
+    });
     
-    console.log("Payment confirmation email sent successfully:", response);
-    return response;
+    if (error) throw error;
+    
+    console.log("Payment confirmation email sent successfully:", data);
+    return data;
   } catch (error) {
     console.error("Error sending payment confirmation email:", error);
     throw error;
@@ -238,72 +225,71 @@ export const sendPhysicalBookOrderNotification = async (params: PhysicalBookOrde
   let addressSection = '';
   if (params.deliveryMethod === 'delivery' && params.shippingAddress) {
     addressSection = language === 'he' 
-      ? `\n\n📍 כתובת למשלוח:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`
-      : `\n\n📍 Shipping Address:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}`;
+      ? `<p><strong>📍 כתובת למשלוח:</strong><br/>${params.shippingAddress.address_line_1}<br/>${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}</p>`
+      : `<p><strong>📍 Shipping Address:</strong><br/>${params.shippingAddress.address_line_1}<br/>${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}</p>`;
   } else if (params.deliveryMethod === 'pickup') {
     addressSection = language === 'he'
-      ? `\n\n📍 נקודת איסוף עצמי:\nאופיר ביכורים - הוצאה לאור\nמשה דיין 10, קריית אריה, פתח תקווה\nבניין A, קומה 6\nטלפון: 03-5562677`
-      : `\n\n📍 Self Pickup Location:\nOfir Bikurim Publishing\nMoshe Dayan 10, Kiryat Arye, Petah Tikva\nBuilding A, Floor 6\nPhone: 03-5562677`;
+      ? `<p><strong>📍 נקודת איסוף עצמי:</strong><br/>אופיר ביכורים - הוצאה לאור<br/>משה דיין 10, קריית אריה, פתח תקווה<br/>בניין A, קומה 6<br/>טלפון: 03-5562677</p>`
+      : `<p><strong>📍 Self Pickup Location:</strong><br/>Ofir Bikurim Publishing<br/>Moshe Dayan 10, Kiryat Arye, Petah Tikva<br/>Building A, Floor 6<br/>Phone: 03-5562677</p>`;
   }
 
-  const message = language === 'he' 
-    ? `התקבלה הזמנה חדשה לספר פיזי "דניאל הולך לגן"
+  const html = language === 'he' 
+    ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #d9534f;">התקבלה הזמנה חדשה לספר פיזי "דניאל הולך לגן"</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3>📦 פרטי ההזמנה:</h3>
+          <p><strong>שם הלקוח:</strong> ${params.customerName}</p>
+          <p><strong>אימייל:</strong> ${params.customerEmail}</p>
+          ${params.customerPhone ? `<p><strong>טלפון:</strong> ${params.customerPhone}</p>` : ''}
+          <p><strong>אופן קבלה:</strong> ${deliveryMethodText}</p>
+          <p><strong>סכום:</strong> ${params.amount} ₪</p>
+        </div>
+        ${addressSection}
+        <p style="margin-top: 20px;">אנא הכן את הספר למשלוח/איסוף.</p>
+        <p style="margin-top: 30px;">בברכה,<br/>מערכת שלי ספרים</p>
+      </div>
+    `
+    : `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #d9534f;">New order received for physical book "Daniel Goes to Kindergarten"</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3>📦 Order Details:</h3>
+          <p><strong>Customer Name:</strong> ${params.customerName}</p>
+          <p><strong>Email:</strong> ${params.customerEmail}</p>
+          ${params.customerPhone ? `<p><strong>Phone:</strong> ${params.customerPhone}</p>` : ''}
+          <p><strong>Delivery Method:</strong> ${deliveryMethodText}</p>
+          <p><strong>Amount:</strong> ${params.amount} NIS</p>
+        </div>
+        ${addressSection}
+        <p style="margin-top: 20px;">Please prepare the book for shipping/pickup.</p>
+        <p style="margin-top: 30px;">Best regards,<br/>Shelley Books System</p>
+      </div>
+    `;
 
-📦 פרטי ההזמנה:
-שם הלקוח: ${params.customerName}
-אימייל: ${params.customerEmail}${params.customerPhone ? '\nטלפון: ' + params.customerPhone : ''}
-אופן קבלה: ${deliveryMethodText}
-סכום: ${params.amount} ₪${addressSection}
-
-אנא הכן את הספר למשלוח/איסוף.
-
-בברכה,
-מערכת שלי ספרים`
-    : `New order received for physical book "Daniel Goes to Kindergarten"
-
-📦 Order Details:
-Customer Name: ${params.customerName}
-Email: ${params.customerEmail}${params.customerPhone ? '\nPhone: ' + params.customerPhone : ''}
-Delivery Method: ${deliveryMethodText}
-Amount: ${params.amount} NIS${addressSection}
-
-Please prepare the book for shipping/pickup.
-
-Best regards,
-Shelley Books System`;
-
-  const templateParams = {
-    name: params.customerName,
-    title: subject,
-    from_name: "Shelley Books System",
-    from_email: "contact@shelley.co.il",
-    subject,
-    message,
-    to_name: "Shelley Team",
-    to_email: "contact@shelley.co.il",
-    recipient: "contact@shelley.co.il",
-    reply_to: params.customerEmail,
-  };
-
-  console.log("Sending physical book order notification with params:", templateParams);
+  console.log("Sending physical book order notification");
   
   try {
-    const response = await emailjs.send(
-      SERVICE_ID, 
-      TEMPLATE_ID, 
-      templateParams,
-      PUBLIC_KEY
-    );
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to_email: "contact@shelley.co.il",
+        to_name: "Shelley Team",
+        subject,
+        html,
+        reply_to: params.customerEmail
+      }
+    });
     
-    console.log("Physical book order notification sent successfully:", response);
-    return response;
+    if (error) throw error;
+    
+    console.log("Physical book order notification sent successfully:", data);
+    return data;
   } catch (error) {
     console.error("Error sending physical book order notification:", error);
     throw error;
   }
 };
 
-// Create a function to generate a mailto link as fallback
 // Send physical book purchase confirmation to customer
 export interface PhysicalBookCustomerConfirmationParams {
   customerName: string;
@@ -329,73 +315,89 @@ export const sendPhysicalBookCustomerConfirmation = async (params: PhysicalBookC
   let addressSection = '';
   if (params.deliveryMethod === 'delivery' && params.shippingAddress) {
     addressSection = language === 'he' 
-      ? `\n\n📍 הספר יישלח לכתובת:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}\n\nזמן אספקה משוער: 5-7 ימי עסקים`
-      : `\n\n📍 The book will be shipped to:\n${params.shippingAddress.address_line_1}\n${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}\n\nEstimated delivery: 5-7 business days`;
+      ? `<div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>📍 הספר יישלח לכתובת:</strong><br/>
+          ${params.shippingAddress.address_line_1}<br/>
+          ${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}</p>
+          <p style="margin-top: 10px;"><strong>זמן אספקה משוער:</strong> 5-7 ימי עסקים</p>
+        </div>`
+      : `<div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>📍 The book will be shipped to:</strong><br/>
+          ${params.shippingAddress.address_line_1}<br/>
+          ${params.shippingAddress.admin_area_2}${params.shippingAddress.postal_code ? ', ' + params.shippingAddress.postal_code : ''}</p>
+          <p style="margin-top: 10px;"><strong>Estimated delivery:</strong> 5-7 business days</p>
+        </div>`;
   } else if (params.deliveryMethod === 'pickup') {
     addressSection = language === 'he'
-      ? `\n\n📍 נקודת איסוף עצמי:\nאופיר ביכורים - הוצאה לאור\nמשה דיין 10, קריית אריה, פתח תקווה\nבניין A, קומה 6\nטלפון: 03-5562677\n\nניתן לאסוף את הספר בימים א'-ה' בין השעות 9:00-17:00`
-      : `\n\n📍 Self Pickup Location:\nOfir Bikurim Publishing\nMoshe Dayan 10, Kiryat Arye, Petah Tikva\nBuilding A, Floor 6\nPhone: 03-5562677\n\nYou can pick up the book Sun-Thu between 9:00-17:00`;
+      ? `<div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>📍 נקודת איסוף עצמי:</strong><br/>
+          אופיר ביכורים - הוצאה לאור<br/>
+          משה דיין 10, קריית אריה, פתח תקווה<br/>
+          בניין A, קומה 6<br/>
+          טלפון: 03-5562677</p>
+          <p style="margin-top: 10px;">ניתן לאסוף את הספר בימים א'-ה' בין השעות 9:00-17:00</p>
+        </div>`
+      : `<div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>📍 Self Pickup Location:</strong><br/>
+          Ofir Bikurim Publishing<br/>
+          Moshe Dayan 10, Kiryat Arye, Petah Tikva<br/>
+          Building A, Floor 6<br/>
+          Phone: 03-5562677</p>
+          <p style="margin-top: 10px;">You can pick up the book Sun-Thu between 9:00-17:00</p>
+        </div>`;
   }
 
-  const message = language === 'he' 
-    ? `שלום ${params.customerName},
+  const html = language === 'he' 
+    ? `
+      <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #28a745;">שלום ${params.customerName},</h1>
+        <p><strong>תודה על הזמנתך!</strong></p>
+        <h2>📚 הזמנת ספר פיזי: "דניאל הולך לגן"</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>פרטי ההזמנה:</strong></p>
+          <p>אופן קבלה: ${deliveryMethodText}</p>
+          <p>סכום ששולם: ${params.amount} ₪</p>
+        </div>
+        ${addressSection}
+        <p>אם יש לך שאלות, אנא צור קשר איתנו.</p>
+        <p><strong>תודה שבחרת בשלי ספרים!</strong></p>
+        <p style="margin-top: 30px;">בברכה,<br/>צוות שלי ספרים</p>
+      </div>
+    `
+    : `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #28a745;">Hello ${params.customerName},</h1>
+        <p><strong>Thank you for your order!</strong></p>
+        <h2>📚 Physical Book Order: "Daniel Goes to Kindergarten"</h2>
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>Order Details:</strong></p>
+          <p>Delivery Method: ${deliveryMethodText}</p>
+          <p>Amount Paid: ${params.amount} NIS</p>
+        </div>
+        ${addressSection}
+        <p>If you have any questions, please contact us.</p>
+        <p><strong>Thank you for choosing Shelley Books!</strong></p>
+        <p style="margin-top: 30px;">Best regards,<br/>Shelley Books Team</p>
+      </div>
+    `;
 
-תודה על הזמנתך!
-
-📚 הזמנת ספר פיזי: "דניאל הולך לגן"
-
-פרטי ההזמנה:
-אופן קבלה: ${deliveryMethodText}
-סכום ששולם: ${params.amount} ₪${addressSection}
-
-אם יש לך שאלות, אנא צור קשר איתנו.
-
-תודה שבחרת בשלי ספרים!
-
-בברכה,
-צוות שלי ספרים`
-    : `Hello ${params.customerName},
-
-Thank you for your order!
-
-📚 Physical Book Order: "Daniel Goes to Kindergarten"
-
-Order Details:
-Delivery Method: ${deliveryMethodText}
-Amount Paid: ${params.amount} NIS${addressSection}
-
-If you have any questions, please contact us.
-
-Thank you for choosing Shelley Books!
-
-Best regards,
-Shelley Books Team`;
-
-  const templateParams = {
-    name: params.customerName,
-    title: subject,
-    from_name: "Shelley Books",
-    from_email: "contact@shelley.co.il",
-    subject,
-    message,
-    to_name: params.customerName,
-    to_email: params.customerEmail,
-    recipient: params.customerEmail,
-    reply_to: "contact@shelley.co.il",
-  };
-
-  console.log("Sending physical book customer confirmation with params:", templateParams);
+  console.log("Sending physical book customer confirmation to:", params.customerEmail);
   
   try {
-    const response = await emailjs.send(
-      SERVICE_ID, 
-      TEMPLATE_ID, 
-      templateParams,
-      PUBLIC_KEY
-    );
+    const { data, error } = await supabase.functions.invoke('send-email', {
+      body: {
+        to_email: params.customerEmail,
+        to_name: params.customerName,
+        subject,
+        html,
+        reply_to: "contact@shelley.co.il"
+      }
+    });
     
-    console.log("Physical book customer confirmation sent successfully:", response);
-    return response;
+    if (error) throw error;
+    
+    console.log("Physical book customer confirmation sent successfully:", data);
+    return data;
   } catch (error) {
     console.error("Error sending physical book customer confirmation:", error);
     throw error;
