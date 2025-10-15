@@ -45,7 +45,6 @@ export default function Footer() {
     { name: language === 'he' ? 'פליפבוק' : 'Flipbook', href: "/flipbook" },
     { name: t('footer.contactUs'), href: "/contact" },
     { name: language === 'he' ? 'הורד אפליקציה' : 'Download App', href: "/download" },
-    { name: language === 'he' ? 'הזמנת ספר' : 'Order Book', href: "/physical-book" },
     { name: language === 'he' ? 'מדיניות פרטיות' : 'Privacy Policy', href: "/privacy-policy" },
   ];
 
