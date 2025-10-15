@@ -8,6 +8,7 @@ const heTranslations: Record<string, string> = {
   'nav.technology': 'טכנולוגיית AR',
   'nav.contact': 'צור קשר',
   'nav.download': 'הורד אפליקציה',
+  'nav.orderBook': 'הזמנת ספר',
   
   // Hero section
   'hero.tagline': 'קוראים • צובעים • משחקים',

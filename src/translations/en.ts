@@ -8,6 +8,7 @@ const enTranslations: Record<string, string> = {
   'nav.technology': 'AR Technology',
   'nav.contact': 'Contact',
   'nav.download': 'Download App',
+  'nav.orderBook': 'Order Book',
   
   // Hero section
   'hero.tagline': 'Read • Color • Play',

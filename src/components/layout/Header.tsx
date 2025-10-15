@@ -1,7 +1,7 @@
 
 import * as React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download, Image } from "lucide-react";
+import { Menu, X, BookOpen, Palette, Gamepad2, BookType, PhoneCall, Download, Image, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -79,6 +79,7 @@ export default function Header() {
     { name: language === 'he' ? 'גלריה' : 'Gallery', href: "/gallery", icon: <Image className="h-5 w-5" /> },
     { name: t('nav.contact'), href: "/contact", icon: <PhoneCall className="h-5 w-5" /> },
     { name: language === 'en' ? 'Download App' : 'הורד אפליקציה', href: "/download", icon: <Download className="h-5 w-5" /> },
+    { name: t('nav.orderBook'), href: "/physical-book", icon: <ShoppingCart className="h-5 w-5" /> },
   ];
 
   return (
